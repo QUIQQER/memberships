@@ -1,0 +1,25 @@
+<quiqqer>
+    <package>
+        <title>
+            <locale group='quiqqer/memberships' var='package.title'/>
+        </title>
+
+        <description>
+           <locale group='quiqqer/memberships' var='package.description'/>
+        </description>
+
+        <!-- Hauptbild -->
+        <image src='URL_OPT_DIR/quiqqer/memberships/bin/quiqqer_logo.png'/>
+
+         <!-- More preview images
+        <preview>
+            <image src="URL_OPT_DIR/quiqqer/quiqqer/bin/preview/1.png"/>
+            <image src="URL_OPT_DIR/quiqqer/quiqqer/bin/preview/2.png"/>
+            <image src="URL_OPT_DIR/quiqqer/quiqqer/bin/preview/3.png"/>
+            <image src="URL_OPT_DIR/quiqqer/quiqqer/bin/preview/4.png"/>
+            <image src="URL_OPT_DIR/quiqqer/quiqqer/bin/preview/5.png"/>
+        </preview>
+        -->
+
+    </package>
+</quiqqer>

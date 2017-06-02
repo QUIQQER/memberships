@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<locales>
+  <groups name="quiqqer/memberships" datatype="php,js">
+    <locale name="package.title">
+      <de><![CDATA[QUIQQER - Mitgliedschaften]]></de>
+      <en><![CDATA[QUIQQER - Memberships]]></en>
+    </locale>
+  <locale name="package.description"><de><![CDATA[QUIQQER - Mitgliedschaften]]></de><en><![CDATA[QUIQQER - Memberships]]></en></locale></groups>
+</locales>

@@ -1,0 +1,28 @@
+{
+    "name" : "quiqqer/memberships",
+    "type" : "quiqqer-module",
+    "description" : "Mitgliedschafen für ERP",
+    "version" : "dev-dev",
+    "license" : "GPL-3.0+",
+    "authors" : [
+        {
+            "name": "Patrick Müller",
+            "email": "p.mueller@pcsg.de",
+            "homepage": "http://www.pcsg.de",
+            "role": "Developer"
+        }
+    ],
+    "support" : {
+        "email": "support@pcsg.de",
+        "url": "http://www.pcsg.de"
+    },
+    "require": {
+        
+    }
+    ,"autoload": {
+  "psr-4": {
+      "QUI\\Memberships\\": "src/QUI/Memberships"
+   }
+}
+
+}
