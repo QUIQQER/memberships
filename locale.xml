@@ -1,9 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <locales>
-  <groups name="quiqqer/memberships" datatype="php,js">
-    <locale name="package.title">
-      <de><![CDATA[QUIQQER - Mitgliedschaften]]></de>
-      <en><![CDATA[QUIQQER - Memberships]]></en>
-    </locale>
-  <locale name="package.description"><de><![CDATA[QUIQQER - Mitgliedschaften]]></de><en><![CDATA[QUIQQER - Memberships]]></en></locale></groups>
+
+    <groups name="quiqqer/memberships" datatype="php,js">
+
+        <locale name="package.title">
+            <de><![CDATA[QUIQQER - Mitgliedschaften]]></de>
+            <en><![CDATA[QUIQQER - Memberships]]></en>
+        </locale>
+        <locale name="package.description">
+            <de><![CDATA[QUIQQER - Mitgliedschaften]]></de>
+            <en><![CDATA[QUIQQER - Memberships]]></en>
+        </locale>
+
+        <!-- Menu -->
+        <locale name="menu.extras.memberships.title">
+            <de><![CDATA[Mitgliedschaften]]></de>
+            <en><![CDATA[Memberships]]></en>
+        </locale>
+
+    </groups>
+
+    <groups name="quiqqer/memberships" datatype="js">
+
+        <!-- Control: MembershipsManager -->
+        <locale name="controls.membershipsmanager.tbl.header.title">
+            <de><![CDATA[Titel]]></de>
+            <en><![CDATA[Title]]></en>
+        </locale>
+        <locale name="controls.membershipsmanager.tbl.header.description">
+            <de><![CDATA[Beschreibung]]></de>
+            <en><![CDATA[Description]]></en>
+        </locale>
+        <locale name="controls.membershipsmanager.tbl.header.duration">
+            <de><![CDATA[Laufzeit]]></de>
+            <en><![CDATA[Duration]]></en>
+        </locale>
+        <locale name="controls.membershipsmanager.tbl.header.userCount">
+            <de><![CDATA[Benutzer]]></de>
+            <en><![CDATA[Users]]></en>
+        </locale>
+        <locale name="controls.membershipsmanager.tbl.header.autoRenew">
+            <de><![CDATA[Autom. verlängern]]></de>
+            <en><![CDATA[Auto renew]]></en>
+        </locale>
+
+    </groups>
 </locales>

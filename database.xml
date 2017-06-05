@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database>
+
+    <global>
+        <table name="quiqqer_memberships">
+            <!-- basic fields -->
+            <field type="BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY">id</field>
+            <field type="VARCHAR(255) NOT NULL">title</field>
+            <field type="MEDIUMTEXT NULL">description</field>
+            <field type="MEDIUMTEXT NULL">content</field>
+            <field type="VARCHAR(255) NOT NULL">duration</field>
+            <field type="MEDIUMTEXT NULL">groupIds</field>
+            <field type="VARCHAR(10) NOT NULL">createDate</field>
+            <field type="BIGINT(20) NOT NULL">createUser</field>
+            <field type="VARCHAR(10) NULL">editDate</field>
+            <field type="BIGINT(20) NULL">editUser</field>
+            <field type="TINYINT(1) NOT NULL DEFAULT 0">autoRenew</field>
+
+            <!-- quiqqer/order fields -->
+            <field type="VARCHAR(255) NULL">paymentInterval</field>
+            <field type="DECIMAL(16,8) NULL">netPrice</field>
+            <field type="DECIMAL(16,8) NULL">netPriceOffer</field>
+            <field type="MEDIUMTEXT NULL">paymentMethodIds</field>
+        </table>
+
+        <table name="quiqqer_memberships_users">
+            <!-- basic fields -->
+            <field type="BIGINT(20) NOT NULL">id</field>
+            <field type="BIGINT(20) NOT NULL">userId</field>
+            <field type="TIMESTAMP NULL DEFAULT NULL">beginDate</field>
+            <field type="TIMESTAMP NULL DEFAULT NULL">endDate</field>
+
+            <!-- quiqqer/order fields -->
+            <field type="TIMESTAMP NULL DEFAULT NULL">nextBill</field>
+            <field type="TIMESTAMP NULL DEFAULT NULL">lastBill</field>
+            <primary>id,userId</primary>
+        </table>
+    </global>
+
+</database>

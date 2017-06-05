@@ -1,0 +1,16 @@
+.quiqqer-memberships-membershipsmanager {
+    float: left;
+    height: 100%;
+    width: 100%;
+}
+
+.quiqqer-memberships-membershipsmanager-table {
+    float: left;
+    height: 100% !important;
+    width: 100%;
+}
+
+.quiqqer-memberships-membershipsmanager-add-input {
+    margin-top: 10px;
+    width: 100%;
+}

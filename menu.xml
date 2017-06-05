@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menu>
+    <item parent="/extras/"
+          name="memberships"
+          require="package/quiqqer/memberships/bin/controls/MembershipsManager"
+          icon="fa fa-id-card-o"
+    >
+        <locale group="quiqqer/memberships" var="menu.extras.memberships.title"/>
+    </item>
+</menu>
