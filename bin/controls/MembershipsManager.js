@@ -37,20 +37,18 @@ define('package/quiqqer/memberships/bin/controls/MembershipsManager', [
     'utils/Controls',
     'qui/utils/Form',
 
-    'package/quiqqer/memberships/bin/PackageMemberships',
-    'package/quiqqer/memberships/bin/controls/MembershipPackages',
+    'package/quiqqer/memberships/bin/Memberships',
 
     'Locale',
     'Ajax',
     'Mustache',
 
     'text!package/quiqqer/memberships/bin/controls/MembershipsManager.html',
-    'text!package/quiqqer/memberships/bin/controls/MembershipsManager.Edit.html',
     'css!package/quiqqer/memberships/bin/controls/MembershipsManager.css'
 
 ], function (QUIPanel, QUILoader, QUIPopup, QUIConfirm, QUIButton, QUISeparator,
-             Grid, QUIControlUtils, QUIFormUtils, MembershipHandler, MembershipPackages,
-             QUILocale, QUIAjax, Mustache, template, templateEdit) {
+             Grid, QUIControlUtils, QUIFormUtils, Memberships,
+             QUILocale, QUIAjax, Mustache, template) {
     "use strict";
 
     var lg = 'quiqqer/memberships';
@@ -67,11 +65,12 @@ define('package/quiqqer/memberships/bin/controls/MembershipsManager', [
             '$onRefresh',
             '$load',
             '$setGridData',
-            '$addMembership',
+            '$createMembership',
             '$toggleActiveStatus',
             '$managePackages',
             '$deleteMemberships',
-            '$editMembership'
+            '$editMembership',
+            '$openMembershipPanel'
         ],
 
         options: {
@@ -106,7 +105,7 @@ define('package/quiqqer/memberships/bin/controls/MembershipsManager', [
                 text     : QUILocale.get(lg, 'controls.membershipsmanager.tbl.btn.addmembership'),
                 textimage: 'fa fa-plus',
                 events   : {
-                    onClick: this.$addMembership
+                    onClick: this.$createMembership
                 }
             });
 
@@ -117,7 +116,7 @@ define('package/quiqqer/memberships/bin/controls/MembershipsManager', [
                 text     : QUILocale.get(lg, 'controls.membershipsmanager.tbl.btn.editmembership'),
                 textimage: 'fa fa-edit',
                 events   : {
-                    onClick: this.$editMembership
+                    onClick: this.$openMembershipPanel
                 }
             });
 
@@ -178,19 +177,19 @@ define('package/quiqqer/memberships/bin/controls/MembershipsManager', [
                     width    : 400
                 }, {
                     header   : QUILocale.get(lg, 'controls.membershipsmanager.tbl.header.duration'),
-                    dataIndex: 'duration',
+                    dataIndex: 'durationText',
                     dataType : 'string',
                     width    : 150
                 }, {
                     header   : QUILocale.get(lg, 'controls.membershipsmanager.tbl.header.userCount'),
                     dataIndex: 'userCount',
                     dataType : 'string',
-                    width    : 200
+                    width    : 75
                 }, {
                     header   : QUILocale.get(lg, 'controls.membershipsmanager.tbl.header.autoRenew'),
-                    dataIndex: 'autoRenew',
+                    dataIndex: 'autoRenewStatus',
                     dataType : 'node',
-                    width    : 75
+                    width    : 100
                 }],
                 pagination       : true,
                 serverSort       : true,
@@ -199,11 +198,7 @@ define('package/quiqqer/memberships/bin/controls/MembershipsManager', [
             });
 
             this.$Grid.addEvents({
-                onDblClick: function () {
-                    self.$managePackages(
-                        self.$Grid.getSelectedData()[0].id
-                    );
-                },
+                onDblClick: this.$openMembershipPanel,
                 onClick   : function () {
                     var selected = self.$Grid.getSelectedData().length;
 
@@ -255,7 +250,7 @@ define('package/quiqqer/memberships/bin/controls/MembershipsManager', [
 
             this.Loader.show();
 
-            MembershipHandler.getMemberships(GridParams).then(function (ResultData) {
+            Memberships.getList(GridParams).then(function (ResultData) {
                 self.Loader.hide();
                 self.$setGridData(ResultData);
             });
@@ -274,17 +269,36 @@ define('package/quiqqer/memberships/bin/controls/MembershipsManager', [
             for (var i = 0, len = GridData.data.length; i < len; i++) {
                 var Row = GridData.data[i];
 
-                Row.created = Row.createdAt + ' (' + Row.createUser + ')';
-                Row.updated = Row.editAt + ' (' + Row.editUser + ')';
+                if (Row.autoRenew) {
+                    Row.autoRenewStatus = new Element('span', {
+                        'class': 'fa fa-check'
+                    });
+                } else {
+                    Row.autoRenewStatus = new Element('span', {
+                        'class': 'fa fa-close'
+                    });
+                }
+
+                if (Row.duration) {
+                    var duration = Row.duration.split('-');
+
+                    Row.durationText = duration[0]
+                        + ' '
+                        + QUILocale.get(
+                            lg,
+                            'controls.inputduration.period.'
+                            + duration[1]
+                        );
+                }
             }
 
             this.$Grid.setData(GridData);
         },
 
         /**
-         * Add new memberships
+         * Create new memberships
          */
-        $addMembership: function () {
+        $createMembership: function () {
             var self = this;
 
             var FuncSubmit = function () {
@@ -303,8 +317,8 @@ define('package/quiqqer/memberships/bin/controls/MembershipsManager', [
 
                 Popup.Loader.show();
 
-                MembershipHandler.createMembership(title).then(function (PackageMembershipData) {
-                    if (!PackageMembershipData) {
+                Memberships.createMembership(title).then(function (MembershipData) {
+                    if (!MembershipData) {
                         Popup.Loader.hide();
                         return;
                     }
@@ -398,7 +412,7 @@ define('package/quiqqer/memberships/bin/controls/MembershipsManager', [
 
                                         self.Loader.show();
 
-                                        MembershipHandler.editMembership(
+                                        Memberships.editMembership(
                                             PackageMembershipData.id,
                                             QUIFormUtils.getFormData(Form)
                                         ).then(function () {
@@ -416,60 +430,6 @@ define('package/quiqqer/memberships/bin/controls/MembershipsManager', [
                     }
                 }
             }).show();
-        },
-
-        /**
-         * Manage packages for a memberships
-         */
-        $managePackages: function () {
-            var self                  = this;
-            var PackageMembershipData = self.$Grid.getSelectedData()[0];
-            var MembershipPackagesControl;
-
-            // open popup
-            var Popup = new QUIPopup({
-                icon       : 'fa fa-gift',
-                title      : QUILocale.get(
-                    lg, 'controls.membershipsmanager.managemembershippackages.popup.title', {
-                        title: PackageMembershipData.title
-                    }
-                ),
-                maxHeight  : 800,
-                maxWidth   : 600,
-                events     : {
-                    onOpen: function () {
-                        MembershipPackagesControl = new MembershipPackages({
-                            membershipId: PackageMembershipData.id
-                        }).inject(Popup.getContent());
-                    }
-                },
-                closeButton: true
-            });
-
-            Popup.open();
-
-            Popup.addButton(new QUIButton({
-                text  : QUILocale.get(lg, 'controls.membershipsmanager.managemembershippackages.popup.btn.text'),
-                alt   : QUILocale.get(lg, 'controls.membershipsmanager.managemembershippackages.popup.btn'),
-                title : QUILocale.get(lg, 'controls.membershipsmanager.managemembershippackages.popup.btn'),
-                events: {
-                    onClick: function () {
-                        Popup.Loader.show();
-
-                        MembershipHandler.editMembership(PackageMembershipData.id, {
-                            packages: MembershipPackagesControl.getPackageData()
-                        }).then(function (PackageMembershipData) {
-                            if (!PackageMembershipData) {
-                                Popup.Loader.hide();
-                                return;
-                            }
-
-                            Popup.close();
-                            self.refresh();
-                        });
-                    }
-                }
-            }));
         },
 
         /**
@@ -500,7 +460,10 @@ define('package/quiqqer/memberships/bin/controls/MembershipsManager', [
                         memberships: deleteMembershipsData.join('<br/>')
                     }
                 ),
-                'title'      : QUILocale.get(lg, 'controls.membershipsmanager.deletememberships.popup.title'),
+                'title'      : QUILocale.get(
+                    lg,
+                    'controls.membershipsmanager.deletememberships.popup.title'
+                ),
                 'texticon'   : 'fa fa-trash',
                 'icon'       : 'fa fa-trash',
 
@@ -516,7 +479,7 @@ define('package/quiqqer/memberships/bin/controls/MembershipsManager', [
                     onSubmit: function () {
                         Popup.Loader.show();
 
-                        MembershipHandler.deleteMemberships(deleteMembershipsIds).then(function (success) {
+                        Memberships.deleteMemberships(deleteMembershipsIds).then(function (success) {
                             if (!success) {
                                 Popup.Loader.hide();
                                 return;
@@ -530,6 +493,23 @@ define('package/quiqqer/memberships/bin/controls/MembershipsManager', [
             });
 
             Popup.open();
+        },
+
+        /**
+         * Opens a panel for a single membership
+         */
+        $openMembershipPanel: function () {
+            var membershipId = this.$Grid.getSelectedData()[0].id;
+
+            require([
+                'package/quiqqer/memberships/bin/controls/Membership',
+                'utils/Panels'
+            ], function (MembershipPanel, Utils) {
+                Utils.openPanelInTasks(new MembershipPanel({
+                    id   : membershipId,
+                    '#id': 'quiqqer_location_' + membershipId
+                }));
+            });
         }
     });
 });

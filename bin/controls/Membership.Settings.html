@@ -1,0 +1,85 @@
+<form name="quiqqer-memberships-membership-edit">
+    <table class="data-table data-table-flexbox quiqqer-memberships-membership-edit-table">
+        <thead>
+        <tr>
+            <th>
+                {{headerSettings}}
+            </th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr>
+            <td>
+                <label class="field-container">
+                <span class="field-container-item">
+                    {{labelTitle}}
+                </span>
+                    <input type="text" class="field-container-field quiqqer-memberships-membership-edit-attribute"
+                           name="title" data-qui="controls/lang/InputMultiLang">
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container">
+                <span class="field-container-item">
+                    {{labelDescription}}
+                </span>
+                    <input type="text" class="field-container-field quiqqer-memberships-membership-edit-attribute"
+                           name="description" data-qui="controls/lang/InputMultiLang">
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container">
+                <span class="field-container-item">
+                    {{labelContent}}
+                </span>
+                    <input type="text" class="field-container-field quiqqer-memberships-membership-edit-attribute"
+                           name="content" data-qui="controls/lang/ContentMultiLang">
+                </label>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="data-table data-table-flexbox quiqqer-memberships-membership-edit-table">
+        <thead>
+        <tr>
+            <th>
+                {{headerDuration}}
+            </th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr>
+            <td>
+                <label class="field-container">
+                <span class="field-container-item">
+                    {{labelDuration}}
+                </span>
+                    <input type="text" class="field-container-field quiqqer-memberships-membership-edit-attribute"
+                           name="duration" data-qui="package/quiqqer/memberships/bin/controls/InputDuration">
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container">
+                <span class="field-container-item">
+                    {{labelAutoRenew}}
+                </span>
+                    <div class="field-container-field">
+                        <input type="checkbox" class="quiqqer-memberships-membership-edit-attribute"
+                               name="autoRenew">
+                        <span>{{autoRenew}}</span>
+                    </div>
+                </label>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</form>

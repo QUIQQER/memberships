@@ -20,49 +20,31 @@ define('package/quiqqer/memberships/bin/classes/Memberships', [
         Type: 'package/quiqqer/memberships/bin/classes/Memberships',
 
         /**
-         * Get membershipss for user
+         * Get data of a single membership
          *
-         * @param {Integer} userId
+         * @param {Integer} id - Membership ID
          * @return {Promise}
          */
-        getMemberships: function (userId) {
-            return new Promise(function (resolve, reject) {
-                QUIAjax.get('package_quiqqer_memberships_ajax_memberships_getList', resolve, {
-                    'package': pkg,
-                    userId   : userId,
-                    onError  : reject
-                })
-            });
-        },
-
-        /**
-         * Get memberships
-         *
-         * @param {Integer} membershipsId
-         * @return {Promise}
-         */
-        getLicense: function (membershipsId) {
+        getMembership: function (id) {
             return new Promise(function (resolve, reject) {
                 QUIAjax.get('package_quiqqer_memberships_ajax_memberships_get', resolve, {
                     'package': pkg,
-                    membershipsId: membershipsId,
+                    id       : id,
                     onError  : reject
                 })
             });
         },
 
         /**
-         * Create a new memberships
+         * Create a new membership
          *
          * @param {String} title
-         * @param {Integer} userId
          * @return {Promise}
          */
-        createLicense: function (title, userId) {
+        createMembership: function (title) {
             return new Promise(function (resolve, reject) {
                 QUIAjax.post('package_quiqqer_memberships_ajax_memberships_create', resolve, {
                     'package': pkg,
-                    userId   : userId,
                     title    : title,
                     onError  : reject
                 })
@@ -70,17 +52,17 @@ define('package/quiqqer/memberships/bin/classes/Memberships', [
         },
 
         /**
-         * Create a new memberships
+         * Update an existing membership
          *
-         * @param {Integer} membershipsId
+         * @param {Integer} membershipId
          * @param {Object} Attributes
          * @return {Promise}
          */
-        editLicense: function (membershipsId, Attributes) {
+        updateMembership: function (membershipId, Attributes) {
             return new Promise(function (resolve, reject) {
-                QUIAjax.post('package_quiqqer_memberships_ajax_memberships_edit', resolve, {
+                QUIAjax.post('package_quiqqer_memberships_ajax_memberships_update', resolve, {
                     'package' : pkg,
-                    membershipsId : membershipsId,
+                    id        : membershipId,
                     attributes: JSON.encode(Attributes),
                     onError   : reject
                 })
@@ -90,27 +72,43 @@ define('package/quiqqer/memberships/bin/classes/Memberships', [
         /**
          * Delete (multiple) membershipss
          *
-         * @param {Array} membershipsIds
+         * @param {Array} membershipIds
          * @return {Promise}
          */
-        deleteMemberships: function (membershipsIds) {
+        deleteMemberships: function (membershipIds) {
             return new Promise(function (resolve, reject) {
                 QUIAjax.post('package_quiqqer_memberships_ajax_memberships_delete', resolve, {
-                    'package' : pkg,
-                    membershipsIds: JSON.encode(membershipsIds),
-                    onError   : reject
+                    'package'    : pkg,
+                    membershipIds: JSON.encode(membershipIds),
+                    onError      : reject
                 })
             });
         },
 
         /**
-         * Get all available packages
+         * Get/Search memberships
+         *
+         * @param {Object} SearchParams
+         * @return {Promise}
+         */
+        getList: function (SearchParams) {
+            return new Promise(function (resolve, reject) {
+                QUIAjax.get('package_quiqqer_memberships_ajax_memberships_getList', resolve, {
+                    'package'   : pkg,
+                    searchParams: JSON.encode(SearchParams),
+                    onError     : reject
+                })
+            });
+        },
+
+        /**
+         * Get list of packages that are relevant for quiqqer/memberships
          *
          * @return {Promise}
          */
-        getPackageList: function () {
+        getInstalledMembershipPackages: function () {
             return new Promise(function (resolve, reject) {
-                QUIAjax.get('package_quiqqer_memberships_ajax_packages_getList', resolve, {
+                QUIAjax.get('package_quiqqer_memberships_ajax_memberships_getInstalledMembershipPackages', resolve, {
                     'package': pkg,
                     onError  : reject
                 })

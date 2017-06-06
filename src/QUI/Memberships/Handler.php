@@ -10,6 +10,25 @@ class Handler extends Factory
 {
     /**
      * @inheritdoc
+     */
+    public function createChild($data = array())
+    {
+        $data['createDate'] = time();
+        $data['createUser'] = QUI::getUserBySession()->getId();
+        $title              = $data['title'];
+        $data['title']      = array();
+
+        foreach (QUI::availableLanguages() as $lang) {
+            $data['title'][$lang] = $title;
+        }
+
+        $data['title'] = json_encode($data['title']);
+
+        return parent::createChild($data);
+    }
+
+    /**
+     * @inheritdoc
      * @return string
      */
     public function getDataBaseTableName()
@@ -60,7 +79,7 @@ class Handler extends Factory
      *
      * @param array $searchParams
      * @param bool $countOnly (optional) - get count for search result only [default: false]
-     * @return array
+     * @return array - membership IDs
      */
     public function search($searchParams, $countOnly = false)
     {
@@ -109,9 +128,34 @@ class Handler extends Factory
         ));
 
         foreach ($result as $row) {
-            $memberships[] = $this->getChild($row['id']);
+            $memberships[] = $row['id'];
         }
 
         return $memberships;
+    }
+
+    /**
+     * Get list of all packages that are relevant for quiqqer/memberships
+     * and that are currently installed
+     *
+     * @return array
+     */
+    public function getInstalledMembershipPackages()
+    {
+        $packages = array();
+
+        try {
+            QUI::getPackage('quiqqer/products');
+            $packages[] = 'quiqqer/products';
+        } catch (\Exception $Exception) {
+        }
+
+        try {
+            QUI::getPackage('quiqqer/contracts');
+            $packages[] = 'quiqqer/contracts';
+        } catch (\Exception $Exception) {
+        }
+
+        return $packages;
     }
 }

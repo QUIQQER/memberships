@@ -5,7 +5,7 @@
         <table name="quiqqer_memberships">
             <!-- basic fields -->
             <field type="BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY">id</field>
-            <field type="VARCHAR(255) NOT NULL">title</field>
+            <field type="MEDIUMTEXT NOT NULL">title</field>
             <field type="MEDIUMTEXT NULL">description</field>
             <field type="MEDIUMTEXT NULL">content</field>
             <field type="VARCHAR(255) NOT NULL">duration</field>
@@ -18,9 +18,6 @@
 
             <!-- quiqqer/order fields -->
             <field type="VARCHAR(255) NULL">paymentInterval</field>
-            <field type="DECIMAL(16,8) NULL">netPrice</field>
-            <field type="DECIMAL(16,8) NULL">netPriceOffer</field>
-            <field type="MEDIUMTEXT NULL">paymentMethodIds</field>
         </table>
 
         <table name="quiqqer_memberships_users">
@@ -29,10 +26,6 @@
             <field type="BIGINT(20) NOT NULL">userId</field>
             <field type="TIMESTAMP NULL DEFAULT NULL">beginDate</field>
             <field type="TIMESTAMP NULL DEFAULT NULL">endDate</field>
-
-            <!-- quiqqer/order fields -->
-            <field type="TIMESTAMP NULL DEFAULT NULL">nextBill</field>
-            <field type="TIMESTAMP NULL DEFAULT NULL">lastBill</field>
             <primary>id,userId</primary>
         </table>
     </global>

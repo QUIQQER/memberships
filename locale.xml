@@ -23,6 +23,22 @@
     <groups name="quiqqer/memberships" datatype="js">
 
         <!-- Control: MembershipsManager -->
+        <locale name="controls.membershipsmanager.title">
+            <de><![CDATA[Mitgliedschaften]]></de>
+            <en><![CDATA[Memberships]]></en>
+        </locale>
+        <locale name="controls.membershipsmanager.tbl.btn.addmembership">
+            <de><![CDATA[Neue Mitgliedschaft]]></de>
+            <en><![CDATA[Mew membership]]></en>
+        </locale>
+        <locale name="controls.membershipsmanager.tbl.btn.editmembership">
+            <de><![CDATA[Bearbeiten]]></de>
+            <en><![CDATA[Edit]]></en>
+        </locale>
+        <locale name="controls.membershipsmanager.tbl.btn.removemembership">
+            <de><![CDATA[Löschen]]></de>
+            <en><![CDATA[Delete]]></en>
+        </locale>
         <locale name="controls.membershipsmanager.tbl.header.title">
             <de><![CDATA[Titel]]></de>
             <en><![CDATA[Title]]></en>
@@ -42,6 +58,123 @@
         <locale name="controls.membershipsmanager.tbl.header.autoRenew">
             <de><![CDATA[Autom. verlängern]]></de>
             <en><![CDATA[Auto renew]]></en>
+        </locale>
+        <locale name="controls.membershipsmanager.add.popup.title">
+            <de><![CDATA[Neue Mitgliedschaft]]></de>
+            <en><![CDATA[New membership]]></en>
+        </locale>
+        <locale name="controls.membershipsmanager.add.popup.info">
+            <de><![CDATA[Bitte geben Sie einen Titel für die Mitgliedschaft an]]></de>
+            <en><![CDATA[Please enter a title for the membership]]></en>
+        </locale>
+        <locale name="controls.membershipsmanager.add.popup.confirm.btn.text">
+            <de><![CDATA[Mitgliedschaft erstellen]]></de>
+            <en><![CDATA[Create membership]]></en>
+        </locale>
+        <locale name="controls.membershipsmanager.add.popup.confirm.btn">
+            <de><![CDATA[Hier klicken, um eine neue Mitgliedschaft mit dem angegebenen Titel zu erstellen]]></de>
+            <en><![CDATA[Click here to create a new membership with the given title]]></en>
+        </locale>
+        <locale name="controls.membershipsmanager.deletememberships.popup.title">
+            <de><![CDATA[Mitgliedschaft(en) löschen]]></de>
+            <en><![CDATA[Delete membership(s)]]></en>
+        </locale>
+        <locale name="controls.membershipsmanager.deletememberships.popup.info">
+            <de><![CDATA[Sind Sie sicher, dass Sie folgende Mitgliedschaften unwiderruflich löschen wollen? Alle Benutzer, die sich auf Grund dieser Mitgliedschaften in Mitgliedschafts-Gruppen befinden, werden aus diesen Gruppen entfernt. Diese Benutzer haben ab sofort keine Berechtigungen mehr, die sie auf Grund ihrer Mitgliedschafts-Zugehörigkeit hatten.<br><br>[memberships]]]></de>
+            <en><![CDATA[Are you sure you want to permanently delete the following memberships? All users who are in membership groups due to these memberships are removed from these groups. These users no longer have any permissions, which they had on account of their membership.<br><br>[memberships]]]></en>
+        </locale>
+
+        <!-- Control: Membership -->
+        <locale name="controls.membership.title">
+            <de><![CDATA[M - [title]]]></de>
+            <en><![CDATA[M - [title]]]></en>
+        </locale>
+        <locale name="controls.membership.category.settings">
+            <de><![CDATA[Inhalts-Einstellungen]]></de>
+            <en><![CDATA[Content settings]]></en>
+        </locale>
+        <locale name="controls.membership.template.settings.headerSettings">
+            <de><![CDATA[Mitgliedschafts-Informationen]]></de>
+            <en><![CDATA[Membership information]]></en>
+        </locale>
+        <locale name="controls.membership.template.settings.labelTitle">
+            <de><![CDATA[Titel]]></de>
+            <en><![CDATA[Title]]></en>
+        </locale>
+        <locale name="controls.membership.template.settings.labelDescription">
+            <de><![CDATA[Kurzbeschreibung]]></de>
+            <en><![CDATA[Short description]]></en>
+        </locale>
+        <locale name="controls.membership.template.settings.labelContent">
+            <de><![CDATA[Ausführliche Beschreibung]]></de>
+            <en><![CDATA[Detailed description]]></en>
+        </locale>
+        <locale name="controls.membership.template.settings.headerDuration">
+            <de><![CDATA[Laufzeit-Einstellungen]]></de>
+            <en><![CDATA[Duration settings]]></en>
+        </locale>
+        <locale name="controls.membership.template.settings.labelDuration">
+            <de><![CDATA[Laufzeit]]></de>
+            <en><![CDATA[Duration]]></en>
+        </locale>
+        <locale name="controls.membership.template.settings.labelAutoRenew">
+            <de><![CDATA[Automatische Verlängerung]]></de>
+            <en><![CDATA[Auto renewal]]></en>
+        </locale>
+        <locale name="controls.membership.template.settings.autoRenew">
+            <de><![CDATA[Diese Mitgliedschaft wird nach Ablauf der Laufzeit automatisch um die eingestellte Laufzeit verlängert]]></de>
+            <en><![CDATA[This membership is renewed automatically after expiration]]></en>
+        </locale>
+
+        <!-- Control: InputDuration -->
+        <locale name="controls.inputduration.period.day">
+            <de><![CDATA[Tag(e)]]></de>
+            <en><![CDATA[day(s)]]></en>
+        </locale>
+        <locale name="controls.inputduration.period.week">
+            <de><![CDATA[Woche(n)]]></de>
+            <en><![CDATA[week(s)]]></en>
+        </locale>
+        <locale name="controls.inputduration.period.month">
+            <de><![CDATA[Monat(e)]]></de>
+            <en><![CDATA[month(s)]]></en>
+        </locale>
+        <locale name="controls.inputduration.period.year">
+            <de><![CDATA[Jahr(e)]]></de>
+            <en><![CDATA[year(s)]]></en>
+        </locale>
+
+    </groups>
+
+    <groups name="quiqqer/memberships" datatype="php">
+
+        <!-- Ajax -->
+        <locale name="message.ajax.general.error">
+            <de><![CDATA[Beim Verarbeiten Ihrer Anfrage ist ein unerwarteter Fehler aufgetreten. Bitte wenden Sie sich an einen Administrator.]]></de>
+        </locale>
+        <locale name="message.ajax.memberships.create.error" html="true">
+            <de><![CDATA[Die Mitgliedschaft konnte nicht erstellt werden:<br><br>[error]]]></de>
+            <en><![CDATA[The membership could not be created:<br><br>[error]]]></en>
+        </locale>
+        <locale name="message.ajax.memberships.create.success" html="true">
+            <de><![CDATA[Die Mitgliedschaft <b>[title]</b> wurde erfolgreich erstellt.]]></de>
+            <en><![CDATA[The membership <b>[title]</b> has been created successfully.]]></en>
+        </locale>
+        <locale name="message.ajax.memberships.delete.error" html="true">
+            <de><![CDATA[Die Mitgliedschaften konnten nicht vollständig gelöscht werden:<br><br>[error]]]></de>
+            <en><![CDATA[The memberships could not be deleted successfully:<br><br>[error]]]></en>
+        </locale>
+        <locale name="message.ajax.memberships.delete.success" html="true">
+            <de><![CDATA[Die Mitgliedschaft(en) wurde(n) erfolgreich gelöscht.]]></de>
+            <en><![CDATA[The membership(s) has/have been deleted successfully.]]></en>
+        </locale>
+        <locale name="message.ajax.memberships.update.error" html="true">
+            <de><![CDATA[Die Mitgliedschaft konnte nicht aktualisiert werden:<br><br>[error]]]></de>
+            <en><![CDATA[The membership could not be updated:<br><br>[error]]]></en>
+        </locale>
+        <locale name="message.ajax.memberships.update.success" html="true">
+            <de><![CDATA[Die Mitgliedschaft <b>[title]</b> (#[id]) wurde erfolgreich aktualisiert.]]></de>
+            <en><![CDATA[The membership <b>[title]</b> (#[id]) has been updated successfully.]]></en>
         </locale>
 
     </groups>
