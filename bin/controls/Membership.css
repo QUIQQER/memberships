@@ -1,0 +1,34 @@
+.quiqqer-memberships-membership-lock-info {
+    background: rgba(255,255,255, 0.95);
+    height: 100%;
+    left: 0;
+    padding-top: 15%;
+    position: absolute;
+    text-align:center;
+    top: 0;
+    width: 100%;
+    z-index: 10;
+}
+
+.quiqqer-memberships-membership-lock-info p {
+    margin: 0 auto;
+    width: 50%;
+}
+
+.quiqqer-memberships-membership-lock-info-icon {
+    font-size: 50px;
+}
+
+.quiqqer-memberships-membership-lock-btn {
+    clear: both;
+    display: block;
+    margin: 25px auto;
+}
+
+.quiqqer-memberships-membership-lock-btn button {
+    float: none;
+}
+
+.quiqqer-memberships-membership-lock-btn button:not(:first-of-type) {
+    margin-left: 15px;
+}

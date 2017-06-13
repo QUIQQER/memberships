@@ -33,6 +33,7 @@ define('package/quiqqer/memberships/bin/controls/MembershipsManager', [
     'qui/controls/buttons/Button',
     'qui/controls/buttons/Separator',
 
+    'controls/groups/Select',
     'controls/grid/Grid',
     'utils/Controls',
     'qui/utils/Form',
@@ -47,7 +48,7 @@ define('package/quiqqer/memberships/bin/controls/MembershipsManager', [
     'css!package/quiqqer/memberships/bin/controls/MembershipsManager.css'
 
 ], function (QUIPanel, QUILoader, QUIPopup, QUIConfirm, QUIButton, QUISeparator,
-             Grid, QUIControlUtils, QUIFormUtils, Memberships,
+             GroupSelect, Grid, QUIControlUtils, QUIFormUtils, Memberships,
              QUILocale, QUIAjax, Mustache, template) {
     "use strict";
 
@@ -300,13 +301,9 @@ define('package/quiqqer/memberships/bin/controls/MembershipsManager', [
          */
         $createMembership: function () {
             var self = this;
+            var GroupSelectControl, Input;
 
             var FuncSubmit = function () {
-                var Input = Popup.getContent()
-                    .getElement(
-                        '.quiqqer-memberships-membershipsmanager-add-input'
-                    );
-
                 var title = Input.value.trim();
 
                 if (title === '') {
@@ -315,9 +312,18 @@ define('package/quiqqer/memberships/bin/controls/MembershipsManager', [
                     return;
                 }
 
+                var groupIds  = GroupSelectControl.getValue();
+
+                if (groupIds === '') {
+                    GroupSelectControl.focus();
+                    return;
+                }
+
+                groupIds = groupIds.split(',');
+
                 Popup.Loader.show();
 
-                Memberships.createMembership(title).then(function (MembershipData) {
+                Memberships.createMembership(title, groupIds).then(function (MembershipData) {
                     if (!MembershipData) {
                         Popup.Loader.hide();
                         return;
@@ -334,14 +340,15 @@ define('package/quiqqer/memberships/bin/controls/MembershipsManager', [
                 title      : QUILocale.get(
                     lg, 'controls.membershipsmanager.add.popup.title'
                 ),
-                maxHeight  : 200,
+                maxHeight  : 375,
                 maxWidth   : 450,
                 events     : {
                     onOpen: function () {
-                        var Input = Popup.getContent()
-                            .getElement(
-                                '.quiqqer-memberships-membershipsmanager-add-input'
-                            );
+                        var Content = Popup.getContent();
+
+                        Input = Content.getElement(
+                            '.quiqqer-memberships-membershipsmanager-add-input'
+                        );
 
                         Input.addEvents({
                             keyup: function (event) {
@@ -353,13 +360,24 @@ define('package/quiqqer/memberships/bin/controls/MembershipsManager', [
                         });
 
                         Input.focus();
+
+                        var GroupsElm = Content.getElement(
+                            '.quiqqer-memberships-membershipsmanager-add-groups'
+                        );
+
+                        GroupSelectControl = new GroupSelect().inject(
+                            GroupsElm
+                        );
                     }
                 },
                 closeButton: true,
                 content    : '<label class="quiqqer-memberships-membershipsmanager-add-label">' +
-                '<span>' + QUILocale.get(lg, 'controls.membershipsmanager.add.popup.info') + '</span>' +
+                '<span>' + QUILocale.get(lg, 'controls.membershipsmanager.add.popup.title.info') + '</span>' +
                 '<input type="text" class="quiqqer-memberships-membershipsmanager-add-input"/>' +
-                '</label>'
+                '</label>' +
+                '<div class="quiqqer-memberships-membershipsmanager-add-groups">' +
+                '<span>' + QUILocale.get(lg, 'controls.membershipsmanager.add.popup.groups.info') + '</span>' +
+                '</div>'
             });
 
             Popup.open();

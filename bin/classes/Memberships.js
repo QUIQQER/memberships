@@ -39,13 +39,15 @@ define('package/quiqqer/memberships/bin/classes/Memberships', [
          * Create a new membership
          *
          * @param {String} title
+         * @param {Array} groupIds
          * @return {Promise}
          */
-        createMembership: function (title) {
+        createMembership: function (title, groupIds) {
             return new Promise(function (resolve, reject) {
                 QUIAjax.post('package_quiqqer_memberships_ajax_memberships_create', resolve, {
                     'package': pkg,
                     title    : title,
+                    groupIds : JSON.encode(groupIds),
                     onError  : reject
                 })
             });

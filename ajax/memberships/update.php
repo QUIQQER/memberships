@@ -14,8 +14,18 @@ QUI::$Ajax->registerFunction(
     'package_quiqqer_memberships_ajax_memberships_update',
     function ($id, $attributes) {
         try {
-            $Memberships = new MembershipsHandler();
-            $attributes  = json_decode($attributes, true);
+            $Memberships = MembershipsHandler::getInstance();
+            /** @var \QUI\Memberships\Membership $Membership */
+            $Membership = $Memberships->getChild((int)$id);
+
+            if ($Membership->isLocked()) {
+                throw new QUI\Memberships\Exception(array(
+                    'quiqqer/memberships',
+                    'exception.membership.cannot.update.when.locked'
+                ));
+            }
+
+            $attributes = json_decode($attributes, true);
 
             foreach ($attributes as $k => $v) {
                 switch ($k) {
@@ -28,15 +38,12 @@ QUI::$Ajax->registerFunction(
                 }
             }
 
-            /** @var \QUI\Memberships\Membership $Membership */
-            $Membership = $Memberships->getChild((int)$id);
-
             $Membership->setAttributes($attributes);
             $Membership->update();
         } catch (QUI\Exception $Exception) {
             QUI::getMessagesHandler()->addError(
                 QUI::getLocale()->get(
-                    'quiqqer/license',
+                    'quiqqer/memberships',
                     'message.ajax.memberships.update.error',
                     array(
                         'error' => $Exception->getMessage()
@@ -51,7 +58,7 @@ QUI::$Ajax->registerFunction(
 
             QUI::getMessagesHandler()->addError(
                 QUI::getLocale()->get(
-                    'quiqqer/license',
+                    'quiqqer/memberships',
                     'message.ajax.general.error',
                     array(
                         'error' => $Exception->getMessage()
@@ -64,7 +71,7 @@ QUI::$Ajax->registerFunction(
 
         QUI::getMessagesHandler()->addSuccess(
             QUI::getLocale()->get(
-                'quiqqer/license',
+                'quiqqer/memberships',
                 'message.ajax.memberships.update.success',
                 array(
                     'id'    => $Membership->getId(),

@@ -14,3 +14,12 @@
     margin-top: 10px;
     width: 100%;
 }
+
+.quiqqer-memberships-membershipsmanager-add-groups {
+    float: left;
+    margin-top: 15px;
+}
+
+.quiqqer-memberships-membershipsmanager-add-groups .qui-elements-select {
+    margin-top: 5px;
+}

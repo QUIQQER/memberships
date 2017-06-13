@@ -10,8 +10,12 @@ use QUI\Memberships\Handler as MembershipsHandler;
 QUI::$Ajax->registerFunction(
     'package_quiqqer_memberships_ajax_memberships_get',
     function ($id) {
-        $Memberships = new MembershipsHandler();
-        return $Memberships->getChild((int)$id)->getAttributes();
+        $Memberships = MembershipsHandler::getInstance();
+        $attributes  = $Memberships->getChild((int)$id)->getAttributes();
+
+        $attributes['groupIds'] = trim($attributes['groupIds'], ',');
+
+        return $attributes;
     },
     array('id'),
     'Permission::checkAdminUser'

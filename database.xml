@@ -10,9 +10,9 @@
             <field type="MEDIUMTEXT NULL">content</field>
             <field type="VARCHAR(255) NOT NULL">duration</field>
             <field type="MEDIUMTEXT NULL">groupIds</field>
-            <field type="VARCHAR(10) NOT NULL">createDate</field>
+            <field type="TIMESTAMP NOT NULL">createDate</field>
             <field type="BIGINT(20) NOT NULL">createUser</field>
-            <field type="VARCHAR(10) NULL">editDate</field>
+            <field type="TIMESTAMP NULL DEFAULT NULL">editDate</field>
             <field type="BIGINT(20) NULL">editUser</field>
             <field type="TINYINT(1) NOT NULL DEFAULT 0">autoRenew</field>
 
@@ -22,11 +22,16 @@
 
         <table name="quiqqer_memberships_users">
             <!-- basic fields -->
-            <field type="BIGINT(20) NOT NULL">id</field>
+            <field type="BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY">id</field>
+            <field type="BIGINT(20) NOT NULL">membershipId</field>
             <field type="BIGINT(20) NOT NULL">userId</field>
+            <field type="TIMESTAMP NOT NULL">addedDate</field>
             <field type="TIMESTAMP NULL DEFAULT NULL">beginDate</field>
             <field type="TIMESTAMP NULL DEFAULT NULL">endDate</field>
-            <primary>id,userId</primary>
+            <field type="SMALLINT UNSIGNED NOT NULL DEFAULT 0">renewalCounter</field>
+            <field type="TIMESTAMP NULL DEFAULT NULL">cancelDate</field>
+            <field type="TINYINT(1) NOT NULL DEFAULT 0">cancelled</field>
+            <unique>membershipId,userId</unique>
         </table>
     </global>
 

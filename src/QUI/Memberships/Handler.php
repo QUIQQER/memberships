@@ -8,15 +8,31 @@ use QUI;
 
 class Handler extends Factory
 {
+    const PERMISSION_CREATE     = 'quiqqer.memberships.create';
+    const PERMISSION_EDIT       = 'quiqqer.memberships.edit';
+    const PERMISSION_DELETE     = 'quiqqer.memberships.delete';
+    const PERMISSION_FORCE_EDIT = 'quiqqer.memberships.force_edit';
+
     /**
      * @inheritdoc
+     * @throws QUI\Memberships\Exception
      */
     public function createChild($data = array())
     {
-        $data['createDate'] = time();
+        $data['createDate'] = Utils::getFormattedTimestamp();
         $data['createUser'] = QUI::getUserBySession()->getId();
-        $title              = $data['title'];
-        $data['title']      = array();
+
+        // title
+        $title = trim($data['title']);
+
+        if (empty($title)) {
+            throw new QUI\Memberships\Exception(array(
+                'quiqqer/memberships',
+                'exception.handler.no.title'
+            ));
+        }
+
+        $data['title'] = array();
 
         foreach (QUI::availableLanguages() as $lang) {
             $data['title'][$lang] = $title;
@@ -24,7 +40,39 @@ class Handler extends Factory
 
         $data['title'] = json_encode($data['title']);
 
+        // groupIds
+        $Groups   = QUI::getGroups();
+        $groupIds = $data['groupIds'];
+
+        if (empty($groupIds)
+            || !is_array($groupIds)
+        ) {
+            throw new QUI\Memberships\Exception(array(
+                'quiqqer/memberships',
+                'exception.handler.no.groups'
+            ));
+        }
+
+        foreach ($groupIds as $groupId) {
+            // check if group exist by getting them
+            $Groups->get((int)$groupId);
+        }
+
+        $data['groupIds'] = ',' . implode(',', $groupIds) . ',';
+        $data['duration'] = '1-month';
+
         return parent::createChild($data);
+    }
+
+    /**
+     * Get membership
+     *
+     * @param int $id
+     * @return Membership
+     */
+    public function getChild($id)
+    {
+        return parent::getChild($id);
     }
 
     /**
@@ -60,8 +108,8 @@ class Handler extends Factory
             'autoRenew',
             'editDate',
             'editUser',
-            'createDate',
-            'createUser',
+//            'createDate',
+//            'createUser',
 
             // these fields require quiqqer/order
             'paymentInterval',
@@ -142,20 +190,50 @@ class Handler extends Factory
      */
     public function getInstalledMembershipPackages()
     {
-        $packages = array();
+        $packages         = array();
+        $relevantPackages = array(
+            'quiqqer/products',
+            'quiqqer/contracts'
+        );
 
-        try {
-            QUI::getPackage('quiqqer/products');
-            $packages[] = 'quiqqer/products';
-        } catch (\Exception $Exception) {
-        }
-
-        try {
-            QUI::getPackage('quiqqer/contracts');
-            $packages[] = 'quiqqer/contracts';
-        } catch (\Exception $Exception) {
+        foreach ($relevantPackages as $package) {
+            try {
+                QUI::getPackage($package);
+                $packages[] = $package;
+            } catch (\Exception $Exception) {
+            }
         }
 
         return $packages;
+    }
+
+    /**
+     * Get IDs of all memberships that have a specific group assigned
+     *
+     * @param int $groupId
+     * @return int[]
+     */
+    public function getMembershipIdsByGroupId($groupId)
+    {
+        $ids = array();
+
+        $result = QUI::getDataBase()->fetch(array(
+            'select' => array(
+                'id'
+            ),
+            'from'   => self::getDataBaseTableName(),
+            'where'  => array(
+                'groupIds' => array(
+                    'type'  => '%LIKE%',
+                    'value' => ',' . $groupId . ','
+                )
+            )
+        ));
+
+        foreach ($result as $row) {
+            $ids[] = $row['id'];
+        }
+
+        return $ids;
     }
 }

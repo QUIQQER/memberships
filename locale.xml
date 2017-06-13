@@ -18,6 +18,28 @@
             <en><![CDATA[Memberships]]></en>
         </locale>
 
+        <!-- Permissions -->
+        <locale name="permission.quiqqer.memberships._header">
+            <de><![CDATA[Mitgliedschaften]]></de>
+            <en><![CDATA[Memberships]]></en>
+        </locale>
+        <locale name="permission.quiqqer.memberships.create">
+            <de><![CDATA[Darf neue Mitgliedschaften anlegen]]></de>
+            <en><![CDATA[Can create new memberships]]></en>
+        </locale>
+        <locale name="permission.quiqqer.memberships.edit">
+            <de><![CDATA[Darf Mitgliedschaften bearbeiten]]></de>
+            <en><![CDATA[Can edit memberships]]></en>
+        </locale>
+        <locale name="permission.quiqqer.memberships.delete">
+            <de><![CDATA[Darf Mitgliedschaften löschen]]></de>
+            <en><![CDATA[Can delete memberships]]></en>
+        </locale>
+        <locale name="permission.quiqqer.memberships.force_edit">
+            <de><![CDATA[Darf Mitgliedschafts-Panels entsperren, die gerade durch andere Benutzer bearbeitet werden und diese selbst bearbeiten]]></de>
+            <en><![CDATA[Can unlock membership panels that are currently edited by another user and edit them himself]]></en>
+        </locale>
+
     </groups>
 
     <groups name="quiqqer/memberships" datatype="js">
@@ -63,9 +85,13 @@
             <de><![CDATA[Neue Mitgliedschaft]]></de>
             <en><![CDATA[New membership]]></en>
         </locale>
-        <locale name="controls.membershipsmanager.add.popup.info">
+        <locale name="controls.membershipsmanager.add.popup.title.info">
             <de><![CDATA[Bitte geben Sie einen Titel für die Mitgliedschaft an]]></de>
             <en><![CDATA[Please enter a title for the membership]]></en>
+        </locale>
+        <locale name="controls.membershipsmanager.add.popup.groups.info">
+            <de><![CDATA[Wählen Sie mindestens eine Gruppe, die mit dieser Mitgliedschaft verknüpft ist]]></de>
+            <en><![CDATA[Choose at least on group that is assigned to this membership]]></en>
         </locale>
         <locale name="controls.membershipsmanager.add.popup.confirm.btn.text">
             <de><![CDATA[Mitgliedschaft erstellen]]></de>
@@ -80,8 +106,10 @@
             <en><![CDATA[Delete membership(s)]]></en>
         </locale>
         <locale name="controls.membershipsmanager.deletememberships.popup.info">
-            <de><![CDATA[Sind Sie sicher, dass Sie folgende Mitgliedschaften unwiderruflich löschen wollen? Alle Benutzer, die sich auf Grund dieser Mitgliedschaften in Mitgliedschafts-Gruppen befinden, werden aus diesen Gruppen entfernt. Diese Benutzer haben ab sofort keine Berechtigungen mehr, die sie auf Grund ihrer Mitgliedschafts-Zugehörigkeit hatten.<br><br>[memberships]]]></de>
-            <en><![CDATA[Are you sure you want to permanently delete the following memberships? All users who are in membership groups due to these memberships are removed from these groups. These users no longer have any permissions, which they had on account of their membership.<br><br>[memberships]]]></en>
+            <de>
+                <![CDATA[Sind Sie sicher, dass Sie folgende Mitgliedschaften unwiderruflich löschen wollen? Alle Benutzer, die sich auf Grund dieser Mitgliedschaften in Mitgliedschafts-Gruppen befinden, werden aus diesen Gruppen entfernt. Diese Benutzer haben ab sofort keine Berechtigungen mehr, die sie auf Grund ihrer Mitgliedschafts-Zugehörigkeit hatten.<br><br>[memberships]]]></de>
+            <en>
+                <![CDATA[Are you sure you want to permanently delete the following memberships? All users who are in membership groups due to these memberships are removed from these groups. These users no longer have any permissions, which they had on account of their membership.<br><br>[memberships]]]></en>
         </locale>
 
         <!-- Control: Membership -->
@@ -90,8 +118,12 @@
             <en><![CDATA[M - [title]]]></en>
         </locale>
         <locale name="controls.membership.category.settings">
-            <de><![CDATA[Inhalts-Einstellungen]]></de>
-            <en><![CDATA[Content settings]]></en>
+            <de><![CDATA[Grund-Einstellungen]]></de>
+            <en><![CDATA[Basic settings]]></en>
+        </locale>
+        <locale name="controls.membership.category.users">
+            <de><![CDATA[Benutzer]]></de>
+            <en><![CDATA[Users]]></en>
         </locale>
         <locale name="controls.membership.template.settings.headerSettings">
             <de><![CDATA[Mitgliedschafts-Informationen]]></de>
@@ -121,9 +153,41 @@
             <de><![CDATA[Automatische Verlängerung]]></de>
             <en><![CDATA[Auto renewal]]></en>
         </locale>
+        <locale name="controls.membership.template.settings.headerGroups">
+            <de><![CDATA[Gruppen]]></de>
+            <en><![CDATA[Groups]]></en>
+        </locale>
+        <locale name="controls.membership.template.settings.labelGroups">
+            <de><![CDATA[Zugeordnete Gruppen]]></de>
+            <en><![CDATA[Assigned groups]]></en>
+        </locale>
         <locale name="controls.membership.template.settings.autoRenew">
             <de><![CDATA[Diese Mitgliedschaft wird nach Ablauf der Laufzeit automatisch um die eingestellte Laufzeit verlängert]]></de>
             <en><![CDATA[This membership is renewed automatically after expiration]]></en>
+        </locale>
+        <locale name="controls.membership.lock.title">
+            <de><![CDATA[Mitgliedschaft gesperrt!]]></de>
+            <en><![CDATA[Membership locked!]]></en>
+        </locale>
+        <locale name="controls.membership.lock.unlock.info" html="true">
+            <de>
+                <![CDATA[Diese Mitgliedschaft wird zur Zeit von einem anderen Benutzer bearbeitet. Um Inkonsistenzen in den Mitgliedschafts-Daten zu vermeiden, sollte immer nur ein Benutzer gleichzeitig eine Mitgliedschaft bearbeiten. Wenn Sie die Mitgliedschaft trotzdem bearbeiten möchten, klicken Sie auf den Button unten.<br/><br/><b>Achtung:</b> In diesem Fall kann nicht gewährleistet werden, dass Änderungen, die Sie an den Mitgliedschafts-Daten vornehmen, durch andere Benutzer überschrieben werden oder Sie die Änderungen eines anderen Benutzers überschreiben!]]></de>
+            <en>
+                <![CDATA[This membership is currently being edited by another user. To avoid inconsistencies in membership data, only one user should edit a membership at a time. If you want to edit the membership anyway, click the button below.<br/><br/><b>Caution</b>: In this case, it can not be guaranteed that any changes you make to the membership will be overwritten by other users or you overwrite the changes of another user!]]></en>
+        </locale>
+        <locale name="controls.membership.lock.info" html="true">
+            <de>
+                <![CDATA[Diese Mitgliedschaft wird zur Zeit von einem anderen Benutzer bearbeitet. Um Inkonsistenzen in den Mitgliedschafts-Daten zu vermeiden, kann immer nur ein Benutzer gleichzeitig eine Mitgliedschaft bearbeiten. Bitte versuchen Sie es später noch einmal.]]></de>
+            <de>
+                <![CDATA[This membership is currently being edited by another user. To avoid inconsistencies in membership data, only one user should edit a membership at a time. If you want to edit the membership anyway, click the button below. Please try again later.]]></de>
+        </locale>
+        <locale name="controls.membership.lock.btn.ignore.text">
+            <de><![CDATA[Mitgliedschaft trotzdem bearbeiten]]></de>
+            <en><![CDATA[Edit membership]]></en>
+        </locale>
+        <locale name="controls.membership.lock.btn.close.text">
+            <de><![CDATA[Mitgliedschafts-Panel schließen]]></de>
+            <en><![CDATA[Close membership panel]]></en>
         </locale>
 
         <!-- Control: InputDuration -->
@@ -144,13 +208,62 @@
             <en><![CDATA[year(s)]]></en>
         </locale>
 
+        <!-- Control: users/MembershipUsers -->
+        <locale name="controls.membershipusers.tbl.btn.adduser">
+            <de><![CDATA[Benutzer hinzufügen]]></de>
+            <en><![CDATA[Add user(s)]]></en>
+        </locale>
+        <locale name="controls.membershipusers.tbl.btn.removeuser">
+            <de><![CDATA[Benutzer entfernen]]></de>
+            <en><![CDATA[Remove user(s)]]></en>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.username">
+            <de><![CDATA[Benutzername]]></de>
+            <en><![CDATA[Username]]></en>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.userFirstname">
+            <de><![CDATA[Vorname]]></de>
+            <en><![CDATA[Fist name]]></en>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.userLastName">
+            <de><![CDATA[Nachname]]></de>
+            <en><![CDATA[Last name]]></en>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.addedDate">
+            <de><![CDATA[In Mitgliedschaft seit]]></de>
+            <en><![CDATA[In membership since]]></en>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.beginDate">
+            <de><![CDATA[Beginn (akt. Zyklus)]]></de>
+            <en><![CDATA[Beginning (curr. cylce)]]></en>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.endDate">
+            <de><![CDATA[Ende (akt. Zyklus)]]></de>
+            <en><![CDATA[Ends (curr. cycle)]]></en>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.renewalCounter">
+            <de><![CDATA[Autom. Erneuerungen]]></de>
+            <en><![CDATA[Auto renewals]]></en>
+        </locale>
+
     </groups>
 
     <groups name="quiqqer/memberships" datatype="php">
 
+        <!-- Class: Handler -->
+        <locale name="exception.handler.no.title">
+            <de><![CDATA[Eine Mitgliedschaft muss einen Titel haben.]]></de>
+            <en><![CDATA[A membership must have a title.]]></en>
+        </locale>
+        <locale name="exception.handler.no.groups">
+            <de><![CDATA[Eine Mitgliedschaft muss mindestens eine zugewiesene Gruppe haben.]]></de>
+            <en><![CDATA[A membership must have at least one assigned group.]]></en>
+        </locale>
+
         <!-- Ajax -->
         <locale name="message.ajax.general.error">
             <de><![CDATA[Beim Verarbeiten Ihrer Anfrage ist ein unerwarteter Fehler aufgetreten. Bitte wenden Sie sich an einen Administrator.]]></de>
+            <en><![CDATA[An unexpected error occurred while processing your request. Please contact an administrator.]]></en>
         </locale>
         <locale name="message.ajax.memberships.create.error" html="true">
             <de><![CDATA[Die Mitgliedschaft konnte nicht erstellt werden:<br><br>[error]]]></de>
@@ -164,7 +277,7 @@
             <de><![CDATA[Die Mitgliedschaften konnten nicht vollständig gelöscht werden:<br><br>[error]]]></de>
             <en><![CDATA[The memberships could not be deleted successfully:<br><br>[error]]]></en>
         </locale>
-        <locale name="message.ajax.memberships.delete.success" html="true">
+        <locale name="message.ajax.memberships.delete.success">
             <de><![CDATA[Die Mitgliedschaft(en) wurde(n) erfolgreich gelöscht.]]></de>
             <en><![CDATA[The membership(s) has/have been deleted successfully.]]></en>
         </locale>
@@ -175,6 +288,38 @@
         <locale name="message.ajax.memberships.update.success" html="true">
             <de><![CDATA[Die Mitgliedschaft <b>[title]</b> (#[id]) wurde erfolgreich aktualisiert.]]></de>
             <en><![CDATA[The membership <b>[title]</b> (#[id]) has been updated successfully.]]></en>
+        </locale>
+        <locale name="message.ajax.memberships.users.create.success" html="true">
+            <de><![CDATA[Die Benutzer wurden der Mitgliedschaft <b>[membershipTitle]</b> (#[membershipId]) erfolgreich hinzugefügt.]]></de>
+            <en><![CDATA[The user have been successfull added to the membership <b>[membershipTitle]</b> (#[membershipId]).]]></en>
+        </locale>
+        <locale name="message.ajax.memberships.update.error" html="true">
+            <de><![CDATA[Der Benutzer konnte nicht zur Mitgliedschaft hinzugefügt werden:<br><br>[error]]]></de>
+            <en><![CDATA[The user could not be added to the membership:<br><br>[error]]]></en>
+        </locale>
+
+        <!-- Class: Membership -->
+        <locale name="exception.membership.cannot.update.when.locked">
+            <de><![CDATA[Eine Mitgliedschaft kann nicht bearbeitet werden, wenn sie gerade durch einen anderen Benutzer gesperrt ist.]]></de>
+            <en><![CDATA[A membership can not be edited if it is currently locked by another user.]]></en>
+        </locale>
+        <locale name="exception.membership.update.duration.invalid">
+            <de><![CDATA[Die Dauer einer Mitgliedschaft darf 1 nicht unterschreiten.]]></de>
+            <en><![CDATA[The duration of a membership must be grater than 0.]]></en>
+        </locale>
+
+        <!-- Class: Users\Handler -->
+        <locale name="exception.users.handler.no.user">
+            <de><![CDATA[Ein Mitgliedschafts-Benutzer muss einem QUIQQER-Benutzer zugeordnet sein.]]></de>
+            <en><![CDATA[A membership user must be assigned to a QUIQQER user.]]></en>
+        </locale>
+        <locale name="exception.users.handler.no.membership">
+            <de><![CDATA[Ein Mitgliedschafts-Benutzer muss einer Mitgliedschaft zugeordnet sein.]]></de>
+            <en><![CDATA[A membership user must be assigned to a membership.]]></en>
+        </locale>
+        <locale name="exception.users.handler.user.is.already.in.membership">
+            <de><![CDATA[Der Benutzer <b>[userName]</b> (#[userId]) ist bereits in dieser Mitgliedschaft.]]></de>
+            <en><![CDATA[The user <b>[userName]</b> (#[userId]) is already in this membership.]]></en>
         </locale>
 
     </groups>

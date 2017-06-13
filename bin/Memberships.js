@@ -1,10 +1,10 @@
 /**
  * Memberships handler
  *
- * @module package/quiqqer/license/bin/Licenses
+ * @module package/quiqqer/memberships/bin/Memberships
  * @author www.pcsg.de (Patrick Müller)
  *
- * @require package/quiqqer/license/bin/classes/Licenses
+ * @require package/quiqqer/memberships/bin/classes/Memberships
  */
 define('package/quiqqer/memberships/bin/Memberships', [
 

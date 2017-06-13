@@ -58,4 +58,19 @@ class Utils
     {
         return QUI::getLocale()->get($localeData['group'], $localeData['var']);
     }
+
+    /**
+     * Get formatted timestamp for a given UNIX timestamp
+     *
+     * @param int $time (optional) - if omitted use time()
+     * @return string
+     */
+    public static function getFormattedTimestamp($time = null)
+    {
+        if (is_null($time)) {
+            $time = time();
+        }
+
+        return date('Y-m-d H:i:s', $time);
+    }
 }

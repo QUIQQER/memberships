@@ -14,7 +14,7 @@ QUI::$Ajax->registerFunction(
     'package_quiqqer_memberships_ajax_memberships_getList',
     function ($searchParams) {
         $searchParams = Orthos::clearArray(json_decode($searchParams, true));
-        $Memberships  = new MembershipsHandler();
+        $Memberships  = MembershipsHandler::getInstance();
         $memberships  = array();
 
         foreach ($Memberships->search($searchParams) as $membershipId) {

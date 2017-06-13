@@ -1,18 +1,20 @@
 /**
  * Display and edit data of a single membership
  *
- * @author www.pcsg.de (Henning Leutz)
  * @authro www.pcsg.de (Patrick Müller)
  * @module package/quiqqer/memberships/bin/controls/Membership
  *
  * @require qui/QUI
  * @require qui/controls/desktop/Panel
  * @require qui/controls/buttons/Button
- * @require qui/controls/buttons/Seperator
+ * @require qui/utils/Form
  * @require qui/utils/Object
  * @require Ajax
  * @require Locale
- * @require utils/Controls
+ * @require Mustache
+ * @require utils/Lock
+ * @require package/quiqqer/memberships/bin/Memberships
+ * @require text!package/quiqqer/memberships/bin/controls/Membership.Settings.html
  * @require css!package/quiqqer/memberships/bin/controls/Membership.css
  * @require css!controls/desktop/panels/XML.css
  *
@@ -23,27 +25,23 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
     'qui/QUI',
     'qui/controls/desktop/Panel',
     'qui/controls/buttons/Button',
-    'qui/controls/buttons/ButtonSwitch',
-    'qui/controls/buttons/Seperator',
-    'qui/utils/Object',
     'qui/utils/Form',
 
     'Ajax',
     'Locale',
     'Mustache',
 
-    'utils/Controls',
     'utils/Lock',
 
     'package/quiqqer/memberships/bin/Memberships',
+    'package/quiqqer/memberships/bin/controls/users/MembershipUsers',
 
     'text!package/quiqqer/memberships/bin/controls/Membership.Settings.html',
-    //'css!package/quiqqer/memberships/bin/controls/Membership.css',
+    'css!package/quiqqer/memberships/bin/controls/Membership.css',
     'css!controls/desktop/panels/XML.css'
 
-], function (QUI, QUIPanel, QUIButton, QUIButtonSwitch, QUISeperator,
-             QUIObjectUtils, QUIFormUtils, QUIAjax, QUILocale, Mustache, ControlUtils,
-             QUILocker, Memberships, templateSettings) {
+], function (QUI, QUIPanel, QUIButton, QUIFormUtils, QUIAjax, QUILocale, Mustache,
+             QUILocker, Memberships, MembershipUsers, templateSettings) {
     "use strict";
 
     var lg = 'quiqqer/memberships';
@@ -125,12 +123,25 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
             });
 
             this.addCategory(new QUIButton({
+                name  : 'settings',
                 icon  : 'fa fa-gears',
                 text  : QUILocale.get(lg, 'controls.membership.category.settings'),
                 events: {
                     onActive: function () {
                         self.unloadCategory();
                         self.$loadSettings();
+                    }
+                }
+            }));
+
+            this.addCategory(new QUIButton({
+                name  : 'users',
+                icon  : 'fa fa-users',
+                text  : QUILocale.get(lg, 'controls.membership.category.users'),
+                events: {
+                    onActive: function () {
+                        self.unloadCategory();
+                        self.$loadUsers();
                     }
                 }
             }));
@@ -184,7 +195,10 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
                     }));
                 }
 
-                self.$loadSettings();
+                self.$lockKey = 'membership_' + self.$Membership.id;
+                self.$checkLock();
+
+                self.getCategory('settings').setActive();
             });
         },
 
@@ -225,7 +239,9 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
                     headerDuration  : QUILocale.get(lg, lgPrefix + 'headerDuration'),
                     labelDuration   : QUILocale.get(lg, lgPrefix + 'labelDuration'),
                     labelAutoRenew  : QUILocale.get(lg, lgPrefix + 'labelAutoRenew'),
-                    autoRenew       : QUILocale.get(lg, lgPrefix + 'autoRenew')
+                    autoRenew       : QUILocale.get(lg, lgPrefix + 'autoRenew'),
+                    headerGroups    : QUILocale.get(lg, lgPrefix + 'headerGroups'),
+                    labelGroups     : QUILocale.get(lg, lgPrefix + 'labelGroups')
                 })
             );
 
@@ -238,6 +254,20 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
             QUI.parse(PanelContent).then(function () {
                 self.Loader.hide();
             });
+        },
+
+        /**
+         * Manage membership users
+         */
+        $loadUsers: function () {
+            var self         = this;
+            var PanelContent = this.getContent();
+
+            PanelContent.set('html', '');
+
+            var GroupUserControl = new MembershipUsers({
+                membershipId: this.$Membership.id
+            }).inject(PanelContent);
         },
 
         /**
@@ -376,7 +406,7 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
          * Check if this membership is currently edited by another user
          */
         $checkLock: function () {
-            if (!this.$lockKey || !this.$initialLoad) {
+            if (!this.$initialLoad) {
                 return;
             }
 
@@ -384,7 +414,7 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
 
             this.Loader.show();
 
-            QUILocker.isLocked(this.$lockKey, 'quiqqer/memberships').then(function (locked) {
+            QUILocker.isLocked('membership_' + this.$Membership.id, 'quiqqer/memberships').then(function (locked) {
                 self.Loader.hide();
 
                 if (locked !== false) {
@@ -406,12 +436,13 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
         $lock: function () {
             var self = this;
 
+            console.log("locking now with: " + self.$lockKey);
+
             return new Promise(function (resolve, reject) {
                 QUIAjax.post('package_quiqqer_memberships_ajax_memberships_lock', resolve, {
-                    'package'   : 'quiqqer/memberships',
-                    membershipId: self.getAttribute('membershipId'),
-                    lockKey     : self.$lockKey,
-                    onError     : reject
+                    'package': 'quiqqer/memberships',
+                    id       : self.$Membership.id,
+                    onError  : reject
                 });
             });
         },
@@ -426,10 +457,9 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
 
             return new Promise(function (resolve, reject) {
                 QUIAjax.post('package_quiqqer_memberships_ajax_memberships_unlock', resolve, {
-                    'package'   : 'quiqqer/memberships',
-                    membershipId: self.getAttribute('membershipId'),
-                    lockKey     : self.$lockKey,
-                    onError     : reject
+                    'package': 'quiqqer/memberships',
+                    id       : self.$Membership.id,
+                    onError  : reject
                 });
             });
         },
@@ -444,22 +474,22 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
                 var lockInfo = '';
 
                 if (canUnlock) {
-                    lockInfo = QUILocale.get(lg, 'controls.memberships.membership.lock.unlock.info');
+                    lockInfo = QUILocale.get(lg, 'controls.membership.lock.unlock.info');
                 } else {
-                    lockInfo = QUILocale.get(lg, 'controls.memberships.membership.lock.info');
+                    lockInfo = QUILocale.get(lg, 'controls.membership.lock.info');
                 }
 
                 var LockInfoElm = new Element('div', {
                     'class': 'quiqqer-memberships-membership-lock-info',
                     html   : '<span class="fa fa-lock quiqqer-memberships-membership-lock-info-icon"></span>' +
-                    '<h1>' + QUILocale.get(lg, 'controls.memberships.membership.lock.title') + '</h1>' +
+                    '<h1>' + QUILocale.get(lg, 'controls.membership.lock.title') + '</h1>' +
                     '<p>' + lockInfo + '</p>' +
                     '<div class="quiqqer-memberships-membership-lock-btn"></div>'
                 }).inject(self.$Elm);
 
                 if (canUnlock) {
                     new QUIButton({
-                        text     : QUILocale.get(lg, 'controls.memberships.membership.lock.btn.ignore.text'),
+                        text     : QUILocale.get(lg, 'controls.membership.lock.btn.ignore.text'),
                         textimage: 'fa fa-unlock',
                         events   : {
                             onClick: function () {
@@ -483,7 +513,7 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
                 }
 
                 new QUIButton({
-                    text     : QUILocale.get(lg, 'controls.memberships.membership.lock.btn.close.text'),
+                    text     : QUILocale.get(lg, 'controls.membership.lock.btn.close.text'),
                     textimage: 'fa fa-close',
                     events   : {
                         onClick: function () {

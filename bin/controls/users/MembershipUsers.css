@@ -1,0 +1,11 @@
+.quiqqer-memberships-membershipusers {
+    float: left;
+    height: 100%;
+    width: 100%;
+}
+
+.quiqqer-memberships-membershipusers-table {
+    float: left;
+    height: calc(100% - 20px) !important;
+    width: 100%;
+}
