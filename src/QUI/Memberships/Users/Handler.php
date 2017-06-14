@@ -2,9 +2,8 @@
 
 namespace QUI\Memberships\Users;
 
-use QUI\CRUD\Factory;
-use QUI\Utils\Grid;
 use QUI;
+use QUI\CRUD\Factory;
 use QUI\Memberships\Utils;
 use QUI\Memberships\Handler as MembershipsHandler;
 
@@ -53,6 +52,17 @@ class Handler extends Factory
         $data['endDate']   = $Membership->calcEndDate();
 
         return parent::createChild($data);
+    }
+
+    /**
+     * Get membership
+     *
+     * @param int $id
+     * @return MembershipUser
+     */
+    public function getChild($id)
+    {
+        return parent::getChild($id);
     }
 
     /**

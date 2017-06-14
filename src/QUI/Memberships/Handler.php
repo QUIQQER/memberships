@@ -208,27 +208,46 @@ class Handler extends Factory
     }
 
     /**
-     * Get IDs of all memberships that have a specific group assigned
+     * Get IDs of all memberships that have specific groups assigned (OR)
      *
-     * @param int $groupId
+     * @param array $groupIds
      * @return int[]
      */
-    public function getMembershipIdsByGroupId($groupId)
+    public function getMembershipIdsByGroupIds($groupIds)
     {
         $ids = array();
 
-        $result = QUI::getDataBase()->fetch(array(
-            'select' => array(
-                'id'
-            ),
-            'from'   => self::getDataBaseTableName(),
-            'where'  => array(
-                'groupIds' => array(
-                    'type'  => '%LIKE%',
-                    'value' => ',' . $groupId . ','
-                )
-            )
-        ));
+        $sql = 'SELECT `id` FROM ' . self::getDataBaseTableName();
+        $sql .= ' WHERE ';
+
+        $whereOr = array();
+        $binds   = array();
+
+        foreach ($groupIds as $groupId) {
+            $whereOr         = '`groupIds` LIKE :' . $groupId;
+            $binds[$groupId] = array(
+                'value' => '%,' . $groupId . ',%',
+                'type'  => \PDO::PARAM_INT
+            );
+        }
+
+        $sql .= implode(" OR ", $whereOr);
+
+        $PDO  = QUI::getDataBase()->getPDO();
+        $Stmt = $PDO->prepare($sql);
+
+        // bind search values
+        foreach ($binds as $var => $bind) {
+            $Stmt->bindValue(':' . $var, $bind['value'], $bind['type']);
+        }
+
+        try {
+            $Stmt->execute();
+            $result = $Stmt->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+            return array();
+        }
 
         foreach ($result as $row) {
             $ids[] = $row['id'];

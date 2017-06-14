@@ -6,6 +6,6 @@
 
 .quiqqer-memberships-membershipusers-table {
     float: left;
-    height: calc(100% - 20px) !important;
+    height: 100% !important;
     width: 100%;
 }

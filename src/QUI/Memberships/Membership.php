@@ -133,6 +133,52 @@ class Membership extends Child
     }
 
     /**
+     * Get a user of this membership
+     *
+     * @param int $userId - User ID
+     * @return QUI\Memberships\Users\MembershipUser
+     * @throws QUI\Memberships\Exception
+     */
+    public function getMembershipUser($userId)
+    {
+        $result = QUI::getDataBase()->fetch(array(
+            'select' => array(
+                'id'
+            ),
+            'from'   => MembershipUsersHandler::getInstance()->getDataBaseTableName(),
+            'where'  => array(
+                'membershipId' => $this->id,
+                'userId'       => $userId
+            )
+        ));
+
+        if (empty($result)) {
+            throw new Exception(array(
+                'quiqqer/memberships',
+                'exception.membership.user.not.found',
+                array(
+                    'userId' => $userId
+                )
+            ), 404);
+        }
+
+        return MembershipUsersHandler::getInstance()->getChild($result[0]['id']);
+    }
+
+    /**
+     * Remove a membership user from this membership
+     *
+     * @param int $userId - User ID
+     * @throws QUI\Memberships\Exception
+     */
+    public function removeMembershipUser($userId)
+    {
+        $MembershipUser = $this->getMembershipUser($userId);
+
+        // remove from quiqqer groups
+    }
+
+    /**
      * Checks if this membership has a user assigned
      *
      * @param int $userId

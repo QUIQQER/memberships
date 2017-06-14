@@ -27,6 +27,17 @@ class MembershipUser extends Child
 //        parent::update();
 //    }
 
+
+    public function getUniqueGroupIds()
+    {
+        $Memberships    = MembershipsHandler::getInstance();
+        $groupIds       = $this->getMembership()->getGroupIds();
+        $uniqueGroupIds = array();
+
+        foreach ($Memberships->getMembershipIdsByGroupIds($groupIds)) {
+        }
+    }
+
     /**
      * Get the Membership this membership user is assigned to
      *

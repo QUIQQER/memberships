@@ -95,8 +95,19 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
         $onInject: function () {
             var self = this;
 
+            this.$Elm.addClass('quiqqer-memberships-membershipusers');
+
             this.Loader.inject(this.$Elm);
             this.Loader.show();
+
+            // if control is injected in a panel, register onResize event
+            QUIControlUtils.getControlByElement(
+                this.$Elm.getParent('.qui-panel')
+            ).then(function (Panel) {
+                Panel.addEvent('onResize', self.$onResize);
+            }, function () {
+                // do nothing if no panel found
+            });
 
             Memberships.getMembership(this.getAttribute('membershipId')).then(function (Membership) {
                 self.Loader.hide();
@@ -109,18 +120,8 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
          * event: onResize
          */
         $onResize: function () {
-            var ParentPanelContentElm = this.$Elm.getParent('.qui-panel-content');
-            var ElmSize               = this.$Elm.getSize();
-
-            if (ParentPanelContentElm) {
-                ElmSize = ParentPanelContentElm.getSize();
-            }
-
             if (this.$Grid && this.$GridParent) {
-                var sizeY = ElmSize.y - 45;
-                this.$GridParent.set('height', sizeY);
-
-                this.$Grid.setHeight(sizeY);
+                this.$Grid.setHeight(this.$GridParent.getSize().y);
                 this.$Grid.resize();
             }
         },
@@ -155,44 +156,48 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
                 }],
                 columnModel      : [{
                     header   : QUILocale.get('quiqqer/system', 'id'),
-                    dataIndex: 'id',
+                    dataIndex: 'userId',
                     dataType : 'number',
-                    width    : 50
+                    width    : 100
                 }, {
                     header   : QUILocale.get(lg, 'controls.membershipusers.tbl.header.username'),
                     dataIndex: 'username',
                     dataType : 'string',
-                    width    : 200
+                    width    : 150
                 }, {
                     header   : QUILocale.get(lg, 'controls.membershipusers.tbl.header.userFirstname'),
                     dataIndex: 'userFirstname',
                     dataType : 'string',
-                    width    : 200
+                    width    : 150
                 }, {
                     header   : QUILocale.get(lg, 'controls.membershipusers.tbl.header.userLastName'),
                     dataIndex: 'userLastName',
                     dataType : 'string',
-                    width    : 200
+                    width    : 150
                 }, {
                     header   : QUILocale.get(lg, 'controls.membershipusers.tbl.header.addedDate'),
                     dataIndex: 'addedDate',
                     dataType : 'string',
-                    width    : 200
+                    width    : 150
                 }, {
                     header   : QUILocale.get(lg, 'controls.membershipusers.tbl.header.beginDate'),
                     dataIndex: 'beginDate',
                     dataType : 'string',
-                    width    : 200
+                    width    : 150
                 }, {
                     header   : QUILocale.get(lg, 'controls.membershipusers.tbl.header.endDate'),
                     dataIndex: 'endDate',
                     dataType : 'string',
-                    width    : 200
+                    width    : 150
                 }, {
                     header   : QUILocale.get(lg, 'controls.membershipusers.tbl.header.renewalCounter'),
                     dataIndex: 'renewalCounter',
                     dataType : 'number',
                     width    : 75
+                }, {
+                    dataIndex: 'id',
+                    dataType : 'number',
+                    hidden   : true
                 }],
                 pagination       : true,
                 serverSort       : true,
@@ -234,7 +239,7 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
 
             var self         = this;
             var TableButtons = this.$Grid.getAttribute('buttons');
-            
+
             TableButtons.removeuser.disable();
 
             var GridParams = {
@@ -263,6 +268,14 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
             for (var i = 0, len = GridData.data.length; i < len; i++) {
                 var Row = GridData.data[i];
 
+                if (!Row.userFirstname) {
+                    Row.userFirstname = '-';
+                }
+
+                if (!Row.userLastName) {
+                    Row.userLastName = '-';
+                }
+
                 //if (Row.active) {
                 //    Row.activeStatus = new Element('span', {
                 //        'class': 'fa fa-check',
@@ -276,32 +289,6 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
                 //        alt    : QUILocale.get(lg, 'controls.membershipusers.tbl.status.inactive')
                 //    });
                 //}
-                //
-                //Row.valid = Row.validUntilText;
-                //
-                //if (Row.isValid) {
-                //    Row.valid += ' <span class="quiqqer-memberships-membershipusers-valid">' +
-                //        '(' + QUILocale.get(lg, 'controls.membershipusers.license.valid') + ')' +
-                //        '</span>';
-                //} else {
-                //    Row.valid += ' <span class="quiqqer-memberships-membershipusers-invalid">' +
-                //        '(' + QUILocale.get(lg, 'controls.membershipusers.license.invalid') + ')' +
-                //        '</span>';
-                //}
-                //
-                //Row.created = Row.createdAt + ' (' + Row.createUser + ')';
-                //Row.updated = Row.editAt + ' (' + Row.editUser + ')';
-                //
-                //Row.download = new Element('span', {
-                //    'class'  : 'fa fa-download quiqqer-memberships-membershipusers-download',
-                //    'data-id': Row.id,
-                //    //html     : 'Download',
-                //    events   : {
-                //        click: function (event) {
-                //            self.$downloadLicense(event.target.get('data-id'));
-                //        }
-                //    }
-                //});
             }
 
             this.$Grid.setData(GridData);
@@ -341,11 +328,13 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
                             }
 
                             AddUsersWindow.close();
-                            self.$listRefresh();
+                            self.refresh();
                         });
                     }
                 }
-            }).open();
+            });
+
+            AddUsersWindow.open();
         },
 
         /**
@@ -469,17 +458,17 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
          * Remove all selected licenses
          */
         $deleteLicenses: function () {
-            var self               = this;
-            var deleteLicensesData = [];
-            var deleteLicensesIds  = [];
-            var rows               = this.$Grid.getSelectedData();
+            var self       = this;
+            var deleteData = [];
+            var deleteIds  = [];
+            var rows       = this.$Grid.getSelectedData();
 
             for (var i = 0, len = rows.length; i < len; i++) {
-                deleteLicensesData.push(
+                deleteData.push(
                     rows[i].title + ' (ID: #' + rows[i].id + ')'
                 );
 
-                deleteLicensesIds.push(rows[i].id);
+                deleteIds.push(rows[i].id);
             }
 
             // open popup
@@ -489,11 +478,11 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
 
                 'information': QUILocale.get(
                     lg,
-                    'controls.membershipusers.deletelicenses.popup.info', {
-                        licenses: deleteLicensesData.join('<br/>')
+                    'controls.membershipusers.delete.popup.info', {
+                        licenses: deleteData.join('<br/>')
                     }
                 ),
-                'title'      : QUILocale.get(lg, 'controls.membershipusers.deletelicenses.popup.title'),
+                'title'      : QUILocale.get(lg, 'controls.membershipusers.delete.popup.title'),
                 'texticon'   : 'fa fa-trash',
                 'icon'       : 'fa fa-trash',
 
@@ -509,7 +498,7 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
                     onSubmit: function () {
                         Popup.Loader.show();
 
-                        LicenseHandler.deleteLicenses(deleteLicensesIds).then(function (success) {
+                        LicenseHandler.deleteLicenses(deleteIds).then(function (success) {
                             if (!success) {
                                 Popup.Loader.hide();
                                 return;

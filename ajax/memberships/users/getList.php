@@ -31,6 +31,7 @@ QUI::$Ajax->registerFunction(
 
             $membershipUsers[] = array(
                 'id'            => $data['id'],
+                'userId'        => $data['userId'],
                 'username'      => $User->getUsername(),
                 'userFirstName' => $User->getAttribute('firstname'),
                 'userLastName'  => $User->getAttribute('lastname'),

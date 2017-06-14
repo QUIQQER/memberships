@@ -106,10 +106,8 @@
             <en><![CDATA[Delete membership(s)]]></en>
         </locale>
         <locale name="controls.membershipsmanager.deletememberships.popup.info">
-            <de>
-                <![CDATA[Sind Sie sicher, dass Sie folgende Mitgliedschaften unwiderruflich löschen wollen? Alle Benutzer, die sich auf Grund dieser Mitgliedschaften in Mitgliedschafts-Gruppen befinden, werden aus diesen Gruppen entfernt. Diese Benutzer haben ab sofort keine Berechtigungen mehr, die sie auf Grund ihrer Mitgliedschafts-Zugehörigkeit hatten.<br><br>[memberships]]]></de>
-            <en>
-                <![CDATA[Are you sure you want to permanently delete the following memberships? All users who are in membership groups due to these memberships are removed from these groups. These users no longer have any permissions, which they had on account of their membership.<br><br>[memberships]]]></en>
+            <de><![CDATA[Sind Sie sicher, dass Sie folgende Mitgliedschaften unwiderruflich löschen wollen? Alle Benutzer, die sich auf Grund dieser Mitgliedschaften in Mitgliedschafts-Gruppen befinden, werden aus diesen Gruppen entfernt. Diese Benutzer haben ab sofort keine Berechtigungen mehr, die sie auf Grund ihrer Mitgliedschafts-Zugehörigkeit hatten.<br><br>[memberships]]]></de>
+            <en><![CDATA[Are you sure you want to permanently delete the following memberships? All users who are in membership groups due to these memberships are removed from these groups. These users no longer have any permissions, which they had on account of their membership.<br><br>[memberships]]]></en>
         </locale>
 
         <!-- Control: Membership -->
@@ -170,16 +168,12 @@
             <en><![CDATA[Membership locked!]]></en>
         </locale>
         <locale name="controls.membership.lock.unlock.info" html="true">
-            <de>
-                <![CDATA[Diese Mitgliedschaft wird zur Zeit von einem anderen Benutzer bearbeitet. Um Inkonsistenzen in den Mitgliedschafts-Daten zu vermeiden, sollte immer nur ein Benutzer gleichzeitig eine Mitgliedschaft bearbeiten. Wenn Sie die Mitgliedschaft trotzdem bearbeiten möchten, klicken Sie auf den Button unten.<br/><br/><b>Achtung:</b> In diesem Fall kann nicht gewährleistet werden, dass Änderungen, die Sie an den Mitgliedschafts-Daten vornehmen, durch andere Benutzer überschrieben werden oder Sie die Änderungen eines anderen Benutzers überschreiben!]]></de>
-            <en>
-                <![CDATA[This membership is currently being edited by another user. To avoid inconsistencies in membership data, only one user should edit a membership at a time. If you want to edit the membership anyway, click the button below.<br/><br/><b>Caution</b>: In this case, it can not be guaranteed that any changes you make to the membership will be overwritten by other users or you overwrite the changes of another user!]]></en>
+            <de><![CDATA[Diese Mitgliedschaft wird zur Zeit von einem anderen Benutzer bearbeitet. Um Inkonsistenzen in den Mitgliedschafts-Daten zu vermeiden, sollte immer nur ein Benutzer gleichzeitig eine Mitgliedschaft bearbeiten. Wenn Sie die Mitgliedschaft trotzdem bearbeiten möchten, klicken Sie auf den Button unten.<br/><br/><b>Achtung:</b> In diesem Fall kann nicht gewährleistet werden, dass Änderungen, die Sie an den Mitgliedschafts-Daten vornehmen, durch andere Benutzer überschrieben werden oder Sie die Änderungen eines anderen Benutzers überschreiben!]]></de>
+            <en><![CDATA[This membership is currently being edited by another user. To avoid inconsistencies in membership data, only one user should edit a membership at a time. If you want to edit the membership anyway, click the button below.<br/><br/><b>Caution</b>: In this case, it can not be guaranteed that any changes you make to the membership will be overwritten by other users or you overwrite the changes of another user!]]></en>
         </locale>
         <locale name="controls.membership.lock.info" html="true">
-            <de>
-                <![CDATA[Diese Mitgliedschaft wird zur Zeit von einem anderen Benutzer bearbeitet. Um Inkonsistenzen in den Mitgliedschafts-Daten zu vermeiden, kann immer nur ein Benutzer gleichzeitig eine Mitgliedschaft bearbeiten. Bitte versuchen Sie es später noch einmal.]]></de>
-            <de>
-                <![CDATA[This membership is currently being edited by another user. To avoid inconsistencies in membership data, only one user should edit a membership at a time. If you want to edit the membership anyway, click the button below. Please try again later.]]></de>
+            <de><![CDATA[Diese Mitgliedschaft wird zur Zeit von einem anderen Benutzer bearbeitet. Um Inkonsistenzen in den Mitgliedschafts-Daten zu vermeiden, kann immer nur ein Benutzer gleichzeitig eine Mitgliedschaft bearbeiten. Bitte versuchen Sie es später noch einmal.]]></de>
+            <de><![CDATA[This membership is currently being edited by another user. To avoid inconsistencies in membership data, only one user should edit a membership at a time. If you want to edit the membership anyway, click the button below. Please try again later.]]></de>
         </locale>
         <locale name="controls.membership.lock.btn.ignore.text">
             <de><![CDATA[Mitgliedschaft trotzdem bearbeiten]]></de>
@@ -306,6 +300,10 @@
         <locale name="exception.membership.update.duration.invalid">
             <de><![CDATA[Die Dauer einer Mitgliedschaft darf 1 nicht unterschreiten.]]></de>
             <en><![CDATA[The duration of a membership must be grater than 0.]]></en>
+        </locale>
+        <locale name="exception.membership.user.not.found">
+            <de><![CDATA[Der Benutzer mit der ID #[userId] ist nicht in dieser Mitgliedschaft.]]></de>
+            <en><![CDATA[The user with ID #[userId] is not in this membership.]]></en>
         </locale>
 
         <!-- Class: Users\Handler -->
