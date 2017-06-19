@@ -7,6 +7,7 @@ use QUI\CRUD\Child;
 use QUI\Locale;
 use QUI\Lock\Locker;
 use QUI\Memberships\Users\Handler as MembershipUsersHandler;
+use QUI\Permissions\Permission;
 
 class Membership extends Child
 {
@@ -100,6 +101,8 @@ class Membership extends Child
      */
     public function update()
     {
+        Permission::checkPermission(Handler::PERMISSION_EDIT);
+
         $attributes = $this->getAttributes();
 
         // check groups
@@ -130,6 +133,24 @@ class Membership extends Child
         $this->setAttributes($attributes);
 
         parent::update();
+    }
+
+    /**
+     * Delete membership and remove all associated membership users
+     *
+     * @return void
+     */
+    public function delete()
+    {
+        Permission::checkPermission(Handler::PERMISSION_DELETE);
+
+        $MembershipUsers = MembershipUsersHandler::getInstance();
+
+        foreach ($MembershipUsers->getIdsByMembershipId($this->id) as $membershipUserId) {
+            $MembershipUsers->getChild($membershipUserId)->delete();
+        }
+
+        parent::delete();
     }
 
     /**
@@ -166,16 +187,35 @@ class Membership extends Child
     }
 
     /**
-     * Remove a membership user from this membership
+     * Get IDs of all QUIQQER Groups that are UNIQUE to this membership
      *
-     * @param int $userId - User ID
-     * @throws QUI\Memberships\Exception
+     * @return int[]
      */
-    public function removeMembershipUser($userId)
+    public function getUniqueGroupIds()
     {
-        $MembershipUser = $this->getMembershipUser($userId);
+        $Memberships    = Handler::getInstance();
+        $groupIds       = $this->getGroupIds();
+        $uniqueGroupIds = $groupIds;
 
-        // remove from quiqqer groups
+        foreach ($Memberships->getMembershipIdsByGroupIds($groupIds) as $membershipId) {
+            if ($membershipId == $this->getId()) {
+                continue;
+            }
+
+            $Membership = $Memberships->getChild($membershipId);
+
+            foreach ($Membership->getGroupIds() as $groupId) {
+                if (in_array($groupId, $groupIds)) {
+                    $k = array_search($groupId, $uniqueGroupIds);
+
+                    if ($k !== false) {
+                        unset($uniqueGroupIds[$k]);
+                    }
+                }
+            }
+        }
+
+        return $uniqueGroupIds;
     }
 
     /**
@@ -247,10 +287,24 @@ class Membership extends Child
 
     /**
      * Set all membership users to the assigned membership groups
+     *
+     * @return void
      */
-    protected function setUsersToGroups()
+    public function setUsersToGroups()
     {
-        // @todo
+        $MembershipUsers = MembershipUsersHandler::getInstance();
+        $Users           = QUI::getUsers();
+        $groupIds        = $this->getGroupIds();
+
+        foreach ($MembershipUsers->getUserIdsByMembershipId($this->id) as $membershipUserId) {
+            $User = $Users->get($membershipUserId);
+
+            foreach ($groupIds as $groupId) {
+                $User->addToGroup($groupId);
+            }
+
+            $User->save(QUI::getUsers()->getSystemUser());
+        }
     }
 
     /**

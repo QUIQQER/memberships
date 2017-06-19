@@ -23,7 +23,7 @@ QUI::$Ajax->registerFunction(
                     'userId'       => (int)$userId
                 ));
             }
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Memberships\Exception $Exception) {
             QUI::getMessagesHandler()->addError(
                 QUI::getLocale()->get(
                     'quiqqer/memberships',

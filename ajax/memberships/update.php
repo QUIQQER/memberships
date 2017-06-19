@@ -40,7 +40,7 @@ QUI::$Ajax->registerFunction(
 
             $Membership->setAttributes($attributes);
             $Membership->update();
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Memberships\Exception $Exception) {
             QUI::getMessagesHandler()->addError(
                 QUI::getLocale()->get(
                     'quiqqer/memberships',

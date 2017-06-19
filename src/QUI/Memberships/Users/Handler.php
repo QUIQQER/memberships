@@ -6,6 +6,7 @@ use QUI;
 use QUI\CRUD\Factory;
 use QUI\Memberships\Utils;
 use QUI\Memberships\Handler as MembershipsHandler;
+use QUI\Memberships\Users\Handler as MembershipUsersHandler;
 
 class Handler extends Factory
 {
@@ -51,7 +52,65 @@ class Handler extends Factory
         $data['beginDate'] = Utils::getFormattedTimestamp();
         $data['endDate']   = $Membership->calcEndDate();
 
-        return parent::createChild($data);
+        $NewChild = parent::createChild($data);
+
+        $Membership->setUsersToGroups();
+
+        return $NewChild;
+    }
+
+    /**
+     * Get all MembershipUser IDs of membership users by Membership ID
+     *
+     * @param int $membershipId
+     * @return int[]
+     */
+    public function getIdsByMembershipId($membershipId)
+    {
+        $result = QUI::getDataBase()->fetch(array(
+            'select' => array(
+                'id'
+            ),
+            'from'   => MembershipUsersHandler::getDataBaseTableName(),
+            'where'  => array(
+                'membershipId' => $membershipId
+            )
+        ));
+
+        $membershipUserIds = array();
+
+        foreach ($result as $row) {
+            $membershipUserIds[] = $row['id'];
+        }
+
+        return $membershipUserIds;
+    }
+
+    /**
+     * Get all QUIQQER IDs of membership users by Membership ID
+     *
+     * @param int $membershipId
+     * @return int[]
+     */
+    public function getUserIdsByMembershipId($membershipId)
+    {
+        $result = QUI::getDataBase()->fetch(array(
+            'select' => array(
+                'userId'
+            ),
+            'from'   => MembershipUsersHandler::getDataBaseTableName(),
+            'where'  => array(
+                'membershipId' => $membershipId
+            )
+        ));
+
+        $membershipUserIds = array();
+
+        foreach ($result as $row) {
+            $membershipUserIds[] = $row['userId'];
+        }
+
+        return $membershipUserIds;
     }
 
     /**

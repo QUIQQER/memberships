@@ -40,15 +40,13 @@ define('package/quiqqer/memberships/bin/classes/MembershipUsers', [
         /**
          * Delete (multiple) membershipss
          *
-         * @param {Integer} membershipId
          * @param {Array} userIds
          * @return {Promise}
          */
-        deleteMembershipUsers: function (membershipId, userIds) {
+        deleteMembershipUsers: function (userIds) {
             return new Promise(function (resolve, reject) {
                 QUIAjax.post('package_quiqqer_memberships_ajax_memberships_users_delete', resolve, {
                     'package'   : pkg,
-                    membershipId: membershipId,
                     userIds     : JSON.encode(userIds),
                     onError     : reject
                 })

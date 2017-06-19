@@ -239,6 +239,14 @@
             <de><![CDATA[Autom. Erneuerungen]]></de>
             <en><![CDATA[Auto renewals]]></en>
         </locale>
+        <locale name="controls.membershipusers.delete.popup.info" html="true">
+            <de><![CDATA[Sind Sie sicher, dass Sie folgende Benutzer unwiderruflich aus der Mitgliedschaft entfernen möchten? Die Benutzer verlieren dann alle Rechte dieser Mitgliedschaft.<br><br>[users]]]></de>
+            <en><![CDATA[Are you sure you want to permanently remove the following users from the membership? The users then lose all permissions of this membership.<br><br>[users]]]></en>
+        </locale>
+        <locale name="controls.membershipusers.delete.popup.title">
+            <de><![CDATA[Benutzer aus Mitgliedschaft entfernen]]></de>
+            <en><![CDATA[Remove user(s) from membership]]></en>
+        </locale>
 
     </groups>
 
@@ -287,9 +295,17 @@
             <de><![CDATA[Die Benutzer wurden der Mitgliedschaft <b>[membershipTitle]</b> (#[membershipId]) erfolgreich hinzugefügt.]]></de>
             <en><![CDATA[The user have been successfull added to the membership <b>[membershipTitle]</b> (#[membershipId]).]]></en>
         </locale>
-        <locale name="message.ajax.memberships.update.error" html="true">
+        <locale name="message.ajax.memberships.users.create.error" html="true">
             <de><![CDATA[Der Benutzer konnte nicht zur Mitgliedschaft hinzugefügt werden:<br><br>[error]]]></de>
             <en><![CDATA[The user could not be added to the membership:<br><br>[error]]]></en>
+        </locale>
+        <locale name="message.ajax.memberships.users.delete.error" html="true">
+            <de><![CDATA[Die Benutzer konnten nicht aus der Mitgliedschaft entfernt werden:<br><br>[error]]]></de>
+            <en><![CDATA[The users could not be removed from the membership:<br><br>[error]]]></en>
+        </locale>
+        <locale name="message.ajax.memberships.users.delete.success">
+            <de><![CDATA[Die Benutzer wurden erfolgreich aus der Mitgliedschaft gelöscht.]]></de>
+            <en><![CDATA[The users have been removed successfully from the membership.]]></en>
         </locale>
 
         <!-- Class: Membership -->

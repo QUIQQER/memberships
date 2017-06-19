@@ -1,6 +1,7 @@
 <?php
 
 use QUI\Memberships\Handler as MembershipsHandler;
+use QUI\Memberships\Users\Handler as MembershipUsersHandler;
 
 /**
  * Delete user(s) from a membership
@@ -10,20 +11,19 @@ use QUI\Memberships\Handler as MembershipsHandler;
  */
 QUI::$Ajax->registerFunction(
     'package_quiqqer_memberships_ajax_memberships_users_delete',
-    function ($membershipId, $userIds) {
+    function ($userIds) {
         try {
-            $Memberships = MembershipsHandler::getInstance();
-            $Membership  = $Memberships->getChild((int)$membershipId);
+            $MembershipUsers = MembershipUsersHandler::getInstance();
             $userIds     = json_decode($userIds, true);
 
             foreach ($userIds as $userId) {
-                $Membership->removeMembershipUser((int)$userId);
+                $MembershipUsers->getChild((int)$userId)->delete();
             }
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Memberships\Exception $Exception) {
             QUI::getMessagesHandler()->addError(
                 QUI::getLocale()->get(
                     'quiqqer/memberships',
-                    'message.ajax.memberships.delete.error',
+                    'message.ajax.memberships.users.delete.error',
                     array(
                         'error' => $Exception->getMessage()
                     )
@@ -51,12 +51,12 @@ QUI::$Ajax->registerFunction(
         QUI::getMessagesHandler()->addSuccess(
             QUI::getLocale()->get(
                 'quiqqer/memberships',
-                'message.ajax.memberships.delete.success'
+                'message.ajax.memberships.users.delete.success'
             )
         );
 
         return true;
     },
-    array('membershipId', 'userIds'),
+    array('userIds'),
     'Permission::checkAdminUser'
 );

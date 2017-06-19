@@ -5,6 +5,7 @@ namespace QUI\Memberships;
 use QUI\CRUD\Factory;
 use QUI\Utils\Grid;
 use QUI;
+use QUI\Permissions\Permission;
 
 class Handler extends Factory
 {
@@ -19,6 +20,8 @@ class Handler extends Factory
      */
     public function createChild($data = array())
     {
+        Permission::checkPermission(self::PERMISSION_CREATE);
+
         $data['createDate'] = Utils::getFormattedTimestamp();
         $data['createUser'] = QUI::getUserBySession()->getId();
 
@@ -201,6 +204,7 @@ class Handler extends Factory
                 QUI::getPackage($package);
                 $packages[] = $package;
             } catch (\Exception $Exception) {
+                // ignore (package is probably not installed)
             }
         }
 
@@ -217,6 +221,10 @@ class Handler extends Factory
     {
         $ids = array();
 
+        if (empty($groupIds)) {
+            return $ids;
+        }
+
         $sql = 'SELECT `id` FROM ' . self::getDataBaseTableName();
         $sql .= ' WHERE ';
 
@@ -224,7 +232,7 @@ class Handler extends Factory
         $binds   = array();
 
         foreach ($groupIds as $groupId) {
-            $whereOr         = '`groupIds` LIKE :' . $groupId;
+            $whereOr[]       = '`groupIds` LIKE :' . $groupId;
             $binds[$groupId] = array(
                 'value' => '%,' . $groupId . ',%',
                 'type'  => \PDO::PARAM_INT

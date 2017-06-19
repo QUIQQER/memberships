@@ -19,7 +19,7 @@ QUI::$Ajax->registerFunction(
                 $Membership = $Memberships->getChild((int)$membershipId);
                 $Membership->delete();
             }
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\Memberships\Exception $Exception) {
             QUI::getMessagesHandler()->addError(
                 QUI::getLocale()->get(
                     'quiqqer/memberships',

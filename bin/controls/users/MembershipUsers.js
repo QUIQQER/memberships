@@ -46,7 +46,7 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
 
 ], function (QUIControl, QUILoader, QUIPopup, QUIConfirm, QUIButton, QUIFormUtils,
              QUIControlUtils, Grid, UserSearchWindow, Memberships, MembershipUsersHandler,
-             QUILocale, QUIAjax, Mustache, template, templateEdit) {
+             QUILocale, QUIAjax, Mustache, template) {
     "use strict";
 
     var lg = 'quiqqer/memberships';
@@ -62,11 +62,11 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
             '$listRefresh',
             '$setGridData',
             '$addUser',
-            '$toggleActiveStatus',
             '$renew',
-            '$deleteLicenses',
             '$removeUser',
-            'refresh'
+            'refresh',
+            '$removeUsers',
+            '$openUserPanel'
         ],
 
         options: {
@@ -151,7 +151,7 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
                     text     : QUILocale.get(lg, 'controls.membershipusers.tbl.btn.removeuser'),
                     textimage: 'fa fa-trash',
                     events   : {
-                        onClick: this.$removeUser
+                        onClick: this.$removeUsers
                     }
                 }],
                 columnModel      : [{
@@ -206,8 +206,7 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
             });
 
             this.$Grid.addEvents({
-                onDblClick: function () {
-                },
+                onDblClick: self.$openUserPanel,
                 onClick   : function () {
                     var TableButtons = self.$Grid.getAttribute('buttons');
 
@@ -304,7 +303,7 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
                 search        : true,
                 searchSettings: {
                     filter: {
-                        filter_groups_exclude: [self.$Membership.groupIds]
+                        filter_groups_exclude: self.$Membership.uniqueGroupIds
                     }
                 },
                 events        : {
@@ -338,126 +337,9 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
         },
 
         /**
-         * Edit license data
-         */
-        $removeUser: function () {
-            var self        = this;
-            var LicenseData = this.$Grid.getSelectedData()[0];
-
-            this.$Panel.createSheet({
-                title : QUILocale.get(lg, 'controls.membershipusers.edit.title'),
-                events: {
-                    onShow : function (Sheet) {
-                        var Content  = Sheet.getContent();
-                        var lgPrefix = 'controls.membershipusers.edit.template.';
-
-                        Content.set('html', Mustache.render(templateEdit, {
-                            header         : QUILocale.get(lg, lgPrefix + 'header', {
-                                title: LicenseData.title,
-                                id   : LicenseData.id
-                            }),
-                            labelTitle     : QUILocale.get(lg, lgPrefix + 'labelTitle'),
-                            labelValidUntil: QUILocale.get(lg, lgPrefix + 'labelValidUntil'),
-                            title          : LicenseData.title,
-                            validUntil     : LicenseData.validUntil ? LicenseData.validUntilText : null
-                        }));
-
-                        Content.setStyle('padding', 20);
-
-                        Sheet.addButton(
-                            new QUIButton({
-                                text     : QUILocale.get('quiqqer/system', 'save'),
-                                textimage: 'fa fa-save',
-                                events   : {
-                                    onClick: function () {
-                                        var Form = Content.getElement('form');
-
-                                        self.Loader.show();
-
-                                        LicenseHandler.editLicense(
-                                            LicenseData.id,
-                                            QUIFormUtils.getFormData(Form)
-                                        ).then(function (success) {
-                                            self.Loader.hide();
-
-                                            if (!success) {
-                                                return;
-                                            }
-
-                                            Sheet.destroy();
-                                            self.$listRefresh();
-                                        });
-                                    }
-                                }
-                            })
-                        );
-                    },
-                    onClose: function (Sheet) {
-                        Sheet.destroy();
-                    }
-                }
-            }).show();
-        },
-
-        /**
-         * Manage packages for a license
-         */
-        $renew: function () {
-            var self        = this;
-            var LicenseData = self.$Grid.getSelectedData()[0];
-            var BundlePackagesControl;
-
-            // open popup
-            var Popup = new QUIPopup({
-                icon       : 'fa fa-gift',
-                title      : QUILocale.get(
-                    lg, 'controls.membershipusers.managebundlepackages.popup.title', {
-                        title: LicenseData.title,
-                        user : this.$User.getName()
-                    }
-                ),
-                maxHeight  : 800,
-                maxWidth   : 450,
-                events     : {
-                    onOpen: function () {
-                        BundlePackagesControl = new LicenseBundles({
-                            licenseId: LicenseData.id
-                        }).inject(Popup.getContent());
-                    }
-                },
-                closeButton: true
-            });
-
-            Popup.open();
-
-            Popup.addButton(new QUIButton({
-                text  : QUILocale.get(lg, 'controls.membershipusers.managebundlepackages.popup.btn.text'),
-                alt   : QUILocale.get(lg, 'controls.membershipusers.managebundlepackages.popup.btn'),
-                title : QUILocale.get(lg, 'controls.membershipusers.managebundlepackages.popup.btn'),
-                events: {
-                    onClick: function () {
-                        Popup.Loader.show();
-
-                        LicenseHandler.editLicense(LicenseData.id, {
-                            packageBundleIds: BundlePackagesControl.getBundleIds()
-                        }).then(function (LicenseData) {
-                            if (!LicenseData) {
-                                Popup.Loader.hide();
-                                return;
-                            }
-
-                            Popup.close();
-                            self.$listRefresh();
-                        });
-                    }
-                }
-            }));
-        },
-
-        /**
          * Remove all selected licenses
          */
-        $deleteLicenses: function () {
+        $removeUsers: function () {
             var self       = this;
             var deleteData = [];
             var deleteIds  = [];
@@ -465,7 +347,7 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
 
             for (var i = 0, len = rows.length; i < len; i++) {
                 deleteData.push(
-                    rows[i].title + ' (ID: #' + rows[i].id + ')'
+                    rows[i].username + ' (ID: #' + rows[i].id + ')'
                 );
 
                 deleteIds.push(rows[i].id);
@@ -479,7 +361,7 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
                 'information': QUILocale.get(
                     lg,
                     'controls.membershipusers.delete.popup.info', {
-                        licenses: deleteData.join('<br/>')
+                        users: deleteData.join('<br/>')
                     }
                 ),
                 'title'      : QUILocale.get(lg, 'controls.membershipusers.delete.popup.title'),
@@ -498,14 +380,14 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
                     onSubmit: function () {
                         Popup.Loader.show();
 
-                        LicenseHandler.deleteLicenses(deleteIds).then(function (success) {
+                        MembershipUsersHandler.deleteMembershipUsers(deleteIds).then(function (success) {
                             if (!success) {
                                 Popup.Loader.hide();
                                 return;
                             }
 
                             Popup.close();
-                            self.$listRefresh();
+                            self.refresh();
                         });
                     }
                 }
@@ -515,22 +397,17 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
         },
 
         /**
-         * Set active status of a license
-         *
-         * @param {Integer} licenseId
+         * Opens a panel for a single location
          */
-        $toggleActiveStatus: function () {
-            var self            = this;
-            var SelectedLicense = self.$Grid.getSelectedData()[0];
+        $openUserPanel: function () {
+            var userId = this.$Grid.getSelectedData()[0].userId;
 
-            this.Loader.show();
-
-            LicenseHandler.editLicense(SelectedLicense.id, {
-                active: SelectedLicense.active ? 0 : 1
-            }).then(function (LicenseData) {
-                self.Loader.hide();
-                self.$listRefresh();
+            require([
+                'controls/users/User',
+                'utils/Panels'
+            ], function (UserPanel, Utils) {
+                Utils.openPanelInTasks(new UserPanel(userId));
             });
-        }
+        },
     });
 });
