@@ -136,9 +136,12 @@ class Membership extends Child
     }
 
     /**
-     * Delete membership and remove all associated membership users
+     * Delete membership
+     *
+     * Only possible if membership has no users in it
      *
      * @return void
+     * @throws QUI\Memberships\Exception
      */
     public function delete()
     {
@@ -146,8 +149,11 @@ class Membership extends Child
 
         $MembershipUsers = MembershipUsersHandler::getInstance();
 
-        foreach ($MembershipUsers->getIdsByMembershipId($this->id) as $membershipUserId) {
-            $MembershipUsers->getChild($membershipUserId)->delete();
+        if (count($MembershipUsers->getIdsByMembershipId($this->id))) {
+            throw new Exception(array(
+                'quiqqer/memberships',
+                'exception.membership.cannot.delete.with.users.left'
+            ));
         }
 
         parent::delete();
@@ -219,7 +225,7 @@ class Membership extends Child
     }
 
     /**
-     * Checks if this membership has a user assigned
+     * Checks if this membership has an (active, non-archived) user assigned
      *
      * @param int $userId
      * @return bool
@@ -234,7 +240,8 @@ class Membership extends Child
             'from'   => MembershipUsersHandler::getInstance()->getDataBaseTableName(),
             'where'  => array(
                 'membershipId' => $this->id,
-                'userId'       => $userId
+                'userId'       => $userId,
+                'archived'     => 0
             )
         ));
 
@@ -260,23 +267,31 @@ class Membership extends Child
                 'count' => 1,
                 'from'  => $tbl,
                 'where' => array(
-                    'membershipId' => $this->id
+                    'membershipId' => $this->id,
+                    'archived'     => 0
                 ),
             ));
 
             return current(current($result));
         }
 
-        $result = QUI::getDataBase()->fetch(array(
+        $searchQuery = array(
             'select' => array(
                 'id'
             ),
             'from'   => $tbl,
             'where'  => array(
-                'membershipId' => $this->id
+                'membershipId' => $this->id,
+                'archived'     => 0
             ),
             'limit'  => $gridParams['limit']
-        ));
+        );
+
+        if (!empty($gridParams['order'])) {
+            $searchQuery['order'] = $gridParams['order'];
+        }
+
+        $result = QUI::getDataBase()->fetch($searchQuery);
 
         foreach ($result as $row) {
             $membershipUserIds[] = (int)$row['id'];
@@ -286,31 +301,9 @@ class Membership extends Child
     }
 
     /**
-     * Set all membership users to the assigned membership groups
-     *
-     * @return void
-     */
-    public function setUsersToGroups()
-    {
-        $MembershipUsers = MembershipUsersHandler::getInstance();
-        $Users           = QUI::getUsers();
-        $groupIds        = $this->getGroupIds();
-
-        foreach ($MembershipUsers->getUserIdsByMembershipId($this->id) as $membershipUserId) {
-            $User = $Users->get($membershipUserId);
-
-            foreach ($groupIds as $groupId) {
-                $User->addToGroup($groupId);
-            }
-
-            $User->save(QUI::getUsers()->getSystemUser());
-        }
-    }
-
-    /**
      * Calculate the end date for this membership based on a given time
      *
-     * @param int $start (optional) - UNIX timestamp; of omitted use time()
+     * @param int $start (optional) - UNIX timestamp; if omitted use time()
      * @return string - formatted timestamp
      */
     public function calcEndDate($start = null)

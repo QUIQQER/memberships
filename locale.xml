@@ -40,6 +40,16 @@
             <en><![CDATA[Can unlock membership panels that are currently edited by another user and edit them himself]]></en>
         </locale>
 
+        <!-- Settings -->
+        <locale name="settings.menu.title">
+            <de><![CDATA[Mitgliedschaften]]></de>
+            <en><![CDATA[Memberships]]></en>
+        </locale>
+        <locale name="settings.category.title">
+            <de><![CDATA[Einstellungen]]></de>
+            <en><![CDATA[Mitgliedschaften]]></en>
+        </locale>
+
     </groups>
 
     <groups name="quiqqer/memberships" datatype="js">
@@ -106,8 +116,8 @@
             <en><![CDATA[Delete membership(s)]]></en>
         </locale>
         <locale name="controls.membershipsmanager.deletememberships.popup.info">
-            <de><![CDATA[Sind Sie sicher, dass Sie folgende Mitgliedschaften unwiderruflich löschen wollen? Alle Benutzer, die sich auf Grund dieser Mitgliedschaften in Mitgliedschafts-Gruppen befinden, werden aus diesen Gruppen entfernt. Diese Benutzer haben ab sofort keine Berechtigungen mehr, die sie auf Grund ihrer Mitgliedschafts-Zugehörigkeit hatten.<br><br>[memberships]]]></de>
-            <en><![CDATA[Are you sure you want to permanently delete the following memberships? All users who are in membership groups due to these memberships are removed from these groups. These users no longer have any permissions, which they had on account of their membership.<br><br>[memberships]]]></en>
+            <de><![CDATA[Sind Sie sicher, dass Sie folgende Mitgliedschaften unwiderruflich löschen wollen? Dies ist nur möglich, wenn sich keine Benutzer mehr in der Mitgliedschaft befinden:<br><br>[memberships]]]></de>
+            <en><![CDATA[Are you sure you want to permanently delete the following memberships? This can only be done when no users are left in this membership:<br><br>[memberships]]]></en>
         </locale>
 
         <!-- Control: Membership -->
@@ -219,7 +229,7 @@
             <de><![CDATA[Vorname]]></de>
             <en><![CDATA[Fist name]]></en>
         </locale>
-        <locale name="controls.membershipusers.tbl.header.userLastName">
+        <locale name="controls.membershipusers.tbl.header.userLastname">
             <de><![CDATA[Nachname]]></de>
             <en><![CDATA[Last name]]></en>
         </locale>
@@ -321,6 +331,10 @@
             <de><![CDATA[Der Benutzer mit der ID #[userId] ist nicht in dieser Mitgliedschaft.]]></de>
             <en><![CDATA[The user with ID #[userId] is not in this membership.]]></en>
         </locale>
+        <locale name="exception.membership.cannot.delete.with.users.left">
+            <de><![CDATA[Eine Mitgliedschaft kann nur gelöscht werden, wenn sie keine Mitglieder mehr hat. Bitte entfernen Sie vor dem Löschen alle Mitglieder aus der Mitgliedschaft.]]></de>
+            <en><![CDATA[A membership can only be deleted if it does not contain any members. Please remove all members from this membership before deleting it.]]></en>
+        </locale>
 
         <!-- Class: Users\Handler -->
         <locale name="exception.users.handler.no.user">
@@ -334,6 +348,42 @@
         <locale name="exception.users.handler.user.is.already.in.membership">
             <de><![CDATA[Der Benutzer <b>[userName]</b> (#[userId]) ist bereits in dieser Mitgliedschaft.]]></de>
             <en><![CDATA[The user <b>[userName]</b> (#[userId]) is already in this membership.]]></en>
+        </locale>
+
+        <!-- Class: Users\MembershipUser -->
+        <locale name="exception.users.membershipuser.confirmCancel.already.cancelled">
+            <de><![CDATA[Diese Mitgliedschaft ist bereits gekündigt.]]></de>
+            <en><![CDATA[This membership has already been cancelled.]]></en>
+        </locale>
+        <locale name="exception.users.membershipuser.confirmCancel.no.hash">
+            <de><![CDATA[Der Kündigungsprozess für diese Mitgliedschaft wurde noch nicht gestartet.]]></de>
+            <en><![CDATA[The cancellation process for this membership has not been initiated yet.]]></en>
+        </locale>
+        <locale name="exception.users.membershipuser.confirmCancel.hash.mismatch">
+            <de><![CDATA[Der Prüf-Hash für die Mitgliedschafts-Kündigung ist fehlerhaft.]]></de>
+            <en><![CDATA[The cancel check hash for this membership cancellation is wrong.]]></en>
+        </locale>
+
+        <!-- Templates -->
+        <locale name="templates.mail.startcancel.subject">
+            <de><![CDATA[Kündigung Ihrer Mitgliedschaft]]></de>
+            <en><![CDATA[Cancellation of your membership]]></en>
+        </locale>
+        <locale name="templates.mail.startcancel.greeting">
+            <de><![CDATA[Hallo [name]!]]></de>
+            <en><![CDATA[Hello [name]!]]></en>
+        </locale>
+        <locale name="templates.mail.startcancel.body" html="true">
+            <de><![CDATA[Sie haben Ihre Mitgliedschaft <b>[membershipTitle]</b> am <b>[cancelDate]</b> gekündigt. Um diese Kündigung zu bestätigen besuchen Sie bitte:<br><br><a href="[cancelUrl]">[cancelUrl]</a>]]></de>
+            <en><![CDATA[You cancelled your membership <b>[membershipTitle]</b> on <b>[cancelDate]</b>. To confirm this cancellation please visit:<br><br><a href="[cancelUrl]">[cancelUrl]</a>]]></en>
+        </locale>
+        <locale name="templates.cancel.confirm.success">
+            <de><![CDATA[Die Kündigung Ihrer Mitgliedschaft war erfolgreich!]]></de>
+            <en><![CDATA[The cancellation of your membership has been successful!]]></en>
+        </locale>
+        <locale name="templates.cancel.confirm.error">
+            <de><![CDATA[Bei der Kündigung Ihrer Mitgliedschaft ist ein Fehler aufgetreten:<br><br>[errorMessage]]]></de>
+            <en><![CDATA[An error occurred during the cancellation of your membership:<br><br>[errorMessage]]]></en>
         </locale>
 
     </groups>

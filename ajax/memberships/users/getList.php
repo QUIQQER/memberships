@@ -30,16 +30,20 @@ QUI::$Ajax->registerFunction(
             $User           = $Users->get($data['userId']);
 
             $membershipUsers[] = array(
-                'id'            => $data['id'],
-                'userId'        => $data['userId'],
-                'username'      => $User->getUsername(),
-                'userFirstName' => $User->getAttribute('firstname'),
-                'userLastName'  => $User->getAttribute('lastname'),
-                'addedDate'     => $data['addedDate'],
-                'beginDate'     => $data['beginDate'],
-                'endDate'       => $data['endDate']
+                'id'             => $data['id'],
+                'userId'         => $data['userId'],
+                'username'       => $User->getUsername(),
+                'userFirstName'  => $User->getAttribute('firstname'),
+                'userLastname'   => $User->getAttribute('lastname'),
+                'addedDate'      => $data['addedDate'],
+                'beginDate'      => $data['beginDate'],
+                'endDate'        => $data['endDate'],
+                'renewalCounter' => $data['renewalCounter']
             );
         }
+
+        $TEST = $MembershipUsers->getChild(7);
+        $TEST->startCancel();
 
         $Grid = new Grid($searchParams);
 

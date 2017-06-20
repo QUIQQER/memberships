@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiqqer>
+    <settings>
+
+        <config>
+
+            <section name="membershipusers">
+                <conf name="renewMode">
+                    <type><![CDATA[string]]></type>
+                    <defaultvalue>reset</defaultvalue>
+                </conf>
+            </section>
+
+        </config>
+
+        <window>
+            <title>
+                <locale group="quiqqer/memberships" var="settings.menu.title"/>
+            </title>
+
+            <params>
+                <icon>fa fa-id-card-o</icon>
+            </params>
+
+            <categories>
+                <category name="settings">
+                    <title>
+                        <locale group="quiqqer/memberships" var="settings.category.title"/>
+                    </title>
+                    <settings title="settings" name="settings">
+                        <title>
+                            <locale group="quiqqer/memberships" var="settings.membershipusers.title"/>
+                        </title>
+
+                        <select conf="membershipusers.renewMode">
+                            <text>
+                                <locale group="quiqqer/memberships" var="settings.renewMode.title"/>
+                            </text>
+                            <description>
+                                <locale group="quiqqer/memberships" var="settings.renewMode.description"/>
+                            </description>
+                            <option value="reset">
+                                <locale group="quiqqer/memberships" var="settings.renewMode.option.reset"/>
+                            </option>
+                            <option value="prolong">
+                                <locale group="quiqqer/memberships" var="settings.renewMode.option.prolong"/>
+                            </option>
+                        </select>
+                    </settings>
+                </category>
+
+            </categories>
+        </window>
+
+    </settings>
+</quiqqer>

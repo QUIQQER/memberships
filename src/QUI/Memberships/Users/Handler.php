@@ -10,6 +10,14 @@ use QUI\Memberships\Users\Handler as MembershipUsersHandler;
 
 class Handler extends Factory
 {
+    const HISTORY_TYPE_CREATED        = 'created';
+    const HISTORY_TYPE_UPDATED        = 'updated';
+    const HISTORY_TYPE_CANCEL_START   = 'cancel_start';
+    const HISTORY_TYPE_CANCEL_CONFIRM = 'cancel_confirm';
+    const HISTORY_TYPE_CANCELLED      = 'cancelled';
+    const HISTORY_TYPE_DELETED        = 'deleted';
+    const HISTORY_TYPE_ARCHIVED       = 'archived';
+
     /**
      * @inheritdoc
      * @throws QUI\Memberships\Exception
@@ -51,10 +59,12 @@ class Handler extends Factory
         // current begin and end
         $data['beginDate'] = Utils::getFormattedTimestamp();
         $data['endDate']   = $Membership->calcEndDate();
-
+        
+        /** @var MembershipUser $NewChild */
         $NewChild = parent::createChild($data);
-
-        $Membership->setUsersToGroups();
+        $NewChild->addHistoryEntry(self::HISTORY_TYPE_CREATED);
+        $NewChild->setToGroups();
+        $NewChild->update();
 
         return $NewChild;
     }
@@ -87,7 +97,7 @@ class Handler extends Factory
     }
 
     /**
-     * Get all QUIQQER IDs of membership users by Membership ID
+     * Get all QUIQQER User IDs of membership users by Membership ID
      *
      * @param int $membershipId
      * @return int[]
@@ -153,7 +163,24 @@ class Handler extends Factory
             'userId',
             'addedDate',
             'beginDate',
-            'endDate'
+            'endDate',
+            'archived',
+            'history',
+            'cancelHash',
+            'cancelDate',
+            'cancelled'
         );
+    }
+
+    /**
+     * Get config entry for a membershipusers config
+     *
+     * @param string $key
+     * @return array|string
+     */
+    public function getConfigEntry($key)
+    {
+        $Config = QUI::getPackage('quiqqer/memberships')->getConfig();
+        return $Config->get('membershipusers', $key);
     }
 }

@@ -170,8 +170,8 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
                     dataType : 'string',
                     width    : 150
                 }, {
-                    header   : QUILocale.get(lg, 'controls.membershipusers.tbl.header.userLastName'),
-                    dataIndex: 'userLastName',
+                    header   : QUILocale.get(lg, 'controls.membershipusers.tbl.header.userLastname'),
+                    dataIndex: 'userLastname',
                     dataType : 'string',
                     width    : 150
                 }, {
@@ -236,6 +236,14 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
                 return;
             }
 
+            switch (Grid.getAttribute('sortOn')) {
+                // cannot sort on certain columns
+                case 'username':
+                case 'userFirstname':
+                case 'userLastname':
+                    return;
+            }
+
             var self         = this;
             var TableButtons = this.$Grid.getAttribute('buttons');
 
@@ -271,8 +279,8 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
                     Row.userFirstname = '-';
                 }
 
-                if (!Row.userLastName) {
-                    Row.userLastName = '-';
+                if (!Row.userLastname) {
+                    Row.userLastname = '-';
                 }
 
                 //if (Row.active) {

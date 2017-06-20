@@ -1,0 +1,12 @@
+<h1>
+    {locale group="quiqqer/memberships" value="templates.mail.startcancel.greeting"
+    name=$MembershipUser->getUser()->getName()}
+</h1>
+
+<p>
+    {locale group="quiqqer/memberships" value="templates.mail.startcancel.body"
+    membershipTitle=$Membership->getTitle()
+    cancelDate=$MembershipUser->getAttribute('cancelDate')
+    cancelUrl=$cancelUrl
+    }
+</p>
