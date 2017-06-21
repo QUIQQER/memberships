@@ -6,6 +6,11 @@
             border: 2px solid red;
             padding: 20px;
         }
+
+        p.success {
+            border: 2px solid green;
+            padding: 20px;
+        }
     </style>
 </head>
 <body>
@@ -15,7 +20,7 @@
     errorMessage=$errorMessage}
 </p>
 {else}
-<p>
+<p class="success">
     {locale group="quiqqer/memberships" value="templates.cancel.confirm.success"}
 </p>
 {/if}

@@ -86,13 +86,13 @@ class Membership extends Child
     }
 
     /**
-     * Check if this membership is auto-renewed
+     * Check if this membership is auto-extended
      *
      * @return bool
      */
-    public function isAutoRenew()
+    public function isAutoExtend()
     {
-        return $this->getAttribute('autoRenew') ? true : false;
+        return $this->getAttribute('autoExtend') ? true : false;
     }
 
     /**
@@ -160,7 +160,7 @@ class Membership extends Child
     }
 
     /**
-     * Get a user of this membership
+     * Get a user of this membership (non-archived)
      *
      * @param int $userId - User ID
      * @return QUI\Memberships\Users\MembershipUser
@@ -175,7 +175,8 @@ class Membership extends Child
             'from'   => MembershipUsersHandler::getInstance()->getDataBaseTableName(),
             'where'  => array(
                 'membershipId' => $this->id,
-                'userId'       => $userId
+                'userId'       => $userId,
+                'archived'     => 0
             )
         ));
 
@@ -249,7 +250,7 @@ class Membership extends Child
     }
 
     /**
-     * Search memberships
+     * Search membership users
      *
      * @param array $searchParams
      * @param bool $countOnly (optional) - get count for search result only [default: false]
@@ -285,6 +286,59 @@ class Membership extends Child
                 'archived'     => 0
             ),
             'limit'  => $gridParams['limit']
+        );
+
+        if (!empty($gridParams['order'])) {
+            $searchQuery['order'] = $gridParams['order'];
+        }
+
+        $result = QUI::getDataBase()->fetch($searchQuery);
+
+        foreach ($result as $row) {
+            $membershipUserIds[] = (int)$row['id'];
+        }
+
+        return $membershipUserIds;
+    }
+
+    /**
+     * Search membership users (archived)
+     *
+     * @param array $searchParams
+     * @param bool $countOnly (optional) - get count for search result only [default: false]
+     * @return int[] - membership user IDs
+     */
+    public function searchArchivedUsers($searchParams, $countOnly = false)
+    {
+        $membershipUserIds = array();
+        $Grid              = new QUI\Utils\Grid($searchParams);
+        $gridParams        = $Grid->parseDBParams($searchParams);
+        $tbl               = MembershipUsersHandler::getInstance()->getDataBaseTableName();
+
+        if ($countOnly) {
+            $result = QUI::getDataBase()->fetch(array(
+                'count' => 1,
+                'from'  => $tbl,
+                'where' => array(
+                    'membershipId' => $this->id,
+                    'archived'     => 1
+                ),
+            ));
+
+            return current(current($result));
+        }
+
+        $searchQuery = array(
+            'select' => array(
+                'id'
+            ),
+            'from'   => $tbl,
+            'where'  => array(
+                'membershipId' => $this->id,
+                'archived'     => 1
+            ),
+            'limit'  => $gridParams['limit'],
+            'order'  => 'archiveDate DESC'
         );
 
         if (!empty($gridParams['order'])) {

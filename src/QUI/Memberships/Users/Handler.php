@@ -15,8 +15,14 @@ class Handler extends Factory
     const HISTORY_TYPE_CANCEL_START   = 'cancel_start';
     const HISTORY_TYPE_CANCEL_CONFIRM = 'cancel_confirm';
     const HISTORY_TYPE_CANCELLED      = 'cancelled';
+    const HISTORY_TYPE_EXPIRED        = 'expired';
     const HISTORY_TYPE_DELETED        = 'deleted';
     const HISTORY_TYPE_ARCHIVED       = 'archived';
+    const HISTORY_TYPE_EXTENDED       = 'extended';
+
+    const ARCHIVE_REASON_CANCELLED = 'cancelled';
+    const ARCHIVE_REASON_EXPIRED   = 'expired';
+    const ARCHIVE_REASON_DELETED   = 'deleted';
 
     /**
      * @inheritdoc
@@ -45,25 +51,22 @@ class Handler extends Factory
         $Membership = MembershipsHandler::getInstance()->getChild($data['membershipId']);
         $User       = QUI::getUsers()->get($data['userId']);
 
+        // if the user is already in the membership -> extend runtime
         if ($Membership->hasMembershipUserId($User->getId())) {
-            throw new QUI\Memberships\Exception(array(
-                'quiqqer/memberships',
-                'exception.users.handler.user.is.already.in.membership',
-                array(
-                    'userId'   => $User->getId(),
-                    'userName' => $User->getUsername()
-                )
-            ));
+            $MembershipUser = $Membership->getMembershipUser($User->getId());
+            $MembershipUser->extend(false);
+
+            return $MembershipUser;
         }
 
         // current begin and end
         $data['beginDate'] = Utils::getFormattedTimestamp();
         $data['endDate']   = $Membership->calcEndDate();
-        
+
         /** @var MembershipUser $NewChild */
         $NewChild = parent::createChild($data);
         $NewChild->addHistoryEntry(self::HISTORY_TYPE_CREATED);
-        $NewChild->setToGroups();
+        $NewChild->addToGroups();
         $NewChild->update();
 
         return $NewChild;
@@ -123,16 +126,43 @@ class Handler extends Factory
         return $membershipUserIds;
     }
 
-    /**
-     * Get membership
-     *
-     * @param int $id
-     * @return MembershipUser
-     */
-    public function getChild($id)
-    {
-        return parent::getChild($id);
-    }
+//    /**
+//     * Get membership
+//     *
+//     * @param int $id
+//     * @return MembershipUser
+//     * @throws QUI\Exception
+//     */
+//    public function getChild($id)
+//    {
+//        $childClass = $this->getChildClass();
+//
+//        $result = QUI::getDataBase()->fetch(array(
+//            'from'  => $this->getDataBaseTableName(),
+//            'where' => array(
+//                'id'       => $id,
+//                'archived' => 0
+//            )
+//        ));
+//
+//        if (!isset($result[0])) {
+//            throw new QUI\Exception(
+//                array(
+//                    'quiqqer/system',
+//                    'crud.child.not.found'
+//                ),
+//                404
+//            );
+//        }
+//
+//        $Child = new $childClass($result[0]['id'], $this);
+//
+//        if ($Child instanceof QUI\CRUD\Child) {
+//            $Child->setAttributes($result[0]);
+//        }
+//
+//        return $Child;
+//    }
 
     /**
      * @inheritdoc
@@ -168,7 +198,9 @@ class Handler extends Factory
             'history',
             'cancelHash',
             'cancelDate',
-            'cancelled'
+            'cancelled',
+            'archiveReason',
+            'archiveDate'
         );
     }
 
@@ -178,7 +210,7 @@ class Handler extends Factory
      * @param string $key
      * @return array|string
      */
-    public function getConfigEntry($key)
+    public static function getConfigEntry($key)
     {
         $Config = QUI::getPackage('quiqqer/memberships')->getConfig();
         return $Config->get('membershipusers', $key);

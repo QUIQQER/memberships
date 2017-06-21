@@ -5,7 +5,7 @@
         <config>
 
             <section name="membershipusers">
-                <conf name="renewMode">
+                <conf name="extendMode">
                     <type><![CDATA[string]]></type>
                     <defaultvalue>reset</defaultvalue>
                 </conf>
@@ -32,18 +32,18 @@
                             <locale group="quiqqer/memberships" var="settings.membershipusers.title"/>
                         </title>
 
-                        <select conf="membershipusers.renewMode">
+                        <select conf="membershipusers.extendMode">
                             <text>
-                                <locale group="quiqqer/memberships" var="settings.renewMode.title"/>
+                                <locale group="quiqqer/memberships" var="settings.extendMode.title"/>
                             </text>
                             <description>
-                                <locale group="quiqqer/memberships" var="settings.renewMode.description"/>
+                                <locale group="quiqqer/memberships" var="settings.extendMode.description"/>
                             </description>
                             <option value="reset">
-                                <locale group="quiqqer/memberships" var="settings.renewMode.option.reset"/>
+                                <locale group="quiqqer/memberships" var="settings.extendMode.option.reset"/>
                             </option>
                             <option value="prolong">
-                                <locale group="quiqqer/memberships" var="settings.renewMode.option.prolong"/>
+                                <locale group="quiqqer/memberships" var="settings.extendMode.option.prolong"/>
                             </option>
                         </select>
                     </settings>

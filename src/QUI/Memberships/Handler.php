@@ -108,7 +108,7 @@ class Handler extends Factory
             'content',
             'duration',
             'groupIds',
-            'autoRenew',
+            'autoExtend',
             'editDate',
             'editUser',
 //            'createDate',

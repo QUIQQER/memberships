@@ -1,0 +1,11 @@
+<h1>
+    {locale group="quiqqer/memberships" value="templates.mail.greeting"
+    name=$MembershipUser->getUser()->getName()}
+</h1>
+
+<p>
+    {locale group="quiqqer/memberships" value="templates.mail.autoextend.body"
+    membershipTitle=$MembershipUser->getMembership()->getTitle()
+    endDate=$MembershipUser->getAttribute('endDate')
+    }
+</p>

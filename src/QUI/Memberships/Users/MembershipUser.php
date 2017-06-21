@@ -19,26 +19,70 @@ use QUI\Mail\Mailer;
 class MembershipUser extends Child
 {
     /**
-     * Renew the current membership cycle of this membership user
+     * Extend the current membership cycle of this membership user
      *
+     * @param bool $auto (optional) - Used if the membership is automatically extended.
+     * If set to false, the setting membershipusers.extendMode is used [default: true]
      * @return void
      */
-    public function renew()
+    public function extend($auto = true)
     {
         $Membership = $this->getMembership();
-        $start      = time();
-        $startDate  = Utils::getFormattedTimestamp($start);
-        $endDate    = $Membership->calcEndDate($start);
+        $extendMode = MembershipUsersHandler::getConfigEntry('extendMode');
 
+        if ($auto || $extendMode === 'reset') {
+            $start         = time();
+            $extendCounter = $this->getAttribute('extendCounter');
 
+            $this->setAttributes(array(
+                'beginDate'     => Utils::getFormattedTimestamp($start),
+                'endDate'       => $Membership->calcEndDate($start),
+                'extendCounter' => $extendCounter + 1
+            ));
+        } else {
+            $endDate = $this->getAttribute('endDate');
+
+            $this->setAttributes(array(
+                'endDate' => $Membership->calcEndDate(strtotime($endDate))
+            ));
+        }
+
+        $historyEntry = 'start: ' . $this->getAttribute('beginDate');
+        $historyEntry .= ' | end: ' . $this->getAttribute('endDate');
+        $historyEntry .= ' | auto: ';
+        $auto ? $historyEntry .= '1' : $historyEntry .= '0';
+
+        $this->addHistoryEntry(MembershipUsersHandler::HISTORY_TYPE_EXTENDED, $historyEntry);
+        $this->update();
+
+        // send autoextend mail
+        $subject = $this->getUser()->getLocale()->get('quiqqer/memberships', 'templates.mail.autoextend.subject');
+        $this->sendMail($subject, dirname(__FILE__, 5) . '/templates/mail_autoextend.html');
     }
 
     /**
-     * Start the membership cancellation process
+     * Expires this memberships user
      *
      * @return void
      */
-    public function startCancel()
+    public function expire()
+    {
+        $this->addHistoryEntry(MembershipUsersHandler::HISTORY_TYPE_EXPIRED);
+        $this->archive(MembershipUsersHandler::ARCHIVE_REASON_EXPIRED);
+
+        // send expire mail
+        $subject = $this->getUser()->getLocale()->get('quiqqer/memberships', 'templates.mail.expired.subject');
+        $this->sendMail($subject, dirname(__FILE__, 5) . '/templates/mail_expired.html');
+    }
+
+    /**
+     * Start the manual membership cancellation process
+     *
+     * Generates a random hash and sends an email to the user
+     *
+     * @return void
+     */
+    public function startManualCancel()
     {
         if ($this->isCancelled()) {
             // @todo throw Exception?
@@ -53,7 +97,7 @@ class MembershipUser extends Child
         $params = array(
             'mid'    => $this->id,
             'hash'   => $cancelHash,
-            'action' => 'confirmcancel'
+            'action' => 'confirmManualCancel'
         );
 
         $cancelUrl .= '?' . http_build_query($params);
@@ -68,28 +112,14 @@ class MembershipUser extends Child
         $this->update();
 
         // send cancellation mail
-        $Mailer = new Mailer();
-        $Engine = QUI::getTemplateManager()->getEngine();
-
-        $Engine->assign(array(
-            'MembershipUser' => $this,
-            'Membership'     => $this->getMembership(),
-            'cancelDate'     => $cancelDate,
-            'cancelUrl'      => $cancelUrl
-        ));
-
-        $template = $Engine->fetch(dirname(__FILE__, 5) . '/templates/mail_startcancel.html');
-
-        // @todo E-Mail aus Benutzer holen
-        $Mailer->addRecipient('peat@pcsg.de', $this->getUser()->getName());
-        $Mailer->setSubject(
-            QUI::getLocale()->get(
-                'quiqqer/memberships',
-                'templates.mail.startcancel.subject'
+        $this->sendMail(
+            QUI::getLocale()->get('quiqqer/memberships', 'templates.mail.startcancel.subject'),
+            dirname(__FILE__, 5) . '/templates/mail_startcancel.html',
+            array(
+                'cancelDate' => $cancelDate,
+                'cancelUrl'  => $cancelUrl
             )
         );
-        $Mailer->setBody($template);
-        $Mailer->send();
     }
 
     /**
@@ -100,47 +130,54 @@ class MembershipUser extends Child
      *
      * @throws QUI\Memberships\Exception
      */
-    public function confirmCancel($confirmHash)
+    public function confirmManualCancel($confirmHash)
     {
         $cancelHash = $this->getAttribute('cancelHash');
 
-        if (empty($cancelHash)) {
-            throw new QUI\Memberships\Exception(array(
-                'quiqqer/memberships',
-                'exception.users.membershipuser.confirmCancel.no.hash'
-            ));
-        }
+//        if (empty($cancelHash)) {
+//            throw new QUI\Memberships\Exception(array(
+//                'quiqqer/memberships',
+//                'exception.users.membershipuser.confirmManualCancel.no.hash'
+//            ));
+//        }
 
         if ($confirmHash !== $cancelHash) {
             throw new QUI\Memberships\Exception(array(
                 'quiqqer/memberships',
-                'exception.users.membershipuser.confirmCancel.hash.mismatch'
+                'exception.users.membershipuser.confirmManualCancel.hash.mismatch'
             ));
         }
 
         if ($this->isCancelled()) {
             throw new QUI\Memberships\Exception(array(
                 'quiqqer/memberships',
-                'exception.users.membershipuser.confirmCancel.already.cancelled'
+                'exception.users.membershipuser.confirmManualCancel.already.cancelled'
             ));
         }
 
-        $this->cancelMembership();
-    }
-
-    /**
-     * Cancel the membership
-     *
-     * @return void
-     */
-    protected function cancelMembership()
-    {
         $this->setAttributes(array(
             'cancelled' => true
         ));
 
-        $this->addHistoryEntry(MembershipUsersHandler::HISTORY_TYPE_CANCELLED);
-        $this->archive();
+        $this->addHistoryEntry(MembershipUsersHandler::HISTORY_TYPE_CANCEL_CONFIRM);
+
+        // send confirm cancel mail
+        $subject = $this->getUser()->getLocale()->get('quiqqer/memberships', 'templates.mail.confirmcancel.subject');
+        $this->sendMail($subject, dirname(__FILE__, 5) . '/templates/mail_confirmcancel.html');
+    }
+
+    /**
+     * Cancel membership
+     *
+     * @return void
+     */
+    public function cancel()
+    {
+        $this->archive(MembershipUsersHandler::ARCHIVE_REASON_CANCELLED);
+
+        // send expired mail
+        $subject = $this->getUser()->getLocale()->get('quiqqer/memberships', 'templates.mail.expired.subject');
+        $this->sendMail($subject, dirname(__FILE__, 5) . '/templates/mail_expired.html');
     }
 
     /**
@@ -162,11 +199,10 @@ class MembershipUser extends Child
      */
     public function delete()
     {
-        $this->removeFromGroups();
         $this->addHistoryEntry(MembershipUsersHandler::HISTORY_TYPE_DELETED);
 
         // do not delete, just set to archived
-        $this->archive();
+        $this->archive(MembershipUsersHandler::ARCHIVE_REASON_DELETED);
     }
 
     /**
@@ -174,7 +210,7 @@ class MembershipUser extends Child
      *
      * @return void
      */
-    public function setToGroups()
+    public function addToGroups()
     {
         $groupIds = $this->getMembership()->getGroupIds();
         $User     = $this->getUser();
@@ -229,12 +265,18 @@ class MembershipUser extends Child
     /**
      * Archive this membership user
      *
+     * @param string $reason - The reason why this user is archived
      * @return void
      */
-    protected function archive()
+    public function archive($reason)
     {
+        $this->removeFromGroups();
         $this->addHistoryEntry(MembershipUsersHandler::HISTORY_TYPE_ARCHIVED);
-        $this->setAttribute('archived', 1);
+        $this->setAttributes(array(
+            'archived'      => 1,
+            'archiveDate'   => Utils::getFormattedTimestamp(),
+            'archiveReason' => $reason
+        ));
         $this->update();
     }
 
@@ -306,5 +348,36 @@ class MembershipUser extends Child
         );
 
         $this->setAttribute('history', json_encode($history));
+    }
+
+    /**
+     * Send an email to the membership user
+     *
+     * @param string $subject - mail subject
+     * @param string $templateFile
+     * @param array $templateVars (optional) - additional template variables (besides $this)
+     * @return void
+     */
+    protected function sendMail($subject, $templateFile, $templateVars = array())
+    {
+        $Engine = QUI::getTemplateManager()->getEngine();
+
+        $Engine->assign(array_merge(
+            array(
+                'MembershipUser' => $this,
+                'Locale'         => $this->getUser()->getLocale()
+            ),
+            $templateVars
+        ));
+
+        $template = $Engine->fetch($templateFile);
+
+        $Mailer = new Mailer();
+
+        // @todo E-Mail aus Benutzer holen
+        $Mailer->addRecipient('peat@pcsg.de', $this->getUser()->getName());
+        $Mailer->setSubject($subject);
+        $Mailer->setBody($template);
+        $Mailer->send();
     }
 }

@@ -27,7 +27,7 @@ QUI::$Ajax->registerFunction(
                 'description' => $Membership->getDescription(),
                 'duration'    => $data['duration'],
                 'userCount'   => 0,
-                'autoRenew'   => boolval($data['autoRenew'])
+                'autoExtend'  => boolval($data['autoExtend'])
             );
         }
 

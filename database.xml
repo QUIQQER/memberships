@@ -14,7 +14,7 @@
             <field type="BIGINT(20) NOT NULL">createUser</field>
             <field type="TIMESTAMP NULL DEFAULT NULL">editDate</field>
             <field type="BIGINT(20) NULL">editUser</field>
-            <field type="TINYINT(1) NOT NULL DEFAULT 0">autoRenew</field>
+            <field type="TINYINT(1) NOT NULL DEFAULT 0">autoExtend</field>
 
             <!-- quiqqer/order fields -->
             <field type="VARCHAR(255) NULL">paymentInterval</field>
@@ -28,11 +28,13 @@
             <field type="TIMESTAMP NOT NULL">addedDate</field>
             <field type="TIMESTAMP NULL DEFAULT NULL">beginDate</field>
             <field type="TIMESTAMP NULL DEFAULT NULL">endDate</field>
-            <field type="SMALLINT UNSIGNED NOT NULL DEFAULT 0">renewalCounter</field>
+            <field type="SMALLINT UNSIGNED NOT NULL DEFAULT 0">extendCounter</field>
             <field type="TIMESTAMP NULL DEFAULT NULL">cancelDate</field>
             <field type="VARCHAR(255) NULL">cancelHash</field>
             <field type="TINYINT(1) NOT NULL DEFAULT 0">cancelled</field>
             <field type="TINYINT(1) NOT NULL DEFAULT 0">archived</field>
+            <field type="TIMESTAMP NULL DEFAULT NULL">archiveDate</field>
+            <field type="VARCHAR(255) NULL">archiveReason</field>
             <field type="MEDIUMTEXT NULL">history</field>
         </table>
     </global>

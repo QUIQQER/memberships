@@ -187,8 +187,8 @@ define('package/quiqqer/memberships/bin/controls/MembershipsManager', [
                     dataType : 'string',
                     width    : 75
                 }, {
-                    header   : QUILocale.get(lg, 'controls.membershipsmanager.tbl.header.autoRenew'),
-                    dataIndex: 'autoRenewStatus',
+                    header   : QUILocale.get(lg, 'controls.membershipsmanager.tbl.header.autoExtend'),
+                    dataIndex: 'autoExtendStatus',
                     dataType : 'node',
                     width    : 100
                 }],
@@ -270,12 +270,12 @@ define('package/quiqqer/memberships/bin/controls/MembershipsManager', [
             for (var i = 0, len = GridData.data.length; i < len; i++) {
                 var Row = GridData.data[i];
 
-                if (Row.autoRenew) {
-                    Row.autoRenewStatus = new Element('span', {
+                if (Row.autoExtend) {
+                    Row.autoExtendStatus = new Element('span', {
                         'class': 'fa fa-check'
                     });
                 } else {
-                    Row.autoRenewStatus = new Element('span', {
+                    Row.autoExtendStatus = new Element('span', {
                         'class': 'fa fa-close'
                     });
                 }

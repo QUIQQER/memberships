@@ -69,6 +69,24 @@ define('package/quiqqer/memberships/bin/classes/MembershipUsers', [
                     onError     : reject
                 })
             });
+        },
+
+        /**
+         * Get/Search memberships (archived)
+         *
+         * @param {Integer} membershipId
+         * @param {Object} SearchParams
+         * @return {Promise}
+         */
+        getArchiveList: function (membershipId, SearchParams) {
+            return new Promise(function (resolve, reject) {
+                QUIAjax.get('package_quiqqer_memberships_ajax_memberships_users_getArchiveList', resolve, {
+                    'package'   : pkg,
+                    membershipId: membershipId,
+                    searchParams: JSON.encode(SearchParams),
+                    onError     : reject
+                })
+            });
         }
     });
 });

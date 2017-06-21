@@ -47,7 +47,37 @@
         </locale>
         <locale name="settings.category.title">
             <de><![CDATA[Einstellungen]]></de>
-            <en><![CDATA[Mitgliedschaften]]></en>
+            <en><![CDATA[Settings]]></en>
+        </locale>
+        <locale name="settings.membershipusers.title">
+            <de><![CDATA[Mitgliedschaften]]></de>
+            <en><![CDATA[Memberships]]></en>
+        </locale>
+        <locale name="settings.extendMode.title">
+            <de><![CDATA[Verlängerung von Mitgliedschaften]]></de>
+            <en><![CDATA[Extension of memberships]]></en>
+        </locale>
+        <locale name="settings.extendMode.description">
+            <de><![CDATA[Bestimmt, wie die Laufzeit einer Mitgliedschaft für einen Benutzer verlängert wird, wenn der Benutzer in die Mitgliedschaft kommt, obwohl er schon aktives Mitglied ist.]]></de>
+            <en><![CDATA[Determines how the runtime of a membership is extended for a user when the user enters the membership even though he is already an active member.]]></en>
+        </locale>
+        <locale name="settings.extendMode.option.reset">
+            <de><![CDATA[Start- und End-Zeitpunkt werden neu gesetzt]]></de>
+            <en><![CDATA[Start and end times are reset]]></en>
+        </locale>
+        <locale name="settings.extendMode.option.prolong">
+            <de><![CDATA[Start-Zeitpunkt bleibt erhalten, nur End-Zeitpunkt wird neu gesetzt]]></de>
+            <en><![CDATA[Start time is retained, only end time is reset]]></en>
+        </locale>
+
+        <!-- Cron -->
+        <locale name="cron.checkMembershipUsers.title">
+            <de><![CDATA[Mitgliedschaften prüfen/verlängern]]></de>
+            <en><![CDATA[Check/extend memberships]]></en>
+        </locale>
+        <locale name="cron.checkMembershipUsers.description">
+            <de><![CDATA[Prüft für jede Mitgliedschaft, ob sie verlängert werden oder beendet werden muss.]]></de>
+            <en><![CDATA[Checks for each membership whether it needs to be extended or terminated.]]></en>
         </locale>
 
     </groups>
@@ -87,9 +117,9 @@
             <de><![CDATA[Benutzer]]></de>
             <en><![CDATA[Users]]></en>
         </locale>
-        <locale name="controls.membershipsmanager.tbl.header.autoRenew">
+        <locale name="controls.membershipsmanager.tbl.header.autoExtend">
             <de><![CDATA[Autom. verlängern]]></de>
-            <en><![CDATA[Auto renew]]></en>
+            <en><![CDATA[Auto extend]]></en>
         </locale>
         <locale name="controls.membershipsmanager.add.popup.title">
             <de><![CDATA[Neue Mitgliedschaft]]></de>
@@ -133,6 +163,10 @@
             <de><![CDATA[Benutzer]]></de>
             <en><![CDATA[Users]]></en>
         </locale>
+        <locale name="controls.membership.category.usersArchive">
+            <de><![CDATA[Benutzer-Archiv]]></de>
+            <en><![CDATA[Users archive]]></en>
+        </locale>
         <locale name="controls.membership.template.settings.headerSettings">
             <de><![CDATA[Mitgliedschafts-Informationen]]></de>
             <en><![CDATA[Membership information]]></en>
@@ -157,9 +191,9 @@
             <de><![CDATA[Laufzeit]]></de>
             <en><![CDATA[Duration]]></en>
         </locale>
-        <locale name="controls.membership.template.settings.labelAutoRenew">
+        <locale name="controls.membership.template.settings.labelAutoExtend">
             <de><![CDATA[Automatische Verlängerung]]></de>
-            <en><![CDATA[Auto renewal]]></en>
+            <en><![CDATA[Auto extend]]></en>
         </locale>
         <locale name="controls.membership.template.settings.headerGroups">
             <de><![CDATA[Gruppen]]></de>
@@ -169,9 +203,9 @@
             <de><![CDATA[Zugeordnete Gruppen]]></de>
             <en><![CDATA[Assigned groups]]></en>
         </locale>
-        <locale name="controls.membership.template.settings.autoRenew">
+        <locale name="controls.membership.template.settings.autoExtend">
             <de><![CDATA[Diese Mitgliedschaft wird nach Ablauf der Laufzeit automatisch um die eingestellte Laufzeit verlängert]]></de>
-            <en><![CDATA[This membership is renewed automatically after expiration]]></en>
+            <en><![CDATA[This membership is extended automatically after expiration]]></en>
         </locale>
         <locale name="controls.membership.lock.title">
             <de><![CDATA[Mitgliedschaft gesperrt!]]></de>
@@ -225,13 +259,9 @@
             <de><![CDATA[Benutzername]]></de>
             <en><![CDATA[Username]]></en>
         </locale>
-        <locale name="controls.membershipusers.tbl.header.userFirstname">
-            <de><![CDATA[Vorname]]></de>
-            <en><![CDATA[Fist name]]></en>
-        </locale>
-        <locale name="controls.membershipusers.tbl.header.userLastname">
-            <de><![CDATA[Nachname]]></de>
-            <en><![CDATA[Last name]]></en>
+        <locale name="controls.membershipusers.tbl.header.userFullName">
+            <de><![CDATA[Name]]></de>
+            <en><![CDATA[Name]]></en>
         </locale>
         <locale name="controls.membershipusers.tbl.header.addedDate">
             <de><![CDATA[In Mitgliedschaft seit]]></de>
@@ -245,9 +275,9 @@
             <de><![CDATA[Ende (akt. Zyklus)]]></de>
             <en><![CDATA[Ends (curr. cycle)]]></en>
         </locale>
-        <locale name="controls.membershipusers.tbl.header.renewalCounter">
+        <locale name="controls.membershipusers.tbl.header.extendCounter">
             <de><![CDATA[Autom. Erneuerungen]]></de>
-            <en><![CDATA[Auto renewals]]></en>
+            <en><![CDATA[Auto extends]]></en>
         </locale>
         <locale name="controls.membershipusers.delete.popup.info" html="true">
             <de><![CDATA[Sind Sie sicher, dass Sie folgende Benutzer unwiderruflich aus der Mitgliedschaft entfernen möchten? Die Benutzer verlieren dann alle Rechte dieser Mitgliedschaft.<br><br>[users]]]></de>
@@ -256,6 +286,32 @@
         <locale name="controls.membershipusers.delete.popup.title">
             <de><![CDATA[Benutzer aus Mitgliedschaft entfernen]]></de>
             <en><![CDATA[Remove user(s) from membership]]></en>
+        </locale>
+
+        <!-- Controls: users/MembershipUsersArchive -->
+        <locale name="controls.users.membershipusersarchive.tbl.btn.history">
+            <de><![CDATA[History]]></de>
+            <en><![CDATA[History]]></en>
+        </locale>
+        <locale name="controls.users.membershipusersarchive.tbl.header.archiveDate">
+            <de><![CDATA[Archivierungs-Datum]]></de>
+            <en><![CDATA[Archive date]]></en>
+        </locale>
+        <locale name="controls.users.membershipusersarchive.tbl.header.archiveReason">
+            <de><![CDATA[Archivierungs-Grund]]></de>
+            <en><![CDATA[Archive reason]]></en>
+        </locale>
+        <locale name="controls.users.membershipusersarchive.tbl.archiveReason.deleted">
+            <de><![CDATA[Manuell gelöscht]]></de>
+            <en><![CDATA[Deleted manually]]></en>
+        </locale>
+        <locale name="controls.users.membershipusersarchive.tbl.archiveReason.cancelled">
+            <de><![CDATA[Kündigung]]></de>
+            <en><![CDATA[Cancellation]]></en>
+        </locale>
+        <locale name="controls.users.membershipusersarchive.tbl.archiveReason.expired">
+            <de><![CDATA[Ablauf der Mitgliedschafts-Zeit]]></de>
+            <en><![CDATA[Membership expired]]></en>
         </locale>
 
     </groups>
@@ -351,39 +407,63 @@
         </locale>
 
         <!-- Class: Users\MembershipUser -->
-        <locale name="exception.users.membershipuser.confirmCancel.already.cancelled">
+        <locale name="exception.users.membershipuser.confirmManualCancel.already.cancelled">
             <de><![CDATA[Diese Mitgliedschaft ist bereits gekündigt.]]></de>
             <en><![CDATA[This membership has already been cancelled.]]></en>
         </locale>
-        <locale name="exception.users.membershipuser.confirmCancel.no.hash">
+        <locale name="exception.users.membershipuser.confirmManualCancel.no.hash">
             <de><![CDATA[Der Kündigungsprozess für diese Mitgliedschaft wurde noch nicht gestartet.]]></de>
             <en><![CDATA[The cancellation process for this membership has not been initiated yet.]]></en>
         </locale>
-        <locale name="exception.users.membershipuser.confirmCancel.hash.mismatch">
+        <locale name="exception.users.membershipuser.confirmManualCancel.hash.mismatch">
             <de><![CDATA[Der Prüf-Hash für die Mitgliedschafts-Kündigung ist fehlerhaft.]]></de>
             <en><![CDATA[The cancel check hash for this membership cancellation is wrong.]]></en>
         </locale>
 
         <!-- Templates -->
-        <locale name="templates.mail.startcancel.subject">
-            <de><![CDATA[Kündigung Ihrer Mitgliedschaft]]></de>
-            <en><![CDATA[Cancellation of your membership]]></en>
-        </locale>
-        <locale name="templates.mail.startcancel.greeting">
+        <locale name="templates.mail.greeting">
             <de><![CDATA[Hallo [name]!]]></de>
             <en><![CDATA[Hello [name]!]]></en>
         </locale>
+        <locale name="templates.mail.startcancel.subject">
+            <de><![CDATA[Kündigung Ihrer Mitgliedschaft]]></de>
+            <en><![CDATA[Termination of your membership]]></en>
+        </locale>
         <locale name="templates.mail.startcancel.body" html="true">
-            <de><![CDATA[Sie haben Ihre Mitgliedschaft <b>[membershipTitle]</b> am <b>[cancelDate]</b> gekündigt. Um diese Kündigung zu bestätigen besuchen Sie bitte:<br><br><a href="[cancelUrl]">[cancelUrl]</a>]]></de>
-            <en><![CDATA[You cancelled your membership <b>[membershipTitle]</b> on <b>[cancelDate]</b>. To confirm this cancellation please visit:<br><br><a href="[cancelUrl]">[cancelUrl]</a>]]></en>
+            <de><![CDATA[Die Kündigung Ihrer Mitgliedschaft <b>[membershipTitle]</b> wurde zum <b>[endDate]</b> beantragt. Um diese Kündigung zu bestätigen besuchen Sie bitte:<br><br><a href="[cancelUrl]">[cancelUrl]</a>]]></de>
+            <en><![CDATA[The termination of your membership <b>[membershipTitle]</b> on <b>[endDate]</b> was applied for. To confirm this termination please visit:<br><br><a href="[cancelUrl]">[cancelUrl]</a>]]></en>
+        </locale>
+        <locale name="templates.mail.confirmcancel.subject">
+            <de><![CDATA[Bestätigung der Kündigung Ihrer Mitgliedschaft]]></de>
+            <en><![CDATA[Confirmation of termination of your membership]]></en>
+        </locale>
+        <locale name="templates.mail.confirmcancel.body" html="true">
+            <de><![CDATA[Hiermit bestätigen wir die Kündigung Ihrer Mitgliedschaft <b>[membershipTitle]</b> zum <b>[endDate]</b>. Bis zu diesem Zeitpunkt können Sie weiterhin alle Vorteile Ihrer Mitgliedschaft genießen.]]></de>
+            <en><![CDATA[We hereby confirm the termination of your membership <b>[membershipTitle]</b> as of <b>[endDate]</b>. Until that time, you can continue to enjoy all the benefits of your membership.]]></en>
         </locale>
         <locale name="templates.cancel.confirm.success">
             <de><![CDATA[Die Kündigung Ihrer Mitgliedschaft war erfolgreich!]]></de>
-            <en><![CDATA[The cancellation of your membership has been successful!]]></en>
+            <en><![CDATA[The termination of your membership has been successful!]]></en>
         </locale>
         <locale name="templates.cancel.confirm.error">
             <de><![CDATA[Bei der Kündigung Ihrer Mitgliedschaft ist ein Fehler aufgetreten:<br><br>[errorMessage]]]></de>
-            <en><![CDATA[An error occurred during the cancellation of your membership:<br><br>[errorMessage]]]></en>
+            <en><![CDATA[An error occurred during the termination of your membership:<br><br>[errorMessage]]]></en>
+        </locale>
+        <locale name="templates.mail.expired.subject" html="true">
+            <de><![CDATA[Ablauf Ihrer Mitgliedschaft]]></de>
+            <en><![CDATA[Expiration of your membership]]></en>
+        </locale>
+        <locale name="templates.mail.expired.body" html="true">
+            <de><![CDATA[Ihre Mitgliedschaft <b>[membershipTitle]</b> ist am <b>[endDate]</b> automatisch abgelaufen.]]></de>
+            <en><![CDATA[Your membership <b>[membershipTitle]</b> expired automatically on <b>[endDate]</b>.]]></en>
+        </locale>
+        <locale name="templates.mail.autoextend.subject" html="true">
+            <de><![CDATA[Automatische Verlängerung Ihrer Mitgliedschaft]]></de>
+            <en><![CDATA[Automatic extension of your membership]]></en>
+        </locale>
+        <locale name="templates.mail.autoextend.body" html="true">
+            <de><![CDATA[Ihre Mitgliedschaft <b>[membershipTitle]</b> wurde automatisch bis zum <b>[endDate]</b> verlängert.]]></de>
+            <en><![CDATA[Your membership <b>[membershipTitle]</b> has been extended automatically until <b>[endDate]</b>.]]></en>
         </locale>
 
     </groups>

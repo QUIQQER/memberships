@@ -7,14 +7,14 @@ use QUI\Utils\Grid;
 use QUI\Memberships\Membership;
 
 /**
- * Get/search QUIQQER membership users
+ * Get/search QUIQQER membership users (archived)
  *
  * @param int $membershipId - Membership ID
  * @param array $searchParams - Search params
  * @return array
  */
 QUI::$Ajax->registerFunction(
-    'package_quiqqer_memberships_ajax_memberships_users_getList',
+    'package_quiqqer_memberships_ajax_memberships_users_getArchiveList',
     function ($membershipId, $searchParams) {
         $searchParams    = Orthos::clearArray(json_decode($searchParams, true));
         $Memberships     = MembershipsHandler::getInstance();
@@ -23,7 +23,7 @@ QUI::$Ajax->registerFunction(
         $Membership      = $Memberships->getChild((int)$membershipId);
         $membershipUsers = array();
 
-        foreach ($Membership->searchUsers($searchParams) as $membershipUserId) {
+        foreach ($Membership->searchArchivedUsers($searchParams) as $membershipUserId) {
             /** @var Membership $Membership */
             $MembershipUser = $MembershipUsers->getChild($membershipUserId);
             $data           = $MembershipUser->getAttributes();
@@ -35,15 +35,10 @@ QUI::$Ajax->registerFunction(
                 'username'      => $User->getUsername(),
                 'userFullName'  => $User->getName(),
                 'addedDate'     => $data['addedDate'],
-                'beginDate'     => $data['beginDate'],
-                'endDate'       => $data['endDate'],
-                'extendCounter' => $data['extendCounter']
+                'archiveDate'   => $data['archiveDate'],
+                'archiveReason' => $data['archiveReason']
             );
         }
-
-        /** @var \QUI\Memberships\Users\MembershipUser $TEST */
-        $TEST = $MembershipUsers->getChild(19);
-        $TEST->startManualCancel();
 
         $Grid = new Grid($searchParams);
 

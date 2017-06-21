@@ -35,13 +35,14 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
 
     'package/quiqqer/memberships/bin/Memberships',
     'package/quiqqer/memberships/bin/controls/users/MembershipUsers',
+    'package/quiqqer/memberships/bin/controls/users/MembershipUsersArchive',
 
     'text!package/quiqqer/memberships/bin/controls/Membership.Settings.html',
     'css!package/quiqqer/memberships/bin/controls/Membership.css',
     'css!controls/desktop/panels/XML.css'
 
 ], function (QUI, QUIPanel, QUIButton, QUIFormUtils, QUIAjax, QUILocale, Mustache,
-             QUILocker, Memberships, MembershipUsers, templateSettings) {
+             QUILocker, Memberships, MembershipUsers, MembershipUsersArchive, templateSettings) {
     "use strict";
 
     var lg = 'quiqqer/memberships';
@@ -146,6 +147,18 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
                 }
             }));
 
+            this.addCategory(new QUIButton({
+                name  : 'archive',
+                icon  : 'fa fa-archive',
+                text  : QUILocale.get(lg, 'controls.membership.category.usersArchive'),
+                events: {
+                    onActive: function () {
+                        self.unloadCategory();
+                        self.$loadUsersArchive();
+                    }
+                }
+            }));
+
             this.Loader.show();
 
             Promise.all([
@@ -238,8 +251,8 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
                     labelContent    : QUILocale.get(lg, lgPrefix + 'labelContent'),
                     headerDuration  : QUILocale.get(lg, lgPrefix + 'headerDuration'),
                     labelDuration   : QUILocale.get(lg, lgPrefix + 'labelDuration'),
-                    labelAutoRenew  : QUILocale.get(lg, lgPrefix + 'labelAutoRenew'),
-                    autoRenew       : QUILocale.get(lg, lgPrefix + 'autoRenew'),
+                    labelAutoExtend  : QUILocale.get(lg, lgPrefix + 'labelAutoExtend'),
+                    autoExtend       : QUILocale.get(lg, lgPrefix + 'autoExtend'),
                     headerGroups    : QUILocale.get(lg, lgPrefix + 'headerGroups'),
                     labelGroups     : QUILocale.get(lg, lgPrefix + 'labelGroups')
                 })
@@ -265,7 +278,21 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
 
             PanelContent.set('html', '');
 
-            var GroupUserControl = new MembershipUsers({
+            new MembershipUsers({
+                membershipId: this.$Membership.id
+            }).inject(PanelContent);
+        },
+
+        /**
+         * Show archived membership users
+         */
+        $loadUsersArchive: function () {
+            var self         = this;
+            var PanelContent = this.getContent();
+
+            PanelContent.set('html', '');
+
+            new MembershipUsersArchive({
                 membershipId: this.$Membership.id
             }).inject(PanelContent);
         },

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<crons>
+    <cron exec="\QUI\Memberships\Cron::checkMembershipUsers">
+        <title>
+            <locale group="quiqqer/memberships" var="cron.checkMembershipUsers.title" />
+        </title>
+        <description>
+            <locale group="quiqqer/memberships" var="cron.checkMembershipUsers.description" />
+        </description>
+    </cron>
+</crons>
