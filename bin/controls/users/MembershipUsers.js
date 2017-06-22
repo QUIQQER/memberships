@@ -36,6 +36,7 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
 
     'package/quiqqer/memberships/bin/Memberships',
     'package/quiqqer/memberships/bin/MembershipUsers',
+    'package/quiqqer/memberships/bin/controls/users/MembershipUserEdit',
 
     'Locale',
     'Ajax',
@@ -46,7 +47,7 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
 
 ], function (QUIControl, QUILoader, QUIPopup, QUIConfirm, QUIButton, QUIFormUtils,
              QUIControlUtils, Grid, UserSearchWindow, Memberships, MembershipUsersHandler,
-             QUILocale, QUIAjax, Mustache, template) {
+             MembershipUserEdit, QUILocale, QUIAjax, Mustache, template) {
     "use strict";
 
     var lg = 'quiqqer/memberships';
@@ -66,7 +67,8 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
             '$removeUser',
             'refresh',
             '$removeUsers',
-            '$openUserPanel'
+            '$showHistory',
+            '$editUser'
         ],
 
         options: {
@@ -147,6 +149,20 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
                         onClick: this.$addUser
                     }
                 }, {
+                    name     : 'edit',
+                    text     : QUILocale.get(lg, 'controls.membershipusers.tbl.btn.edit'),
+                    textimage: 'fa fa-edit',
+                    events   : {
+                        onClick: this.$editUser
+                    }
+                }, {
+                    name     : 'history',
+                    text     : QUILocale.get(lg, 'controls.users.membershipusersarchive.tbl.btn.history'),
+                    textimage: 'fa fa-history',
+                    events   : {
+                        onClick: this.$showHistory
+                    }
+                }, {
                     name     : 'removeuser',
                     text     : QUILocale.get(lg, 'controls.membershipusers.tbl.btn.removeuser'),
                     textimage: 'fa fa-trash',
@@ -156,6 +172,11 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
                 }],
                 columnModel      : [{
                     header   : QUILocale.get('quiqqer/system', 'id'),
+                    dataIndex: 'id',
+                    dataType : 'number',
+                    width    : 100
+                }, {
+                    header   : QUILocale.get(lg, 'controls.membershipusers.tbl.header.userId'),
                     dataIndex: 'userId',
                     dataType : 'number',
                     width    : 100
@@ -189,10 +210,6 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
                     dataIndex: 'extendCounter',
                     dataType : 'number',
                     width    : 75
-                }, {
-                    dataIndex: 'id',
-                    dataType : 'number',
-                    hidden   : true
                 }],
                 pagination       : true,
                 serverSort       : true,
@@ -201,11 +218,20 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
             });
 
             this.$Grid.addEvents({
-                onDblClick: self.$openUserPanel,
+                onDblClick: self.$editUser,
                 onClick   : function () {
                     var TableButtons = self.$Grid.getAttribute('buttons');
+                    var selected     = self.$Grid.getSelectedData().length;
 
                     TableButtons.removeuser.enable();
+
+                    if (selected === 1) {
+                        TableButtons.history.enable();
+                        TableButtons.edit.enable();
+                    } else {
+                        TableButtons.history.disable();
+                        TableButtons.edit.disable();
+                    }
                 },
                 onRefresh : this.$listRefresh
             });
@@ -242,6 +268,8 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
             var TableButtons = this.$Grid.getAttribute('buttons');
 
             TableButtons.removeuser.disable();
+            TableButtons.history.disable();
+            TableButtons.edit.disable();
 
             var GridParams = {
                 sortOn : Grid.getAttribute('sortOn'),
@@ -335,6 +363,42 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
         },
 
         /**
+         * Edit MembershipUser
+         */
+        $editUser: function () {
+            var membershipUserId = this.$Grid.getSelectedData()[0].id;
+
+            // open popup
+            var Popup = new QUIPopup({
+                'maxHeight': 275,
+                maxWidth   : 500,
+                'autoclose': true,
+                'title'    : QUILocale.get(lg, 'controls.membershipusers.edit.popup.title'),
+                'texticon' : 'fa fa-edit',
+                'icon'     : 'fa fa-edit',
+
+                buttons: false,
+                events : {
+                    onOpen: function () {
+                        new MembershipUserEdit({
+                            membershipUserId: membershipUserId,
+                            events: {
+                                onSubmit: function() {
+                                    Popup.close();
+                                    self.refresh();
+                                }
+                            }
+                        }).inject(
+                            Popup.getContent()
+                        );
+                    }
+                }
+            });
+
+            Popup.open();
+        },
+
+        /**
          * Remove all selected licenses
          */
         $removeUsers: function () {
@@ -395,17 +459,18 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
         },
 
         /**
-         * Opens a panel for a single location
+         * Show history
          */
-        $openUserPanel: function () {
-            var userId = this.$Grid.getSelectedData()[0].userId;
+        $showHistory: function () {
+            var membershipUserId = this.$Grid.getSelectedData()[0].id;
 
             require([
-                'controls/users/User',
-                'utils/Panels'
-            ], function (UserPanel, Utils) {
-                Utils.openPanelInTasks(new UserPanel(userId));
+                'package/quiqqer/memberships/bin/controls/users/MembershipUserHistoryPopup'
+            ], function (MembershipUserHistoryPopup) {
+                new MembershipUserHistoryPopup({
+                    membershipUserId: membershipUserId
+                }).open();
             });
-        },
+        }
     });
 });

@@ -36,6 +36,7 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsersArchive', 
 
     'package/quiqqer/memberships/bin/Memberships',
     'package/quiqqer/memberships/bin/MembershipUsers',
+    'package/quiqqer/memberships/bin/controls/users/MembershipUserHistory',
 
     'Locale',
     'Ajax',
@@ -46,7 +47,7 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsersArchive', 
 
 ], function (QUIControl, QUILoader, QUIPopup, QUIConfirm, QUIButton, QUIFormUtils,
              QUIControlUtils, Grid, UserSearchWindow, Memberships, MembershipUsersHandler,
-             QUILocale, QUIAjax, Mustache, template) {
+             MembershipUserHistory, QUILocale, QUIAjax, Mustache, template) {
     "use strict";
 
     var lg = 'quiqqer/memberships';
@@ -145,6 +146,11 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsersArchive', 
                 }],
                 columnModel      : [{
                     header   : QUILocale.get('quiqqer/system', 'id'),
+                    dataIndex: 'id',
+                    dataType : 'number',
+                    width    : 100
+                }, {
+                    header   : QUILocale.get(lg, 'controls.membershipusers.tbl.header.userId'),
                     dataIndex: 'userId',
                     dataType : 'number',
                     width    : 100
@@ -173,10 +179,6 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsersArchive', 
                     dataIndex: 'archiveReason',
                     dataType : 'string',
                     width    : 200
-                }, {
-                    dataIndex: 'id',
-                    dataType : 'number',
-                    hidden   : true
                 }],
                 pagination       : true,
                 serverSort       : true,
@@ -185,7 +187,7 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsersArchive', 
             });
 
             this.$Grid.addEvents({
-                onDblClick: self.$openUserPanel,
+                onDblClick: self.$showHistory,
                 onClick   : function () {
                     var TableButtons = self.$Grid.getAttribute('buttons');
                     var selected     = self.$Grid.getSelectedData().length;
@@ -253,8 +255,6 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsersArchive', 
          * @param {Object} GridData
          */
         $setGridData: function (GridData) {
-            var self = this;
-
             for (var i = 0, len = GridData.data.length; i < len; i++) {
                 var Row = GridData.data[i];
 
@@ -271,63 +271,18 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsersArchive', 
         },
 
         /**
-         * Remove all selected licenses
+         * Show history
          */
         $showHistory: function () {
-            var self       = this;
-            var deleteData = [];
-            var deleteIds  = [];
-            var rows       = this.$Grid.getSelectedData();
+            var membershipUserId = this.$Grid.getSelectedData()[0].id;
 
-            for (var i = 0, len = rows.length; i < len; i++) {
-                deleteData.push(
-                    rows[i].username + ' (ID: #' + rows[i].id + ')'
-                );
-
-                deleteIds.push(rows[i].id);
-            }
-
-            // open popup
-            var Popup = new QUIConfirm({
-                'maxHeight': 300,
-                'autoclose': true,
-
-                'information': QUILocale.get(
-                    lg,
-                    'controls.membershipusersarchive.delete.popup.info', {
-                        users: deleteData.join('<br/>')
-                    }
-                ),
-                'title'      : QUILocale.get(lg, 'controls.membershipusersarchive.delete.popup.title'),
-                'texticon'   : 'fa fa-trash',
-                'icon'       : 'fa fa-trash',
-
-                cancel_button: {
-                    text     : false,
-                    textimage: 'icon-remove fa fa-remove'
-                },
-                ok_button    : {
-                    text     : false,
-                    textimage: 'icon-ok fa fa-check'
-                },
-                events       : {
-                    onSubmit: function () {
-                        Popup.Loader.show();
-
-                        MembershipUsersArchiveHandler.deleteMembershipUsersArchive(deleteIds).then(function (success) {
-                            if (!success) {
-                                Popup.Loader.hide();
-                                return;
-                            }
-
-                            Popup.close();
-                            self.refresh();
-                        });
-                    }
-                }
+            require([
+                'package/quiqqer/memberships/bin/controls/users/MembershipUserHistoryPopup'
+            ], function (MembershipUserHistoryPopup) {
+                new MembershipUserHistoryPopup({
+                    membershipUserId: membershipUserId
+                }).open();
             });
-
-            Popup.open();
         }
     });
 });

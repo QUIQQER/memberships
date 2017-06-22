@@ -1,9 +1,10 @@
 <h1>
-    {$Locale->get('quiqqer/memberships', 'templates.mail.greeting', array('name' => $MembershipUser->getUser()->getName()}
+    {locale group="quiqqer/memberships" value="templates.mail.greeting" Locale=$Locale
+    name=$MembershipUser->getUser()->getName()}
 </h1>
 
 <p>
-    {locale group="quiqqer/memberships" value="templates.mail.confirmcancel.body"
+    {locale group="quiqqer/memberships" value="templates.mail.confirmcancel.body" Locale=$Locale
     membershipTitle=$MembershipUser->getMembership()->getTitle()
     endDate=$MembershipUser->getAttribute('endDate')
     }

@@ -255,6 +255,14 @@
             <de><![CDATA[Benutzer entfernen]]></de>
             <en><![CDATA[Remove user(s)]]></en>
         </locale>
+        <locale name="controls.membershipusers.tbl.btn.edit">
+            <de><![CDATA[Benutzer bearbeiten]]></de>
+            <en><![CDATA[Edit user]]></en>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.userId">
+            <de><![CDATA[User ID]]></de>
+            <en><![CDATA[User ID]]></en>
+        </locale>
         <locale name="controls.membershipusers.tbl.header.username">
             <de><![CDATA[Benutzername]]></de>
             <en><![CDATA[Username]]></en>
@@ -287,6 +295,10 @@
             <de><![CDATA[Benutzer aus Mitgliedschaft entfernen]]></de>
             <en><![CDATA[Remove user(s) from membership]]></en>
         </locale>
+        <locale name="controls.membershipusers.edit.popup.title">
+            <de><![CDATA[Mitgliedschafts-Benutzer bearbeiten]]></de>
+            <en><![CDATA[Edit membership user]]></en>
+        </locale>
 
         <!-- Controls: users/MembershipUsersArchive -->
         <locale name="controls.users.membershipusersarchive.tbl.btn.history">
@@ -312,6 +324,72 @@
         <locale name="controls.users.membershipusersarchive.tbl.archiveReason.expired">
             <de><![CDATA[Ablauf der Mitgliedschafts-Zeit]]></de>
             <en><![CDATA[Membership expired]]></en>
+        </locale>
+
+        <!-- Controls: users/MembershipUserHistory -->
+        <locale name="controls.users.membershipuserhistory.template.userLabel">
+            <de><![CDATA[Benutzer]]></de>
+            <en><![CDATA[User]]></en>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.template.membershipLabel">
+            <de><![CDATA[Mitgliedschaft]]></de>
+            <en><![CDATA[Membership]]></en>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.footer">
+            <de><![CDATA[ausgeführt von [user]]]></de>
+            <en><![CDATA[executed by [user]]]></en>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.created">
+            <de><![CDATA[Zur Mitgliedschaft hinzugefügt]]></de>
+            <en><![CDATA[Added to the membership]]></en>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.updated">
+            <de><![CDATA[Mitgliedschafts-Daten aktualisiert]]></de>
+            <en><![CDATA[Updated membership data]]></en>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.cancel_start">
+            <de><![CDATA[Kündigungs-Anfrage gestellt]]></de>
+            <en><![CDATA[Termination requested]]></en>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.cancel_confirm">
+            <de><![CDATA[Kündigung bestätigt]]></de>
+            <en><![CDATA[Termination confirmed]]></en>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.cancelled">
+            <de><![CDATA[Mitgliedschaft gekündigt]]></de>
+            <en><![CDATA[Membership terminated]]></en>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.expired">
+            <de><![CDATA[Mitgliedschafts-Zeit abgelaufen]]></de>
+            <en><![CDATA[Membership expired]]></en>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.deleted">
+            <de><![CDATA[Aus Mitgliedschaft gelöscht]]></de>
+            <en><![CDATA[Deleted from membership]]></en>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.archived">
+            <de><![CDATA[Mitgliedschafts-Benutzer archiviert]]></de>
+            <en><![CDATA[Membership user archived]]></en>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.extended">
+            <de><![CDATA[Mitgliedschafts-Zeit verlängert]]></de>
+            <en><![CDATA[Membership extended]]></en>
+        </locale>
+
+        <!-- Controls: users/MembershipUserHistoryPopup -->
+        <locale name="controls.users.membershipuserhistorypopup.title">
+            <de><![CDATA[Mitgliedschafts-Benutzer History]]></de>
+            <en><![CDATA[Membership user history]]></en>
+        </locale>
+
+        <!-- Controls: users/MembershipUserEdit -->
+        <locale name="controls.users.membershipuseredit.template.header">
+            <de><![CDATA[Mitgliedschafts-Benutzer [name] (#[id])]]></de>
+            <en><![CDATA[Membership user [name] (#[id])]]></en>
+        </locale>
+        <locale name="controls.users.membershipuseredit.btn.save">
+            <de><![CDATA[Benutzerdaten speichern]]></de>
+            <en><![CDATA[Save user data]]></en>
         </locale>
 
     </groups>
@@ -373,6 +451,14 @@
             <de><![CDATA[Die Benutzer wurden erfolgreich aus der Mitgliedschaft gelöscht.]]></de>
             <en><![CDATA[The users have been removed successfully from the membership.]]></en>
         </locale>
+        <locale name="message.ajax.memberships.users.update.error" html="true">
+            <de><![CDATA[Der Mitgliedschaftsbenutzer konnte nicht bearbeitet werden:<br><br>[error]]]></de>
+            <en><![CDATA[The membership user could not be updated:<br><br>[error]]]></en>
+        </locale>
+        <locale name="message.ajax.memberships.users.update.success" html="true">
+            <de><![CDATA[Der Mitgliedschafts-Benutzer <b>[membershipUserName]</b> (#[membershipUserId]) wurde erfolgreich aktualisiert.]]></de>
+            <en><![CDATA[The membership user <b>[membershipUserName]</b> (#[membershipUserId]) was successfully updated.]]></en>
+        </locale>
 
         <!-- Class: Membership -->
         <locale name="exception.membership.cannot.update.when.locked">
@@ -418,6 +504,18 @@
         <locale name="exception.users.membershipuser.confirmManualCancel.hash.mismatch">
             <de><![CDATA[Der Prüf-Hash für die Mitgliedschafts-Kündigung ist fehlerhaft.]]></de>
             <en><![CDATA[The cancel check hash for this membership cancellation is wrong.]]></en>
+        </locale>
+        <locale name="exception.users.membershipuser.wrong.dates">
+            <de><![CDATA[Die Datumsangaben für den Start- oder Endzeitpunkt sind in einem inkorrekten Format.]]></de>
+            <en><![CDATA[The dates for the start or end time are in an incorrect format.]]></en>
+        </locale>
+        <locale name="exception.users.membershipuser.begin.after.end">
+            <de><![CDATA[Der Startzeitpunkt darf nicht nach dem Endzeitpunkt liegen.]]></de>
+            <en><![CDATA[The start time must not be after the end time.]]></en>
+        </locale>
+        <locale name="exception.users.membershipuser.no.email">
+            <de><![CDATA[Es können keine E-Mails an den Mitgliedschafts-Benutzer gesendet werden, da er keine eingetragene E-Mail-Adresse hat.]]></de>
+            <en><![CDATA[No e-mails can be sent to the membership user, since he does not have a registered e-mail address.]]></en>
         </locale>
 
         <!-- Templates -->

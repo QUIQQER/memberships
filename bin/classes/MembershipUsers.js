@@ -46,9 +46,9 @@ define('package/quiqqer/memberships/bin/classes/MembershipUsers', [
         deleteMembershipUsers: function (userIds) {
             return new Promise(function (resolve, reject) {
                 QUIAjax.post('package_quiqqer_memberships_ajax_memberships_users_delete', resolve, {
-                    'package'   : pkg,
-                    userIds     : JSON.encode(userIds),
-                    onError     : reject
+                    'package': pkg,
+                    userIds  : JSON.encode(userIds),
+                    onError  : reject
                 })
             });
         },
@@ -67,6 +67,56 @@ define('package/quiqqer/memberships/bin/classes/MembershipUsers', [
                     membershipId: membershipId,
                     searchParams: JSON.encode(SearchParams),
                     onError     : reject
+                })
+            });
+        },
+
+        /**
+         * Update MembershipUser
+         *
+         * @param {Integer} membershipUserId
+         * @param {Object} Attributes
+         * @return {Promise}
+         */
+        update: function (membershipUserId, Attributes) {
+            return new Promise(function (resolve, reject) {
+                QUIAjax.post('package_quiqqer_memberships_ajax_memberships_users_update', resolve, {
+                    'package'       : pkg,
+                    membershipUserId: membershipUserId,
+                    attributes      : JSON.encode(Attributes),
+                    onError         : reject
+                })
+            });
+        },
+
+        /**
+         * Get MembershipUser data (some general attribues)
+         *
+         * @param {Integer} membershipUserId
+         * @return {Promise}
+         */
+        get: function (membershipUserId) {
+            return new Promise(function (resolve, reject) {
+                QUIAjax.get('package_quiqqer_memberships_ajax_memberships_users_get', resolve, {
+                    'package'       : pkg,
+                    membershipUserId: membershipUserId,
+                    onError         : reject
+                })
+            });
+        },
+
+        /**
+         * Get MembershipUser history
+         *
+         * @param {Integer} membershipUserId
+         * @return {Promise}
+         */
+        getHistory: function (membershipUserId) {
+            return new Promise(function (resolve, reject) {
+                QUIAjax.get('package_quiqqer_memberships_ajax_memberships_users_getHistory', resolve, {
+                    'package'       : pkg,
+                    membershipUserId: membershipUserId,
+                    onError         : reject
                 })
             });
         },

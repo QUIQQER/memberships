@@ -30,33 +30,40 @@ class Cron
         $now = time();
 
         foreach ($result as $row) {
-            /** @var MembershipUser $MembershipUser */
-            $MembershipUser = $MembershipUsers->getChild($row['id']);
-            $Membership     = $MembershipUser->getMembership();
+            try {
+                /** @var MembershipUser $MembershipUser */
+                $MembershipUser = $MembershipUsers->getChild($row['id']);
+                $Membership     = $MembershipUser->getMembership();
 
-            // @todo prüfen, ob benutzer existiert und ggf. löschen
+                // @todo prüfen, ob benutzer existiert und ggf. löschen
 
-            // check if membership has expired
-            $endTimestamp = strtotime($Membership->getAttribute('endDate'));
+                // check if membership has expired
+                $endTimestamp = strtotime($Membership->getAttribute('endDate'));
 
-            if ($now < $endTimestamp) {
-                continue;
+                if ($now < $endTimestamp) {
+                    continue;
+                }
+
+                // if membership has been cancelled -> archive it immediately
+                if ($MembershipUser->isCancelled()) {
+                    $MembershipUser->cancel();
+                    continue;
+                }
+
+                // extend if membership is extended automatically
+                if ($Membership->isAutoExtend()) {
+                    $MembershipUser->extend();
+                    continue;
+                }
+
+                // expire membership
+                $MembershipUser->expire();
+            } catch (\Exception $Exception) {
+                QUI\System\Log::addError(
+                    self::class . ' :: checkMembershipUsers() -> ' . $Exception->getMessage()
+                );
             }
 
-            // if membership has been cancelled -> archive it immediately
-            if ($MembershipUser->isCancelled()) {
-                $MembershipUser->cancel();
-                continue;
-            }
-
-            // extend if membership is extended automatically
-            if ($Membership->isAutoExtend()) {
-                $MembershipUser->extend();
-                continue;
-            }
-
-            // expire membership
-            $MembershipUser->expire();
         }
     }
 }

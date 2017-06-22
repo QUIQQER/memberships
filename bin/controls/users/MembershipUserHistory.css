@@ -1,0 +1,44 @@
+.quiqqer-memberships-membershipuserhistory {
+    float: left;
+    height: 100%;
+    width: 100%
+}
+
+.quiqqer-memberships-membershipuserhistory-history {
+    float: left;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.quiqqer-memberships-membershipuserhistory-history-entry {
+    float: left;
+    width: 100%;
+}
+
+.quiqqer-memberships-membershipuserhistory-history-entry:not(:last-of-type) {
+    margin-bottom: 10px;
+}
+
+.quiqqer-memberships-membershipuserhistory-history-entry-header-action {
+    float: left;
+    font-weight: 900;
+}
+
+.quiqqer-memberships-membershipuserhistory-history-entry-header-date {
+    float: right;
+    font-size: 10px;
+}
+
+.quiqqer-memberships-membershipuserhistory-history-entry-header {
+    background-color: #dedede;
+    float: left;
+    padding: 2px 5px;
+    width: 100%;
+}
+
+.quiqqer-memberships-membershipuserhistory-history-entry-body {
+    background-color: #ededed;
+    float: left;
+    padding: 10px;
+    width: 100%;
+}
