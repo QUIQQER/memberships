@@ -234,16 +234,20 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsersArchive', 
 
             TableButtons.history.disable();
 
-            var GridParams = {
+            var SearchParams = {
                 sortOn : Grid.getAttribute('sortOn'),
                 sortBy : Grid.getAttribute('sortBy'),
                 perPage: Grid.getAttribute('perPage'),
                 page   : Grid.getAttribute('page')
             };
 
+            if (this.$search) {
+                SearchParams.search = this.$search;
+            }
+
             this.Loader.show();
 
-            MembershipUsersHandler.getArchiveList(this.$Membership.id, GridParams).then(function (ResultData) {
+            MembershipUsersHandler.getArchiveList(this.$Membership.id, SearchParams).then(function (ResultData) {
                 self.Loader.hide();
                 self.$setGridData(ResultData);
             });
@@ -283,6 +287,20 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsersArchive', 
                     membershipUserId: membershipUserId
                 }).open();
             });
+        },
+
+        /**
+         * Set search term for MembershipUser search
+         *
+         * @param {String} search
+         */
+        setSearchTerm: function(search) {
+            if (!search || search === '') {
+                this.$search = false;
+                return;
+            }
+
+            this.$search = search;
         }
     });
 });

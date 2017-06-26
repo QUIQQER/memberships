@@ -10,19 +10,22 @@ use QUI\Memberships\Users\Handler as MembershipUsersHandler;
 
 class Handler extends Factory
 {
-    const HISTORY_TYPE_CREATED        = 'created';
-    const HISTORY_TYPE_UPDATED        = 'updated';
-    const HISTORY_TYPE_CANCEL_START   = 'cancel_start';
-    const HISTORY_TYPE_CANCEL_CONFIRM = 'cancel_confirm';
-    const HISTORY_TYPE_CANCELLED      = 'cancelled';
-    const HISTORY_TYPE_EXPIRED        = 'expired';
-    const HISTORY_TYPE_DELETED        = 'deleted';
-    const HISTORY_TYPE_ARCHIVED       = 'archived';
-    const HISTORY_TYPE_EXTENDED       = 'extended';
+    const HISTORY_TYPE_CREATED          = 'created';
+    const HISTORY_TYPE_UPDATED          = 'updated';
+    const HISTORY_TYPE_CANCEL_BY_EDIT   = 'cancel_by_edit';
+    const HISTORY_TYPE_UNCANCEL_BY_EDIT = 'uncancel_by_edit';
+    const HISTORY_TYPE_CANCEL_START     = 'cancel_start';
+    const HISTORY_TYPE_CANCEL_CONFIRM   = 'cancel_confirm';
+    const HISTORY_TYPE_CANCELLED        = 'cancelled';
+    const HISTORY_TYPE_EXPIRED          = 'expired';
+    const HISTORY_TYPE_DELETED          = 'deleted';
+    const HISTORY_TYPE_ARCHIVED         = 'archived';
+    const HISTORY_TYPE_EXTENDED         = 'extended';
 
-    const ARCHIVE_REASON_CANCELLED = 'cancelled';
-    const ARCHIVE_REASON_EXPIRED   = 'expired';
-    const ARCHIVE_REASON_DELETED   = 'deleted';
+    const ARCHIVE_REASON_CANCELLED         = 'cancelled';
+    const ARCHIVE_REASON_EXPIRED           = 'expired';
+    const ARCHIVE_REASON_DELETED           = 'deleted';
+    const ARCHIVE_REASON_USER_DELETED      = 'user_deleted';
 
     /**
      * @inheritdoc

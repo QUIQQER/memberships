@@ -9,6 +9,7 @@
  * @require qui/controls/Control
  * @require qui/controls/loader/Loader
  * @require qui/controls/buttons/Button
+ * @require qui/controls/windows/Confirm
  * @require qui/utils/Form
  * @require package/quiqqer/memberships/bin/MembershipUsers
  * @require Locale
@@ -22,6 +23,7 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserEdit', [
     'qui/controls/Control',
     'qui/controls/loader/Loader',
     'qui/controls/buttons/Button',
+    'qui/controls/windows/Confirm',
     'qui/utils/Form',
 
     'package/quiqqer/memberships/bin/MembershipUsers',
@@ -33,7 +35,7 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserEdit', [
     'text!package/quiqqer/memberships/bin/controls/users/MembershipUserEdit.html',
     'css!package/quiqqer/memberships/bin/controls/users/MembershipUserEdit.css'
 
-], function (QUIControl, QUILoader, QUIButton, QUIFormUtils, MembershipUsersHandler,
+], function (QUIControl, QUILoader, QUIButton, QUIConfirm, QUIFormUtils, MembershipUsersHandler,
              QUILocale, QUIAjax, Mustache, template) {
     "use strict";
 
@@ -48,7 +50,8 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserEdit', [
             '$onInject',
             '$load',
             '$onCreate',
-            '$submit'
+            '$submit',
+            'refresh'
         ],
 
         options: {
@@ -60,6 +63,7 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserEdit', [
 
             this.Loader          = new QUILoader();
             this.$MembershipUser = null;
+            this.$cancelled      = false;
 
             this.addEvents({
                 onCreate: this.$onCreate,
@@ -102,6 +106,7 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserEdit', [
          * Create elements
          */
         $load: function () {
+            var self     = this;
             var lgPrefix = 'controls.users.membershipuseredit.template.';
 
             this.$Elm.set('html', Mustache.render(template, {
@@ -110,7 +115,8 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserEdit', [
                     name: this.$MembershipUser.fullName
                 }),
                 labelBeginDate: QUILocale.get(lg, 'controls.membershipusers.tbl.header.beginDate'),
-                labelEndDate  : QUILocale.get(lg, 'controls.membershipusers.tbl.header.endDate')
+                labelEndDate  : QUILocale.get(lg, 'controls.membershipusers.tbl.header.endDate'),
+                labelCancelled: QUILocale.get(lg, lgPrefix + 'cancelled')
             }));
 
             new QUIButton({
@@ -126,6 +132,13 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserEdit', [
             var Form = this.$Elm.getElement('form');
 
             QUIFormUtils.setDataToForm(this.$MembershipUser, Form);
+
+            // special cancel trigger
+            Form.getElement('input[name="cancelled"]').addEvent('change', function (event) {
+                if (event.target.checked && !self.$MembershipUser.cancelled) {
+                    self.$cancelled = true;
+                }
+            });
         },
 
         /**
@@ -142,11 +155,69 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserEdit', [
                 QUIFormUtils.getFormData(Form)
             ).then(function (success) {
                 if (success) {
-                    self.fireEvent('submit', [self]);
+                    if (self.$cancelled) {
+                        self.$confirmCancelMailDialog().then(function () {
+                            self.fireEvent('submit', [self]);
+                        });
+                    } else {
+                        self.fireEvent('submit', [self]);
+                    }
                 }
 
                 self.Loader.hide();
                 self.refresh();
+            });
+        },
+
+        /**
+         * Ask the user if a membership termination mail should be sent
+         *
+         * @return {Promise}
+         */
+        $confirmCancelMailDialog: function () {
+            var self = this;
+
+            return new Promise(function (resolve, reject) {
+                var Popup = new QUIConfirm({
+                    'maxHeight': 300,
+                    'autoclose': true,
+
+                    'information': QUILocale.get(lg,
+                        'controls.users.membershipuseredit.cancelmail.popup.info'
+                    ),
+                    'title'      : QUILocale.get(lg, 'controls.users.membershipuseredit.cancelmail.popup.title'),
+                    'texticon'   : 'fa fa-mail',
+                    'icon'       : 'fa fa-mail',
+
+                    cancel_button: {
+                        text     : false,
+                        textimage: 'icon-remove fa fa-remove'
+                    },
+                    ok_button    : {
+                        text     : false,
+                        textimage: 'icon-ok fa fa-check'
+                    },
+                    events       : {
+                        onSubmit: function () {
+                            Popup.Loader.show();
+
+                            QUIAjax.post(
+                                'package_quiqqer_memberships_ajax_memberships_users_sendCancelMail',
+                                function () {
+                                    Popup.close();
+                                    resolve();
+                                },
+                                {
+                                    'package'       : 'quiqqer/memberships',
+                                    membershipUserId: self.$MembershipUser.id,
+                                    onError         : reject
+                                }
+                            );
+                        }
+                    }
+                });
+
+                Popup.open();
             });
         }
     });

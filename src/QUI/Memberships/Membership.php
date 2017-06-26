@@ -8,6 +8,7 @@ use QUI\Locale;
 use QUI\Lock\Locker;
 use QUI\Memberships\Users\Handler as MembershipUsersHandler;
 use QUI\Permissions\Permission;
+use QUI\Utils\Security\Orthos;
 
 class Membership extends Child
 {
@@ -254,7 +255,7 @@ class Membership extends Child
      *
      * @param array $searchParams
      * @param bool $countOnly (optional) - get count for search result only [default: false]
-     * @return int[] - membership user IDs
+     * @return int[]|int - membership user IDs or count
      */
     public function searchUsers($searchParams, $countOnly = false)
     {
@@ -262,37 +263,96 @@ class Membership extends Child
         $Grid              = new QUI\Utils\Grid($searchParams);
         $gridParams        = $Grid->parseDBParams($searchParams);
         $tbl               = MembershipUsersHandler::getInstance()->getDataBaseTableName();
+        $usersTbl          = QUI::getDBTableName('users');
+        $binds             = array();
+        $where             = array();
 
         if ($countOnly) {
-            $result = QUI::getDataBase()->fetch(array(
-                'count' => 1,
-                'from'  => $tbl,
-                'where' => array(
-                    'membershipId' => $this->id,
-                    'archived'     => 0
-                ),
-            ));
-
-            return current(current($result));
+            $sql = "SELECT COUNT(*)";
+        } else {
+            $sql = "SELECT `musers`.id";
         }
 
-        $searchQuery = array(
-            'select' => array(
-                'id'
-            ),
-            'from'   => $tbl,
-            'where'  => array(
-                'membershipId' => $this->id,
-                'archived'     => 0
-            ),
-            'limit'  => $gridParams['limit']
-        );
+        $sql .= " FROM `" . $tbl . "` musers, `" . $usersTbl . "` users";
 
-        if (!empty($gridParams['order'])) {
-            $searchQuery['order'] = $gridParams['order'];
+        $where[] = '`musers`.userId = `users`.id';
+        $where[] = '`musers`.membershipId = ' . $this->id;
+        $where[] = '`musers`.archived = 0';
+
+        if (!empty($searchParams['search'])) {
+            $whereOR = array();
+
+            $searchColumns = array(
+                '`users`.username',
+                '`users`.firstname',
+                '`users`.lastname'
+            );
+
+            foreach ($searchColumns as $tbl => $column) {
+                $whereOR[]       = $column . ' LIKE :search';
+                $binds['search'] = array(
+                    'value' => '%' . $searchParams['search'] . '%',
+                    'type'  => \PDO::PARAM_STR
+                );
+            }
+
+            $where[] = '(' . implode(' OR ', $whereOR) . ')';
         }
 
-        $result = QUI::getDataBase()->fetch($searchQuery);
+        // build WHERE query string
+        if (!empty($where)) {
+            $sql .= " WHERE " . implode(" AND ", $where);
+        }
+
+        // ORDER
+        if (!empty($searchParams['sortOn'])
+        ) {
+            $order = "ORDER BY " . Orthos::clear($searchParams['sortOn']);
+
+            if (isset($searchParams['sortBy']) &&
+                !empty($searchParams['sortBy'])
+            ) {
+                $order .= " " . Orthos::clear($searchParams['sortBy']);
+            } else {
+                $order .= " ASC";
+            }
+
+            $sql .= " " . $order;
+        }
+
+        // LIMIT
+        if (!empty($gridParams['limit'])
+            && !$countOnly
+        ) {
+            $sql .= " LIMIT " . $gridParams['limit'];
+        } else {
+            if (!$countOnly) {
+                $sql .= " LIMIT " . (int)20;
+            }
+        }
+
+        $Stmt = QUI::getPDO()->prepare($sql);
+
+        // bind search values
+        foreach ($binds as $var => $bind) {
+            $Stmt->bindValue(':' . $var, $bind['value'], $bind['type']);
+        }
+
+        // fetch information for all corresponding passwords
+        try {
+            $Stmt->execute();
+            $result = $Stmt->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::addError(
+                self::class . ' :: searchUsers() -> ' . $Exception->getMessage()
+            );
+
+            return array();
+        }
+
+        if ($countOnly) {
+            return (int)current(current($result));
+        }
 
         foreach ($result as $row) {
             $membershipUserIds[] = (int)$row['id'];
@@ -314,38 +374,96 @@ class Membership extends Child
         $Grid              = new QUI\Utils\Grid($searchParams);
         $gridParams        = $Grid->parseDBParams($searchParams);
         $tbl               = MembershipUsersHandler::getInstance()->getDataBaseTableName();
+        $usersTbl          = QUI::getDBTableName('users');
+        $binds             = array();
+        $where             = array();
 
         if ($countOnly) {
-            $result = QUI::getDataBase()->fetch(array(
-                'count' => 1,
-                'from'  => $tbl,
-                'where' => array(
-                    'membershipId' => $this->id,
-                    'archived'     => 1
-                ),
-            ));
-
-            return current(current($result));
+            $sql = "SELECT COUNT(*)";
+        } else {
+            $sql = "SELECT `musers`.id";
         }
 
-        $searchQuery = array(
-            'select' => array(
-                'id'
-            ),
-            'from'   => $tbl,
-            'where'  => array(
-                'membershipId' => $this->id,
-                'archived'     => 1
-            ),
-            'limit'  => $gridParams['limit'],
-            'order'  => 'archiveDate DESC'
-        );
+        $sql .= " FROM `" . $tbl . "` musers, `" . $usersTbl . "` users";
 
-        if (!empty($gridParams['order'])) {
-            $searchQuery['order'] = $gridParams['order'];
+        $where[] = '`musers`.userId = `users`.id';
+        $where[] = '`musers`.membershipId = ' . $this->id;
+        $where[] = '`musers`.archived = 1';
+
+        if (!empty($searchParams['search'])) {
+            $whereOR = array();
+
+            $searchColumns = array(
+                '`users`.username',
+                '`users`.firstname',
+                '`users`.lastname'
+            );
+
+            foreach ($searchColumns as $tbl => $column) {
+                $whereOR[]       = $column . ' LIKE :search';
+                $binds['search'] = array(
+                    'value' => '%' . $searchParams['search'] . '%',
+                    'type'  => \PDO::PARAM_STR
+                );
+            }
+
+            $where[] = '(' . implode(' OR ', $whereOR) . ')';
         }
 
-        $result = QUI::getDataBase()->fetch($searchQuery);
+        // build WHERE query string
+        if (!empty($where)) {
+            $sql .= " WHERE " . implode(" AND ", $where);
+        }
+
+        // ORDER
+        if (!empty($searchParams['sortOn'])
+        ) {
+            $order = "ORDER BY " . Orthos::clear($searchParams['sortOn']);
+
+            if (isset($searchParams['sortBy']) &&
+                !empty($searchParams['sortBy'])
+            ) {
+                $order .= " " . Orthos::clear($searchParams['sortBy']);
+            } else {
+                $order .= " ASC";
+            }
+
+            $sql .= " " . $order;
+        }
+
+        // LIMIT
+        if (!empty($gridParams['limit'])
+            && !$countOnly
+        ) {
+            $sql .= " LIMIT " . $gridParams['limit'];
+        } else {
+            if (!$countOnly) {
+                $sql .= " LIMIT " . (int)20;
+            }
+        }
+
+        $Stmt = QUI::getPDO()->prepare($sql);
+
+        // bind search values
+        foreach ($binds as $var => $bind) {
+            $Stmt->bindValue(':' . $var, $bind['value'], $bind['type']);
+        }
+
+        // fetch information for all corresponding passwords
+        try {
+            $Stmt->execute();
+            $result = $Stmt->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::addError(
+                self::class . ' :: searchUsers() -> ' . $Exception->getMessage()
+            );
+
+            return array();
+        }
+
+        if ($countOnly) {
+            return (int)current(current($result));
+        }
 
         foreach ($result as $row) {
             $membershipUserIds[] = (int)$row['id'];

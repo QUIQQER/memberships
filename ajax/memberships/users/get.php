@@ -16,22 +16,7 @@ QUI::$Ajax->registerFunction(
             $MembershipUsers = MembershipUsersHandler::getInstance();
             /** @var MembershipUser $MembershipUser */
             $MembershipUser = $MembershipUsers->getChild((int)$membershipUserId);
-            $QuiqqerUser    = $MembershipUser->getUser();
-            $Membership     = $MembershipUser->getMembership();
-
-            return array(
-                'id'              => $MembershipUser->getId(),
-                'userId'          => $QuiqqerUser->getId(),
-                'membershipId'    => $Membership->getId(),
-                'membershipTitle' => $Membership->getTitle(),
-                'username'        => $QuiqqerUser->getUsername(),
-                'fullName'        => $QuiqqerUser->getName(),
-                'addedDate'       => $MembershipUser->getAttribute('addedDate'),
-                'beginDate'       => $MembershipUser->getAttribute('beginDate'),
-                'endDate'         => $MembershipUser->getAttribute('endDate'),
-                'archived'        => $MembershipUser->isArchived(),
-                'archiveReason'   => $MembershipUser->getAttribute('archiveReason')
-            );
+            return $MembershipUser->getBackendViewData();
         } catch (\Exception $Exception) {
             QUI\System\Log::addError('AJAX :: package_quiqqer_memberships_ajax_memberships_users_getHistory');
             QUI\System\Log::writeException($Exception);

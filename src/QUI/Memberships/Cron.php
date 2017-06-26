@@ -35,7 +35,16 @@ class Cron
                 $MembershipUser = $MembershipUsers->getChild($row['id']);
                 $Membership     = $MembershipUser->getMembership();
 
-                // @todo prüfen, ob benutzer existiert und ggf. löschen
+                try {
+                    $MembershipUser->getUser();
+                } catch (QUI\Users\Exception $Exception) {
+                    // archive MembershipUser if QUIQQER User cannot be found
+                    if ($Exception->getCode() === 404) {
+                        $MembershipUser->archive(MembershipUsersHandler::ARCHIVE_REASON_USER_DELETED);
+                    }
+
+                    continue;
+                }
 
                 // check if membership has expired
                 $endTimestamp = strtotime($Membership->getAttribute('endDate'));

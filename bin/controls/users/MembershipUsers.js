@@ -84,6 +84,7 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
             this.$GridParent = null;
             this.$FormParent = null;
             this.$Membership = null;
+            this.$search     = false;
 
             this.addEvents({
                 onInject: this.$onInject,
@@ -140,36 +141,46 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
                 '.quiqqer-memberships-membershipusers-table'
             );
 
+            var ActionBtn = new QUIButton({
+                text  : QUILocale.get(lg, 'controls.membershipusers.tbl.btn.actions'),
+                name  : 'actions',
+                styles: {
+                    float: 'right'
+                }
+            });
+
+            ActionBtn.appendChild({
+                name  : 'adduser',
+                text  : QUILocale.get(lg, 'controls.membershipusers.tbl.btn.adduser'),
+                icon  : 'fa fa-plus',
+                events: {
+                    onClick: this.$addUser
+                }
+            }).appendChild({
+                name  : 'edit',
+                text  : QUILocale.get(lg, 'controls.membershipusers.tbl.btn.edit'),
+                icon  : 'fa fa-edit',
+                events: {
+                    onClick: this.$editUser
+                }
+            }).appendChild({
+                name  : 'removeuser',
+                text  : QUILocale.get(lg, 'controls.membershipusers.tbl.btn.removeuser'),
+                icon  : 'fa fa-trash',
+                events: {
+                    onClick: this.$removeUsers
+                }
+            });
+
             this.$Grid = new Grid(this.$GridParent, {
                 buttons          : [{
-                    name     : 'adduser',
-                    text     : QUILocale.get(lg, 'controls.membershipusers.tbl.btn.adduser'),
-                    textimage: 'fa fa-plus',
-                    events   : {
-                        onClick: this.$addUser
-                    }
-                }, {
-                    name     : 'edit',
-                    text     : QUILocale.get(lg, 'controls.membershipusers.tbl.btn.edit'),
-                    textimage: 'fa fa-edit',
-                    events   : {
-                        onClick: this.$editUser
-                    }
-                }, {
                     name     : 'history',
                     text     : QUILocale.get(lg, 'controls.users.membershipusersarchive.tbl.btn.history'),
                     textimage: 'fa fa-history',
                     events   : {
                         onClick: this.$showHistory
                     }
-                }, {
-                    name     : 'removeuser',
-                    text     : QUILocale.get(lg, 'controls.membershipusers.tbl.btn.removeuser'),
-                    textimage: 'fa fa-trash',
-                    events   : {
-                        onClick: this.$removeUsers
-                    }
-                }],
+                }, ActionBtn],
                 columnModel      : [{
                     header   : QUILocale.get('quiqqer/system', 'id'),
                     dataIndex: 'id',
@@ -206,10 +217,15 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
                     dataType : 'string',
                     width    : 150
                 }, {
+                    header   : QUILocale.get(lg, 'controls.membershipusers.tbl.header.status'),
+                    dataIndex: 'status',
+                    dataType : 'node',
+                    width    : 75
+                }, {
                     header   : QUILocale.get(lg, 'controls.membershipusers.tbl.header.extendCounter'),
                     dataIndex: 'extendCounter',
                     dataType : 'number',
-                    width    : 75
+                    width    : 120
                 }],
                 pagination       : true,
                 serverSort       : true,
@@ -223,14 +239,10 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
                     var TableButtons = self.$Grid.getAttribute('buttons');
                     var selected     = self.$Grid.getSelectedData().length;
 
-                    TableButtons.removeuser.enable();
-
                     if (selected === 1) {
                         TableButtons.history.enable();
-                        TableButtons.edit.enable();
                     } else {
                         TableButtons.history.disable();
-                        TableButtons.edit.disable();
                     }
                 },
                 onRefresh : this.$listRefresh
@@ -267,20 +279,22 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
             var self         = this;
             var TableButtons = this.$Grid.getAttribute('buttons');
 
-            TableButtons.removeuser.disable();
             TableButtons.history.disable();
-            TableButtons.edit.disable();
 
-            var GridParams = {
+            var SearchParams = {
                 sortOn : Grid.getAttribute('sortOn'),
                 sortBy : Grid.getAttribute('sortBy'),
                 perPage: Grid.getAttribute('perPage'),
                 page   : Grid.getAttribute('page')
             };
 
+            if (this.$search) {
+                SearchParams.search = this.$search;
+            }
+
             this.Loader.show();
 
-            MembershipUsersHandler.getList(this.$Membership.id, GridParams).then(function (ResultData) {
+            MembershipUsersHandler.getList(this.$Membership.id, SearchParams).then(function (ResultData) {
                 self.Loader.hide();
                 self.$setGridData(ResultData);
             });
@@ -292,8 +306,6 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
          * @param {Object} GridData
          */
         $setGridData: function (GridData) {
-            var self = this;
-
             for (var i = 0, len = GridData.data.length; i < len; i++) {
                 var Row = GridData.data[i];
 
@@ -301,19 +313,19 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
                     Row.userFullName = '-';
                 }
 
-                //if (Row.active) {
-                //    Row.activeStatus = new Element('span', {
-                //        'class': 'fa fa-check',
-                //        title  : QUILocale.get(lg, 'controls.membershipusers.tbl.status.active'),
-                //        alt    : QUILocale.get(lg, 'controls.membershipusers.tbl.status.active')
-                //    });
-                //} else {
-                //    Row.activeStatus = new Element('span', {
-                //        'class': 'fa fa-close',
-                //        title  : QUILocale.get(lg, 'controls.membershipusers.tbl.status.inactive'),
-                //        alt    : QUILocale.get(lg, 'controls.membershipusers.tbl.status.inactive')
-                //    });
-                //}
+                if (Row.cancelled) {
+                    Row.status = new Element('span', {
+                        'class': 'quiqqer-memberships-membershipusers-table-status' +
+                        ' quiqqer-memberships-membershipusers-table-status-warning',
+                        html   : QUILocale.get(lg, 'controls.membershipusers.tbl.status.cancelled')
+                    });
+                } else {
+                    Row.status = new Element('span', {
+                        'class': 'quiqqer-memberships-membershipusers-table-status' +
+                        ' quiqqer-memberships-membershipusers-table-status-ok',
+                        html   : QUILocale.get(lg, 'controls.membershipusers.tbl.status.active')
+                    });
+                }
             }
 
             this.$Grid.setData(GridData);
@@ -328,9 +340,9 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
             var AddUsersWindow = new UserSearchWindow({
                 search        : true,
                 searchSettings: {
-                    //filter: {
-                    //    filter_groups_exclude: self.$Membership.uniqueGroupIds
-                    //}
+                    filter: {
+                        filter_groups_exclude: self.$Membership.uniqueGroupIds
+                    }
                 },
                 events        : {
                     onSubmit: function (Control, users) {
@@ -366,11 +378,18 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
          * Edit MembershipUser
          */
         $editUser: function () {
-            var membershipUserId = this.$Grid.getSelectedData()[0].id;
+            var self = this;
+            var data = this.$Grid.getSelectedData();
+
+            if (!data.length) {
+                return;
+            }
+
+            var membershipUserId = data[0].id;
 
             // open popup
             var Popup = new QUIPopup({
-                'maxHeight': 275,
+                'maxHeight': 325,
                 maxWidth   : 500,
                 'autoclose': true,
                 'title'    : QUILocale.get(lg, 'controls.membershipusers.edit.popup.title'),
@@ -382,8 +401,8 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
                     onOpen: function () {
                         new MembershipUserEdit({
                             membershipUserId: membershipUserId,
-                            events: {
-                                onSubmit: function() {
+                            events          : {
+                                onSubmit: function () {
                                     Popup.close();
                                     self.refresh();
                                 }
@@ -406,6 +425,10 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
             var deleteData = [];
             var deleteIds  = [];
             var rows       = this.$Grid.getSelectedData();
+
+            if (!rows.length) {
+                return;
+            }
 
             for (var i = 0, len = rows.length; i < len; i++) {
                 deleteData.push(
@@ -462,7 +485,13 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
          * Show history
          */
         $showHistory: function () {
-            var membershipUserId = this.$Grid.getSelectedData()[0].id;
+            var data = this.$Grid.getSelectedData();
+
+            if (!data.length) {
+                return;
+            }
+
+            var membershipUserId = data[0].id;
 
             require([
                 'package/quiqqer/memberships/bin/controls/users/MembershipUserHistoryPopup'
@@ -471,6 +500,20 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
                     membershipUserId: membershipUserId
                 }).open();
             });
+        },
+
+        /**
+         * Set search term for MembershipUser search
+         *
+         * @param {String} search
+         */
+        setSearchTerm: function(search) {
+            if (!search || search === '') {
+                this.$search = false;
+                return;
+            }
+
+            this.$search = search;
         }
     });
 });

@@ -227,6 +227,10 @@
             <de><![CDATA[Mitgliedschafts-Panel schließen]]></de>
             <en><![CDATA[Close membership panel]]></en>
         </locale>
+        <locale name="controls.membership.search.input.placeholder">
+            <de><![CDATA[Mitglieder-Suche]]></de>
+            <en><![CDATA[Member search]]></en>
+        </locale>
 
         <!-- Control: InputDuration -->
         <locale name="controls.inputduration.period.day">
@@ -259,6 +263,10 @@
             <de><![CDATA[Benutzer bearbeiten]]></de>
             <en><![CDATA[Edit user]]></en>
         </locale>
+        <locale name="controls.membershipusers.tbl.btn.actions">
+            <de><![CDATA[Aktionen]]></de>
+            <en><![CDATA[Actions]]></en>
+        </locale>
         <locale name="controls.membershipusers.tbl.header.userId">
             <de><![CDATA[User ID]]></de>
             <en><![CDATA[User ID]]></en>
@@ -279,6 +287,10 @@
             <de><![CDATA[Beginn (akt. Zyklus)]]></de>
             <en><![CDATA[Beginning (curr. cylce)]]></en>
         </locale>
+        <locale name="controls.membershipusers.tbl.header.status">
+            <de><![CDATA[Status]]></de>
+            <en><![CDATA[Status]]></en>
+        </locale>
         <locale name="controls.membershipusers.tbl.header.endDate">
             <de><![CDATA[Ende (akt. Zyklus)]]></de>
             <en><![CDATA[Ends (curr. cycle)]]></en>
@@ -298,6 +310,18 @@
         <locale name="controls.membershipusers.edit.popup.title">
             <de><![CDATA[Mitgliedschafts-Benutzer bearbeiten]]></de>
             <en><![CDATA[Edit membership user]]></en>
+        </locale>
+        <locale name="controls.membershipusers.tbl.status.cancelled">
+            <de><![CDATA[gekündigt]]></de>
+            <en><![CDATA[cancelled]]></en>
+        </locale>
+        <locale name="controls.membershipusers.tbl.status.active">
+            <de><![CDATA[aktiv]]></de>
+            <en><![CDATA[active]]></en>
+        </locale>
+        <locale name="controls.users.membershipuseredit.template.cancelled">
+            <de><![CDATA[Gekündigt]]></de>
+            <en><![CDATA[Cancelled]]></en>
         </locale>
 
         <!-- Controls: users/MembershipUsersArchive -->
@@ -324,6 +348,10 @@
         <locale name="controls.users.membershipusersarchive.tbl.archiveReason.expired">
             <de><![CDATA[Ablauf der Mitgliedschafts-Zeit]]></de>
             <en><![CDATA[Membership expired]]></en>
+        </locale>
+        <locale name="controls.users.membershipusersarchive.tbl.archiveReason.user_deleted">
+            <de><![CDATA[Zugehöriger QUIQQER-Benutzer gelöscht]]></de>
+            <en><![CDATA[Assigned QUIQQER user deleted]]></en>
         </locale>
 
         <!-- Controls: users/MembershipUserHistory -->
@@ -374,6 +402,14 @@
         <locale name="controls.users.membershipuserhistory.entry.type.extended">
             <de><![CDATA[Mitgliedschafts-Zeit verlängert]]></de>
             <en><![CDATA[Membership extended]]></en>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.cancel_by_edit">
+            <de><![CDATA[Kündigung durch Administrator]]></de>
+            <en><![CDATA[Termination by administrator]]></en>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.uncancel_by_edit">
+            <de><![CDATA[Aufhebung der Kündigung durch Administrator]]></de>
+            <en><![CDATA[Revocation of termination by administrator]]></en>
         </locale>
 
         <!-- Controls: users/MembershipUserHistoryPopup -->
@@ -459,6 +495,14 @@
             <de><![CDATA[Der Mitgliedschafts-Benutzer <b>[membershipUserName]</b> (#[membershipUserId]) wurde erfolgreich aktualisiert.]]></de>
             <en><![CDATA[The membership user <b>[membershipUserName]</b> (#[membershipUserId]) was successfully updated.]]></en>
         </locale>
+        <locale name="message.ajax.memberships.users.sendCancelMail.error" html="true">
+            <de><![CDATA[Die Kündigungs-Mail konnte nicht versendet werden:<br><br>[error]]]></de>
+            <en><![CDATA[The termination mail could not be sent:<br><br>[error]]]></en>
+        </locale>
+        <locale name="message.ajax.memberships.users.sendCancelMail.success" html="true">
+            <de><![CDATA[Die Kündigungs-Mail an Mitgliedschafts-Benutzer <b>[membershipUserName]</b> (#[membershipUserId]) wurde erfolgreich versandt.]]></de>
+            <en><![CDATA[The termination mail to user <b>[membershipUserName]</b> (#[membershipUserId]) was successfully sent.]]></en>
+        </locale>
 
         <!-- Class: Membership -->
         <locale name="exception.membership.cannot.update.when.locked">
@@ -516,6 +560,16 @@
         <locale name="exception.users.membershipuser.no.email">
             <de><![CDATA[Es können keine E-Mails an den Mitgliedschafts-Benutzer gesendet werden, da er keine eingetragene E-Mail-Adresse hat.]]></de>
             <en><![CDATA[No e-mails can be sent to the membership user, since he does not have a registered e-mail address.]]></en>
+        </locale>
+
+        <!-- Control: users/MembershipUserEdit -->
+        <locale name="controls.users.membershipuseredit.cancelmail.popup.info">
+            <de><![CDATA[Sie haben die Mitgliedschaft des Benutzers manuell gekündigt. Möchten Sie eine Kündigungsbestätigung an den Benutzer senden?]]></de>
+            <en><![CDATA[You have manually canceled the user's membership. Do you want to send an acknowledgment of termination to the user?]]></en>
+        </locale>
+        <locale name="controls.users.membershipuseredit.cancelmail.popup.title">
+            <de><![CDATA[Kündigungsbestätigung senden]]></de>
+            <en><![CDATA[Send confirmation]]></en>
         </locale>
 
         <!-- Templates -->

@@ -193,6 +193,16 @@ class MembershipUser extends Child
         $this->update();
 
         // send confirm cancel mail
+        $this->sendConfirmCancelMail();
+    }
+
+    /**
+     * Send mail to user to confirm cancellation
+     *
+     * @return void
+     */
+    public function sendConfirmCancelMail()
+    {
         $subject = $this->getUser()->getLocale()->get('quiqqer/memberships', 'templates.mail.confirmcancel.subject');
         $this->sendMail($subject, dirname(__FILE__, 5) . '/templates/mail_confirmcancel.html');
     }
@@ -218,7 +228,7 @@ class MembershipUser extends Child
      */
     public function isCancelled()
     {
-        return $this->getAttribute('cancelled');
+        return boolval($this->getAttribute('cancelled'));
     }
 
     /**
@@ -397,6 +407,32 @@ class MembershipUser extends Child
         }
 
         return $history;
+    }
+
+    /**
+     * Get membership data for backend view/edit purposes
+     *
+     * @return array
+     */
+    public function getBackendViewData()
+    {
+        $QuiqqerUser = $this->getUser();
+        $Membership  = $this->getMembership();
+
+        return array(
+            'id'              => $this->getId(),
+            'userId'          => $QuiqqerUser->getId(),
+            'membershipId'    => $Membership->getId(),
+            'membershipTitle' => $Membership->getTitle(),
+            'username'        => $QuiqqerUser->getUsername(),
+            'fullName'        => $QuiqqerUser->getName(),
+            'addedDate'       => $this->getAttribute('addedDate'),
+            'beginDate'       => $this->getAttribute('beginDate'),
+            'endDate'         => $this->getAttribute('endDate'),
+            'archived'        => $this->isArchived(),
+            'archiveReason'   => $this->getAttribute('archiveReason'),
+            'cancelled'       => $this->isCancelled()
+        );
     }
 
     /**

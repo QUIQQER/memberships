@@ -68,7 +68,10 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
             'save',
             '$checkLock',
             '$showLockInfo',
-            '$onActivationStatusChange'
+            '$showUserSearch',
+            '$hideUserSearch',
+            '$startSearch',
+            'refresh'
         ],
 
         options: {
@@ -79,16 +82,20 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
         initialize: function (options) {
             this.parent(options);
 
-            this.$Control     = null;
-            this.$Membership  = null;
-            this.$lockKey     = false;
-            this.$initialLoad = true;
-            this.$isLocked    = true;
-            this.$refreshMode = false;
+            this.$Control         = null;
+            this.$Membership      = null;
+            this.$lockKey         = false;
+            this.$initialLoad     = true;
+            this.$isLocked        = true;
+            this.$refreshMode     = false;
+            this.$Search          = null;
+            this.$CurrentUserList = null;
+            this.$searchUsed      = false;
 
             this.addEvents({
                 onCreate : this.$onCreate,
-                onDestroy: this.$onDestroy
+                onDestroy: this.$onDestroy,
+                onSearch : this.$onUserSearch
             });
         },
 
@@ -118,11 +125,68 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
                 events   : {
                     onClick: function () {
                         self.$refreshMode = true;
-                        self.$onCreate();
+                        self.refresh();
                     }
                 }
             });
 
+            // search input
+            this.$Search = new Element('div', {
+                'class': 'quiqqer-memberships-membership-search quiqqer-memberships-membership-search__hidden',
+                html   : '<input type="text"/><span class="fa fa-search"></span>'
+            });
+
+            this.$Search.getElement('input').setProperty(
+                'placeholder',
+                QUILocale.get(lg, 'controls.membership.search.input.placeholder')
+            );
+
+            this.$Search.getElement('input').addEvents({
+                keyup: function (event) {
+                    if (event.code === 13) {
+                        var val   = event.target.value.trim();
+                        var Input = self.$Search.getElement('input');
+
+                        if (val === '') {
+                            Input.value = '';
+                            Input.focus();
+                            return;
+                        }
+
+                        self.$startSearch(val);
+                    }
+                }
+            });
+
+            this.$Search.getElement('span').addEvents({
+                click: function (event) {
+                    var SearchIcon = event.target;
+                    var Input      = self.$Search.getElement('input');
+
+                    if (self.$searchUsed) {
+                        SearchIcon.removeClass('fa-times');
+                        SearchIcon.addClass('fa-search');
+                        Input.value = '';
+                        Input.focus();
+                        self.$searchUsed = false;
+                        self.$startSearch('');
+                        return;
+                    }
+
+                    if (Input.value.trim() === '') {
+                        Input.value = '';
+                        Input.focus();
+                        return;
+                    }
+
+                    self.$searchUsed = true;
+                    self.$startSearch(Input.value);
+                }
+            });
+
+            this.addButton(this.$Search);
+
+            // categories
             this.addCategory(new QUIButton({
                 name  : 'settings',
                 icon  : 'fa fa-gears',
@@ -159,11 +223,21 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
                 }
             }));
 
+            self.refresh();
+        },
+
+        /**
+         * Refresh membership data
+         */
+        refresh: function()
+        {
+            var self = this;
+
             this.Loader.show();
 
             Promise.all([
                 Memberships.getInstalledMembershipPackages(),
-                Memberships.getMembership(this.getAttribute('id'))
+                Memberships.getMembership(self.getAttribute('id'))
             ]).then(function (result) {
                 var installedPackages = result[0];
                 self.$Membership      = result[1];
@@ -212,6 +286,7 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
                 self.$checkLock();
 
                 self.getCategory('settings').setActive();
+                self.$loadSettings();
             });
         },
 
@@ -251,8 +326,8 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
                     labelContent    : QUILocale.get(lg, lgPrefix + 'labelContent'),
                     headerDuration  : QUILocale.get(lg, lgPrefix + 'headerDuration'),
                     labelDuration   : QUILocale.get(lg, lgPrefix + 'labelDuration'),
-                    labelAutoExtend  : QUILocale.get(lg, lgPrefix + 'labelAutoExtend'),
-                    autoExtend       : QUILocale.get(lg, lgPrefix + 'autoExtend'),
+                    labelAutoExtend : QUILocale.get(lg, lgPrefix + 'labelAutoExtend'),
+                    autoExtend      : QUILocale.get(lg, lgPrefix + 'autoExtend'),
                     headerGroups    : QUILocale.get(lg, lgPrefix + 'headerGroups'),
                     labelGroups     : QUILocale.get(lg, lgPrefix + 'labelGroups')
                 })
@@ -261,6 +336,8 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
             this.Loader.show();
 
             var Form = PanelContent.getElement('form');
+
+            console.log(this.$Membership);
 
             QUIFormUtils.setDataToForm(this.$Membership, Form);
 
@@ -278,7 +355,9 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
 
             PanelContent.set('html', '');
 
-            new MembershipUsers({
+            self.$showUserSearch();
+
+            this.$CurrentUserList = new MembershipUsers({
                 membershipId: this.$Membership.id
             }).inject(PanelContent);
         },
@@ -292,9 +371,57 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
 
             PanelContent.set('html', '');
 
-            new MembershipUsersArchive({
+            self.$showUserSearch();
+
+            this.$CurrentUserList = new MembershipUsersArchive({
                 membershipId: this.$Membership.id
             }).inject(PanelContent);
+        },
+
+        /**
+         * Event: onSearch
+         *
+         * @param {String} search - search term
+         */
+        $onUserSearch: function (search) {
+            if (!this.$CurrentUserList) {
+                return;
+            }
+
+            this.$CurrentUserList.setSearchTerm(search);
+            this.$CurrentUserList.refresh();
+        },
+
+        /**
+         * Start search process
+         *
+         * @param {String} val - Search term
+         */
+        $startSearch: function (val) {
+            if (val !== '') {
+                var SearchIcon = this.$Search.getElement('span');
+
+                SearchIcon.removeClass('fa-search');
+                SearchIcon.addClass('fa-times');
+
+                this.$searchUsed = true;
+            }
+
+            this.fireEvent('search', [val]);
+        },
+
+        /**
+         * Show user search input in Panel button bar
+         */
+        $showUserSearch: function () {
+            this.$Search.removeClass('quiqqer-memberships-membership-search__hidden');
+        },
+
+        /**
+         * Hide user search input in Panel button bar
+         */
+        $hideUserSearch: function () {
+            this.$Search.addClass('quiqqer-memberships-membership-search__hidden');
         },
 
         /**
@@ -304,6 +431,9 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
          */
         unloadCategory: function (clear) {
             var i, len, Elm, name, tok, namespace;
+
+            this.$hideUserSearch();
+            this.$CurrentUserList = null;
 
             if (typeof clear === 'undefined') {
                 clear = true;

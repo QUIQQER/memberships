@@ -138,9 +138,11 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserHistory', [
 
                 // body
                 if (Entry.msg !== '') {
+                    var Message = JSON.decode(Entry.msg);
+
                     new Element('div', {
                         'class': 'quiqqer-memberships-membershipuserhistory-history-entry-body',
-                        html   : Entry.msg
+                        html   : '<pre>' + JSON.stringify(Message, null, 2) + '</pre>'
                     }).inject(EntryElm);
                 }
             });

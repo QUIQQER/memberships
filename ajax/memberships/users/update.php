@@ -24,8 +24,28 @@ QUI::$Ajax->registerFunction(
                 switch ($k) {
                     case 'beginDate':
                     case 'endDate':
-                        $v           = Utils::getFormattedTimestamp(strtotime($v));
-                        $updated[$k] = $v;
+                        $v      = Utils::getFormattedTimestamp(strtotime($v));
+                        $oldVal = $MembershipUser->getAttribute($k);
+
+                        if ($oldVal != $v) {
+                            $updated[$k] = $oldVal . ' => ' . $v;
+                        }
+                        break;
+
+                    case 'cancelled':
+                        $v = boolval($v);
+
+                        if ($v !== $MembershipUser->isCancelled()) {
+                            if ($v === true) {
+                                $MembershipUser->addHistoryEntry(
+                                    MembershipUsersHandler::HISTORY_TYPE_CANCEL_BY_EDIT
+                                );
+                            } else {
+                                $MembershipUser->addHistoryEntry(
+                                    MembershipUsersHandler::HISTORY_TYPE_UNCANCEL_BY_EDIT
+                                );
+                            }
+                        }
                         break;
 
                     default:
@@ -36,10 +56,12 @@ QUI::$Ajax->registerFunction(
                 $MembershipUser->setAttribute($k, $v);
             }
 
-            $MembershipUser->addHistoryEntry(
-                MembershipUsersHandler::HISTORY_TYPE_UPDATED,
-                json_encode($updated)
-            );
+            if (!empty($updated)) {
+                $MembershipUser->addHistoryEntry(
+                    MembershipUsersHandler::HISTORY_TYPE_UPDATED,
+                    json_encode($updated)
+                );
+            }
 
             $MembershipUser->update();
         } catch (QUI\Memberships\Exception $Exception) {

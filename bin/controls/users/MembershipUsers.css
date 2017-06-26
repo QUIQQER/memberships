@@ -9,3 +9,16 @@
     height: 100% !important;
     width: 100%;
 }
+
+.quiqqer-memberships-membershipusers-table-status {
+    float: left;
+    width: 100%;
+}
+
+.quiqqer-memberships-membershipusers-table-status-warning {
+    color: #ff1228;
+}
+
+.quiqqer-memberships-membershipusers-table-status-ok {
+    color: black;
+}

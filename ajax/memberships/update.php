@@ -28,13 +28,21 @@ QUI::$Ajax->registerFunction(
             $attributes = json_decode($attributes, true);
 
             foreach ($attributes as $k => $v) {
+                if (is_array($v)) {
+                    continue;
+                }
+
                 switch ($k) {
                     // do not clean content - contains HTML
                     case 'content':
                         break;
 
                     default:
-                        $attributes[$k] = Utils::clearJSONString($v);
+                        if (empty($v)) {
+                            $attributes[$k] = null;
+                        } else {
+                            $attributes[$k] = Utils::clearJSONString($v);
+                        }
                 }
             }
 

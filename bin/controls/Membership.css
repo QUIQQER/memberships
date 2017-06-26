@@ -32,3 +32,41 @@
 .quiqqer-memberships-membership-lock-btn button:not(:first-of-type) {
     margin-left: 15px;
 }
+
+.quiqqer-memberships-membership-search {
+    float: left;
+    margin: 8px;
+    position: relative;
+    width: 300px;
+}
+
+.quiqqer-memberships-membership-search__hidden {
+    display: none;
+}
+
+.quiqqer-memberships-membership-search input {
+    float: right;
+    height: 35px;
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    z-index: 3;
+}
+
+.quiqqer-memberships-membership-search span {
+    color: #ddd;
+    transition: all 0.3s;
+    font-size: 23px;
+    position: absolute;
+    height: 100%;
+    padding-top: 5px;
+    width: 30px;
+    vertical-align: middle;
+    right: 0;
+    z-index: 4;
+}
+
+.quiqqer-memberships-membership-search span:hover {
+    cursor: pointer;
+    color: #000000;
+}

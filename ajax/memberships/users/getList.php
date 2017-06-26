@@ -37,13 +37,14 @@ QUI::$Ajax->registerFunction(
                 'addedDate'     => $data['addedDate'],
                 'beginDate'     => $data['beginDate'],
                 'endDate'       => $data['endDate'],
-                'extendCounter' => $data['extendCounter']
+                'extendCounter' => $data['extendCounter'],
+                'cancelled'     => $data['cancelled'] ? 1 : 0
             );
         }
 
         /** @var \QUI\Memberships\Users\MembershipUser $TEST */
-        $TEST = $MembershipUsers->getChild(19);
-        $TEST->startManualCancel();
+//        $TEST = $MembershipUsers->getChild(22);
+//        $TEST->startManualCancel();
 
         $Grid = new Grid($searchParams);
 
