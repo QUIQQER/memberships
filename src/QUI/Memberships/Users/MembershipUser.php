@@ -8,6 +8,7 @@ use QUI\Memberships\Handler as MembershipsHandler;
 use QUI\Memberships\Users\Handler as MembershipUsersHandler;
 use QUI\Memberships\Utils;
 use QUI\Mail\Mailer;
+use QUI\Permissions\Permission;
 
 /**
  * Class MembershipUser
@@ -23,6 +24,8 @@ class MembershipUser extends Child
      */
     public function update()
     {
+        Permission::checkPermission(MembershipUsersHandler::PERMISSION_EDIT_USERS);
+
         // check certain attributes
         $beginDate = strtotime($this->getAttribute('beginDate'));
         $endDate   = strtotime($this->getAttribute('endDate'));
@@ -56,7 +59,7 @@ class MembershipUser extends Child
     public function extend($auto = true)
     {
         $Membership = $this->getMembership();
-        $extendMode = MembershipUsersHandler::getConfigEntry('extendMode');
+        $extendMode = MembershipUsersHandler::getSetting('extendMode');
 
         if ($auto || $extendMode === 'reset') {
             $start         = time();
@@ -75,12 +78,13 @@ class MembershipUser extends Child
             ));
         }
 
-        $historyEntry = 'start: ' . $this->getAttribute('beginDate');
-        $historyEntry .= ' | end: ' . $this->getAttribute('endDate');
-        $historyEntry .= ' | auto: ';
-        $auto ? $historyEntry .= '1' : $historyEntry .= '0';
+        $historyData = array(
+            'start' => $this->getAttribute('beginDate'),
+            'end'   => $this->getAttribute('endDate'),
+            'auto'  => $auto ? '1' : '0'
+        );
 
-        $this->addHistoryEntry(MembershipUsersHandler::HISTORY_TYPE_EXTENDED, $historyEntry);
+        $this->addHistoryEntry(MembershipUsersHandler::HISTORY_TYPE_EXTENDED, json_encode($historyData));
         $this->update();
 
         // send autoextend mail
@@ -240,6 +244,8 @@ class MembershipUser extends Child
      */
     public function delete()
     {
+        Permission::checkPermission(MembershipUsersHandler::PERMISSION_EDIT_USERS);
+
         $this->addHistoryEntry(MembershipUsersHandler::HISTORY_TYPE_DELETED);
 
         // do not delete, just set to archived
@@ -312,7 +318,9 @@ class MembershipUser extends Child
     public function archive($reason)
     {
         $this->removeFromGroups();
-        $this->addHistoryEntry(MembershipUsersHandler::HISTORY_TYPE_ARCHIVED);
+        $this->addHistoryEntry(MembershipUsersHandler::HISTORY_TYPE_ARCHIVED, array(
+            'reason' => $reason
+        ));
         $this->setAttributes(array(
             'archived'      => 1,
             'archiveDate'   => Utils::getFormattedTimestamp(),
@@ -410,6 +418,58 @@ class MembershipUser extends Child
     }
 
     /**
+     * Format date based on User Locale and duration mode
+     *
+     * @param string $date - Formatted date YYYY-MM-DD HH:MM:SS
+     * @return string
+     */
+    protected function formatDate($date)
+    {
+        $Locale       = $this->getUser()->getLocale();
+        $durationMode = MembershipsHandler::getSetting('durationMode');
+        $timestamp    = strtotime($date);
+
+        switch ($durationMode) {
+            case 'day':
+                $dayDate       = date('Y-m-d', $timestamp);
+                $formattedDate = $Locale->formatDate(strtotime($dayDate));
+                break;
+
+            default:
+                $minuteDate    = date('Y-m-d H:i', $timestamp);
+                $formattedDate = $Locale->formatDate(strtotime($minuteDate));
+        }
+
+        return $formattedDate;
+    }
+
+    /**
+     * Get membership data for frontend view/edit purposes with correctly formatted dates
+     *
+     * @return array
+     */
+    public function getFrontendViewData()
+    {
+        $QuiqqerUser = $this->getUser();
+        $Membership  = $this->getMembership();
+
+        return array(
+            'id'              => $this->getId(),
+            'userId'          => $QuiqqerUser->getId(),
+            'membershipId'    => $Membership->getId(),
+            'membershipTitle' => $Membership->getTitle(),
+            'username'        => $QuiqqerUser->getUsername(),
+            'fullName'        => $QuiqqerUser->getName(),
+            'addedDate'       => $this->formatDate($this->getAttribute('addedDate')),
+            'beginDate'       => $this->formatDate($this->getAttribute('beginDate')),
+            'endDate'         => $this->formatDate($this->getAttribute('endDate')),
+            'archived'        => $this->isArchived(),
+            'archiveReason'   => $this->getAttribute('archiveReason'),
+            'cancelled'       => $this->isCancelled()
+        );
+    }
+
+    /**
      * Get membership data for backend view/edit purposes
      *
      * @return array
@@ -462,7 +522,8 @@ class MembershipUser extends Child
         $Engine->assign(array_merge(
             array(
                 'MembershipUser' => $this,
-                'Locale'         => $this->getUser()->getLocale()
+                'Locale'         => $this->getUser()->getLocale(),
+                'data'           => $this->getFrontendViewData()
             ),
             $templateVars
         ));

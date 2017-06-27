@@ -7,6 +7,7 @@ use QUI\CRUD\Factory;
 use QUI\Memberships\Utils;
 use QUI\Memberships\Handler as MembershipsHandler;
 use QUI\Memberships\Users\Handler as MembershipUsersHandler;
+use QUI\Permissions\Permission;
 
 class Handler extends Factory
 {
@@ -22,10 +23,12 @@ class Handler extends Factory
     const HISTORY_TYPE_ARCHIVED         = 'archived';
     const HISTORY_TYPE_EXTENDED         = 'extended';
 
-    const ARCHIVE_REASON_CANCELLED         = 'cancelled';
-    const ARCHIVE_REASON_EXPIRED           = 'expired';
-    const ARCHIVE_REASON_DELETED           = 'deleted';
-    const ARCHIVE_REASON_USER_DELETED      = 'user_deleted';
+    const ARCHIVE_REASON_CANCELLED    = 'cancelled';
+    const ARCHIVE_REASON_EXPIRED      = 'expired';
+    const ARCHIVE_REASON_DELETED      = 'deleted';
+    const ARCHIVE_REASON_USER_DELETED = 'user_deleted';
+
+    const PERMISSION_EDIT_USERS = 'quiqqer.memberships.edit_users';
 
     /**
      * @inheritdoc
@@ -33,6 +36,8 @@ class Handler extends Factory
      */
     public function createChild($data = array())
     {
+        Permission::checkPermission(MembershipUsersHandler::PERMISSION_EDIT_USERS);
+
         $data['addedDate'] = Utils::getFormattedTimestamp();
 
         // user
@@ -213,7 +218,7 @@ class Handler extends Factory
      * @param string $key
      * @return array|string
      */
-    public static function getConfigEntry($key)
+    public static function getSetting($key)
     {
         $Config = QUI::getPackage('quiqqer/memberships')->getConfig();
         return $Config->get('membershipusers', $key);

@@ -6,6 +6,6 @@
 <p>
     {locale group="quiqqer/memberships" value="templates.mail.expired.body" Locale=$Locale
     membershipTitle=$MembershipUser->getMembership()->getTitle()
-    endDate=$MembershipUser->getAttribute('endDate')
+    endDate=$data['endDate']
     }
 </p>

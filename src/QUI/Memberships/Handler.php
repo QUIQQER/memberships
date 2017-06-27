@@ -111,15 +111,9 @@ class Handler extends Factory
             'autoExtend',
             'editDate',
             'editUser',
-//            'createDate',
-//            'createUser',
 
             // these fields require quiqqer/order
-            'paymentInterval',
-            'netPrice',
-            'netPriceOffer',
-//            'grossPrice',
-            'paymentMethodIds'
+            'paymentInterval'
 
             // @todo additional fields for quiqqer/contracts
         );
@@ -262,5 +256,17 @@ class Handler extends Factory
         }
 
         return $ids;
+    }
+
+    /**
+     * Get config entry for a membership setting
+     *
+     * @param string $key
+     * @return mixed
+     */
+    public static function getSetting($key)
+    {
+        $Config = QUI::getPackage('quiqqer/memberships')->getConfig();
+        return $Config->get('memberships', $key);
     }
 }

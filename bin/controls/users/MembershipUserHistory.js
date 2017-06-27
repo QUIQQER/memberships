@@ -138,11 +138,18 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserHistory', [
 
                 // body
                 if (Entry.msg !== '') {
-                    var Message = JSON.decode(Entry.msg);
+                    var msg = Entry.msg;
+
+                    try {
+                        var Message = JSON.decode(Entry.msg);
+                        msg = JSON.stringify(Message, null, 2);
+                    } catch (e) {
+                        // nothing, msg is not JSON formatted
+                    }
 
                     new Element('div', {
                         'class': 'quiqqer-memberships-membershipuserhistory-history-entry-body',
-                        html   : '<pre>' + JSON.stringify(Message, null, 2) + '</pre>'
+                        html   : '<pre>' + msg + '</pre>'
                     }).inject(EntryElm);
                 }
             });

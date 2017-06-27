@@ -205,7 +205,6 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserEdit', [
                                 'package_quiqqer_memberships_ajax_memberships_users_sendCancelMail',
                                 function () {
                                     Popup.close();
-                                    resolve();
                                 },
                                 {
                                     'package'       : 'quiqqer/memberships',
@@ -213,6 +212,9 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserEdit', [
                                     onError         : reject
                                 }
                             );
+                        },
+                        onClose: function() {
+                            resolve();
                         }
                     }
                 });

@@ -490,7 +490,18 @@ class Membership extends Child
         $durationCount = $duration[0];
         $durationScope = $duration[1];
 
-        $end = strtotime($start . ' +' . $durationCount . ' ' . $durationScope);
+        $durationMode = Handler::getSetting('durationMode');
+
+        switch ($durationMode) {
+            case 'day':
+                $endTime    = strtotime($start . ' +' . $durationCount . ' ' . $durationScope);
+                $beginOfDay = strtotime("midnight", $endTime);
+                $end        = strtotime("tomorrow", $beginOfDay) - 1;
+                break;
+
+            default:
+                $end = strtotime($start . ' +' . $durationCount . ' ' . $durationScope);
+        }
 
         return Utils::getFormattedTimestamp($end);
     }

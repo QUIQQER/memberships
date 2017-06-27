@@ -8,6 +8,9 @@
     <permission name="quiqqer.memberships.edit" type="bool">
         <defaultvalue>0</defaultvalue>
     </permission>
+    <permission name="quiqqer.memberships.edit_users" type="bool">
+        <defaultvalue>0</defaultvalue>
+    </permission>
     <permission name="quiqqer.memberships.delete" type="bool">
         <defaultvalue>0</defaultvalue>
     </permission>

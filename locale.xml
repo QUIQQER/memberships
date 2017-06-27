@@ -28,8 +28,12 @@
             <en><![CDATA[Can create new memberships]]></en>
         </locale>
         <locale name="permission.quiqqer.memberships.edit">
-            <de><![CDATA[Darf Mitgliedschaften bearbeiten]]></de>
-            <en><![CDATA[Can edit memberships]]></en>
+            <de><![CDATA[Darf Mitgliedschaften bearbeiten (nur Mitgliedschafts-Daten, keine Mitgliedschafts-Benutzer!)]]></de>
+            <en><![CDATA[Can edit memberships (membership data only, no membership users!)]]></en>
+        </locale>
+        <locale name="permission.quiqqer.memberships.edit_users">
+            <de><![CDATA[Darf Mitgliedschafts-Benutzer verwalten (hinzufügen, bearbeiten, löschen)]]></de>
+            <en><![CDATA[Can manage membership users (add, edit, delete)]]></en>
         </locale>
         <locale name="permission.quiqqer.memberships.delete">
             <de><![CDATA[Darf Mitgliedschaften löschen]]></de>
@@ -54,8 +58,8 @@
             <en><![CDATA[Memberships]]></en>
         </locale>
         <locale name="settings.extendMode.title">
-            <de><![CDATA[Verlängerung von Mitgliedschaften]]></de>
-            <en><![CDATA[Extension of memberships]]></en>
+            <de><![CDATA[Verlängerung von Mitgliedschaften für aktive Mitglieder]]></de>
+            <en><![CDATA[Extension of memberships for active members]]></en>
         </locale>
         <locale name="settings.extendMode.description">
             <de><![CDATA[Bestimmt, wie die Laufzeit einer Mitgliedschaft für einen Benutzer verlängert wird, wenn der Benutzer in die Mitgliedschaft kommt, obwohl er schon aktives Mitglied ist.]]></de>
@@ -68,6 +72,22 @@
         <locale name="settings.extendMode.option.prolong">
             <de><![CDATA[Start-Zeitpunkt bleibt erhalten, nur End-Zeitpunkt wird neu gesetzt]]></de>
             <en><![CDATA[Start time is retained, only end time is reset]]></en>
+        </locale>
+        <locale name="settings.durationMode.title">
+            <de><![CDATA[Genauigkeit von Laufzeiten]]></de>
+            <en><![CDATA[Accuracy of membership duration]]></en>
+        </locale>
+        <locale name="settings.durationMode.description">
+            <de><![CDATA[Bestimmt, wie genau Laufzeiten von Mitgliedschaften berechnet werden. Bei <b>exakter</b> Berechnung stehen als Laufzeit-Optionen zusätzlich <b>Minuten</b> und <b>Stunden</b> zur Verfügung.]]></de>
+            <en><![CDATA[Determines how accurate the duration of memberships is calculated. With <b>exact</b> accuracy, <b>minutes</b> and <b>hours</b> are available as duration options.]]></en>
+        </locale>
+        <locale name="settings.durationMode.option.day">
+            <de><![CDATA[Tag-genau (Laufzeit wird auf den nächsten ganzen Tag aufgerundet)]]></de>
+            <en><![CDATA[Day-exact (duration is rounded up to the next whole day)]]></en>
+        </locale>
+        <locale name="settings.durationMode.option.exact">
+            <de><![CDATA[Exakt (Laufzeiten werden sekundengenau berechnet)]]></de>
+            <en><![CDATA[Exact (duration is calculated by the second)]]></en>
         </locale>
 
         <!-- Cron -->
@@ -233,6 +253,14 @@
         </locale>
 
         <!-- Control: InputDuration -->
+        <locale name="controls.inputduration.period.minute">
+            <de><![CDATA[Minute(n)]]></de>
+            <en><![CDATA[minute(s)]]></en>
+        </locale>
+        <locale name="controls.inputduration.period.hour">
+            <de><![CDATA[Stunde(n)]]></de>
+            <en><![CDATA[hour(s)]]></en>
+        </locale>
         <locale name="controls.inputduration.period.day">
             <de><![CDATA[Tag(e)]]></de>
             <en><![CDATA[day(s)]]></en>

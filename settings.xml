@@ -4,6 +4,13 @@
 
         <config>
 
+            <section name="memberships">
+                <conf name="durationMode">
+                    <type><![CDATA[string]]></type>
+                    <defaultvalue>day</defaultvalue>
+                </conf>
+            </section>
+
             <section name="membershipusers">
                 <conf name="extendMode">
                     <type><![CDATA[string]]></type>
@@ -44,6 +51,21 @@
                             </option>
                             <option value="prolong">
                                 <locale group="quiqqer/memberships" var="settings.extendMode.option.prolong"/>
+                            </option>
+                        </select>
+
+                        <select conf="memberships.durationMode">
+                            <text>
+                                <locale group="quiqqer/memberships" var="settings.durationMode.title"/>
+                            </text>
+                            <description>
+                                <locale group="quiqqer/memberships" var="settings.durationMode.description"/>
+                            </description>
+                            <option value="day">
+                                <locale group="quiqqer/memberships" var="settings.durationMode.option.day"/>
+                            </option>
+                            <option value="exact">
+                                <locale group="quiqqer/memberships" var="settings.durationMode.option.exact"/>
                             </option>
                         </select>
                     </settings>

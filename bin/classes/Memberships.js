@@ -115,6 +115,22 @@ define('package/quiqqer/memberships/bin/classes/Memberships', [
                     onError  : reject
                 })
             });
+        },
+
+        /**
+         * Get membership setting
+         *
+         * @param {String} key - setting key
+         * @return {Promise}
+         */
+        getSetting: function (key) {
+            return new Promise(function (resolve, reject) {
+                QUIAjax.get('package_quiqqer_memberships_ajax_memberships_getSetting', resolve, {
+                    'package': pkg,
+                    key      : key,
+                    onError  : reject
+                })
+            });
         }
     });
 });

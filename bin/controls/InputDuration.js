@@ -13,11 +13,14 @@ define('package/quiqqer/memberships/bin/controls/InputDuration', [
 
     'qui/controls/Control',
     'qui/controls/buttons/Select',
+    'qui/controls/loader/Loader',
     'Locale',
+
+    'package/quiqqer/memberships/bin/Memberships',
 
     'css!package/quiqqer/memberships/bin/controls/InputDuration.css'
 
-], function (QUIControl, QUISelect, QUILocale) {
+], function (QUIControl, QUISelect, QUILoader, QUILocale, Memberships) {
     "use strict";
 
     var lg = 'quiqqer/memberships';
@@ -29,7 +32,8 @@ define('package/quiqqer/memberships/bin/controls/InputDuration', [
         Binds: [
             '$onImport',
             'getValue',
-            '$setValue'
+            '$setValue',
+            '$build'
         ],
 
         initialize: function (options) {
@@ -39,6 +43,8 @@ define('package/quiqqer/memberships/bin/controls/InputDuration', [
             this.$Input        = null;
             this.$InputCount   = null;
             this.$PeriodSelect = null;
+            this.$durationMode = 'day';
+            this.Loader        = new QUILoader();
 
             this.addEvents({
                 onImport: this.$onImport,
@@ -53,6 +59,8 @@ define('package/quiqqer/memberships/bin/controls/InputDuration', [
                 name : this.getAttribute('name')
             });
 
+            this.Loader.inject(this.$Elm);
+
             return this.$Elm;
         },
 
@@ -60,7 +68,8 @@ define('package/quiqqer/memberships/bin/controls/InputDuration', [
          * event : on import
          */
         $onImport: function () {
-            var Elm = this.getElm();
+            var self = this;
+            var Elm  = this.getElm();
 
             this.$Container = new Element('div', {
                 'class': 'field-container-field',
@@ -70,6 +79,19 @@ define('package/quiqqer/memberships/bin/controls/InputDuration', [
             this.$Input      = Elm;
             this.$Input.type = 'hidden';
 
+            this.Loader.show();
+
+            Memberships.getSetting('durationMode').then(function (durationMode) {
+                self.Loader.hide();
+                self.$durationMode = durationMode;
+                self.$build();
+            });
+        },
+
+        /**
+         * Build inputs
+         */
+        $build: function () {
             this.$InputCount = this.$Container.getElement(
                 'input[name="quiqqer-memberships-inputduration-count"]'
             );
@@ -77,11 +99,34 @@ define('package/quiqqer/memberships/bin/controls/InputDuration', [
             this.$InputCount.addEvent('change', this.$setValue);
 
             this.$PeriodSelect = new QUISelect({
+                menuTop  : true,
                 showIcons: false,
                 events   : {
                     onChange: this.$setValue
                 }
             }).inject(this.$Container);
+
+            var count  = false,
+                period = false;
+
+            if (this.$Input.value !== '') {
+                var values = this.$Input.value.split('-');
+
+                count  = values[0];
+                period = values[1];
+            }
+
+            if (this.$durationMode === 'exact' ||
+                period === 'minute' ||
+                period === 'hour') {
+                this.$PeriodSelect.appendChild(
+                    QUILocale.get(lg, 'controls.inputduration.period.minute'),
+                    'minute'
+                ).appendChild(
+                    QUILocale.get(lg, 'controls.inputduration.period.hour'),
+                    'hour'
+                )
+            }
 
             this.$PeriodSelect.appendChild(
                 QUILocale.get(lg, 'controls.inputduration.period.day'),
@@ -97,17 +142,17 @@ define('package/quiqqer/memberships/bin/controls/InputDuration', [
                 'year'
             );
 
-            if (this.$Input.value !== '') {
-                var values = this.$Input.value.split('-');
-
-                this.$InputCount.value = values[0];
-                this.$PeriodSelect.setValue(values[1]);
-
-                return;
+            if (count !== false) {
+                this.$InputCount.value = count;
+            } else {
+                this.$InputCount.value = '1';
             }
 
-            this.$InputCount.value = '1';
-            this.$PeriodSelect.setValue('month');
+            if (period !== false) {
+                this.$PeriodSelect.setValue(period);
+            } else {
+                this.$PeriodSelect.setValue('month');
+            }
         },
 
         /**
