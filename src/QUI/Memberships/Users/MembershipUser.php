@@ -9,6 +9,7 @@ use QUI\Memberships\Users\Handler as MembershipUsersHandler;
 use QUI\Memberships\Utils;
 use QUI\Mail\Mailer;
 use QUI\Permissions\Permission;
+use QUI\Verification\Verifier;
 
 /**
  * Class MembershipUser
@@ -61,6 +62,7 @@ class MembershipUser extends Child
         $Membership = $this->getMembership();
         $extendMode = MembershipUsersHandler::getSetting('extendMode');
 
+        // Calculate new start and/or end time
         if ($auto || $extendMode === 'reset') {
             $start         = time();
             $extendCounter = $this->getAttribute('extendCounter');
@@ -87,9 +89,55 @@ class MembershipUser extends Child
         $this->addHistoryEntry(MembershipUsersHandler::HISTORY_TYPE_EXTENDED, json_encode($historyData));
         $this->update();
 
-        // send autoextend mail
-        $subject = $this->getUser()->getLocale()->get('quiqqer/memberships', 'templates.mail.autoextend.subject');
+        // send mail
+        if ($auto) {
+            $this->sendAutoExtendMail();
+        } else {
+            $this->sendManualExtendMail();
+        }
+    }
+
+    /**
+     * Send mail to the user if the membership is extended automatically
+     *
+     * @return void
+     */
+    protected function sendAutoExtendMail()
+    {
+        $sendMail = MembershipUsersHandler::getSetting('sendAutoExtendMail');
+
+        if (!$sendMail) {
+            return;
+        }
+
+        $subject = $this->getUser()->getLocale()->get(
+            'quiqqer/memberships', 'templates.mail.autoextend.subject'
+        );
+
         $this->sendMail($subject, dirname(__FILE__, 5) . '/templates/mail_autoextend.html');
+    }
+
+    /**
+     * Send mail to the user if the membership is extended manually
+     *
+     * Manually = Either by admin edit or if the user is re-added to the membership
+     * although he already is a member
+     *
+     * @return void
+     */
+    public function sendManualExtendMail()
+    {
+        $sendMail = MembershipUsersHandler::getSetting('sendManualExtendMail');
+
+        if (!$sendMail) {
+            return;
+        }
+
+        $subject = $this->getUser()->getLocale()->get(
+            'quiqqer/memberships', 'templates.mail.manualextend.subject'
+        );
+
+        $this->sendMail($subject, dirname(__FILE__, 5) . '/templates/mail_manualextend.html');
     }
 
     /**
@@ -122,21 +170,8 @@ class MembershipUser extends Child
         }
 
         $cancelDate = Utils::getFormattedTimestamp();
-        $cancelHash = md5(openssl_random_pseudo_bytes(256));
-        $cancelUrl  = QUI::getRewrite()->getProject()->getVHost(true);
-        $cancelUrl  .= URL_OPT_DIR . 'quiqqer/memberships/bin/membership.php';
 
-        $params = array(
-            'mid'    => $this->id,
-            'hash'   => $cancelHash,
-            'action' => 'confirmManualCancel'
-        );
-
-        $cancelUrl .= '?' . http_build_query($params);
-
-        // generate random hash
         $this->setAttributes(array(
-            'cancelHash' => $cancelHash,
             'cancelDate' => $cancelDate
         ));
 
@@ -145,13 +180,15 @@ class MembershipUser extends Child
         // save cancel hash and date to database
         $this->update();
 
+        $CancelVerification = new CancelVerification($this->id);
+
         // send cancellation mail
         $this->sendMail(
             QUI::getLocale()->get('quiqqer/memberships', 'templates.mail.startcancel.subject'),
             dirname(__FILE__, 5) . '/templates/mail_startcancel.html',
             array(
                 'cancelDate' => $cancelDate,
-                'cancelUrl'  => $cancelUrl
+                'cancelUrl'  => Verifier::startVerification($CancelVerification)
             )
         );
     }
@@ -159,34 +196,14 @@ class MembershipUser extends Child
     /**
      * Confirm membership cancellation
      *
-     * @param string $confirmHash - cancel hash
      * @return void
      *
      * @throws QUI\Memberships\Exception
      */
-    public function confirmManualCancel($confirmHash)
+    public function confirmManualCancel()
     {
         if ($this->isCancelled()) {
-            throw new QUI\Memberships\Exception(array(
-                'quiqqer/memberships',
-                'exception.users.membershipuser.confirmManualCancel.already.cancelled'
-            ));
-        }
-
-        $cancelHash = $this->getAttribute('cancelHash');
-
-//        if (empty($cancelHash)) {
-//            throw new QUI\Memberships\Exception(array(
-//                'quiqqer/memberships',
-//                'exception.users.membershipuser.confirmManualCancel.no.hash'
-//            ));
-//        }
-
-        if ($confirmHash !== $cancelHash) {
-            throw new QUI\Memberships\Exception(array(
-                'quiqqer/memberships',
-                'exception.users.membershipuser.confirmManualCancel.hash.mismatch'
-            ));
+            return;
         }
 
         $this->setAttributes(array(
@@ -426,21 +443,30 @@ class MembershipUser extends Child
     protected function formatDate($date)
     {
         $Locale       = $this->getUser()->getLocale();
+        $lang         = $Locale->getCurrent();
         $durationMode = MembershipsHandler::getSetting('durationMode');
-        $timestamp    = strtotime($date);
+        $Conf         = QUI::getPackage('quiqqer/memberships')->getConfig();
 
         switch ($durationMode) {
             case 'day':
-                $dayDate       = date('Y-m-d', $timestamp);
-                $formattedDate = $Locale->formatDate(strtotime($dayDate));
+                $dateFormat = $Conf->get('date_formats_short', $lang);
+
+                // fallback to default value
+                if (empty($dateFormat)) {
+                    $dateFormat = '%D';
+                }
                 break;
 
             default:
-                $minuteDate    = date('Y-m-d H:i', $timestamp);
-                $formattedDate = $Locale->formatDate(strtotime($minuteDate));
+                $dateFormat = $Conf->get('date_formats_long', $lang);
+
+                // fallback to default value
+                if (empty($dateFormat)) {
+                    $dateFormat = '%D %H:%M';
+                }
         }
 
-        return $formattedDate;
+        return $Locale->formatDate(strtotime($date), $dateFormat);
     }
 
     /**
@@ -452,19 +478,21 @@ class MembershipUser extends Child
     {
         $QuiqqerUser = $this->getUser();
         $Membership  = $this->getMembership();
+        $Locale      = $QuiqqerUser->getLocale();
 
         return array(
             'id'              => $this->getId(),
             'userId'          => $QuiqqerUser->getId(),
             'membershipId'    => $Membership->getId(),
-            'membershipTitle' => $Membership->getTitle(),
+            'membershipTitle' => $Membership->getTitle($Locale),
+            'membershipShort' => $Membership->getDescription($Locale),
             'username'        => $QuiqqerUser->getUsername(),
             'fullName'        => $QuiqqerUser->getName(),
             'addedDate'       => $this->formatDate($this->getAttribute('addedDate')),
             'beginDate'       => $this->formatDate($this->getAttribute('beginDate')),
             'endDate'         => $this->formatDate($this->getAttribute('endDate')),
-            'archived'        => $this->isArchived(),
-            'archiveReason'   => $this->getAttribute('archiveReason'),
+//            'archived'        => $this->isArchived(),
+//            'archiveReason'   => $this->getAttribute('archiveReason'),
             'cancelled'       => $this->isCancelled()
         );
     }

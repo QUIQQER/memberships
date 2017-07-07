@@ -16,6 +16,30 @@
                     <type><![CDATA[string]]></type>
                     <defaultvalue>reset</defaultvalue>
                 </conf>
+                <conf name="cancelDuration">
+                    <type><![CDATA[integer]]></type>
+                    <defaultvalue>1440</defaultvalue>
+                </conf>
+                <conf name="sendAutoExtendMail">
+                    <type><![CDATA[bool]]></type>
+                    <defaultvalue>1</defaultvalue>
+                </conf>
+                <conf name="sendManualExtendMail">
+                    <type><![CDATA[bool]]></type>
+                    <defaultvalue>1</defaultvalue>
+                </conf>
+            </section>
+
+            <section name="date_formats_short">
+                <conf name="??">
+                    <type><![CDATA[string]]></type>
+                </conf>
+            </section>
+
+            <section name="date_formats_long">
+                <conf name="??">
+                    <type><![CDATA[string]]></type>
+                </conf>
             </section>
 
         </config>
@@ -68,6 +92,58 @@
                                 <locale group="quiqqer/memberships" var="settings.durationMode.option.exact"/>
                             </option>
                         </select>
+
+                        <input conf="membershipusers.cancelDuration" type="number">
+                            <text>
+                                <locale group="quiqqer/memberships" var="settings.cancelDuration.title"/>
+                            </text>
+                            <description>
+                                <locale group="quiqqer/memberships" var="settings.cancelDuration.description"/>
+                            </description>
+                        </input>
+
+                        <input conf="membershipusers.sendAutoExtendMail" type="checkbox">
+                            <text>
+                                <locale group="quiqqer/memberships" var="settings.sendAutoExtendMail.title"/>
+                            </text>
+                            <description>
+                                <locale group="quiqqer/memberships" var="settings.sendAutoExtendMail.description"/>
+                            </description>
+                        </input>
+
+                        <input conf="membershipusers.sendManualExtendMail" type="checkbox">
+                            <text>
+                                <locale group="quiqqer/memberships" var="settings.sendManualExtendMail.title"/>
+                            </text>
+                            <description>
+                                <locale group="quiqqer/memberships" var="settings.sendManualExtendMail.description"/>
+                            </description>
+                        </input>
+
+                    </settings>
+
+                    <settings title="dateformat" name="dateformat">
+                        <title>
+                            <locale group="quiqqer/memberships" var="settings.dateformat.title"/>
+                        </title>
+
+                        <input conf="date_formats_short" type="text" data-qui="controls/system/AvailableLanguages">
+                            <text>
+                                <locale group="quiqqer/memberships" var="settings.dateFormatShort.title"/>
+                            </text>
+                            <description>
+                                <locale group="quiqqer/memberships" var="settings.dateFormatShort.description"/>
+                            </description>
+                        </input>
+
+                        <input conf="date_formats_long" type="text" data-qui="controls/system/AvailableLanguages">
+                            <text>
+                                <locale group="quiqqer/memberships" var="settings.dateFormatLong.title"/>
+                            </text>
+                            <description>
+                                <locale group="quiqqer/memberships" var="settings.dateFormatLong.description"/>
+                            </description>
+                        </input>
                     </settings>
                 </category>
 

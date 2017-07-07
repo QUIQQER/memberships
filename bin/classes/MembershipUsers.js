@@ -106,6 +106,20 @@ define('package/quiqqer/memberships/bin/classes/MembershipUsers', [
         },
 
         /**
+         * Get all Membership data for the current session user
+         *
+         * @return {Promise}
+         */
+        getSessionUserData: function () {
+            return new Promise(function (resolve, reject) {
+                QUIAjax.get('package_quiqqer_memberships_ajax_memberships_users_getSessionUserData', resolve, {
+                    'package': pkg,
+                    onError  : reject
+                })
+            });
+        },
+
+        /**
          * Get MembershipUser history
          *
          * @param {Integer} membershipUserId

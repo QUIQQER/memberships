@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menu>
+    <item require="package/quiqqer/memberships/bin/controls/profile/UserProfile" icon="fa fa-id-card-o" name="memberships-profile">
+        <locale group="quiqqer/memberships" var="profile.button.text" />
+    </item>
+</menu>

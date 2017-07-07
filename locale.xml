@@ -66,12 +66,12 @@
             <en><![CDATA[Determines how the runtime of a membership is extended for a user when the user enters the membership even though he is already an active member.]]></en>
         </locale>
         <locale name="settings.extendMode.option.reset">
-            <de><![CDATA[Start- und End-Zeitpunkt werden neu gesetzt]]></de>
-            <en><![CDATA[Start and end times are reset]]></en>
+            <de><![CDATA[Start- und Endzeitpunkt werden neu gesetzt, als wäre der Benutzer neu in die Mitgliedschaft gekommen]]></de>
+            <en><![CDATA[The start and end times are reset as if the user had entered the membership]]></en>
         </locale>
         <locale name="settings.extendMode.option.prolong">
-            <de><![CDATA[Start-Zeitpunkt bleibt erhalten, nur End-Zeitpunkt wird neu gesetzt]]></de>
-            <en><![CDATA[Start time is retained, only end time is reset]]></en>
+            <de><![CDATA[Endzeitpunkt wird um die Laufzeit der Mitgliedschaft verlängert]]></de>
+            <en><![CDATA[End time is extended by the duration of the membership]]></en>
         </locale>
         <locale name="settings.durationMode.title">
             <de><![CDATA[Genauigkeit von Laufzeiten]]></de>
@@ -89,6 +89,50 @@
             <de><![CDATA[Exakt (Laufzeiten werden sekundengenau berechnet)]]></de>
             <en><![CDATA[Exact (duration is calculated by the second)]]></en>
         </locale>
+        <locale name="settings.cancelDuration.title">
+            <de><![CDATA[Gültigkeitsdauer f. Kündigungs-Bestätigungs-Link]]></de>
+            <en><![CDATA[Duration of cancellation confirmation links]]></en>
+        </locale>
+        <locale name="settings.cancelDuration.description" html="true">
+            <de><![CDATA[Bestimmt, wie lange der Link zur Bestätigung einer Mitgliedschafts-Kündigung gültig bleibt. Angabe in <b>Minuten</b>.]]></de>
+            <en><![CDATA[Determines how long the link to confirm a membership termination remains valid (<b>minutes</b>).]]></en>
+        </locale>
+        <locale name="settings.sendAutoExtendMail.title">
+            <de><![CDATA[E-Mail bei automatischer Verlängerung]]></de>
+            <en><![CDATA[Mail on auto extension]]></en>
+        </locale>
+        <locale name="settings.sendAutoExtendMail.description">
+            <de><![CDATA[Bei einer automatischen Verlängerung der Mitgliedschaft wird eine E-Mail an den Benutzer gesendet]]></de>
+            <en><![CDATA[An automatic extension of the membership will send an e-mail to the user]]></en>
+        </locale>
+        <locale name="settings.sendManualExtendMail.title">
+            <de><![CDATA[E-Mail bei manueller Verlängerung]]></de>
+            <en><![CDATA[Mail on manual extension]]></en>
+        </locale>
+        <locale name="settings.sendManualExtendMail.description">
+            <de><![CDATA[Bei einer manuellen Verlängerung der Mitgliedschaft wird eine E-Mail an den Benutzer gesendet. Manuelle Verlängerung = Bearbeitung des End-Datums einer Mitgliedschaft durch einen Administrator oder das erneute Hinzufügen eines Benutzers zu einer Mitgliedschaft, in der er sich bereits befindet.]]></de>
+            <en><![CDATA[A manual extension of the membership will send an e-mail to the user. Manual Extension = The end date of a membership is edited by an administrator or a user is re-added to a membership that he already is in.]]></en>
+        </locale>
+        <locale name="settings.dateformat.title">
+            <de><![CDATA[Datumsformatierung]]></de>
+            <en><![CDATA[Date format]]></en>
+        </locale>
+        <locale name="settings.dateFormatShort.title">
+            <de><![CDATA[Datumsformatierung (kurz)]]></de>
+            <en><![CDATA[Date format (short)]]></en>
+        </locale>
+        <locale name="settings.dateFormatShort.description" html="true">
+            <de><![CDATA[Datumsformatierung für Datumsangaben in kurzem Format. Das kurze Datumsformat wird in Nachrichten an den Benutzer verwendet, wenn die <b>Genauigkeit von Laufzeiten</b> auf <b>Tag-genau</b> gestellt ist.<br><br>Für verfügbare Platzhalter siehe <a href="http://php.net/manual/de/function.strftime.php#refsect1-function.strftime-parameters" target="_blank">http://php.net/manual/de/function.strftime.php#refsect1-function.strftime-parameters</a>]]></de>
+            <en><![CDATA[Date format for dates in short format. The short format is used in messages sent to the user if the <b>Accuracy of membership duration</b> setting is set to <b>Day-exact</b>.<br><br>For available placeholder see: <a href="http://php.net/manual/de/function.strftime.php#refsect1-function.strftime-parameters" target="_blank">http://php.net/manual/de/function.strftime.php#refsect1-function.strftime-parameters</a>]]></en>
+        </locale>
+        <locale name="settings.dateFormatLong.title">
+            <de><![CDATA[Datumsformatierung (lang)]]></de>
+            <en><![CDATA[Date format (long)]]></en>
+        </locale>
+        <locale name="settings.dateFormatLong.description" html="true">
+            <de><![CDATA[Datumsformatierung für Datumsangaben in langem Format. Das lange Datumsformat wird in Nachrichten an den Benutzer verwendet, wenn die <b>Genauigkeit von Laufzeiten</b> auf <b>Exakt</b> gestellt ist.<br><br>Für verfügbare Platzhalter siehe <a href="http://php.net/manual/de/function.strftime.php#refsect1-function.strftime-parameters" target="_blank">http://php.net/manual/de/function.strftime.php#refsect1-function.strftime-parameters</a>]]></de>
+            <en><![CDATA[Date format for dates in long format. The short format is used in messages sent to the user if the <b>Accuracy of membership duration</b> setting is set to <b>Exact</b>.<br><br>For available placeholder see: <a href="http://php.net/manual/de/function.strftime.php#refsect1-function.strftime-parameters" target="_blank">http://php.net/manual/de/function.strftime.php#refsect1-function.strftime-parameters</a>]]></en>
+        </locale>
 
         <!-- Cron -->
         <locale name="cron.checkMembershipUsers.title">
@@ -98,6 +142,12 @@
         <locale name="cron.checkMembershipUsers.description">
             <de><![CDATA[Prüft für jede Mitgliedschaft, ob sie verlängert werden oder beendet werden muss.]]></de>
             <en><![CDATA[Checks for each membership whether it needs to be extended or terminated.]]></en>
+        </locale>
+
+        <!-- Profile -->
+        <locale name="profile.button.text">
+            <de><![CDATA[Mitgliedschaften]]></de>
+            <en><![CDATA[Memberships]]></en>
         </locale>
 
     </groups>
@@ -600,6 +650,40 @@
             <en><![CDATA[Send confirmation]]></en>
         </locale>
 
+        <!-- Control: profile/UserProfile -->
+        <locale name="controls.profile.userprofile.template.header">
+            <de><![CDATA[Ihre Mitgliedschaften]]></de>
+            <en><![CDATA[Your memberships]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.template.headerMembership">
+            <de><![CDATA[Mitgliedschaft]]></de>
+            <en><![CDATA[Membership]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.template.headerMembershipData">
+            <de><![CDATA[Details]]></de>
+            <en><![CDATA[Details]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.datatable.labelAddedDate">
+            <de><![CDATA[In Mitgliedschaft seit]]></de>
+            <en><![CDATA[In membership since]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.datatable.labelStatus">
+            <de><![CDATA[Status]]></de>
+            <en><![CDATA[Status]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.datatable.status.cancelled">
+            <de><![CDATA[gekündigt]]></de>
+            <en><![CDATA[cancelled]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.datatable.status.cancelled_start">
+            <de><![CDATA[Kündigungsbestätigung ausstehend]]></de>
+            <en><![CDATA[Cancellation confirmation pending]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.datatable.status.active">
+            <de><![CDATA[aktiv]]></de>
+            <en><![CDATA[active]]></en>
+        </locale>
+
         <!-- Templates -->
         <locale name="templates.mail.greeting">
             <de><![CDATA[Hallo [name]!]]></de>
@@ -621,14 +705,6 @@
             <de><![CDATA[Hiermit bestätigen wir die Kündigung Ihrer Mitgliedschaft <b>[membershipTitle]</b> zum <b>[endDate]</b>. Bis zu diesem Zeitpunkt können Sie weiterhin alle Vorteile Ihrer Mitgliedschaft genießen.]]></de>
             <en><![CDATA[We hereby confirm the termination of your membership <b>[membershipTitle]</b> as of <b>[endDate]</b>. Until that time, you can continue to enjoy all the benefits of your membership.]]></en>
         </locale>
-        <locale name="templates.cancel.confirm.success">
-            <de><![CDATA[Die Kündigung Ihrer Mitgliedschaft war erfolgreich!]]></de>
-            <en><![CDATA[The termination of your membership has been successful!]]></en>
-        </locale>
-        <locale name="templates.cancel.confirm.error">
-            <de><![CDATA[Bei der Kündigung Ihrer Mitgliedschaft ist ein Fehler aufgetreten:<br><br>[errorMessage]]]></de>
-            <en><![CDATA[An error occurred during the termination of your membership:<br><br>[errorMessage]]]></en>
-        </locale>
         <locale name="templates.mail.expired.subject" html="true">
             <de><![CDATA[Ablauf Ihrer Mitgliedschaft]]></de>
             <en><![CDATA[Expiration of your membership]]></en>
@@ -644,6 +720,32 @@
         <locale name="templates.mail.autoextend.body" html="true">
             <de><![CDATA[Ihre Mitgliedschaft <b>[membershipTitle]</b> wurde automatisch bis zum <b>[endDate]</b> verlängert.]]></de>
             <en><![CDATA[Your membership <b>[membershipTitle]</b> has been extended automatically until <b>[endDate]</b>.]]></en>
+        </locale>
+        <locale name="templates.mail.manualextend.subject" html="true">
+            <de><![CDATA[Verlängerung Ihrer Mitgliedschaft]]></de>
+            <en><![CDATA[Extension of your membership]]></en>
+        </locale>
+        <locale name="templates.mail.manualextend.body" html="true">
+            <de><![CDATA[Ihre Mitgliedschaft <b>[membershipTitle]</b> wurde bis zum <b>[endDate]</b> verlängert.]]></de>
+            <en><![CDATA[Your membership <b>[membershipTitle]</b> has been extended until <b>[endDate]</b>.]]></en>
+        </locale>
+
+        <!-- CancelVerification -->
+        <locale name="verification.cancel.success">
+            <de><![CDATA[Die Kündigung Ihrer Mitgliedschaft war erfolgreich! Sie erhalten noch eine separate E-Mail mit der Bestätigung Ihrer Kündigung.]]></de>
+            <en><![CDATA[The termination of your membership has been successful! You will receive a separate e-mail with confirmation of your termination.]]></en>
+        </locale>
+        <locale name="verification.cancel.error.general">
+            <de><![CDATA[Bei der Kündigung Ihrer Mitgliedschaft ist ein Fehler aufgetreten. Bitte starten Sie den Kündigungsvorgang erneut oder kontaktieren Sie einen Administrator.]]></de>
+            <en><![CDATA[There was an error while canceling your membership. Please restart the termination process or contact an administrator.]]></en>
+        </locale>
+        <locale name="verification.cancel.error.expired">
+            <de><![CDATA[Die Gültigkeit Ihres Kündigungs-Links ist leider abgelaufen. Bitte starten sie den Kündigungsvorgang erneut.]]></de>
+            <en><![CDATA[The validity of your termination link has unfortunately expired. Please restart the termination process.]]></en>
+        </locale>
+        <locale name="verification.cancel.error.already_cancelled">
+            <de><![CDATA[Die Mitgliedschaft wurde bereits gekündigt.]]></de>
+            <en><![CDATA[The membership has already been cancelled.]]></en>
         </locale>
 
     </groups>

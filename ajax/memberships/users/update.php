@@ -29,6 +29,7 @@ QUI::$Ajax->registerFunction(
 
                         if ($oldVal != $v) {
                             $updated[$k] = $oldVal . ' => ' . $v;
+                            $MembershipUser->sendManualExtendMail();
                         }
                         break;
 

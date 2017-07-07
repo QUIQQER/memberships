@@ -134,6 +134,41 @@ class Handler extends Factory
         return $membershipUserIds;
     }
 
+    /**
+     * Get all MembershipUser objects by userId
+     *
+     * @param int $userId - QUIQQER User ID
+     * @param bool $includeArchived (optional) - include archived MembershipUsers
+     * @return MembershipUser[]
+     */
+    public function getMembershipUsersByUserId($userId, $includeArchived = false)
+    {
+        $where = array(
+            'userId'   => $userId,
+            'archived' => 0
+        );
+
+        if ($includeArchived === true) {
+            unset($where['archived']);
+        }
+
+        $result = QUI::getDataBase()->fetch(array(
+            'select' => array(
+                'id'
+            ),
+            'from'   => self::getDataBaseTableName(),
+            'where'  => $where
+        ));
+
+        $membershipUsers = array();
+
+        foreach ($result as $row) {
+            $membershipUsers[] = self::getChild($row['id']);
+        }
+
+        return $membershipUsers;
+    }
+
 //    /**
 //     * Get membership
 //     *
@@ -204,7 +239,6 @@ class Handler extends Factory
             'endDate',
             'archived',
             'history',
-            'cancelHash',
             'cancelDate',
             'cancelled',
             'archiveReason',
