@@ -380,6 +380,7 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
         $editUser: function () {
             var self = this;
             var data = this.$Grid.getSelectedData();
+            var EditControl;
 
             if (!data.length) {
                 return;
@@ -389,17 +390,18 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
 
             // open popup
             var Popup = new QUIPopup({
-                'maxHeight': 325,
+                'maxHeight': 335,
                 maxWidth   : 500,
-                'autoclose': true,
+                'autoclose': false,
                 'title'    : QUILocale.get(lg, 'controls.membershipusers.edit.popup.title'),
                 'texticon' : 'fa fa-edit',
                 'icon'     : 'fa fa-edit',
 
-                buttons: false,
+                buttons: true,
                 events : {
                     onOpen: function () {
-                        new MembershipUserEdit({
+                        EditControl = new MembershipUserEdit({
+                            showButtons     : false,
                             membershipUserId: membershipUserId,
                             events          : {
                                 onSubmit: function () {
@@ -415,6 +417,19 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
             });
 
             Popup.open();
+
+            Popup.addButton(new QUIButton({
+                text     : QUILocale.get(lg, 'controls.membershipusers.edit.popup.save.btn'),
+                textimage: 'fa fa-save',
+                events: {
+                    onClick: function() {
+                        Popup.Loader.show();
+                        EditControl.submit().then(function() {
+                            Popup.close();
+                        });
+                    }
+                }
+            }));
         },
 
         /**
@@ -507,7 +522,7 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
          *
          * @param {String} search
          */
-        setSearchTerm: function(search) {
+        setSearchTerm: function (search) {
             if (!search || search === '') {
                 this.$search = false;
                 return;

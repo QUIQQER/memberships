@@ -393,6 +393,10 @@
             <de><![CDATA[Mitgliedschafts-Benutzer bearbeiten]]></de>
             <en><![CDATA[Edit membership user]]></en>
         </locale>
+        <locale name="controls.membershipusers.edit.popup.save.btn">
+            <de><![CDATA[Speichern]]></de>
+            <en><![CDATA[Save]]></en>
+        </locale>
         <locale name="controls.membershipusers.tbl.status.cancelled">
             <de><![CDATA[gekündigt]]></de>
             <en><![CDATA[cancelled]]></en>

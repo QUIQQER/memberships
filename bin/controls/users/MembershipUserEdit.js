@@ -50,7 +50,7 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserEdit', [
             '$onInject',
             '$load',
             '$onCreate',
-            '$submit',
+            'submit',
             'refresh'
         ],
 
@@ -120,15 +120,17 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserEdit', [
                 labelCancelled: QUILocale.get(lg, lgPrefix + 'cancelled')
             }));
 
-            new QUIButton({
-                textimage: 'fa fa-save',
-                text     : QUILocale.get(lg, 'controls.users.membershipuseredit.btn.save'),
-                events   : {
-                    onClick: this.$submit
-                }
-            }).inject(
-                this.$Elm.getElement('.quiqqer-memberships-membershipuseredit-submit')
-            );
+            if (this.getAttribute('showButtons')) {
+                new QUIButton({
+                    textimage: 'fa fa-save',
+                    text     : QUILocale.get(lg, 'controls.users.membershipuseredit.btn.save'),
+                    events   : {
+                        onClick: this.submit
+                    }
+                }).inject(
+                    this.$Elm.getElement('.quiqqer-memberships-membershipuseredit-submit')
+                );
+            }
 
             var Form = this.$Elm.getElement('form');
 
@@ -136,22 +138,24 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserEdit', [
 
             // special cancel trigger
             Form.getElement('input[name="cancelled"]').addEvent('change', function (event) {
-                if (event.target.checked && !self.$MembershipUser.cancelled) {
-                    self.$cancelled = true;
+                if (!self.$MembershipUser.cancelled) {
+                    self.$cancelled = event.target.checked;
                 }
             });
         },
 
         /**
          * Submit MembershipUser data
+         *
+         * @return {Promise}
          */
-        $submit: function () {
+        submit: function () {
             var self = this;
             var Form = this.$Elm.getElement('form');
 
             this.Loader.show();
 
-            MembershipUsersHandler.update(
+            return MembershipUsersHandler.update(
                 this.$MembershipUser.id,
                 QUIFormUtils.getFormData(Form)
             ).then(function (success) {
