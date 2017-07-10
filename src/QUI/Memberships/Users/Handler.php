@@ -16,6 +16,7 @@ class Handler extends Factory
     const HISTORY_TYPE_CANCEL_BY_EDIT   = 'cancel_by_edit';
     const HISTORY_TYPE_UNCANCEL_BY_EDIT = 'uncancel_by_edit';
     const HISTORY_TYPE_CANCEL_START     = 'cancel_start';
+    const HISTORY_TYPE_CANCEL_ABORT     = 'cancel_abort';
     const HISTORY_TYPE_CANCEL_CONFIRM   = 'cancel_confirm';
     const HISTORY_TYPE_CANCELLED        = 'cancelled';
     const HISTORY_TYPE_EXPIRED          = 'expired';

@@ -55,7 +55,8 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserEdit', [
         ],
 
         options: {
-            membershipUserId: false // ID of MembershipUser (this is NOT the QUIQQER User ID!)
+            membershipUserId: false, // ID of MembershipUser (this is NOT the QUIQQER User ID!)
+            showButtons     : true
         },
 
         initialize: function (options) {
@@ -213,7 +214,7 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserEdit', [
                                 }
                             );
                         },
-                        onClose: function() {
+                        onClose : function () {
                             resolve();
                         }
                     }

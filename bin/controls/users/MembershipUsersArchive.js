@@ -160,10 +160,15 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsersArchive', 
                     dataType : 'string',
                     width    : 150
                 }, {
-                    header   : QUILocale.get(lg, 'controls.membershipusers.tbl.header.userFullName'),
-                    dataIndex: 'userFullName',
+                    header   : QUILocale.get(lg, 'controls.membershipusers.tbl.header.userFirstname'),
+                    dataIndex: 'firstname',
                     dataType : 'string',
-                    width    : 150
+                    width    : 100
+                }, {
+                    header   : QUILocale.get(lg, 'controls.membershipusers.tbl.header.userLastname'),
+                    dataIndex: 'lastname',
+                    dataType : 'string',
+                    width    : 100
                 }, {
                     header   : QUILocale.get(lg, 'controls.membershipusers.tbl.header.addedDate'),
                     dataIndex: 'addedDate',
@@ -222,13 +227,6 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsersArchive', 
                 return;
             }
 
-            switch (Grid.getAttribute('sortOn')) {
-                // cannot sort on certain columns
-                case 'username':
-                case 'userFullName':
-                    return;
-            }
-
             var self         = this;
             var TableButtons = this.$Grid.getAttribute('buttons');
 
@@ -261,10 +259,6 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsersArchive', 
         $setGridData: function (GridData) {
             for (var i = 0, len = GridData.data.length; i < len; i++) {
                 var Row = GridData.data[i];
-
-                if (!Row.userFullName || Row.userFullName === Row.username) {
-                    Row.userFullName = '-';
-                }
 
                 Row.archiveReason = QUILocale.get(lg,
                     'controls.users.membershipusersarchive.tbl.archiveReason.' + Row.archiveReason

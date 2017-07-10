@@ -1,11 +1,21 @@
 .quiqqer-memberships-profile-userprofile-status-cancelled {
-    color: red;
+    color: #ff0000;
 }
 
 .quiqqer-memberships-profile-userprofile-status-cancelled_start {
-    color: orange;
+    color: #FFA500;
 }
 
 .quiqqer-memberships-profile-userprofile-status-active {
-    color: green;
+    color: #008000;
+}
+
+.quiqqer-memberships-profile-userprofile-table__hidden {
+    display: none;
+}
+
+.quiqqer-memberships-profile-userprofile-btn .qui-button {
+    border: 1px solid #ff0000 !important;
+    font-size: 12px;
+    line-height: 20px;
 }

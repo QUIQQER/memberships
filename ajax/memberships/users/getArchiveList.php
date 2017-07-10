@@ -4,7 +4,7 @@ use QUI\Memberships\Handler as MembershipsHandler;
 use QUI\Memberships\Users\Handler as MembershipUsersHandler;
 use QUI\Utils\Security\Orthos;
 use QUI\Utils\Grid;
-use QUI\Memberships\Membership;
+use QUI\Memberships\Users\MembershipUser;
 
 /**
  * Get/search QUIQQER membership users (archived)
@@ -19,32 +19,20 @@ QUI::$Ajax->registerFunction(
         $searchParams    = Orthos::clearArray(json_decode($searchParams, true));
         $Memberships     = MembershipsHandler::getInstance();
         $MembershipUsers = MembershipUsersHandler::getInstance();
-        $Users           = QUI::getUsers();
         $Membership      = $Memberships->getChild((int)$membershipId);
         $membershipUsers = array();
 
-        foreach ($Membership->searchArchivedUsers($searchParams) as $membershipUserId) {
-            /** @var Membership $Membership */
-            $MembershipUser = $MembershipUsers->getChild($membershipUserId);
-            $data           = $MembershipUser->getAttributes();
-            $User           = $Users->get($data['userId']);
-
-            $membershipUsers[] = array(
-                'id'            => $data['id'],
-                'userId'        => $data['userId'],
-                'username'      => $User->getUsername(),
-                'userFullName'  => $User->getName(),
-                'addedDate'     => $data['addedDate'],
-                'archiveDate'   => $data['archiveDate'],
-                'archiveReason' => $data['archiveReason']
-            );
+        foreach ($Membership->searchUsers($searchParams, true) as $membershipUserId) {
+            /** @var MembershipUser $MembershipUser */
+            $MembershipUser    = $MembershipUsers->getChild($membershipUserId);
+            $membershipUsers[] = $MembershipUser->getBackendViewData();
         }
 
         $Grid = new Grid($searchParams);
 
         return $Grid->parseResult(
             $membershipUsers,
-            $Membership->searchUsers($searchParams, true)
+            $Membership->searchUsers($searchParams, true, true)
         );
     },
     array('membershipId', 'searchParams'),

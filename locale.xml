@@ -353,16 +353,20 @@
             <de><![CDATA[Benutzername]]></de>
             <en><![CDATA[Username]]></en>
         </locale>
-        <locale name="controls.membershipusers.tbl.header.userFullName">
-            <de><![CDATA[Name]]></de>
-            <en><![CDATA[Name]]></en>
+        <locale name="controls.membershipusers.tbl.header.userFirstname">
+            <de><![CDATA[Vorname]]></de>
+            <en><![CDATA[Vorname]]></en>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.userLastname">
+            <de><![CDATA[Nachname]]></de>
+            <en><![CDATA[Nachname]]></en>
         </locale>
         <locale name="controls.membershipusers.tbl.header.addedDate">
             <de><![CDATA[In Mitgliedschaft seit]]></de>
             <en><![CDATA[In membership since]]></en>
         </locale>
         <locale name="controls.membershipusers.tbl.header.beginDate">
-            <de><![CDATA[Beginn (akt. Zyklus)]]></de>
+            <de><![CDATA[Beginn (akt. Turnus)]]></de>
             <en><![CDATA[Beginning (curr. cylce)]]></en>
         </locale>
         <locale name="controls.membershipusers.tbl.header.status">
@@ -370,7 +374,7 @@
             <en><![CDATA[Status]]></en>
         </locale>
         <locale name="controls.membershipusers.tbl.header.endDate">
-            <de><![CDATA[Ende (akt. Zyklus)]]></de>
+            <de><![CDATA[Ende (akt. Turnus)]]></de>
             <en><![CDATA[Ends (curr. cycle)]]></en>
         </locale>
         <locale name="controls.membershipusers.tbl.header.extendCounter">
@@ -489,6 +493,10 @@
             <de><![CDATA[Aufhebung der Kündigung durch Administrator]]></de>
             <en><![CDATA[Revocation of termination by administrator]]></en>
         </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.cancel_abort">
+            <de><![CDATA[Kündigung zurückgezogen]]></de>
+            <en><![CDATA[Cancellation withdrawn]]></en>
+        </locale>
 
         <!-- Controls: users/MembershipUserHistoryPopup -->
         <locale name="controls.users.membershipuserhistorypopup.title">
@@ -581,6 +589,30 @@
             <de><![CDATA[Die Kündigungs-Mail an Mitgliedschafts-Benutzer <b>[membershipUserName]</b> (#[membershipUserId]) wurde erfolgreich versandt.]]></de>
             <en><![CDATA[The termination mail to user <b>[membershipUserName]</b> (#[membershipUserId]) was successfully sent.]]></en>
         </locale>
+        <locale name="message.ajax.memberships.users.startCancel.login.necessary">
+            <de><![CDATA[Bitte loggen Sie sich ein, um Ihre Mitgliedschaft zu kündigen.]]></de>
+            <en><![CDATA[Please log in to cancel your membership.]]></en>
+        </locale>
+        <locale name="message.ajax.memberships.users.startCancel.error" html="true">
+            <de><![CDATA[Die Mitgliedschaft konnte nicht gekündigt werden:<br><br>[error]]]></de>
+            <en><![CDATA[The membership could not be cancelled:<br><br>[error]]]></en>
+        </locale>
+        <locale name="message.ajax.memberships.users.startCancel.success" html="true">
+            <de><![CDATA[Die Mitgliedschaft wurde erfolgreich gekündigt.]]></de>
+            <en><![CDATA[The membership has been cancelled succesfully.]]></en>
+        </locale>
+        <locale name="message.ajax.memberships.users.abortCancel.login.necessary">
+            <de><![CDATA[Bitte loggen Sie sich ein, um die Kündigung Ihrer Mitgliedschaft aufzuheben.]]></de>
+            <en><![CDATA[Please log in to abort the cancellation of your membership.]]></en>
+        </locale>
+        <locale name="message.ajax.memberships.users.abortCancel.error" html="true">
+            <de><![CDATA[Die Kündigung der Mitgliedschaft konnte nicht aufgehoben werden:<br><br>[error]]]></de>
+            <en><![CDATA[The cancellation of the membership could not be withdrawn:<br><br>[error]]]></en>
+        </locale>
+        <locale name="message.ajax.memberships.users.abortCancel.success" html="true">
+            <de><![CDATA[Die Kündigung der Mitgliedschaft wurde erfolgreich aufgehoben.]]></de>
+            <en><![CDATA[The cancellation of the membership was withdrawn successfully.]]></en>
+        </locale>
 
         <!-- Class: Membership -->
         <locale name="exception.membership.cannot.update.when.locked">
@@ -639,6 +671,10 @@
             <de><![CDATA[Es können keine E-Mails an den Mitgliedschafts-Benutzer gesendet werden, da er keine eingetragene E-Mail-Adresse hat.]]></de>
             <en><![CDATA[No e-mails can be sent to the membership user, since he does not have a registered e-mail address.]]></en>
         </locale>
+        <locale name="exception.users.membershipuser.manualcancel.no.permission">
+            <de><![CDATA[Eine Mitgliedschaft kann nur vom Mitgliedschafts-Benutzer selbst gekündigt werden.]]></de>
+            <en><![CDATA[A membership can only be cancelled by the membership user himself.]]></en>
+        </locale>
 
         <!-- Control: users/MembershipUserEdit -->
         <locale name="controls.users.membershipuseredit.cancelmail.popup.info">
@@ -667,6 +703,10 @@
             <de><![CDATA[In Mitgliedschaft seit]]></de>
             <en><![CDATA[In membership since]]></en>
         </locale>
+        <locale name="controls.profile.userprofile.datatable.labelEndDate">
+            <de><![CDATA[Mitgliedschaft endet]]></de>
+            <en><![CDATA[Membership ends]]></en>
+        </locale>
         <locale name="controls.profile.userprofile.datatable.labelStatus">
             <de><![CDATA[Status]]></de>
             <en><![CDATA[Status]]></en>
@@ -683,6 +723,58 @@
             <de><![CDATA[aktiv]]></de>
             <en><![CDATA[active]]></en>
         </locale>
+        <locale name="controls.profile.userprofile.btn.cancel.text">
+            <de><![CDATA[Mitgliedschaft kündigen]]></de>
+            <en><![CDATA[Cancel membership]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.btn.abortcancel.text">
+            <de><![CDATA[Kündigung zurückziehen]]></de>
+            <en><![CDATA[Withdraw cancellation]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.cancelconfirm.info" html="true">
+            <de><![CDATA[Sind Sie sicher, dass Sie die Mitgliedschaft <b>[title]</b> kündigen wollen? Bitte beachten Sie, dass Ihre Mitgliedschaft dann zum <b>[endDate]</b> ausläuft. Bis dahin können Sie weiterhin alle Vorteile Ihrer Mitgliedschaft nutzen. Bis zum Ablaufdatum können Sie die Kündigung jederzeit zurückziehen.]]></de>
+            <en><![CDATA[Are you sure you want to cancel your <b>[title]</b> membership? Please note that your membership expires by <b>[endDate]</b>. Until then, you can continue to take full advantage of your membership. Until the expiration date, you can withdraw the cancellation at any time.]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.cancelconfirm.text">
+            <de><![CDATA[Kündigung der Mitgliedschaft "[title]"]]></de>
+            <en><![CDATA[Cancellation of membership "[title]"]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.cancelconfirm.title">
+            <de><![CDATA[Mitgliedschaft kündigen]]></de>
+            <en><![CDATA[Cancel membership]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.cancelconfirm.cancel">
+            <de><![CDATA[Abbrechen]]></de>
+            <en><![CDATA[Abbrechen]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.cancelconfirm.ok">
+            <de><![CDATA[Mitgliedschaft kündigen]]></de>
+            <en><![CDATA[Cancel membership]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.abortcancel.info" html="true">
+            <de><![CDATA[Sind Sie sicher, dass Sie die Kündigung Ihrer Mitgliedschaft <b>[title]</b> zurückziehen wollen?]]></de>
+            <en><![CDATA[Are you sure you want to withdraw the cancellation of your <b>[title]</b> membership?]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.abortcancel.text">
+            <de><![CDATA[Kündigung der Mitgliedschaft "[title]" zurückziehen]]></de>
+            <en><![CDATA[Withdraw cancellation of membership "[title]"]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.abortcancel.title">
+            <de><![CDATA[Mitgliedschafts-Kündigung zurückziehen]]></de>
+            <en><![CDATA[Withdraw cancellation membership]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.abortcancel.cancel">
+            <de><![CDATA[Abbrechen]]></de>
+            <en><![CDATA[Abbrechen]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.abortcancel.ok">
+            <de><![CDATA[Kündigung zurückziehen]]></de>
+            <en><![CDATA[Withdraw cancellation]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.info.no.memberships">
+            <de><![CDATA[Es sind z.Z. keine Mitgliedschaften in Ihrem Nutzerprofil vorhanden.]]></de>
+            <en><![CDATA[There are currently no memberships in your user profile.]]></en>
+        </locale>
 
         <!-- Templates -->
         <locale name="templates.mail.greeting">
@@ -694,16 +786,16 @@
             <en><![CDATA[Termination of your membership]]></en>
         </locale>
         <locale name="templates.mail.startcancel.body" html="true">
-            <de><![CDATA[Die Kündigung Ihrer Mitgliedschaft <b>[membershipTitle]</b> wurde zum <b>[endDate]</b> beantragt. Um diese Kündigung zu bestätigen besuchen Sie bitte:<br><br><a href="[cancelUrl]">[cancelUrl]</a>]]></de>
-            <en><![CDATA[The termination of your membership <b>[membershipTitle]</b> on <b>[endDate]</b> was applied for. To confirm this termination please visit:<br><br><a href="[cancelUrl]">[cancelUrl]</a>]]></en>
+            <de><![CDATA[Die Kündigung Ihrer Mitgliedschaft <b>[membershipTitle]</b> wurde zum <b>[endDate]</b> beantragt. Um diese Kündigung zu bestätigen besuchen Sie bitte folgenden Link:<br><br><a href="[cancelUrl]">[cancelUrl]</a>]]></de>
+            <en><![CDATA[The termination of your membership <b>[membershipTitle]</b> on <b>[endDate]</b> was applied for. To confirm this termination please visit the following link:<br><br><a href="[cancelUrl]">[cancelUrl]</a>]]></en>
         </locale>
         <locale name="templates.mail.confirmcancel.subject">
             <de><![CDATA[Bestätigung der Kündigung Ihrer Mitgliedschaft]]></de>
             <en><![CDATA[Confirmation of termination of your membership]]></en>
         </locale>
         <locale name="templates.mail.confirmcancel.body" html="true">
-            <de><![CDATA[Hiermit bestätigen wir die Kündigung Ihrer Mitgliedschaft <b>[membershipTitle]</b> zum <b>[endDate]</b>. Bis zu diesem Zeitpunkt können Sie weiterhin alle Vorteile Ihrer Mitgliedschaft genießen.]]></de>
-            <en><![CDATA[We hereby confirm the termination of your membership <b>[membershipTitle]</b> as of <b>[endDate]</b>. Until that time, you can continue to enjoy all the benefits of your membership.]]></en>
+            <de><![CDATA[Hiermit bestätigen wir die Kündigung Ihrer Mitgliedschaft <b>[membershipTitle]</b> zum <b>[endDate]</b>. Bis zu diesem Zeitpunkt können Sie weiterhin alle Vorteile Ihrer Mitgliedschaft nutzen.]]></de>
+            <en><![CDATA[We hereby confirm the termination of your membership <b>[membershipTitle]</b> as of <b>[endDate]</b>. Until that time, you can continue to take advantage of all the benefits of your membership.]]></en>
         </locale>
         <locale name="templates.mail.expired.subject" html="true">
             <de><![CDATA[Ablauf Ihrer Mitgliedschaft]]></de>

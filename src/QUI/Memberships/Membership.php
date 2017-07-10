@@ -254,10 +254,11 @@ class Membership extends Child
      * Search membership users
      *
      * @param array $searchParams
+     * @param bool $archivedOnly (optional) - search archived users only [default: false]
      * @param bool $countOnly (optional) - get count for search result only [default: false]
      * @return int[]|int - membership user IDs or count
      */
-    public function searchUsers($searchParams, $countOnly = false)
+    public function searchUsers($searchParams, $archivedOnly = false, $countOnly = false)
     {
         $membershipUserIds = array();
         $Grid              = new QUI\Utils\Grid($searchParams);
@@ -277,7 +278,12 @@ class Membership extends Child
 
         $where[] = '`musers`.userId = `users`.id';
         $where[] = '`musers`.membershipId = ' . $this->id;
-        $where[] = '`musers`.archived = 0';
+
+        if ($archivedOnly === false) {
+            $where[] = '`musers`.archived = 0';
+        } else {
+            $where[] = '`musers`.archived = 1';
+        }
 
         if (!empty($searchParams['search'])) {
             $whereOR = array();
@@ -307,7 +313,20 @@ class Membership extends Child
         // ORDER
         if (!empty($searchParams['sortOn'])
         ) {
-            $order = "ORDER BY " . Orthos::clear($searchParams['sortOn']);
+            $sortOn = Orthos::clear($searchParams['sortOn']);
+
+            switch ($sortOn) {
+                case 'username':
+                case 'firstname':
+                case 'lastname':
+                    $sortOn = '`users`.' . $sortOn;
+                    break;
+
+                default:
+                    $sortOn = '`musers`.' . $sortOn;
+            }
+
+            $order = "ORDER BY " . $sortOn;
 
             if (isset($searchParams['sortBy']) &&
                 !empty($searchParams['sortBy'])
@@ -338,118 +357,6 @@ class Membership extends Child
             $Stmt->bindValue(':' . $var, $bind['value'], $bind['type']);
         }
 
-        // fetch information for all corresponding passwords
-        try {
-            $Stmt->execute();
-            $result = $Stmt->fetchAll(\PDO::FETCH_ASSOC);
-        } catch (\Exception $Exception) {
-            QUI\System\Log::addError(
-                self::class . ' :: searchUsers() -> ' . $Exception->getMessage()
-            );
-
-            return array();
-        }
-
-        if ($countOnly) {
-            return (int)current(current($result));
-        }
-
-        foreach ($result as $row) {
-            $membershipUserIds[] = (int)$row['id'];
-        }
-
-        return $membershipUserIds;
-    }
-
-    /**
-     * Search membership users (archived)
-     *
-     * @param array $searchParams
-     * @param bool $countOnly (optional) - get count for search result only [default: false]
-     * @return int[] - membership user IDs
-     */
-    public function searchArchivedUsers($searchParams, $countOnly = false)
-    {
-        $membershipUserIds = array();
-        $Grid              = new QUI\Utils\Grid($searchParams);
-        $gridParams        = $Grid->parseDBParams($searchParams);
-        $tbl               = MembershipUsersHandler::getInstance()->getDataBaseTableName();
-        $usersTbl          = QUI::getDBTableName('users');
-        $binds             = array();
-        $where             = array();
-
-        if ($countOnly) {
-            $sql = "SELECT COUNT(*)";
-        } else {
-            $sql = "SELECT `musers`.id";
-        }
-
-        $sql .= " FROM `" . $tbl . "` musers, `" . $usersTbl . "` users";
-
-        $where[] = '`musers`.userId = `users`.id';
-        $where[] = '`musers`.membershipId = ' . $this->id;
-        $where[] = '`musers`.archived = 1';
-
-        if (!empty($searchParams['search'])) {
-            $whereOR = array();
-
-            $searchColumns = array(
-                '`users`.username',
-                '`users`.firstname',
-                '`users`.lastname'
-            );
-
-            foreach ($searchColumns as $tbl => $column) {
-                $whereOR[]       = $column . ' LIKE :search';
-                $binds['search'] = array(
-                    'value' => '%' . $searchParams['search'] . '%',
-                    'type'  => \PDO::PARAM_STR
-                );
-            }
-
-            $where[] = '(' . implode(' OR ', $whereOR) . ')';
-        }
-
-        // build WHERE query string
-        if (!empty($where)) {
-            $sql .= " WHERE " . implode(" AND ", $where);
-        }
-
-        // ORDER
-        if (!empty($searchParams['sortOn'])
-        ) {
-            $order = "ORDER BY " . Orthos::clear($searchParams['sortOn']);
-
-            if (isset($searchParams['sortBy']) &&
-                !empty($searchParams['sortBy'])
-            ) {
-                $order .= " " . Orthos::clear($searchParams['sortBy']);
-            } else {
-                $order .= " ASC";
-            }
-
-            $sql .= " " . $order;
-        }
-
-        // LIMIT
-        if (!empty($gridParams['limit'])
-            && !$countOnly
-        ) {
-            $sql .= " LIMIT " . $gridParams['limit'];
-        } else {
-            if (!$countOnly) {
-                $sql .= " LIMIT " . (int)20;
-            }
-        }
-
-        $Stmt = QUI::getPDO()->prepare($sql);
-
-        // bind search values
-        foreach ($binds as $var => $bind) {
-            $Stmt->bindValue(':' . $var, $bind['value'], $bind['type']);
-        }
-
-        // fetch information for all corresponding passwords
         try {
             $Stmt->execute();
             $result = $Stmt->fetchAll(\PDO::FETCH_ASSOC);

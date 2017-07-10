@@ -22,10 +22,13 @@ class MembershipUser extends Child
 {
     /**
      * @inheritdoc
+     * @param bool $withPermission - check permissions on update [default: true]
      */
-    public function update()
+    public function update($withPermission = true)
     {
-        Permission::checkPermission(MembershipUsersHandler::PERMISSION_EDIT_USERS);
+        if ($withPermission !== false) {
+            Permission::checkPermission(MembershipUsersHandler::PERMISSION_EDIT_USERS);
+        }
 
         // check certain attributes
         $beginDate = strtotime($this->getAttribute('beginDate'));
@@ -161,9 +164,19 @@ class MembershipUser extends Child
      * Generates a random hash and sends an email to the user
      *
      * @return void
+     *
+     * @throws QUI\Memberships\Exception
      */
     public function startManualCancel()
     {
+        // check cancel permission
+        if ((int)QUI::getUserBySession()->getId() !== (int)$this->getUserId()) {
+            throw new QUI\Memberships\Exception(array(
+                'quiqqer/memberships',
+                'exception.users.membershipuser.manualcancel.no.permission'
+            ));
+        }
+
         if ($this->isCancelled()) {
             // @todo throw Exception?
             return;
@@ -180,17 +193,48 @@ class MembershipUser extends Child
         // save cancel hash and date to database
         $this->update();
 
-        $CancelVerification = new CancelVerification($this->id);
-
         // send cancellation mail
         $this->sendMail(
             QUI::getLocale()->get('quiqqer/memberships', 'templates.mail.startcancel.subject'),
             dirname(__FILE__, 5) . '/templates/mail_startcancel.html',
             array(
                 'cancelDate' => $cancelDate,
-                'cancelUrl'  => Verifier::startVerification($CancelVerification)
+                'cancelUrl'  => Verifier::startVerification($this->getCancelVerification(), true)
             )
         );
+    }
+
+    /**
+     * Abort a manually stared cancellation process
+     *
+     * @return void
+     * @throws QUI\Memberships\Exception
+     */
+    public function abortManualCancel()
+    {
+        // check cancel permission
+        if ((int)QUI::getUserBySession()->getId() !== (int)$this->getUserId()) {
+            throw new QUI\Memberships\Exception(array(
+                'quiqqer/memberships',
+                'exception.users.membershipuser.manualcancel.no.permission'
+            ));
+        }
+
+        if (!$this->isCancelled()
+            && empty($this->getAttribute('cancelDate'))
+        ) {
+            return;
+        }
+
+        $this->setAttributes(array(
+            'cancelDate' => null,
+            'cancelled'  => false
+        ));
+
+        Verifier::removeVerification($this->getCancelVerification());
+
+        $this->addHistoryEntry(MembershipUsersHandler::HISTORY_TYPE_CANCEL_ABORT);
+        $this->update(false);
     }
 
     /**
@@ -438,10 +482,16 @@ class MembershipUser extends Child
      * Format date based on User Locale and duration mode
      *
      * @param string $date - Formatted date YYYY-MM-DD HH:MM:SS
-     * @return string
+     * @return string|false - formatted date or false on error
      */
     protected function formatDate($date)
     {
+        if (empty($date)
+            || $date === '0000-00-00 00:00:00'
+        ) {
+            return false;
+        }
+
         $Locale       = $this->getUser()->getLocale();
         $lang         = $Locale->getCurrent();
         $durationMode = MembershipsHandler::getSetting('durationMode');
@@ -491,9 +541,11 @@ class MembershipUser extends Child
             'addedDate'       => $this->formatDate($this->getAttribute('addedDate')),
             'beginDate'       => $this->formatDate($this->getAttribute('beginDate')),
             'endDate'         => $this->formatDate($this->getAttribute('endDate')),
+            'cancelDate'      => $this->formatDate($this->getAttribute('cancelDate')),
 //            'archived'        => $this->isArchived(),
 //            'archiveReason'   => $this->getAttribute('archiveReason'),
-            'cancelled'       => $this->isCancelled()
+            'cancelled'       => $this->isCancelled(),
+            'autoExtend'      => $Membership->isAutoExtend()
         );
     }
 
@@ -513,14 +565,27 @@ class MembershipUser extends Child
             'membershipId'    => $Membership->getId(),
             'membershipTitle' => $Membership->getTitle(),
             'username'        => $QuiqqerUser->getUsername(),
+            'firstname'       => $QuiqqerUser->getAttribute('firstname'),
+            'lastname'        => $QuiqqerUser->getAttribute('lastname'),
             'fullName'        => $QuiqqerUser->getName(),
             'addedDate'       => $this->getAttribute('addedDate'),
             'beginDate'       => $this->getAttribute('beginDate'),
             'endDate'         => $this->getAttribute('endDate'),
             'archived'        => $this->isArchived(),
             'archiveReason'   => $this->getAttribute('archiveReason'),
+            'archiveDate'     => $this->getAttribute('archiveDate'),
             'cancelled'       => $this->isCancelled()
         );
+    }
+
+    /**
+     * Get Verification object for MembershipUser cancellation
+     *
+     * @return CancelVerification
+     */
+    protected function getCancelVerification()
+    {
+        return new CancelVerification($this->id);
     }
 
     /**

@@ -4,7 +4,7 @@ use QUI\Memberships\Handler as MembershipsHandler;
 use QUI\Memberships\Users\Handler as MembershipUsersHandler;
 use QUI\Utils\Security\Orthos;
 use QUI\Utils\Grid;
-use QUI\Memberships\Membership;
+use QUI\Memberships\Users\MembershipUser;
 
 /**
  * Get/search QUIQQER membership users
@@ -19,27 +19,13 @@ QUI::$Ajax->registerFunction(
         $searchParams    = Orthos::clearArray(json_decode($searchParams, true));
         $Memberships     = MembershipsHandler::getInstance();
         $MembershipUsers = MembershipUsersHandler::getInstance();
-        $Users           = QUI::getUsers();
         $Membership      = $Memberships->getChild((int)$membershipId);
         $membershipUsers = array();
 
         foreach ($Membership->searchUsers($searchParams) as $membershipUserId) {
-            /** @var Membership $Membership */
-            $MembershipUser = $MembershipUsers->getChild($membershipUserId);
-            $data           = $MembershipUser->getAttributes();
-            $User           = $Users->get($data['userId']);
-
-            $membershipUsers[] = array(
-                'id'            => $data['id'],
-                'userId'        => $data['userId'],
-                'username'      => $User->getUsername(),
-                'userFullName'  => $User->getName(),
-                'addedDate'     => $data['addedDate'],
-                'beginDate'     => $data['beginDate'],
-                'endDate'       => $data['endDate'],
-                'extendCounter' => $data['extendCounter'],
-                'cancelled'     => $data['cancelled'] ? 1 : 0
-            );
+            /** @var MembershipUser $MembershipUser */
+            $MembershipUser    = $MembershipUsers->getChild($membershipUserId);
+            $membershipUsers[] = $MembershipUser->getBackendViewData();
         }
 
         /** @var \QUI\Memberships\Users\MembershipUser $TEST */
@@ -50,7 +36,7 @@ QUI::$Ajax->registerFunction(
 
         return $Grid->parseResult(
             $membershipUsers,
-            $Membership->searchUsers($searchParams, true)
+            $Membership->searchUsers($searchParams, false, true)
         );
     },
     array('membershipId', 'searchParams'),

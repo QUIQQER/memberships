@@ -1,28 +1,38 @@
 <?php
 
 use QUI\Memberships\Users\Handler as MembershipUsersHandler;
-use QUI\Memberships\Utils;
 
 /**
- * Send cancel email to user (manually)
+ * Abort cancellation process
  *
  * @param int $membershipUserId
  * @return bool - success
  */
 QUI::$Ajax->registerFunction(
-    'package_quiqqer_memberships_ajax_memberships_users_sendCancelMail',
+    'package_quiqqer_memberships_ajax_memberships_users_abortCancel',
     function ($membershipUserId) {
+        if (QUI::getUsers()->isNobodyUser(QUI::getUserBySession())) {
+            QUI::getMessagesHandler()->addError(
+                QUI::getLocale()->get(
+                    'quiqqer/memberships',
+                    'message.ajax.memberships.users.abortCancel.login.necessary'
+                )
+            );
+
+            return false;
+        }
+
         try {
             $MembershipUsers = MembershipUsersHandler::getInstance();
 
             /** @var \QUI\Memberships\Users\MembershipUser $MembershipUser */
             $MembershipUser = $MembershipUsers->getChild((int)$membershipUserId);
-            $MembershipUser->sendConfirmCancelMail();
+            $MembershipUser->abortManualCancel();
         } catch (QUI\Memberships\Exception $Exception) {
             QUI::getMessagesHandler()->addError(
                 QUI::getLocale()->get(
                     'quiqqer/memberships',
-                    'message.ajax.memberships.users.sendCancelMail.error',
+                    'message.ajax.memberships.users.abortCancel.error',
                     array(
                         'error' => $Exception->getMessage()
                     )
@@ -31,7 +41,7 @@ QUI::$Ajax->registerFunction(
 
             return false;
         } catch (\Exception $Exception) {
-            QUI\System\Log::addError('AJAX :: package_quiqqer_memberships_ajax_memberships_users_sendCancelMail');
+            QUI\System\Log::addError('AJAX :: package_quiqqer_memberships_ajax_memberships_users_abortCancel');
             QUI\System\Log::writeException($Exception);
 
             QUI::getMessagesHandler()->addError(
@@ -50,16 +60,11 @@ QUI::$Ajax->registerFunction(
         QUI::getMessagesHandler()->addSuccess(
             QUI::getLocale()->get(
                 'quiqqer/memberships',
-                'message.ajax.memberships.users.sendCancelMail.success',
-                array(
-                    'membershipUserId'   => $MembershipUser->getId(),
-                    'membershipUserName' => $MembershipUser->getUser()->getName()
-                )
+                'message.ajax.memberships.users.abortCancel.success'
             )
         );
 
         return true;
     },
-    array('membershipUserId'),
-    'Permission::checkAdminUser'
+    array('membershipUserId')
 );

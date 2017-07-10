@@ -90,6 +90,38 @@ define('package/quiqqer/memberships/bin/classes/MembershipUsers', [
         },
 
         /**
+         * Start the cancellation process for a MembershipUser
+         *
+         * @param {Integer} membershipUserId
+         * @return {Promise}
+         */
+        startCancel: function (membershipUserId) {
+            return new Promise(function (resolve, reject) {
+                QUIAjax.post('package_quiqqer_memberships_ajax_memberships_users_startCancel', resolve, {
+                    'package'       : pkg,
+                    membershipUserId: membershipUserId,
+                    onError         : reject
+                })
+            });
+        },
+
+        /**
+         * Abort the cancellation process for a MembershipUser
+         *
+         * @param {Integer} membershipUserId
+         * @return {Promise}
+         */
+        abortCancel: function (membershipUserId) {
+            return new Promise(function (resolve, reject) {
+                QUIAjax.post('package_quiqqer_memberships_ajax_memberships_users_abortCancel', resolve, {
+                    'package'       : pkg,
+                    membershipUserId: membershipUserId,
+                    onError         : reject
+                })
+            });
+        },
+
+        /**
          * Get MembershipUser data (some general attribues)
          *
          * @param {Integer} membershipUserId
