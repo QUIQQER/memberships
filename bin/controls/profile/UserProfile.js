@@ -1,37 +1,30 @@
 /**
  * UserProfile JavaScript Control
  *
- * View data from archived membership users
+ * View membership data of currently logged in user
  *
  * @module package/quiqqer/memberships/bin/controls/profile/UserProfile
  * @author www.pcsg.de (Patrick Müller)
  *
  * @require qui/controls/Control
  * @require qui/controls/loader/Loader
- * @require qui/controls/windows/Popup
  * @require qui/controls/windows/Confirm
  * @require qui/controls/buttons/Button
- * @require utils/Controls
- * @require controls/grid/Grid
- * @require package/quiqqer/memberships/bin/Licenses
- * @require package/quiqqer/memberships/bin/controls/LicenseBundles
+ * @require package/quiqqer/memberships/bin/MembershipUsers
  * @require Locale
  * @require Ajax
  * @require Mustache
  * @require text!package/quiqqer/memberships/bin/controls/profile/UserProfile.html
+ * @require text!package/quiqqer/memberships/bin/controls/profile/UserProfile.MembershipStatus.html
  * @require css!package/quiqqer/memberships/bin/controls/profile/UserProfile.css
  */
 define('package/quiqqer/memberships/bin/controls/profile/UserProfile', [
 
     'qui/controls/Control',
     'qui/controls/loader/Loader',
-    'qui/controls/windows/Popup',
     'qui/controls/windows/Confirm',
     'qui/controls/buttons/Button',
 
-    'utils/Controls',
-
-    'package/quiqqer/memberships/bin/Memberships',
     'package/quiqqer/memberships/bin/MembershipUsers',
 
     'Locale',
@@ -42,8 +35,7 @@ define('package/quiqqer/memberships/bin/controls/profile/UserProfile', [
     'text!package/quiqqer/memberships/bin/controls/profile/UserProfile.MembershipStatus.html',
     'css!package/quiqqer/memberships/bin/controls/profile/UserProfile.css'
 
-], function (QUIControl, QUILoader, QUIPopup, QUIConfirm, QUIButton,
-             QUIControlUtils, Memberships, MembershipUsers,
+], function (QUIControl, QUILoader, QUIConfirm, QUIButton, MembershipUsers,
              QUILocale, QUIAjax, Mustache, template, statusTemplate) {
     "use strict";
 
@@ -56,11 +48,10 @@ define('package/quiqqer/memberships/bin/controls/profile/UserProfile', [
 
         Binds: [
             '$onInject',
-            '$onResize',
-            '$onCreate',
             'refresh',
             '$build',
-            '$openCancelConfirm'
+            '$openCancelConfirm',
+            '$openAbortCancelConfirm'
         ],
 
         options: {
@@ -74,17 +65,8 @@ define('package/quiqqer/memberships/bin/controls/profile/UserProfile', [
             this.$memberships = [];
 
             this.addEvents({
-                onCreate: this.$onCreate,
-                onInject: this.$onInject,
-                onResize: this.$onResize
+                onInject: this.$onInject
             });
-        },
-
-        /**
-         * Event: onCreate
-         */
-        $onCreate: function () {
-
         },
 
         /**
@@ -104,13 +86,6 @@ define('package/quiqqer/memberships/bin/controls/profile/UserProfile', [
             this.Loader.inject(this.$Elm);
 
             this.refresh();
-        },
-
-        /**
-         * event: onResize
-         */
-        $onResize: function () {
-            // @todo
         },
 
         /**
