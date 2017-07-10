@@ -790,7 +790,7 @@
             <en><![CDATA[Termination of your membership]]></en>
         </locale>
         <locale name="templates.mail.startcancel.body" html="true">
-            <de><![CDATA[Die Kündigung Ihrer Mitgliedschaft <b>[membershipTitle]</b> wurde zum <b>[endDate]</b> beantragt. Um diese Kündigung zu bestätigen besuchen Sie bitte folgenden Link:<br><br><a href="[cancelUrl]">[cancelUrl]</a>]]></de>
+            <de><![CDATA[Die Kündigung Ihrer Mitgliedschaft <b>[membershipTitle]</b> zum <b>[endDate]</b> wurde beantragt. Um diese Kündigung zu bestätigen besuchen Sie bitte folgenden Link:<br><br><a href="[cancelUrl]">[cancelUrl]</a>]]></de>
             <en><![CDATA[The termination of your membership <b>[membershipTitle]</b> on <b>[endDate]</b> was applied for. To confirm this termination please visit the following link:<br><br><a href="[cancelUrl]">[cancelUrl]</a>]]></en>
         </locale>
         <locale name="templates.mail.confirmcancel.subject">
