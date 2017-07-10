@@ -170,10 +170,12 @@ define('package/quiqqer/memberships/bin/controls/profile/UserProfile', [
                     continue;
                 }
 
-                // if autoextend hide endDate
-                StatusElm.getElement(
-                    '.quiqqer-memberships-profile-userprofile-table-status-enddate'
-                ).addClass('quiqqer-memberships-profile-userprofile-table__hidden');
+                // if autoextend and not cancelled -> hide endDate
+                if (!Membership.cancelled) {
+                    StatusElm.getElement(
+                        '.quiqqer-memberships-profile-userprofile-table-status-enddate'
+                    ).addClass('quiqqer-memberships-profile-userprofile-table__hidden');
+                }
 
                 if (status === 'active') {
                     // cancel btn
