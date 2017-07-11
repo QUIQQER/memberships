@@ -1,0 +1,9 @@
+<quiqqer>
+    <products>
+        <fields>
+            <field src="\QUI\Memberships\Products\MembershipField" name="memberships.membership">
+                <locale group="quiqqer/memberships" var="products.field.membership"/>
+            </field>
+        </fields>
+    </products>
+</quiqqer>

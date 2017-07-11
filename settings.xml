@@ -42,6 +42,12 @@
                 </conf>
             </section>
 
+            <section name="products">
+                <conf name="categoryId">
+                    <type><![CDATA[integer]]></type>
+                </conf>
+            </section>
+
         </config>
 
         <window>
@@ -142,6 +148,21 @@
                             </text>
                             <description>
                                 <locale group="quiqqer/memberships" var="settings.dateFormatLong.description"/>
+                            </description>
+                        </input>
+                    </settings>
+
+                    <settings title="products" name="products">
+                        <title>
+                            <locale group="quiqqer/memberships" var="settings.products.title"/>
+                        </title>
+
+                        <input conf="products.categoryId" type="text" data-qui="package/quiqqer/memberships/bin/controls/settings/ProductSettings">
+                            <text>
+                                <locale group="quiqqer/memberships" var="settings.categoryId.title"/>
+                            </text>
+                            <description>
+                                <locale group="quiqqer/memberships" var="settings.categoryId.description"/>
                             </description>
                         </input>
                     </settings>

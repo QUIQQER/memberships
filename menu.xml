@@ -2,7 +2,7 @@
 <menu>
     <item parent="/extras/"
           name="memberships"
-          require="package/quiqqer/memberships/bin/controls/MembershipsManager"
+          require="package/quiqqer/memberships/bin/controls/MembershipsManagerPanel"
           icon="fa fa-id-card-o"
     >
         <locale group="quiqqer/memberships" var="menu.extras.memberships.title"/>

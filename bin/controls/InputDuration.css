@@ -3,3 +3,7 @@ input[name="quiqqer-memberships-inputduration-count"] {
     margin-right: 5px;
     width: 60px;
 }
+
+.quiqqer-memberships-inputduration-period {
+    width: calc(100% - 65px) !important;
+}

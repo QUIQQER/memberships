@@ -229,8 +229,7 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
         /**
          * Refresh membership data
          */
-        refresh: function()
-        {
+        refresh: function () {
             var self = this;
 
             this.Loader.show();
@@ -264,9 +263,9 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
 
                 if (installedPackages.contains('quiqqer/products')) {
                     self.addCategory(new QUIButton({
-                        textimage: 'fa fa-money',
-                        text     : QUILocale.get(lg, 'controls.membership.category.products'),
-                        events   : {
+                        icon  : 'fa fa-money',
+                        text  : QUILocale.get(lg, 'controls.membership.category.products'),
+                        events: {
                             onActive: self.$loadProducts
                         }
                     }));
@@ -274,9 +273,9 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
 
                 if (installedPackages.contains('quiqqer/contracts')) {
                     self.addCategory(new QUIButton({
-                        textimage: 'fa fa-handshake-o',
-                        text     : QUILocale.get(lg, 'controls.membership.category.contracts'),
-                        events   : {
+                        icon  : 'fa fa-handshake-o',
+                        text  : QUILocale.get(lg, 'controls.membership.category.contracts'),
+                        events: {
                             onActive: self.$loadContracts
                         }
                     }));
@@ -336,8 +335,6 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
             this.Loader.show();
 
             var Form = PanelContent.getElement('form');
-
-            console.log(this.$Membership);
 
             QUIFormUtils.setDataToForm(this.$Membership, Form);
 
@@ -592,8 +589,6 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
          */
         $lock: function () {
             var self = this;
-
-            console.log("locking now with: " + self.$lockKey);
 
             return new Promise(function (resolve, reject) {
                 QUIAjax.post('package_quiqqer_memberships_ajax_memberships_lock', resolve, {

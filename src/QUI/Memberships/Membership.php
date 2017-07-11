@@ -414,6 +414,16 @@ class Membership extends Child
     }
 
     /**
+     * Get all products that have this membership assigned
+     *
+     * @return QUI\ERP\Products\Product\Product[]
+     */
+    public function getProducts()
+    {
+
+    }
+
+    /**
      * Locks editing of this membership for the current session user
      *
      * @return void

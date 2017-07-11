@@ -85,51 +85,32 @@ class Handler extends Factory
      * Get all MembershipUser IDs of membership users by Membership ID
      *
      * @param int $membershipId
+     * @param bool $includeArchived (optional) - include archived MembershipUsers
      * @return int[]
      */
-    public function getIdsByMembershipId($membershipId)
+    public function getIdsByMembershipId($membershipId, $includeArchived = false)
     {
+        $where = array(
+            'membershipId' => $membershipId,
+            'archived'     => 0
+        );
+
+        if ($includeArchived === true) {
+            unset($where['archived']);
+        }
+
         $result = QUI::getDataBase()->fetch(array(
             'select' => array(
                 'id'
             ),
             'from'   => MembershipUsersHandler::getDataBaseTableName(),
-            'where'  => array(
-                'membershipId' => $membershipId
-            )
+            'where'  => $where
         ));
 
         $membershipUserIds = array();
 
         foreach ($result as $row) {
             $membershipUserIds[] = $row['id'];
-        }
-
-        return $membershipUserIds;
-    }
-
-    /**
-     * Get all QUIQQER User IDs of membership users by Membership ID
-     *
-     * @param int $membershipId
-     * @return int[]
-     */
-    public function getUserIdsByMembershipId($membershipId)
-    {
-        $result = QUI::getDataBase()->fetch(array(
-            'select' => array(
-                'userId'
-            ),
-            'from'   => MembershipUsersHandler::getDataBaseTableName(),
-            'where'  => array(
-                'membershipId' => $membershipId
-            )
-        ));
-
-        $membershipUserIds = array();
-
-        foreach ($result as $row) {
-            $membershipUserIds[] = $row['userId'];
         }
 
         return $membershipUserIds;

@@ -6,6 +6,7 @@ use QUI\CRUD\Factory;
 use QUI\Utils\Grid;
 use QUI;
 use QUI\Permissions\Permission;
+use QUI\ERP\Products\Handler\Categories as ProductCategories;
 
 class Handler extends Factory
 {
@@ -268,5 +269,31 @@ class Handler extends Factory
     {
         $Config = QUI::getPackage('quiqqer/memberships')->getConfig();
         return $Config->get('memberships', $key);
+    }
+
+    /**
+     * quiqqer/products
+     *
+     * Get Memberships product category
+     *
+     * @return QUI\ERP\Products\Interfaces\CategoryInterface|false
+     */
+    public static function getProductCategory()
+    {
+        $Conf       = QUI::getPackage('quiqqer/memberships')->getConfig();
+        $categoryId = $Conf->get('products', 'categoryId');
+
+        if (empty($categoryId)) {
+            return false;
+        }
+
+        try {
+            return ProductCategories::getCategory((int)$categoryId);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::addError(self::class . ' :: getProductCategory()');
+            QUI\System\Log::writeException($Exception);
+
+            return false;
+        }
     }
 }

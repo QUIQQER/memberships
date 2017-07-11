@@ -99,6 +99,7 @@ define('package/quiqqer/memberships/bin/controls/InputDuration', [
             this.$InputCount.addEvent('change', this.$setValue);
 
             this.$PeriodSelect = new QUISelect({
+                'class'  : 'quiqqer-memberships-inputduration-period',
                 menuTop  : true,
                 showIcons: false,
                 events   : {

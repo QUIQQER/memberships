@@ -12,21 +12,22 @@
  * @require qui/controls/windows/Confirm
  * @require qui/controls/buttons/Button
  * @require qui/controls/buttons/Separator
+ * @require controls/groups/Select
  * @require controls/grid/Grid
  * @require utils/Controls
  * @require qui/utils/Form
- * @require package/quiqqer/memberships/bin/PackageMemberships
- * @require package/quiqqer/memberships/bin/controls/MembershipPackages
+ * @require package/quiqqer/memberships/bin/Memberships
  * @require Locale
  * @require Ajax
  * @require Mustache
  * @require text!package/quiqqer/memberships/bin/controls/MembershipsManager.html
- * @require text!package/quiqqer/memberships/bin/controls/MembershipsManager.Edit.html
  * @require css!package/quiqqer/memberships/bin/controls/MembershipsManager.css
+ *
+ * @event onSelect [membershipId, this] - fires if the user double clicks a table entry
  */
 define('package/quiqqer/memberships/bin/controls/MembershipsManager', [
 
-    'qui/controls/desktop/Panel',
+    'qui/controls/Control',
     'qui/controls/loader/Loader',
     'qui/controls/windows/Popup',
     'qui/controls/windows/Confirm',
@@ -47,7 +48,7 @@ define('package/quiqqer/memberships/bin/controls/MembershipsManager', [
     'text!package/quiqqer/memberships/bin/controls/MembershipsManager.html',
     'css!package/quiqqer/memberships/bin/controls/MembershipsManager.css'
 
-], function (QUIPanel, QUILoader, QUIPopup, QUIConfirm, QUIButton, QUISeparator,
+], function (QUIControl, QUILoader, QUIPopup, QUIConfirm, QUIButton, QUISeparator,
              GroupSelect, Grid, QUIControlUtils, QUIFormUtils, Memberships,
              QUILocale, QUIAjax, Mustache, template) {
     "use strict";
@@ -56,7 +57,7 @@ define('package/quiqqer/memberships/bin/controls/MembershipsManager', [
 
     return new Class({
 
-        Extends: QUIPanel,
+        Extends: QUIControl,
         Type   : 'package/quiqqer/memberships/bin/controls/MembershipsManager',
 
         Binds: [
@@ -75,21 +76,19 @@ define('package/quiqqer/memberships/bin/controls/MembershipsManager', [
         ],
 
         options: {
-            title: QUILocale.get(lg, 'controls.membershipsmanager.title')
+            multiselect: true, // allow selection of multiple Memberships in table
+            showButtons: true // shows buttons for create/edit/delete
         },
 
         initialize: function (options) {
             this.parent(options);
 
             this.Loader      = new QUILoader();
-            this.$User       = null;
             this.$Grid       = null;
             this.$GridParent = null;
-            this.$FormParent = null;
-            this.$Panel      = null;
 
             this.addEvents({
-                onCreate : this.$onCreate,
+                onInject : this.$onInject,
                 onRefresh: this.$onRefresh,
                 onResize : this.$onResize
             });
@@ -98,40 +97,12 @@ define('package/quiqqer/memberships/bin/controls/MembershipsManager', [
         /**
          * Event: onImport
          */
-        $onCreate: function () {
+        $onInject: function () {
+            this.$Elm.addClass(
+                'quiqqer-memberships-membershipsmanager'
+            );
+
             this.Loader.inject(this.$Elm);
-
-            this.addButton({
-                name     : 'add',
-                text     : QUILocale.get(lg, 'controls.membershipsmanager.tbl.btn.addmembership'),
-                textimage: 'fa fa-plus',
-                events   : {
-                    onClick: this.$createMembership
-                }
-            });
-
-            this.addButton(new QUISeparator());
-
-            this.addButton({
-                name     : 'edit',
-                text     : QUILocale.get(lg, 'controls.membershipsmanager.tbl.btn.editmembership'),
-                textimage: 'fa fa-edit',
-                events   : {
-                    onClick: this.$openMembershipPanel
-                }
-            });
-
-            this.addButton(new QUISeparator());
-
-            this.addButton({
-                name     : 'delete',
-                text     : QUILocale.get(lg, 'controls.membershipsmanager.tbl.btn.removemembership'),
-                textimage: 'fa fa-trash',
-                events   : {
-                    onClick: this.$deleteMemberships
-                }
-            });
-
             this.$load();
         },
 
@@ -153,14 +124,14 @@ define('package/quiqqer/memberships/bin/controls/MembershipsManager', [
         $load: function () {
             var self = this;
 
-            this.setContent(Mustache.render(template));
-            var Content = this.getContent();
+            this.$Elm.set('html', Mustache.render(template));
+            var Content = this.$Elm;
 
             this.$GridParent = Content.getElement(
                 '.quiqqer-memberships-membershipsmanager-table'
             );
 
-            this.$Grid = new Grid(this.$GridParent, {
+            var GridAttributes = {
                 columnModel      : [{
                     header   : QUILocale.get('quiqqer/system', 'id'),
                     dataIndex: 'id',
@@ -195,20 +166,54 @@ define('package/quiqqer/memberships/bin/controls/MembershipsManager', [
                 pagination       : true,
                 serverSort       : true,
                 selectable       : true,
-                multipleSelection: true
-            });
+                multipleSelection: this.getAttribute('multiselect')
+            };
+
+            if (this.getAttribute('showButtons')) {
+                GridAttributes.buttons = [{
+                    name     : 'add',
+                    text     : QUILocale.get(lg, 'controls.membershipsmanager.tbl.btn.addmembership'),
+                    textimage: 'fa fa-plus',
+                    events   : {
+                        onClick: this.$createMembership
+                    }
+                }, {
+                    name     : 'edit',
+                    text     : QUILocale.get(lg, 'controls.membershipsmanager.tbl.btn.editmembership'),
+                    textimage: 'fa fa-edit',
+                    events   : {
+                        onClick: this.$openMembershipPanel
+                    }
+                }, {
+                    name     : 'delete',
+                    text     : QUILocale.get(lg, 'controls.membershipsmanager.tbl.btn.removemembership'),
+                    textimage: 'fa fa-trash',
+                    events   : {
+                        onClick: this.$deleteMemberships
+                    }
+                }];
+            }
+
+            this.$Grid = new Grid(this.$GridParent, GridAttributes);
 
             this.$Grid.addEvents({
-                onDblClick: this.$openMembershipPanel,
+                onDblClick: function () {
+                    self.fireEvent('select', [self.$Grid.getSelectedData()[0].id, self]);
+                },
                 onClick   : function () {
-                    var selected = self.$Grid.getSelectedData().length;
+                    var selected     = self.$Grid.getSelectedData().length;
+                    var TableButtons = self.$Grid.getAttribute('buttons');
 
-                    self.getButtons('delete').enable();
+                    if (!Object.getLength(TableButtons)) {
+                        return;
+                    }
+
+                    TableButtons.delete.enable();
 
                     if (selected === 1) {
-                        self.getButtons('edit').enable();
+                        TableButtons.edit.enable();
                     } else {
-                        self.getButtons('edit').disable();
+                        TableButtons.edit.disable();
                     }
                 },
                 onRefresh : this.$listRefresh
@@ -237,10 +242,13 @@ define('package/quiqqer/memberships/bin/controls/MembershipsManager', [
                 return;
             }
 
-            var self = this;
+            var self         = this;
+            var TableButtons = self.$Grid.getAttribute('buttons');
 
-            self.getButtons('delete').disable();
-            self.getButtons('edit').disable();
+            if (Object.getLength(TableButtons)) {
+                TableButtons.delete.disable();
+                TableButtons.edit.disable();
+            }
 
             var GridParams = {
                 sortOn : Grid.getAttribute('sortOn'),
@@ -263,10 +271,6 @@ define('package/quiqqer/memberships/bin/controls/MembershipsManager', [
          * @param {Object} GridData
          */
         $setGridData: function (GridData) {
-            var self = this;
-
-            console.log(GridData);
-
             for (var i = 0, len = GridData.data.length; i < len; i++) {
                 var Row = GridData.data[i];
 
@@ -312,7 +316,7 @@ define('package/quiqqer/memberships/bin/controls/MembershipsManager', [
                     return;
                 }
 
-                var groupIds  = GroupSelectControl.getValue();
+                var groupIds = GroupSelectControl.getValue();
 
                 if (groupIds === '') {
                     GroupSelectControl.focus();
@@ -511,6 +515,22 @@ define('package/quiqqer/memberships/bin/controls/MembershipsManager', [
             });
 
             Popup.open();
+        },
+
+        /**
+         * Get IDs of selected Memberships
+         *
+         * @return {Array}
+         */
+        getSelectedIds: function () {
+            var ids      = [];
+            var selected = this.$Grid.getSelectedData();
+
+            for (var i = 0, len = selected.length; i < len; i++) {
+                ids.push(selected[0].id);
+            }
+
+            return ids;
         },
 
         /**

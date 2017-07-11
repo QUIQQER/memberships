@@ -133,6 +133,18 @@
             <de><![CDATA[Datumsformatierung für Datumsangaben in langem Format. Das lange Datumsformat wird in Nachrichten an den Benutzer verwendet, wenn die <b>Genauigkeit von Laufzeiten</b> auf <b>Exakt</b> gestellt ist.<br><br>Für verfügbare Platzhalter siehe <a href="http://php.net/manual/de/function.strftime.php#refsect1-function.strftime-parameters" target="_blank">http://php.net/manual/de/function.strftime.php#refsect1-function.strftime-parameters</a>]]></de>
             <en><![CDATA[Date format for dates in long format. The short format is used in messages sent to the user if the <b>Accuracy of membership duration</b> setting is set to <b>Exact</b>.<br><br>For available placeholder see: <a href="http://php.net/manual/de/function.strftime.php#refsect1-function.strftime-parameters" target="_blank">http://php.net/manual/de/function.strftime.php#refsect1-function.strftime-parameters</a>]]></en>
         </locale>
+        <locale name="settings.products.title">
+            <de><![CDATA[Produkte]]></de>
+            <en><![CDATA[Products]]></en>
+        </locale>
+        <locale name="settings.categoryId.title">
+            <de><![CDATA[Produkt-Kategorie für Mitgliedschafts-Produkte]]></de>
+            <en><![CDATA[Product category for membership products]]></en>
+        </locale>
+        <locale name="settings.categoryId.description" html="true">
+            <de><![CDATA[Standard Produkt-Kategorie für alle Produkte, die aus Mitgliedschaften automatisiert erstellt werden.]]></de>
+            <en><![CDATA[Default product category for all products that are created out of memberships.]]></en>
+        </locale>
 
         <!-- Cron -->
         <locale name="cron.checkMembershipUsers.title">
@@ -150,15 +162,37 @@
             <en><![CDATA[Memberships]]></en>
         </locale>
 
+        <!-- quiqqer/products -->
+        <locale name="products.field.membership">
+            <de><![CDATA[Mitgliedschaft]]></de>
+            <en><![CDATA[Membership]]></en>
+        </locale>
+        <locale name="products.category.title">
+            <de><![CDATA[Mitgliedschaften]]></de>
+            <en><![CDATA[Memberships]]></en>
+        </locale>
+        <locale name="products.category.description">
+            <de><![CDATA[Produkt-Kategorie für Mitgliedschafts-Produkte]]></de>
+            <en><![CDATA[Product category for membership products]]></en>
+        </locale>
+
     </groups>
 
     <groups name="quiqqer/memberships" datatype="js">
 
-        <!-- Control: MembershipsManager -->
-        <locale name="controls.membershipsmanager.title">
+        <!-- Control: MembershipsSearchPopup -->
+        <locale name="controls.membershipssearchpopup.title">
             <de><![CDATA[Mitgliedschaften]]></de>
             <en><![CDATA[Memberships]]></en>
         </locale>
+
+        <!-- Control: MembershipsManagerPanel -->
+        <locale name="controls.membershipsmanagerpanel.title">
+            <de><![CDATA[Mitgliedschaften]]></de>
+            <en><![CDATA[Memberships]]></en>
+        </locale>
+
+        <!-- Control: MembershipsManager -->
         <locale name="controls.membershipsmanager.tbl.btn.addmembership">
             <de><![CDATA[Neue Mitgliedschaft]]></de>
             <en><![CDATA[Mew membership]]></en>
@@ -236,6 +270,14 @@
         <locale name="controls.membership.category.usersArchive">
             <de><![CDATA[Benutzer-Archiv]]></de>
             <en><![CDATA[Users archive]]></en>
+        </locale>
+        <locale name="controls.membership.category.products">
+            <de><![CDATA[Produkte]]></de>
+            <en><![CDATA[Products]]></en>
+        </locale>
+        <locale name="controls.membership.category.contracts">
+            <de><![CDATA[Verträge]]></de>
+            <en><![CDATA[Contracts]]></en>
         </locale>
         <locale name="controls.membership.template.settings.headerSettings">
             <de><![CDATA[Mitgliedschafts-Informationen]]></de>
@@ -410,7 +452,7 @@
             <en><![CDATA[Cancelled]]></en>
         </locale>
 
-        <!-- Controls: users/MembershipUsersArchive -->
+        <!-- Control: users/MembershipUsersArchive -->
         <locale name="controls.users.membershipusersarchive.tbl.btn.history">
             <de><![CDATA[History]]></de>
             <en><![CDATA[History]]></en>
@@ -440,7 +482,7 @@
             <en><![CDATA[Assigned QUIQQER user deleted]]></en>
         </locale>
 
-        <!-- Controls: users/MembershipUserHistory -->
+        <!-- Control: users/MembershipUserHistory -->
         <locale name="controls.users.membershipuserhistory.template.userLabel">
             <de><![CDATA[Benutzer]]></de>
             <en><![CDATA[User]]></en>
@@ -502,13 +544,13 @@
             <en><![CDATA[Cancellation withdrawn]]></en>
         </locale>
 
-        <!-- Controls: users/MembershipUserHistoryPopup -->
+        <!-- Control: users/MembershipUserHistoryPopup -->
         <locale name="controls.users.membershipuserhistorypopup.title">
             <de><![CDATA[Mitgliedschafts-Benutzer History]]></de>
             <en><![CDATA[Membership user history]]></en>
         </locale>
 
-        <!-- Controls: users/MembershipUserEdit -->
+        <!-- Control: users/MembershipUserEdit -->
         <locale name="controls.users.membershipuseredit.template.header">
             <de><![CDATA[Mitgliedschafts-Benutzer [name] (#[id])]]></de>
             <en><![CDATA[Membership user [name] (#[id])]]></en>
@@ -516,6 +558,18 @@
         <locale name="controls.users.membershipuseredit.btn.save">
             <de><![CDATA[Benutzerdaten speichern]]></de>
             <en><![CDATA[Save user data]]></en>
+        </locale>
+
+        <!-- Control: products/MembershipField -->
+        <locale name="controls.products.membershipfield.empty.placeholder">
+            <de><![CDATA[Noch keine Mitgliedschaft zugeordnet]]></de>
+            <en><![CDATA[No membership assigned yet]]></en>
+        </locale>
+
+        <!-- Control: settings/ProductSettings -->
+        <locale name="controls.settings.productsettings.package.required" html="true">
+            <de><![CDATA[Diese Einstellung benötigt das QUIQQER-Modul <b>quiqqer/products</b>]]></de>
+            <en><![CDATA[This settings required the QUIQQER module <b>quiqqer/products</b>]]></en>
         </locale>
 
     </groups>
