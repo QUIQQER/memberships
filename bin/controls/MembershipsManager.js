@@ -327,13 +327,14 @@ define('package/quiqqer/memberships/bin/controls/MembershipsManager', [
 
                 Popup.Loader.show();
 
-                Memberships.createMembership(title, groupIds).then(function (MembershipData) {
-                    if (!MembershipData) {
+                Memberships.createMembership(title, groupIds).then(function (membershipId) {
+                    if (!membershipId) {
                         Popup.Loader.hide();
                         return;
                     }
 
-                    self.refresh();
+                    self.$Grid.refresh();
+                    self.$openMembershipPanel(membershipId);
                     Popup.close();
                 });
             };
@@ -440,7 +441,7 @@ define('package/quiqqer/memberships/bin/controls/MembershipsManager', [
                                         ).then(function () {
                                             self.Loader.hide();
                                             Sheet.destroy();
-                                            self.refresh();
+                                            self.$Grid.refresh();
                                         });
                                     }
                                 }
@@ -508,7 +509,7 @@ define('package/quiqqer/memberships/bin/controls/MembershipsManager', [
                             }
 
                             Popup.close();
-                            self.refresh();
+                            self.$Grid.refresh();
                         });
                     }
                 }
@@ -535,9 +536,13 @@ define('package/quiqqer/memberships/bin/controls/MembershipsManager', [
 
         /**
          * Opens a panel for a single membership
+         *
+         * @param {Number} [membershipId] - If omitted use selected from table
          */
-        $openMembershipPanel: function () {
-            var membershipId = this.$Grid.getSelectedData()[0].id;
+        $openMembershipPanel: function (membershipId) {
+            if (!membershipId) {
+                membershipId = this.$Grid.getSelectedData()[0].id;
+            }
 
             require([
                 'package/quiqqer/memberships/bin/controls/Membership',

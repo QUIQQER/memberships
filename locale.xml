@@ -182,8 +182,8 @@
 
         <!-- Control: MembershipsSearchPopup -->
         <locale name="controls.membershipssearchpopup.title">
-            <de><![CDATA[Mitgliedschaften]]></de>
-            <en><![CDATA[Memberships]]></en>
+            <de><![CDATA[Mitgliedschafts-Verwaltung]]></de>
+            <en><![CDATA[Membership Management]]></en>
         </locale>
 
         <!-- Control: MembershipsManagerPanel -->
