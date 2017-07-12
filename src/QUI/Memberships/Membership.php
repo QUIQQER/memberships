@@ -163,6 +163,9 @@ class Membership extends Child
             ));
         }
 
+        // @todo quiqqer/products abhandeln
+        // @todo quiqqer/contracts abhandeln
+
         parent::delete();
     }
 
