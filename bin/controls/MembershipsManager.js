@@ -545,7 +545,7 @@ define('package/quiqqer/memberships/bin/controls/MembershipsManager', [
             ], function (MembershipPanel, Utils) {
                 Utils.openPanelInTasks(new MembershipPanel({
                     id   : membershipId,
-                    '#id': 'quiqqer_location_' + membershipId
+                    '#id': 'quiqqer_memberships_' + membershipId
                 }));
             });
         }

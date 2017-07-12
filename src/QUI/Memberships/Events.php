@@ -8,6 +8,7 @@ use QUI\Memberships\Handler as MembershipsHandler;
 use QUI\Memberships\Products\MembershipField;
 use QUI\ERP\Products\Handler\Fields as ProductFields;
 use QUI\ERP\Products\Handler\Categories as ProductCategories;
+use QUI\ERP\Products\Handler\Search as ProductSearchHandler;
 
 /**
  * Class Events
@@ -28,15 +29,12 @@ class Events
             return;
         }
 
-        \QUI\System\Log::writeRecursive("ONPACKAGESETUP MEMBERSHIPS");
-        return;
-
         $packages = MembershipsHandler::getInstance()->getInstalledMembershipPackages();
 
         foreach ($packages as $package) {
             switch ($package) {
                 case 'quiqqer/products':
-//                    self::createProductField();
+                    self::createProductField();
                     self::createProductCategory();
                     break;
 
@@ -74,9 +72,9 @@ class Events
             ProductFields::createField(array(
                 'id'            => MembershipField::FIELD_ID,
                 'type'          => MembershipField::TYPE,
-                'systemField'   => 1,
                 'titles'        => $translations,
-                'workingtitles' => $translations
+                'workingtitles' => $translations,
+                'search_type'   => ProductSearchHandler::SEARCHTYPE_TEXT
             ));
         } catch (\QUI\ERP\Products\Field\Exception $Exception) {
             // nothing, field exists
@@ -159,14 +157,10 @@ class Events
                 )
             )
         );
-    }
 
-    /**
-     * Create products for every membership
-     *
-     * @return void
-     */
-    protected static function createProducts()
-    {
+        // set new category as default product category for memberships
+        $Conf = QUI::getPackage('quiqqer/memberships')->getConfig();
+        $Conf->set('products', 'categoryId', $catId);
+        $Conf->save();
     }
 }

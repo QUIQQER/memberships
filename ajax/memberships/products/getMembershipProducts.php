@@ -1,6 +1,7 @@
 <?php
 
 use QUI\Memberships\Handler as MembershipsHandler;
+use QUI\ERP\Products\Handler\Fields as ProductFields;
 
 /**
  * Get list of Products that have a specific Membership assigned
@@ -13,11 +14,18 @@ QUI::$Ajax->registerFunction(
     function ($membershipId) {
         $Memberships = MembershipsHandler::getInstance();
         $Membership  = $Memberships->getChild((int)$membershipId);
+        $productData = array();
 
-        return array(
-            'id'    => $Membership->getId(),
-            'title' => $Membership->getTitle()
-        );
+        /** @var \QUI\ERP\Products\Product\Product $Product */
+        foreach ($Membership->getProducts() as $Product) {
+            $productData[] = array(
+                'id'        => $Product->getId(),
+                'title'     => $Product->getTitle(),
+                'articleNo' => $Product->getFieldValue(ProductFields::FIELD_PRODUCT_NO)
+            );
+        }
+
+        return $productData;
     },
     array('membershipId'),
     'Permission::checkAdminUser'

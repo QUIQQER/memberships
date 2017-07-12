@@ -2,13 +2,19 @@
 
 namespace QUI\Memberships;
 
+use function PHPSTORM_META\type;
 use QUI;
 use QUI\CRUD\Child;
+use QUI\ERP\Products\Handler\Products;
 use QUI\Locale;
 use QUI\Lock\Locker;
 use QUI\Memberships\Users\Handler as MembershipUsersHandler;
 use QUI\Permissions\Permission;
 use QUI\Utils\Security\Orthos;
+use QUI\ERP\Products\Search\BackendSearch;
+use QUI\Memberships\Products\MembershipField;
+use QUI\ERP\Products\Handler\Products as ProductsHandler;
+use QUI\ERP\Products\Handler\Fields as ProductFields;
 
 class Membership extends Child
 {
@@ -414,13 +420,87 @@ class Membership extends Child
     }
 
     /**
+     * Requires: quiqqer/products
+     *
      * Get all products that have this membership assigned
      *
      * @return QUI\ERP\Products\Product\Product[]
      */
     public function getProducts()
     {
+        $Search = new BackendSearch();
 
+        try {
+            $result = $Search->search(array(
+                'fields' => array(
+                    MembershipField::FIELD_ID => $this->id
+                )
+            ));
+        } catch (QUI\Permissions\Exception $Exception) {
+            return array();
+        }
+
+        $products = array();
+
+        foreach ($result as $id) {
+            $products[] = ProductsHandler::getProduct($id);
+        }
+
+        return $products;
+    }
+
+    /**
+     * Requires: quiqqer/products
+     *
+     * Create a Product from this Membership
+     *
+     * Hint: Every time this method is called, a new Product is created, regardless
+     * of previous calls!
+     *
+     * @return QUI\ERP\Products\Product\Product
+     */
+    public function createProduct()
+    {
+        $categories = array();
+        $fields     = array();
+
+        $Category = Handler::getProductCategory();
+
+        if ($Category) {
+            $categories[] = $Category;
+        }
+
+        $Field = Handler::getProductField();
+
+        if ($Field) {
+            $Field->setValue($this->id);
+            $fields[] = $Field;
+        }
+
+        // set title and description
+        $TitleField  = ProductFields::getField(ProductFields::FIELD_TITLE);
+        $DescField   = ProductFields::getField(ProductFields::FIELD_SHORT_DESC);
+        $title       = json_decode($this->getAttribute('title'), true);
+        $description = json_decode($this->getAttribute('description'), true);
+
+        if (!empty($title)) {
+            $TitleField->setValue($title);
+            $fields[] = $TitleField;
+        }
+
+        if (!empty($description)) {
+            $DescField->setValue($description);
+            $fields[] = $DescField;
+        }
+
+        $Product = ProductsHandler::createProduct($categories, $fields);
+
+        if (!empty($categories)) {
+            $Product->setMainCategory($categories[0]);
+            $Product->save();
+        }
+
+        return $Product;
     }
 
     /**
@@ -466,5 +546,20 @@ class Membership extends Child
     protected function getLockKey()
     {
         return 'membership_' . $this->id;
+    }
+
+    /**
+     * Get membership data for backend view/edit purposes
+     *
+     * @return array
+     */
+    public function getBackendViewData()
+    {
+        return array(
+            'id'          => $this->getId(),
+            'title'       => $this->getTitle(),
+            'description' => $this->getDescription(),
+            'content'     => $this->getContent()
+        );
     }
 }

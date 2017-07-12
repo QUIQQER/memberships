@@ -671,6 +671,14 @@
             <de><![CDATA[Die Kündigung der Mitgliedschaft wurde erfolgreich aufgehoben.]]></de>
             <en><![CDATA[The cancellation of the membership was withdrawn successfully.]]></en>
         </locale>
+        <locale name="message.ajax.memberships.products.createMembershipProducts.error" html="true">
+            <de><![CDATA[Das Produkt konnte nicht erstellt werden:<br><br>[error]]]></de>
+            <en><![CDATA[The product could not be created:<br><br>[error]]]></en>
+        </locale>
+        <locale name="message.ajax.memberships.products.createMembershipProducts.success" html="true">
+            <de><![CDATA[Das Produkt wurde erfolgreich erstellt.]]></de>
+            <en><![CDATA[The product has been created successfully.]]></en>
+        </locale>
 
         <!-- Class: Membership -->
         <locale name="exception.membership.cannot.update.when.locked">
@@ -896,6 +904,36 @@
         <locale name="verification.cancel.error.already_cancelled">
             <de><![CDATA[Die Mitgliedschaft wurde bereits gekündigt.]]></de>
             <en><![CDATA[The membership has already been cancelled.]]></en>
+        </locale>
+
+        <!-- Control: products/MembershipProducts -->
+        <locale name="controls.products.membershipprouducts.tbl.btn.createproduct">
+            <de><![CDATA[Produkt erstellen]]></de>
+            <en><![CDATA[Create product]]></en>
+        </locale>
+        <locale name="controls.products.membershipprouducts.tbl.header.id">
+            <de><![CDATA[Produkt-ID]]></de>
+            <en><![CDATA[Product ID]]></en>
+        </locale>
+        <locale name="controls.products.membershipprouducts.tbl.header.articleNo">
+            <de><![CDATA[Artikel-Nr.]]></de>
+            <en><![CDATA[Article no]]></en>
+        </locale>
+        <locale name="controls.products.membershipprouducts.tbl.header.title">
+            <de><![CDATA[Produkt-Titel]]></de>
+            <en><![CDATA[Product title]]></en>
+        </locale>
+        <locale name="controls.products.membershipprouducts.create.popup.information" html="true">
+            <de><![CDATA[Sind Sie sicher, dass sie ein neues Produkt für die Mitgliedschaft <b>[title]</b> erstellen möchten?]]></de>
+            <en><![CDATA[Are you sure you want to create new product for the membership <b>[title]</b>?]]></en>
+        </locale>
+        <locale name="controls.products.membershipprouducts.create.popup.title">
+            <de><![CDATA[Neues Produkt erstellen]]></de>
+            <en><![CDATA[Create new product]]></en>
+        </locale>
+        <locale name="controls.products.membershipprouducts.create.popup.text" html="true">
+            <de><![CDATA[Neues Produkt für die Mitgliedschaft "[title]"]]></de>
+            <en><![CDATA[New product for membership "[title]"]]></en>
         </locale>
 
     </groups>

@@ -448,6 +448,10 @@ class MembershipUser extends Child
             $history = json_decode($history, true);
         }
 
+        if (empty($msg)) {
+            $msg = "";
+        }
+
         $User = QUI::getUserBySession();
 
         $history[] = array(

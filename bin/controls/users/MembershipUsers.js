@@ -82,7 +82,6 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
             this.$User       = null;
             this.$Grid       = null;
             this.$GridParent = null;
-            this.$FormParent = null;
             this.$Membership = null;
             this.$search     = false;
 

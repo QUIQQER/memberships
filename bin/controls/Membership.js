@@ -36,13 +36,15 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
     'package/quiqqer/memberships/bin/Memberships',
     'package/quiqqer/memberships/bin/controls/users/MembershipUsers',
     'package/quiqqer/memberships/bin/controls/users/MembershipUsersArchive',
+    'package/quiqqer/memberships/bin/controls/products/MembershipProducts',
 
     'text!package/quiqqer/memberships/bin/controls/Membership.Settings.html',
     'css!package/quiqqer/memberships/bin/controls/Membership.css',
     'css!controls/desktop/panels/XML.css'
 
 ], function (QUI, QUIPanel, QUIButton, QUIFormUtils, QUIAjax, QUILocale, Mustache,
-             QUILocker, Memberships, MembershipUsers, MembershipUsersArchive, templateSettings) {
+             QUILocker, Memberships, MembershipUsers, MembershipUsersArchive,
+             MembershipProducts, templateSettings) {
     "use strict";
 
     var lg = 'quiqqer/memberships';
@@ -63,6 +65,7 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
             '$onDestroy',
             '$onCategoryActive',
             '$loadSettings',
+            '$loadProducts',
             'loadCategory',
             'unloadCategory',
             'save',
@@ -371,6 +374,22 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
             self.$showUserSearch();
 
             this.$CurrentUserList = new MembershipUsersArchive({
+                membershipId: this.$Membership.id
+            }).inject(PanelContent);
+        },
+
+        /**
+         * Show/create membership products
+         */
+        $loadProducts: function () {
+            var self         = this;
+            var PanelContent = this.getContent();
+
+            PanelContent.set('html', '');
+
+            self.$hideUserSearch();
+
+            new MembershipProducts({
                 membershipId: this.$Membership.id
             }).inject(PanelContent);
         },

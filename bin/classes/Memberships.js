@@ -20,7 +20,7 @@ define('package/quiqqer/memberships/bin/classes/Memberships', [
         Type: 'package/quiqqer/memberships/bin/classes/Memberships',
 
         /**
-         * Get data of a single membership
+         * Get data of Membership
          *
          * @param {Integer} id - Membership ID
          * @return {Promise}
@@ -28,6 +28,22 @@ define('package/quiqqer/memberships/bin/classes/Memberships', [
         getMembership: function (id) {
             return new Promise(function (resolve, reject) {
                 QUIAjax.get('package_quiqqer_memberships_ajax_memberships_get', resolve, {
+                    'package': pkg,
+                    id       : id,
+                    onError  : reject
+                })
+            });
+        },
+
+        /**
+         * Get view data of a Membership
+         *
+         * @param {Integer} id - Membership ID
+         * @return {Promise}
+         */
+        getMembershipView: function(id) {
+            return new Promise(function (resolve, reject) {
+                QUIAjax.get('package_quiqqer_memberships_ajax_memberships_getView', resolve, {
                     'package': pkg,
                     id       : id,
                     onError  : reject
@@ -44,6 +60,38 @@ define('package/quiqqer/memberships/bin/classes/Memberships', [
         getProductFieldData: function (membershipId) {
             return new Promise(function (resolve, reject) {
                 QUIAjax.get('package_quiqqer_memberships_ajax_memberships_products_getFieldData', resolve, {
+                    'package'   : pkg,
+                    membershipId: membershipId,
+                    onError     : reject
+                })
+            });
+        },
+
+        /**
+         * Get all Products that have a Membership assigned
+         *
+         * @param membershipId
+         * @return {Promise}
+         */
+        getProducts: function (membershipId) {
+            return new Promise(function (resolve, reject) {
+                QUIAjax.get('package_quiqqer_memberships_ajax_memberships_products_getMembershipProducts', resolve, {
+                    'package'   : pkg,
+                    membershipId: membershipId,
+                    onError     : reject
+                })
+            });
+        },
+
+        /**
+         * Create a Product from a Membership
+         *
+         * @param membershipId
+         * @return {Promise}
+         */
+        createProduct: function(membershipId) {
+            return new Promise(function (resolve, reject) {
+                QUIAjax.post('package_quiqqer_memberships_ajax_memberships_products_createMembershipProducts', resolve, {
                     'package'   : pkg,
                     membershipId: membershipId,
                     onError     : reject

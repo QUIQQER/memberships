@@ -7,6 +7,8 @@ use QUI\Utils\Grid;
 use QUI;
 use QUI\Permissions\Permission;
 use QUI\ERP\Products\Handler\Categories as ProductCategories;
+use QUI\ERP\Products\Handler\Fields as ProductFields;
+use QUI\Memberships\Products\MembershipField;
 
 class Handler extends Factory
 {
@@ -272,7 +274,7 @@ class Handler extends Factory
     }
 
     /**
-     * quiqqer/products
+     * Requires: quiqqer/products
      *
      * Get Memberships product category
      *
@@ -291,6 +293,25 @@ class Handler extends Factory
             return ProductCategories::getCategory((int)$categoryId);
         } catch (\Exception $Exception) {
             QUI\System\Log::addError(self::class . ' :: getProductCategory()');
+            QUI\System\Log::writeException($Exception);
+
+            return false;
+        }
+    }
+
+    /**
+     * Require: quiqqer/products
+     *
+     * Get quiqqer/products membership Field
+     *
+     * @return QUI\ERP\Products\Interfaces\FieldInterface|false
+     */
+    public static function getProductField()
+    {
+        try {
+            return ProductFields::getField(MembershipField::FIELD_ID);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::addError(self::class . ' :: getProductField()');
             QUI\System\Log::writeException($Exception);
 
             return false;
