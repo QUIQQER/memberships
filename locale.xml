@@ -889,7 +889,7 @@
         </locale>
 
         <!-- CancelVerification -->
-        <locale name="verification.cancel.success">
+        <locale name="verification.cancel.success">fieldtype.memberships.membership
             <de><![CDATA[Die Kündigung Ihrer Mitgliedschaft war erfolgreich! Sie erhalten noch eine separate E-Mail mit der Bestätigung Ihrer Kündigung.]]></de>
             <en><![CDATA[The termination of your membership has been successful! You will receive a separate e-mail with confirmation of your termination.]]></en>
         </locale>
@@ -936,5 +936,12 @@
             <en><![CDATA[New product for membership "[title]"]]></en>
         </locale>
 
+    </groups>
+
+    <groups name="quiqqer/products" datatype="php,js">
+        <locale name="fieldtype.memberships.membership" html="true">
+            <de><![CDATA[Mitgliedschaft]]></de>
+            <en><![CDATA[Membership]]></en>
+        </locale>
     </groups>
 </locales>

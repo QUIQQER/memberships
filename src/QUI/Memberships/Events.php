@@ -158,6 +158,10 @@ class Events
             )
         );
 
+        // assign Membership Field to category
+        $Category->addField(MembershipsHandler::getProductField());
+        $Category->save();
+
         // set new category as default product category for memberships
         $Conf = QUI::getPackage('quiqqer/memberships')->getConfig();
         $Conf->set('products', 'categoryId', $catId);
