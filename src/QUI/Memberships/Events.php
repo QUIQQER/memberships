@@ -28,12 +28,16 @@ class Events
             return;
         }
 
+        \QUI\System\Log::writeRecursive("ONPACKAGESETUP MEMBERSHIPS");
+        return;
+
         $packages = MembershipsHandler::getInstance()->getInstalledMembershipPackages();
 
         foreach ($packages as $package) {
             switch ($package) {
                 case 'quiqqer/products':
-                    self::createProductField();
+//                    self::createProductField();
+                    self::createProductCategory();
                     break;
 
                 case 'quiqqer/contracts':
@@ -164,6 +168,5 @@ class Events
      */
     protected static function createProducts()
     {
-
     }
 }

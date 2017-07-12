@@ -223,7 +223,31 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
                 }
             }));
 
-            self.refresh();
+            this.Loader.show();
+
+            Memberships.getInstalledMembershipPackages().then(function (installedPackages) {
+                if (installedPackages.contains('quiqqer/products')) {
+                    self.addCategory(new QUIButton({
+                        icon  : 'fa fa-money',
+                        text  : QUILocale.get(lg, 'controls.membership.category.products'),
+                        events: {
+                            onActive: self.$loadProducts
+                        }
+                    }));
+                }
+
+                if (installedPackages.contains('quiqqer/contracts')) {
+                    self.addCategory(new QUIButton({
+                        icon  : 'fa fa-handshake-o',
+                        text  : QUILocale.get(lg, 'controls.membership.category.contracts'),
+                        events: {
+                            onActive: self.$loadContracts
+                        }
+                    }));
+                }
+
+                self.refresh();
+            });
         },
 
         /**
@@ -234,12 +258,8 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
 
             this.Loader.show();
 
-            Promise.all([
-                Memberships.getInstalledMembershipPackages(),
-                Memberships.getMembership(self.getAttribute('id'))
-            ]).then(function (result) {
-                var installedPackages = result[0];
-                self.$Membership      = result[1];
+            Memberships.getMembership(this.getAttribute('id')).then(function (Membership) {
+                self.$Membership      = Membership;
 
                 // set title
                 var Titles = JSON.decode(self.$Membership.title);
@@ -259,26 +279,6 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
 
                         break;
                     }
-                }
-
-                if (installedPackages.contains('quiqqer/products')) {
-                    self.addCategory(new QUIButton({
-                        icon  : 'fa fa-money',
-                        text  : QUILocale.get(lg, 'controls.membership.category.products'),
-                        events: {
-                            onActive: self.$loadProducts
-                        }
-                    }));
-                }
-
-                if (installedPackages.contains('quiqqer/contracts')) {
-                    self.addCategory(new QUIButton({
-                        icon  : 'fa fa-handshake-o',
-                        text  : QUILocale.get(lg, 'controls.membership.category.contracts'),
-                        events: {
-                            onActive: self.$loadContracts
-                        }
-                    }));
                 }
 
                 self.$lockKey = 'membership_' + self.$Membership.id;
