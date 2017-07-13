@@ -114,7 +114,8 @@ class MembershipUser extends Child
         }
 
         $subject = $this->getUser()->getLocale()->get(
-            'quiqqer/memberships', 'templates.mail.autoextend.subject'
+            'quiqqer/memberships',
+            'templates.mail.autoextend.subject'
         );
 
         $this->sendMail($subject, dirname(__FILE__, 5) . '/templates/mail_autoextend.html');
@@ -137,7 +138,8 @@ class MembershipUser extends Child
         }
 
         $subject = $this->getUser()->getLocale()->get(
-            'quiqqer/memberships', 'templates.mail.manualextend.subject'
+            'quiqqer/memberships',
+            'templates.mail.manualextend.subject'
         );
 
         $this->sendMail($subject, dirname(__FILE__, 5) . '/templates/mail_manualextend.html');
@@ -440,13 +442,7 @@ class MembershipUser extends Child
      */
     public function addHistoryEntry($type, $msg = "")
     {
-        $history = $this->getAttribute('history');
-
-        if (empty($history)) {
-            $history = array();
-        } else {
-            $history = json_decode($history, true);
-        }
+        $history = $this->getHistory();
 
         if (empty($msg)) {
             $msg = "";
@@ -578,7 +574,8 @@ class MembershipUser extends Child
             'archived'        => $this->isArchived(),
             'archiveReason'   => $this->getAttribute('archiveReason'),
             'archiveDate'     => $this->getAttribute('archiveDate'),
-            'cancelled'       => $this->isCancelled()
+            'cancelled'       => $this->isCancelled(),
+            'extraData'       => $this->getExtraData()
         );
     }
 
@@ -633,5 +630,62 @@ class MembershipUser extends Child
         $Mailer->setSubject($subject);
         $Mailer->setBody($template);
         $Mailer->send();
+    }
+
+    /**
+     * Set any extra text data to the MembershipUser
+     *
+     * This is meant for extra information that is not already covered by the history.
+     *
+     * @param string $key
+     * @param string $value
+     */
+    public function setExtraData($key, $value)
+    {
+        $extraData = $this->getExtraData();
+
+        $User       = QUI::getUserBySession();
+        $userString = $User->getUsername() . ' (' . $User->getId() . ')';
+        $editString = Utils::getFormattedTimestamp() . ' - ' . $userString;
+
+        if (isset($extraData[$key])) {
+            $extraData[$key]['edit']  = $editString;
+            $extraData[$key]['value'] = $value;
+        } else {
+            $extraData[$key] = array(
+                'value' => $value,
+                'add'   => $editString,
+                'edit'  => '-'
+            );
+        }
+
+        $this->setAttribute('extraData', json_encode($extraData));
+    }
+
+    /**
+     * Get extra data of this MembershipUser
+     *
+     * @param string $key (optional) - If omitted return all extra data
+     * @return array|string|false
+     */
+    public function getExtraData($key = null)
+    {
+        $extraData = $this->getAttribute('extraData');
+
+        if (empty($extraData)) {
+            $extraData = array();
+        } else {
+            $extraData = json_decode($extraData, true);
+        }
+
+        if (is_null($key)) {
+            return $extraData;
+        }
+
+        if (!array_key_exists($key, $extraData)) {
+            return false;
+        }
+
+        return $extraData[$key]['value'];
     }
 }

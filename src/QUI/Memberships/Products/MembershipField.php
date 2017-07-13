@@ -13,6 +13,8 @@ use QUI\Memberships\Handler as MembershipsHandler;
 /**
  * Class MembershipField
  *
+ * This field represents the assignment of a Membership to a Product
+ *
  * @author www.pcsg.de (Patrick Müller)
  */
 class MembershipField extends Products\Field\Field
@@ -87,41 +89,4 @@ class MembershipField extends Products\Field\Field
     {
         return 'package/quiqqer/memberships/bin/controls/products/MembershipField';
     }
-
-    /**
-     * Return the view
-     *
-     * @return \QUI\ERP\Products\Field\View
-     */
-    public function getFrontendView()
-    {
-        return new FieldFrontendView($this->getFieldDataForView());
-    }
-
-//    /**
-//     * Return the field data for a view
-//     *
-//     * @return array
-//     */
-//    protected function getFieldDataForView()
-//    {
-//        $attributes = $this->getAttributes();
-//
-//        $tags     = $this->getValue();
-//        $viewTags = array();
-//
-//        foreach ($tags as $lang => $langTags) {
-//            if (!isset($viewTags[$lang])) {
-//                $viewTags[$lang] = array();
-//            }
-//
-//            foreach ($langTags as $tagData) {
-//                $viewTags[$lang][] = $tagData['tag'];
-//            }
-//        }
-//
-//        $attributes['value'] = $viewTags;
-//
-//        return $attributes;
-//    }
 }

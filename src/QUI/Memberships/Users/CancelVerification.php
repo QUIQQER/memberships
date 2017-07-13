@@ -7,6 +7,11 @@ use QUI\Memberships\Users\Handler as MembershipUsersHandler;
 use QUI\Verification\Verifier;
 use QUI;
 
+/**
+ * Class CancelVerification
+ *
+ * Verification process for MembershipUser cancellation by frontend user
+ */
 class CancelVerification implements VerificationInterface
 {
     /**

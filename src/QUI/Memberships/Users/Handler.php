@@ -23,6 +23,7 @@ class Handler extends Factory
     const HISTORY_TYPE_DELETED          = 'deleted';
     const HISTORY_TYPE_ARCHIVED         = 'archived';
     const HISTORY_TYPE_EXTENDED         = 'extended';
+    const HISTORY_TYPE_MISC             = 'misc';
 
     const ARCHIVE_REASON_CANCELLED    = 'cancelled';
     const ARCHIVE_REASON_EXPIRED      = 'expired';
@@ -224,7 +225,8 @@ class Handler extends Factory
             'cancelDate',
             'cancelled',
             'archiveReason',
-            'archiveDate'
+            'archiveDate',
+            'extraData'
         );
     }
 

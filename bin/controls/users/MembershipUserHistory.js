@@ -18,6 +18,8 @@
 define('package/quiqqer/memberships/bin/controls/users/MembershipUserHistory', [
 
     'qui/controls/Control',
+    'qui/controls/buttons/Button',
+    'qui/controls/windows/Confirm',
     'qui/controls/loader/Loader',
 
     'package/quiqqer/memberships/bin/MembershipUsers',
@@ -29,7 +31,7 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserHistory', [
     'text!package/quiqqer/memberships/bin/controls/users/MembershipUserHistory.html',
     'css!package/quiqqer/memberships/bin/controls/users/MembershipUserHistory.css'
 
-], function (QUIControl, QUILoader, MembershipUsersHandler,
+], function (QUIControl, QUIButton, QUIConfirm, QUILoader, MembershipUsersHandler,
              QUILocale, QUIAjax, Mustache, template) {
     "use strict";
 
@@ -43,7 +45,8 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserHistory', [
         Binds: [
             '$onInject',
             '$onCreate',
-            '$load'
+            '$load',
+            '$showExtraData'
         ],
 
         options: {
@@ -142,7 +145,7 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserHistory', [
 
                     try {
                         var Message = JSON.decode(Entry.msg);
-                        msg = JSON.stringify(Message, null, 2);
+                        msg         = JSON.stringify(Message, null, 2);
                     } catch (e) {
                         // nothing, msg is not JSON formatted
                     }
@@ -153,6 +156,46 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserHistory', [
                     }).inject(EntryElm);
                 }
             });
+
+            if (!Object.getLength(this.$MembershipUser.extraData)) {
+                return;
+            }
+
+            // extra btn
+            new QUIButton({
+                text     : QUILocale.get(lg, 'controls.users.membershipuserhistory.btn.extraData'),
+                textimage: 'fa fa-file',
+                events   : {
+                    onClick: this.$showExtraData
+                }
+            }).inject(
+                this.$Elm.getElement(
+                    '.quiqqer-memberships-membershipuserhistory-extrabtn'
+                )
+            );
+        },
+
+        $showExtraData: function () {
+            var extraData = JSON.stringify(this.$MembershipUser.extraData, null, 2);
+
+            new QUIConfirm({
+                maxHeight  : 600,
+                maxWidth   : 600,
+                'autoclose': true,
+
+                'information': '<pre>' + extraData + '</pre>',
+                'title'      : QUILocale.get(lg,
+                    'controls.membershipuserhistory.extraData.popup.title'
+                ),
+                'texticon'   : 'fa fa-file',
+                'icon'       : 'fa fa-file',
+
+                cancel_button: false,
+                ok_button    : {
+                    text     : 'OK',
+                    textimage: 'icon-ok fa fa-check'
+                }
+            }).open();
         }
     });
 });

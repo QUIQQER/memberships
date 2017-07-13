@@ -10,6 +10,14 @@
     width: 100%;
 }
 
+.quiqqer-memberships-membershipuserhistory-user {
+    float: left;
+}
+
+.quiqqer-memberships-membershipuserhistory-extrabtn {
+    float: right;
+}
+
 .quiqqer-memberships-membershipuserhistory-history-entry {
     float: left;
     width: 100%;

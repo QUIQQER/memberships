@@ -539,9 +539,21 @@
             <de><![CDATA[Aufhebung der Kündigung durch Administrator]]></de>
             <en><![CDATA[Revocation of termination by administrator]]></en>
         </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.misc">
+            <de><![CDATA[Sonstige Information]]></de>
+            <en><![CDATA[Miscellaneous information]]></en>
+        </locale>
         <locale name="controls.users.membershipuserhistory.entry.type.cancel_abort">
             <de><![CDATA[Kündigung zurückgezogen]]></de>
             <en><![CDATA[Cancellation withdrawn]]></en>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.btn.extraData">
+            <de><![CDATA[Extra-Daten]]></de>
+            <en><![CDATA[Extra data]]></en>
+        </locale>
+        <locale name="controls.membershipuserhistory.extraData.popup.title">
+            <de><![CDATA[Extra-Daten]]></de>
+            <en><![CDATA[Extra data]]></en>
         </locale>
 
         <!-- Control: users/MembershipUserHistoryPopup -->
@@ -924,8 +936,8 @@
             <en><![CDATA[Product title]]></en>
         </locale>
         <locale name="controls.products.membershipprouducts.create.popup.information" html="true">
-            <de><![CDATA[Sind Sie sicher, dass sie ein neues Produkt für die Mitgliedschaft <b>[title]</b> erstellen möchten?]]></de>
-            <en><![CDATA[Are you sure you want to create new product for the membership <b>[title]</b>?]]></en>
+            <de><![CDATA[Sind Sie sicher, dass sie ein neues Produkt für die Mitgliedschaft <b>[title]</b> erstellen möchten? Der Titel und die Kurzbeschreibung dieser Mitgliedschaft werden automatisch für das Produkt übernommen.]]></de>
+            <en><![CDATA[Are you sure you want to create new product for the membership <b>[title]</b>? Title and short description of this membership will be set automatically to the product.]]></en>
         </locale>
         <locale name="controls.products.membershipprouducts.create.popup.title">
             <de><![CDATA[Neues Produkt erstellen]]></de>

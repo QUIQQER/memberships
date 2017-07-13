@@ -35,6 +35,7 @@
             <field type="DATETIME NULL DEFAULT NULL">archiveDate</field>
             <field type="VARCHAR(255) NULL">archiveReason</field>
             <field type="MEDIUMTEXT NULL">history</field>
+            <field type="MEDIUMTEXT NULL">extraData</field>
         </table>
     </global>
 
