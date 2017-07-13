@@ -87,7 +87,6 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
 
             this.$Control         = null;
             this.$Membership      = null;
-            this.$lockKey         = false;
             this.$initialLoad     = true;
             this.$isLocked        = true;
             this.$refreshMode     = false;
@@ -288,7 +287,7 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
                 self.$checkLock();
 
                 self.getCategory('settings').setActive();
-                self.$loadSettings();
+                //self.$loadSettings();
             });
         },
 
