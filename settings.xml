@@ -130,7 +130,7 @@
                             </description>
                         </input>
 
-                        <select conf="memberships.viewDataMode">
+                        <select conf="membershipusers.viewDataMode">
                             <text>
                                 <locale group="quiqqer/memberships" var="settings.viewDataMode.title"/>
                             </text>

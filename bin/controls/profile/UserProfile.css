@@ -1,3 +1,22 @@
+.quiqqer-memberships-profile-userprofile-membership {
+    float: left;
+    width: 100%;
+}
+
+.quiqqer-memberships-profile-userprofile-membership:not(:last-of-type) {
+    margin-bottom: 20px;
+}
+
+.quiqqer-memberships-profile-userprofile-membership-info-content:hover {
+    cursor: pointer;
+    opacity: 0.7;
+}
+
+.quiqqer-memberships-profile-userprofile-membership-info-content {
+    float: right;
+    font-size: 20px;
+}
+
 .quiqqer-memberships-profile-userprofile-status-cancelled {
     color: #ff0000;
 }
@@ -8,10 +27,6 @@
 
 .quiqqer-memberships-profile-userprofile-status-active {
     color: #008000;
-}
-
-.quiqqer-memberships-profile-userprofile-table__hidden {
-    display: none;
 }
 
 .quiqqer-memberships-profile-userprofile-btn .qui-button {

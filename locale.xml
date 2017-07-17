@@ -797,7 +797,11 @@
             <de><![CDATA[In Mitgliedschaft seit]]></de>
             <en><![CDATA[In membership since]]></en>
         </locale>
-        <locale name="controls.profile.userprofile.datatable.labelEndDate">
+        <locale name="controls.profile.userprofile.datatable.labelEndDate.autoExtend">
+            <de><![CDATA[Autom. Verlängerung am]]></de>
+            <en><![CDATA[Auto extend at]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.datatable.labelEndDate.noAutoExtend">
             <de><![CDATA[Mitgliedschaft endet]]></de>
             <en><![CDATA[Membership ends]]></en>
         </locale>
@@ -868,6 +872,10 @@
         <locale name="controls.profile.userprofile.info.no.memberships">
             <de><![CDATA[Es sind z.Z. keine Mitgliedschaften in Ihrem Nutzerprofil vorhanden.]]></de>
             <en><![CDATA[There are currently no memberships in your user profile.]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.showcontent.title">
+            <de><![CDATA[Mitgliedschaft "[title]"]]></de>
+            <en><![CDATA[Membership "[title]"]]></en>
         </locale>
 
         <!-- Templates -->

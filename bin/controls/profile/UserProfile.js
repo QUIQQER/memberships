@@ -23,6 +23,7 @@ define('package/quiqqer/memberships/bin/controls/profile/UserProfile', [
     'qui/controls/Control',
     'qui/controls/loader/Loader',
     'qui/controls/windows/Confirm',
+    'qui/controls/windows/Popup',
     'qui/controls/buttons/Button',
 
     'package/quiqqer/memberships/bin/MembershipUsers',
@@ -32,11 +33,11 @@ define('package/quiqqer/memberships/bin/controls/profile/UserProfile', [
     'Mustache',
 
     'text!package/quiqqer/memberships/bin/controls/profile/UserProfile.html',
-    'text!package/quiqqer/memberships/bin/controls/profile/UserProfile.MembershipStatus.html',
+    'text!package/quiqqer/memberships/bin/controls/profile/UserProfile.Membership.html',
     'css!package/quiqqer/memberships/bin/controls/profile/UserProfile.css'
 
-], function (QUIControl, QUILoader, QUIConfirm, QUIButton, MembershipUsers,
-             QUILocale, QUIAjax, Mustache, template, statusTemplate) {
+], function (QUIControl, QUILoader, QUIConfirm, QUIPopup, QUIButton, MembershipUsers,
+             QUILocale, QUIAjax, Mustache, template, membershipTemplate) {
     "use strict";
 
     var lg = 'quiqqer/memberships';
@@ -51,7 +52,8 @@ define('package/quiqqer/memberships/bin/controls/profile/UserProfile', [
             'refresh',
             '$build',
             '$openCancelConfirm',
-            '$openAbortCancelConfirm'
+            '$openAbortCancelConfirm',
+            '$getMembershipElm'
         ],
 
         options: {
@@ -107,11 +109,9 @@ define('package/quiqqer/memberships/bin/controls/profile/UserProfile', [
          * Fill table with membership data
          */
         $build: function () {
-            var self         = this;
-            var lgPrefix     = 'controls.profile.userprofile.datatable.';
-
-            var TableElm = this.$Elm.getElement(
-                '.quiqqer-memberships-profile-userprofile-table'
+            var self           = this;
+            var MembershipsElm = this.$Elm.getElement(
+                '.quiqqer-memberships-profile-userprofile-memberships'
             );
 
             var InfoElm = this.$Elm.getElement(
@@ -120,101 +120,138 @@ define('package/quiqqer/memberships/bin/controls/profile/UserProfile', [
 
             // if user has no memberships, hide table and show info
             if (!this.$memberships.length) {
-                TableElm.addClass('quiqqer-memberships-profile-userprofile-table__hidden');
-                InfoElm.set('html', QUILocale.get(lg, 'controls.profile.userprofile.info.no.memberships'));
+                InfoElm.set('html', QUILocale.get(lg,
+                    'controls.profile.userprofile.info.no.memberships'
+                ));
 
                 return;
             }
 
-            InfoElm.set('html', '');
-            TableElm.removeClass('quiqqer-memberships-profile-userprofile-table__hidden');
-
-            var TableBodyElm = TableElm.getElement('tbody');
-
-            TableBodyElm.set('html', '');
-
             for (var i = 0, len = this.$memberships.length; i < len; i++) {
                 var Membership = this.$memberships[i];
-                var Row        = new Element('tr').inject(TableBodyElm);
-
-                // Membership title and description
-                new Element('td', {
-                    html: '<h2>' + Membership.membershipTitle + '</h2>' +
-                    '<p>' + Membership.membershipShort + '</p>'
-                }).inject(Row);
-
-                // Membership data (dates and status)
-                var status = 'active';
-
-                if (Membership.cancelled) {
-                    status = 'cancelled';
-                } else if (Membership.cancelDate) {
-                    status = 'cancelled_start';
-                }
-
-                var StatusElm = new Element('td', {
-                    html: Mustache.render(statusTemplate, {
-                        labelAddedDate: QUILocale.get(lg, lgPrefix + 'labelAddedDate'),
-                        addedDate     : Membership.addedDate,
-                        labelEndDate  : QUILocale.get(lg, lgPrefix + 'labelEndDate'),
-                        endDate       : Membership.endDate,
-                        labelStatus   : QUILocale.get(lg, lgPrefix + 'labelStatus'),
-                        status        : '<span class="quiqqer-memberships-profile-userprofile-status-'
-                        + status + '">' + QUILocale.get(lg, lgPrefix + 'status.' + status) +
-                        '</span>'
-                    })
-                }).inject(Row);
-
-                // only show "cancel" and "withdraw cancellation" btns on autoextend
-                if (!Membership.autoExtend) {
-                    continue;
-                }
-
-                // if autoextend and not cancelled -> hide endDate
-                if (!Membership.cancelled) {
-                    StatusElm.getElement(
-                        '.quiqqer-memberships-profile-userprofile-table-status-enddate'
-                    ).addClass('quiqqer-memberships-profile-userprofile-table__hidden');
-                }
-
-                if (status === 'active') {
-                    // cancel btn
-                    new QUIButton({
-                        membership: Membership,
-                        text      : QUILocale.get(lg, 'controls.profile.userprofile.btn.cancel.text'),
-                        'class'   : 'btn-red',
-                        events    : {
-                            onClick: function (Btn) {
-                                self.$openCancelConfirm(
-                                    Btn.getAttribute('membership')
-                                );
-                            }
-                        }
-                    }).inject(
-                        StatusElm.getElement(
-                            '.quiqqer-memberships-profile-userprofile-btn'
-                        )
-                    );
-                } else {
-                    // abort cancel btn
-                    new QUIButton({
-                        membership: Membership,
-                        text      : QUILocale.get(lg, 'controls.profile.userprofile.btn.abortcancel.text'),
-                        'class'   : 'btn-orange',
-                        events    : {
-                            onClick: function (Btn) {
-                                self.$openAbortCancelConfirm(
-                                    Btn.getAttribute('membership')
-                                );
-                            }
-                        }
-                    }).inject(
-                        StatusElm.getElement(
-                            '.quiqqer-memberships-profile-userprofile-btn'
-                        )
-                    );
-                }
+                this.$getMembershipElm(Membership).inject(MembershipsElm);
             }
+        },
+
+        /**
+         * Get HTMLElement that represents the Membership data
+         *
+         * @param {Object} Membership
+         * @return {HTMLElement}
+         */
+        $getMembershipElm: function (Membership) {
+            var self     = this;
+            var status   = 'active';
+            var lgPrefix = 'controls.profile.userprofile.datatable.';
+
+            if (Membership.cancelled) {
+                status = 'cancelled';
+            } else if (Membership.cancelDate) {
+                status = 'cancelled_start';
+            }
+
+            var endDateLabel;
+
+            if (Membership.autoExtend) {
+                endDateLabel = QUILocale.get(lg, lgPrefix + 'labelEndDate.autoExtend');
+            } else {
+                endDateLabel = QUILocale.get(lg, lgPrefix + 'labelEndDate.noAutoExtend');
+            }
+
+            var MembershipElm = new Element('div', {
+                'class': 'quiqqer-memberships-profile-userprofile-membership grid-100',
+                html   : Mustache.render(membershipTemplate, {
+                    membershipTitle: Membership.membershipTitle,
+                    membershipShort: Membership.membershipShort,
+                    labelAddedDate : QUILocale.get(lg, lgPrefix + 'labelAddedDate'),
+                    addedDate      : Membership.addedDate,
+                    labelEndDate   : endDateLabel,
+                    endDate        : Membership.endDate,
+                    labelStatus    : QUILocale.get(lg, lgPrefix + 'labelStatus'),
+                    status         : '<span class="quiqqer-memberships-profile-userprofile-status-'
+                    + status + '">' + QUILocale.get(lg, lgPrefix + 'status.' + status) +
+                    '</span>'
+                })
+            });
+
+            // show content btn
+            if (Membership.membershipContent !== '') {
+                var ShowContentElm = MembershipElm.getElement(
+                    '.quiqqer-memberships-profile-userprofile-membership-info-title'
+                );
+
+                new Element('span', {
+                    'class': 'fa fa-info-circle quiqqer-memberships-profile-userprofile-membership-info-content',
+                    events : {
+                        click: function () {
+                            self.$showMembershipContent(Membership);
+                        }
+                    }
+                }).inject(ShowContentElm);
+            }
+
+            // only show "cancel" and "withdraw cancellation" btns on autoextend
+            if (!Membership.autoExtend) {
+                return MembershipElm;
+            }
+
+            // if autoextend and not cancelled -> hide endDate
+            if (status === 'active') {
+                // cancel btn
+                new QUIButton({
+                    membership: Membership,
+                    text      : QUILocale.get(lg, 'controls.profile.userprofile.btn.cancel.text'),
+                    'class'   : 'btn-red',
+                    events    : {
+                        onClick: function (Btn) {
+                            self.$openCancelConfirm(
+                                Btn.getAttribute('membership')
+                            );
+                        }
+                    }
+                }).inject(
+                    MembershipElm.getElement(
+                        '.quiqqer-memberships-profile-userprofile-btn'
+                    )
+                );
+            } else {
+                // abort cancel btn
+                new QUIButton({
+                    membership: Membership,
+                    text      : QUILocale.get(lg, 'controls.profile.userprofile.btn.abortcancel.text'),
+                    'class'   : 'btn-orange',
+                    events    : {
+                        onClick: function (Btn) {
+                            self.$openAbortCancelConfirm(
+                                Btn.getAttribute('membership')
+                            );
+                        }
+                    }
+                }).inject(
+                    MembershipElm.getElement(
+                        '.quiqqer-memberships-profile-userprofile-btn'
+                    )
+                );
+            }
+
+            return MembershipElm;
+        },
+
+        /**
+         * Show Membership Content
+         *
+         * @param {Object} Membership
+         */
+        $showMembershipContent: function (Membership) {
+            new QUIPopup({
+                content: Membership.membershipContent,
+                icon   : 'fa fa-id-card-o',
+                title  : QUILocale.get(lg,
+                    'controls.profile.userprofile.showcontent.title', {
+                        title: Membership.membershipTitle
+                    }
+                )
+            }).open();
         },
 
         /**
