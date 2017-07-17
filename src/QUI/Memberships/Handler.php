@@ -67,7 +67,11 @@ class Handler extends Factory
         $data['groupIds'] = ',' . implode(',', $groupIds) . ',';
         $data['duration'] = '1-month';
 
-        return parent::createChild($data);
+        /** @var Membership $NewMembership */
+        $NewMembership = parent::createChild($data);
+        $NewMembership->createProduct();
+
+        return $NewMembership;
     }
 
     /**
@@ -188,7 +192,7 @@ class Handler extends Factory
      *
      * @return array
      */
-    public function getInstalledMembershipPackages()
+    public static function getInstalledMembershipPackages()
     {
         $packages         = array();
         $relevantPackages = array(

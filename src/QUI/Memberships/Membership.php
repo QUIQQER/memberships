@@ -431,12 +431,16 @@ class Membership extends Child
      */
     public function getProducts()
     {
+        if (!in_array('quiqqer/products', Handler::getInstalledMembershipPackages())) {
+            return array();
+        }
+
         $Search = new BackendSearch();
 
         try {
             $result = $Search->search(array(
                 'fields' => array(
-                    MembershipField::FIELD_ID => $this->id
+                    MembershipField::FIELD_ID => "$this->id"
                 )
             ));
         } catch (QUI\Permissions\Exception $Exception) {
@@ -460,10 +464,14 @@ class Membership extends Child
      * Hint: Every time this method is called, a new Product is created, regardless
      * of previous calls!
      *
-     * @return QUI\ERP\Products\Product\Product
+     * @return QUI\ERP\Products\Product\Product|false
      */
     public function createProduct()
     {
+        if (!in_array('quiqqer/products', Handler::getInstalledMembershipPackages())) {
+            return false;
+        }
+
         $categories = array();
         $fields     = array();
 

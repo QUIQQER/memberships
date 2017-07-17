@@ -29,7 +29,7 @@ class Events
             return;
         }
 
-        $packages = MembershipsHandler::getInstance()->getInstalledMembershipPackages();
+        $packages = MembershipsHandler::getInstalledMembershipPackages();
 
         foreach ($packages as $package) {
             switch ($package) {
@@ -69,13 +69,15 @@ class Events
         }
 
         try {
-            ProductFields::createField(array(
+            $NewField = ProductFields::createField(array(
                 'id'            => MembershipField::FIELD_ID,
                 'type'          => MembershipField::TYPE,
                 'titles'        => $translations,
-                'workingtitles' => $translations,
-                'search_type'   => ProductSearchHandler::SEARCHTYPE_TEXT
+                'workingtitles' => $translations
             ));
+
+            $NewField->setAttribute('search_type', ProductSearchHandler::SEARCHTYPE_TEXT);
+            $NewField->save();
         } catch (\QUI\ERP\Products\Field\Exception $Exception) {
             // nothing, field exists
         } catch (\Exception $Exception) {

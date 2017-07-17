@@ -13,8 +13,7 @@ use QUI\Memberships\Membership;
 QUI::$Ajax->registerFunction(
     'package_quiqqer_memberships_ajax_memberships_getInstalledMembershipPackages',
     function () {
-        $Memberships  = new MembershipsHandler();
-        return $Memberships->getInstalledMembershipPackages();
+        return MembershipsHandler::getInstalledMembershipPackages();
     },
     array(),
     'Permission::checkAdminUser'
