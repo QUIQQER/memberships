@@ -140,6 +140,13 @@ define('package/quiqqer/memberships/bin/controls/products/MembershipProducts', [
                     events   : {
                         onClick: this.$createProduct
                     }
+                }, {
+                    name     : 'viewproduct',
+                    text     : QUILocale.get(lg, 'controls.products.membershipprouducts.tbl.btn.viewproduct'),
+                    textimage: 'fa fa-eye',
+                    events   : {
+                        onClick: this.$openProductPanel
+                    }
                 }],
                 columnModel      : [{
                     header   : QUILocale.get(lg, 'controls.products.membershipprouducts.tbl.header.id'),
@@ -160,10 +167,20 @@ define('package/quiqqer/memberships/bin/controls/products/MembershipProducts', [
                 pagination       : false,
                 serverSort       : false,
                 selectable       : true,
-                multipleSelection: true
+                multipleSelection: false
             });
 
             this.$Grid.addEvents({
+                onClick   : function () {
+                    var TableButtons = self.$Grid.getAttribute('buttons');
+                    var selected     = self.$Grid.getSelectedData().length;
+
+                    if (selected === 1) {
+                        TableButtons.viewproduct.enable();
+                    } else {
+                        TableButtons.viewproduct.disable();
+                    }
+                },
                 onDblClick: self.$openProductPanel,
                 onRefresh : this.$listRefresh
             });
@@ -188,6 +205,9 @@ define('package/quiqqer/memberships/bin/controls/products/MembershipProducts', [
             if (!this.$Grid) {
                 return;
             }
+
+            var TableButtons = this.$Grid.getAttribute('buttons');
+            TableButtons.viewproduct.disable();
 
             var self = this;
 

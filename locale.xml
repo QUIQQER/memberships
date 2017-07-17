@@ -923,6 +923,10 @@
             <de><![CDATA[Produkt erstellen]]></de>
             <en><![CDATA[Create product]]></en>
         </locale>
+        <locale name="controls.products.membershipprouducts.tbl.btn.viewproduct">
+            <de><![CDATA[Produkt-Details]]></de>
+            <en><![CDATA[Product details]]></en>
+        </locale>
         <locale name="controls.products.membershipprouducts.tbl.header.id">
             <de><![CDATA[Produkt-ID]]></de>
             <en><![CDATA[Product ID]]></en>
