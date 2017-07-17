@@ -96,7 +96,7 @@ define('package/quiqqer/memberships/bin/controls/profile/UserProfile', [
 
             this.Loader.show();
 
-            MembershipUsers.getSessionUserData().then(function (memberships) {
+            MembershipUsers.getProfileData().then(function (memberships) {
                 self.Loader.hide();
                 self.$memberships = memberships;
                 self.$build();

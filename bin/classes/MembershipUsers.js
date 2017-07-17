@@ -142,9 +142,9 @@ define('package/quiqqer/memberships/bin/classes/MembershipUsers', [
          *
          * @return {Promise}
          */
-        getSessionUserData: function () {
+        getProfileData: function () {
             return new Promise(function (resolve, reject) {
-                QUIAjax.get('package_quiqqer_memberships_ajax_memberships_users_getSessionUserData', resolve, {
+                QUIAjax.get('package_quiqqer_memberships_ajax_memberships_users_getProfileData', resolve, {
                     'package': pkg,
                     onError  : reject
                 })

@@ -145,6 +145,22 @@
             <de><![CDATA[Standard Produkt-Kategorie für alle Produkte, die aus Mitgliedschaften automatisiert erstellt werden.]]></de>
             <en><![CDATA[Default product category for all products that are created out of memberships.]]></en>
         </locale>
+        <locale name="settings.viewDataMode.title">
+            <de><![CDATA[Quelle für Frontend-Informationen]]></de>
+            <en><![CDATA[Source for frontend data]]></en>
+        </locale>
+        <locale name="settings.viewDataMode.description" html="true">
+            <de><![CDATA[Bestimmt, aus welcher Quelle <b>Titel</b>, <b>Kurzbeschreibung</b> und ggf. die <b>ausführliche Beschreibung</b> im Frontend einem Mitgliedschafts-Benutzer angezeigt werden.]]></de>
+            <en><![CDATA[Determines the source used for <b>title</b>, <b>short description</b> and <b>extended description</b> in the frontend membership data.]]></en>
+        </locale>
+        <locale name="settings.viewDataMode.option.membership">
+            <de><![CDATA[Mitgliedschaft]]></de>
+            <en><![CDATA[Membership]]></en>
+        </locale>
+        <locale name="settings.viewDataMode.option.product">
+            <de><![CDATA[Produkt (wenn Verknüpfung vorhanden; benötigt quiqqer/products)]]></de>
+            <en><![CDATA[Product (if assigned; requires quiqqer/products)]]></en>
+        </locale>
 
         <!-- Cron -->
         <locale name="cron.checkMembershipUsers.title">

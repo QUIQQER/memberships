@@ -187,32 +187,6 @@ class Handler extends Factory
     }
 
     /**
-     * Get list of all packages that are relevant for quiqqer/memberships
-     * and that are currently installed
-     *
-     * @return array
-     */
-    public static function getInstalledMembershipPackages()
-    {
-        $packages         = array();
-        $relevantPackages = array(
-            'quiqqer/products',
-            'quiqqer/contracts'
-        );
-
-        foreach ($relevantPackages as $package) {
-            try {
-                QUI::getPackage($package);
-                $packages[] = $package;
-            } catch (\Exception $Exception) {
-                // ignore (package is probably not installed)
-            }
-        }
-
-        return $packages;
-    }
-
-    /**
      * Get IDs of all memberships that have specific groups assigned (OR)
      *
      * @param array $groupIds

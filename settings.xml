@@ -28,6 +28,10 @@
                     <type><![CDATA[bool]]></type>
                     <defaultvalue>1</defaultvalue>
                 </conf>
+                <conf name="viewDataMode">
+                    <type><![CDATA[string]]></type>
+                    <defaultvalue>membership</defaultvalue>
+                </conf>
             </section>
 
             <section name="date_formats_short">
@@ -125,6 +129,21 @@
                                 <locale group="quiqqer/memberships" var="settings.sendManualExtendMail.description"/>
                             </description>
                         </input>
+
+                        <select conf="memberships.viewDataMode">
+                            <text>
+                                <locale group="quiqqer/memberships" var="settings.viewDataMode.title"/>
+                            </text>
+                            <description>
+                                <locale group="quiqqer/memberships" var="settings.viewDataMode.description"/>
+                            </description>
+                            <option value="membership">
+                                <locale group="quiqqer/memberships" var="settings.viewDataMode.option.membership"/>
+                            </option>
+                            <option value="product">
+                                <locale group="quiqqer/memberships" var="settings.viewDataMode.option.product"/>
+                            </option>
+                        </select>
 
                     </settings>
 

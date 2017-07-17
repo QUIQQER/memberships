@@ -439,7 +439,7 @@ class Membership extends Child
      */
     public function getProducts()
     {
-        if (!in_array('quiqqer/products', Handler::getInstalledMembershipPackages())) {
+        if (!Utils::isQuiqqerProductsInstalled()) {
             return array();
         }
 
@@ -476,7 +476,7 @@ class Membership extends Child
      */
     public function createProduct()
     {
-        if (!in_array('quiqqer/products', Handler::getInstalledMembershipPackages())) {
+        if (!Utils::isQuiqqerProductsInstalled()) {
             return false;
         }
 

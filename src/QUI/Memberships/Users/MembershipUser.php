@@ -10,6 +10,7 @@ use QUI\Memberships\Utils;
 use QUI\Mail\Mailer;
 use QUI\Permissions\Permission;
 use QUI\Verification\Verifier;
+use QUI\ERP\Products\Handler\Products as ProductsHandler;
 
 /**
  * Class MembershipUser
@@ -534,22 +535,41 @@ class MembershipUser extends Child
         $Membership  = $this->getMembership();
         $Locale      = $QuiqqerUser->getLocale();
 
+        // determine title and short (possibly content)
+        $viewDataMode = MembershipUsersHandler::getSetting('viewDataMode');
+        $productId    = $this->getAttribute('productId');
+
+        if ($viewDataMode === 'product'
+            && !empty($productId)
+            && Utils::isQuiqqerProductsInstalled()
+        ) {
+            $Product     = ProductsHandler::getProduct($productId);
+            $title       = $Product->getTitle($Locale);
+            $description = $Product->getDescription($Locale);
+            $content     = '';
+        } else {
+            $title       = $Membership->getTitle($Locale);
+            $description = $Membership->getDescription($Locale);
+            $content     = $Membership->getContent($Locale);
+        }
+
         return array(
-            'id'              => $this->getId(),
-            'userId'          => $QuiqqerUser->getId(),
-            'membershipId'    => $Membership->getId(),
-            'membershipTitle' => $Membership->getTitle($Locale),
-            'membershipShort' => $Membership->getDescription($Locale),
-            'username'        => $QuiqqerUser->getUsername(),
-            'fullName'        => $QuiqqerUser->getName(),
-            'addedDate'       => $this->formatDate($this->getAttribute('addedDate')),
-            'beginDate'       => $this->formatDate($this->getAttribute('beginDate')),
-            'endDate'         => $this->formatDate($this->getAttribute('endDate')),
-            'cancelDate'      => $this->formatDate($this->getAttribute('cancelDate')),
+            'id'                => $this->getId(),
+            'userId'            => $QuiqqerUser->getId(),
+            'membershipId'      => $Membership->getId(),
+            'membershipTitle'   => $title,
+            'membershipShort'   => $description,
+            'membershipContent' => $content,
+            'username'          => $QuiqqerUser->getUsername(),
+            'fullName'          => $QuiqqerUser->getName(),
+            'addedDate'         => $this->formatDate($this->getAttribute('addedDate')),
+            'beginDate'         => $this->formatDate($this->getAttribute('beginDate')),
+            'endDate'           => $this->formatDate($this->getAttribute('endDate')),
+            'cancelDate'        => $this->formatDate($this->getAttribute('cancelDate')),
 //            'archived'        => $this->isArchived(),
 //            'archiveReason'   => $this->getAttribute('archiveReason'),
-            'cancelled'       => $this->isCancelled(),
-            'autoExtend'      => $Membership->isAutoExtend()
+            'cancelled'         => $this->isCancelled(),
+            'autoExtend'        => $Membership->isAutoExtend()
         );
     }
 

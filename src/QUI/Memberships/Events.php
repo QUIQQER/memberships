@@ -31,7 +31,7 @@ class Events
             return;
         }
 
-        $packages = MembershipsHandler::getInstalledMembershipPackages();
+        $packages = Utils::getInstalledMembershipPackages();
 
         foreach ($packages as $package) {
             switch ($package) {

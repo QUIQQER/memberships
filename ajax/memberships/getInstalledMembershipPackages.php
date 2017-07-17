@@ -1,9 +1,6 @@
 <?php
 
-use QUI\Memberships\Handler as MembershipsHandler;
-use QUI\Utils\Security\Orthos;
-use QUI\Utils\Grid;
-use QUI\Memberships\Membership;
+use QUI\Memberships\Utils;
 
 /**
  * Get all installed packages that are relevant for quiqqer/memberships
@@ -13,7 +10,7 @@ use QUI\Memberships\Membership;
 QUI::$Ajax->registerFunction(
     'package_quiqqer_memberships_ajax_memberships_getInstalledMembershipPackages',
     function () {
-        return MembershipsHandler::getInstalledMembershipPackages();
+        return Utils::getInstalledMembershipPackages();
     },
     array(),
     'Permission::checkAdminUser'
