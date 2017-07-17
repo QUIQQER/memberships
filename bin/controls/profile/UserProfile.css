@@ -17,6 +17,11 @@
     font-size: 20px;
 }
 
+.quiqqer-memberships-profile-userprofile-status-modifier {
+    font-size: 14px;
+    text-align: center;
+}
+
 .quiqqer-memberships-profile-userprofile-status-cancelled {
     color: #ff0000;
 }
@@ -31,6 +36,7 @@
 
 .quiqqer-memberships-profile-userprofile-btn .qui-button {
     border: 1px solid #ff0000 !important;
+    float: right;
     font-size: 12px;
     line-height: 20px;
 }

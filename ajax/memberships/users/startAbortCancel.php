@@ -9,7 +9,7 @@ use QUI\Memberships\Users\Handler as MembershipUsersHandler;
  * @return bool - success
  */
 QUI::$Ajax->registerFunction(
-    'package_quiqqer_memberships_ajax_memberships_users_abortCancel',
+    'package_quiqqer_memberships_ajax_memberships_users_startAbortCancel',
     function ($membershipUserId) {
         if (QUI::getUsers()->isNobodyUser(QUI::getUserBySession())) {
             QUI::getMessagesHandler()->addError(
@@ -27,7 +27,7 @@ QUI::$Ajax->registerFunction(
 
             /** @var \QUI\Memberships\Users\MembershipUser $MembershipUser */
             $MembershipUser = $MembershipUsers->getChild((int)$membershipUserId);
-            $MembershipUser->abortManualCancel();
+            $MembershipUser->startAbortCancel();
         } catch (QUI\Memberships\Exception $Exception) {
             QUI::getMessagesHandler()->addError(
                 QUI::getLocale()->get(
@@ -41,7 +41,7 @@ QUI::$Ajax->registerFunction(
 
             return false;
         } catch (\Exception $Exception) {
-            QUI\System\Log::addError('AJAX :: package_quiqqer_memberships_ajax_memberships_users_abortCancel');
+            QUI\System\Log::addError('AJAX :: package_quiqqer_memberships_ajax_memberships_users_startAbortCancel');
             QUI\System\Log::writeException($Exception);
 
             QUI::getMessagesHandler()->addError(

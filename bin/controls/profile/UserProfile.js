@@ -109,10 +109,11 @@ define('package/quiqqer/memberships/bin/controls/profile/UserProfile', [
          * Fill table with membership data
          */
         $build: function () {
-            var self           = this;
             var MembershipsElm = this.$Elm.getElement(
                 '.quiqqer-memberships-profile-userprofile-memberships'
             );
+
+            MembershipsElm.set('html', '');
 
             var InfoElm = this.$Elm.getElement(
                 '.quiqqer-memberships-profile-userprofile-info'
@@ -141,14 +142,7 @@ define('package/quiqqer/memberships/bin/controls/profile/UserProfile', [
          */
         $getMembershipElm: function (Membership) {
             var self     = this;
-            var status   = 'active';
             var lgPrefix = 'controls.profile.userprofile.datatable.';
-
-            if (Membership.cancelled) {
-                status = 'cancelled';
-            } else if (Membership.cancelDate) {
-                status = 'cancelled_start';
-            }
 
             var endDateLabel;
 
@@ -156,6 +150,20 @@ define('package/quiqqer/memberships/bin/controls/profile/UserProfile', [
                 endDateLabel = QUILocale.get(lg, lgPrefix + 'labelEndDate.autoExtend');
             } else {
                 endDateLabel = QUILocale.get(lg, lgPrefix + 'labelEndDate.noAutoExtend');
+            }
+
+            var StatusElm;
+
+            if (Membership.cancelled) {
+                StatusElm = new Element('span', {
+                    'class': 'quiqqer-memberships-profile-userprofile-status-cancelled',
+                    html   : QUILocale.get(lg, lgPrefix + 'status.cancelled')
+                });
+            } else {
+                StatusElm = new Element('span', {
+                    'class': 'quiqqer-memberships-profile-userprofile-status-active',
+                    html   : QUILocale.get(lg, lgPrefix + 'status.active')
+                });
             }
 
             var MembershipElm = new Element('div', {
@@ -168,11 +176,37 @@ define('package/quiqqer/memberships/bin/controls/profile/UserProfile', [
                     labelEndDate   : endDateLabel,
                     endDate        : Membership.endDate,
                     labelStatus    : QUILocale.get(lg, lgPrefix + 'labelStatus'),
-                    status         : '<span class="quiqqer-memberships-profile-userprofile-status-'
-                    + status + '">' + QUILocale.get(lg, lgPrefix + 'status.' + status) +
-                    '</span>'
                 })
             });
+
+            StatusElm.inject(
+                MembershipElm.getElement('.quiqqer-memberships-profile-userprofile-status')
+            );
+
+            // status modofiers
+            if (Membership.cancelStatus == 1) {
+                new Element('span', {
+                    html: QUILocale.get(lg,
+                        'controls.profile.userprofile.status.modifier.cancel_confirm'
+                    )
+                }).inject(
+                    MembershipElm.getElement(
+                        '.quiqqer-memberships-profile-userprofile-status-modifier'
+                    )
+                );
+            }
+
+            if (Membership.cancelStatus == 2) {
+                new Element('span', {
+                    html: QUILocale.get(lg,
+                        'controls.profile.userprofile.status.modifier.abortcancel_confirm'
+                    )
+                }).inject(
+                    MembershipElm.getElement(
+                        '.quiqqer-memberships-profile-userprofile-status-modifier'
+                    )
+                );
+            }
 
             // show content btn
             if (Membership.membershipContent !== '') {
@@ -196,7 +230,7 @@ define('package/quiqqer/memberships/bin/controls/profile/UserProfile', [
             }
 
             // if autoextend and not cancelled -> hide endDate
-            if (status === 'active') {
+            if (Membership.cancelStatus == 0) {
                 // cancel btn
                 new QUIButton({
                     membership: Membership,
@@ -214,7 +248,10 @@ define('package/quiqqer/memberships/bin/controls/profile/UserProfile', [
                         '.quiqqer-memberships-profile-userprofile-btn'
                     )
                 );
-            } else {
+            }
+
+            if (Membership.cancelStatus == 1
+                || Membership.cancelStatus == 3) {
                 // abort cancel btn
                 new QUIButton({
                     membership: Membership,

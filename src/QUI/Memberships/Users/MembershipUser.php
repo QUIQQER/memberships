@@ -185,16 +185,18 @@ class MembershipUser extends Child
             return;
         }
 
+        $cancelUrl  = Verifier::startVerification($this->getCancelVerification(), true);
         $cancelDate = Utils::getFormattedTimestamp();
 
         $this->setAttributes(array(
-            'cancelDate' => $cancelDate
+            'cancelStatus' => MembershipUsersHandler::CANCEL_STATUS_CANCEL_CONFIRM_PENDING,
+            'cancelDate'   => $cancelDate
         ));
 
         $this->addHistoryEntry(MembershipUsersHandler::HISTORY_TYPE_CANCEL_START);
 
         // save cancel hash and date to database
-        $this->update();
+        $this->update(false);
 
         // send cancellation mail
         $this->sendMail(
@@ -202,18 +204,18 @@ class MembershipUser extends Child
             dirname(__FILE__, 5) . '/templates/mail_startcancel.html',
             array(
                 'cancelDate' => $cancelDate,
-                'cancelUrl'  => Verifier::startVerification($this->getCancelVerification(), true)
+                'cancelUrl'  => $cancelUrl
             )
         );
     }
 
     /**
-     * Abort a manually stared cancellation process
+     * Start to abort a manually stared cancellation process
      *
      * @return void
      * @throws QUI\Memberships\Exception
      */
-    public function abortManualCancel()
+    public function startAbortCancel()
     {
         // check cancel permission
         if ((int)QUI::getUserBySession()->getId() !== (int)$this->getUserId()) {
@@ -223,20 +225,50 @@ class MembershipUser extends Child
             ));
         }
 
-        if (!$this->isCancelled()
-            && empty($this->getAttribute('cancelDate'))
+        $cancelStatus = (int)$this->getAttribute('cancelStatus');
+
+        if ($cancelStatus !== MembershipUsersHandler::CANCEL_STATUS_CANCEL_CONFIRM_PENDING
+            && $cancelStatus !== MembershipUsersHandler::CANCEL_STATUS_CANCELLED
         ) {
             return;
         }
 
+        $abortCancelUrl = Verifier::startVerification($this->getAbortCancelVerification(), true);
+
         $this->setAttributes(array(
-            'cancelDate' => null,
-            'cancelled'  => false
+            'cancelStatus' => MembershipUsersHandler::CANCEL_STATUS_ABORT_CANCEL_CONFIRM_PENDING,
         ));
 
-        Verifier::removeVerification($this->getCancelVerification());
+        $this->addHistoryEntry(MembershipUsersHandler::HISTORY_TYPE_CANCEL_ABORT_START);
 
-        $this->addHistoryEntry(MembershipUsersHandler::HISTORY_TYPE_CANCEL_ABORT);
+        $this->update(false);
+
+        // send abort cancellation mail
+        $this->sendMail(
+            QUI::getLocale()->get('quiqqer/memberships', 'templates.mail.startabortcancel.subject'),
+            dirname(__FILE__, 5) . '/templates/mail_startabortcancel.html',
+            array(
+                'abortCancelUrl' => $abortCancelUrl
+            )
+        );
+    }
+
+    /**
+     * Confirm abortion of cancellation
+     *
+     * @return void
+     */
+    public function confirmAbortCancel()
+    {
+        $this->setAttributes(array(
+            'cancelDate'   => null,
+            'cancelStatus' => MembershipUsersHandler::CANCEL_STATUS_NOT_CANCELLED,
+            'cancelled'    => false
+        ));
+
+        Verifier::removeVerification($this->getAbortCancelVerification());
+
+        $this->addHistoryEntry(MembershipUsersHandler::HISTORY_TYPE_CANCEL_ABORT_CONFIRM);
         $this->update(false);
     }
 
@@ -254,7 +286,8 @@ class MembershipUser extends Child
         }
 
         $this->setAttributes(array(
-            'cancelled' => true
+            'cancelled'    => true,
+            'cancelStatus' => MembershipUsersHandler::CANCEL_STATUS_CANCELLED
         ));
 
         $this->addHistoryEntry(MembershipUsersHandler::HISTORY_TYPE_CANCEL_CONFIRM);
@@ -535,7 +568,7 @@ class MembershipUser extends Child
         $Membership  = $this->getMembership();
         $Locale      = $QuiqqerUser->getLocale();
 
-        // determine title and short (possibly content)
+        // determine source of title, short and content
         $viewDataMode = MembershipUsersHandler::getSetting('viewDataMode');
         $productId    = $this->getAttribute('productId');
 
@@ -566,6 +599,7 @@ class MembershipUser extends Child
             'beginDate'         => $this->formatDate($this->getAttribute('beginDate')),
             'endDate'           => $this->formatDate($this->getAttribute('endDate')),
             'cancelDate'        => $this->formatDate($this->getAttribute('cancelDate')),
+            'cancelStatus'      => $this->getAttribute('cancelStatus'),
 //            'archived'        => $this->isArchived(),
 //            'archiveReason'   => $this->getAttribute('archiveReason'),
             'cancelled'         => $this->isCancelled(),
@@ -611,6 +645,16 @@ class MembershipUser extends Child
     protected function getCancelVerification()
     {
         return new CancelVerification($this->id);
+    }
+
+    /**
+     * Get Verification object for MembershipUser cancel abort
+     *
+     * @return AbortCancelVerification
+     */
+    protected function getAbortCancelVerification()
+    {
+        return new AbortCancelVerification($this->id);
     }
 
     /**

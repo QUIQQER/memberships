@@ -559,9 +559,13 @@
             <de><![CDATA[Sonstige Information]]></de>
             <en><![CDATA[Miscellaneous information]]></en>
         </locale>
-        <locale name="controls.users.membershipuserhistory.entry.type.cancel_abort">
-            <de><![CDATA[Kündigung zurückgezogen]]></de>
-            <en><![CDATA[Cancellation withdrawn]]></en>
+        <locale name="controls.users.membershipuserhistory.entry.type.cancel_abort_start">
+            <de><![CDATA[Anfrage auf Zurückziehen der Kündigung]]></de>
+            <en><![CDATA[Request for withdrawal of cencallation]]></en>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.cancel_abort_confirm">
+            <de><![CDATA[Zurückziehen der Kündigung bestätigt]]></de>
+            <en><![CDATA[Cancellation withdrawal confirmed]]></en>
         </locale>
         <locale name="controls.users.membershipuserhistory.btn.extraData">
             <de><![CDATA[Extra-Daten]]></de>
@@ -813,10 +817,6 @@
             <de><![CDATA[gekündigt]]></de>
             <en><![CDATA[cancelled]]></en>
         </locale>
-        <locale name="controls.profile.userprofile.datatable.status.cancelled_start">
-            <de><![CDATA[Kündigungsbestätigung ausstehend]]></de>
-            <en><![CDATA[Cancellation confirmation pending]]></en>
-        </locale>
         <locale name="controls.profile.userprofile.datatable.status.active">
             <de><![CDATA[aktiv]]></de>
             <en><![CDATA[active]]></en>
@@ -877,6 +877,14 @@
             <de><![CDATA[Mitgliedschaft "[title]"]]></de>
             <en><![CDATA[Membership "[title]"]]></en>
         </locale>
+        <locale name="controls.profile.userprofile.status.modifier.cancel_confirm">
+            <de><![CDATA[(Kündigung beantragt - Bestätigung ausstehend)]]></de>
+            <en><![CDATA[(Cancellation requested - confirmation pending)]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.status.modifier.abortcancel_confirm">
+            <de><![CDATA[(Kündigung zurückgezogen - Bestätigung ausstehend)]]></de>
+            <en><![CDATA[(Cancellation withdrawn - confirmation pending)]]></en>
+        </locale>
 
         <!-- Templates -->
         <locale name="templates.mail.greeting">
@@ -923,6 +931,14 @@
             <de><![CDATA[Ihre Mitgliedschaft <b>[membershipTitle]</b> wurde bis zum <b>[endDate]</b> verlängert.]]></de>
             <en><![CDATA[Your membership <b>[membershipTitle]</b> has been extended until <b>[endDate]</b>.]]></en>
         </locale>
+        <locale name="templates.mail.startabortcancel.subject" html="true">
+            <de><![CDATA[Zurückziehen der Kündigung Ihrer Mitgliedschaft]]></de>
+            <en><![CDATA[Withdrawal of your membership termination]]></en>
+        </locale>
+        <locale name="templates.mail.startabortcancel.body" html="true">
+            <de><![CDATA[Es wurde beantragt, die Kündigung Ihrer Mitgliedschaft <b>[membershipTitle]</b> vom <b>[cancelDate]</b> zurückzuziehen. Um diese Vorgang zu bestätigen, besuchen Sie bitte folgenden Link:<br><br><a href="[abortCancelUrl]">[abortCancelUrl]</a>]]></de>
+            <en><![CDATA[It was requests to withdraw the termination of your membership <b>[membershipTitle]</b> from <b>[cancelDate]</b>. To confirm this process please visit the following link:<br><br><a href="[abortCancelUrl]">[abortCancelUrl]</a>]]></en>
+        </locale>
 
         <!-- CancelVerification -->
         <locale name="verification.cancel.success">fieldtype.memberships.membership
@@ -940,6 +956,26 @@
         <locale name="verification.cancel.error.already_cancelled">
             <de><![CDATA[Die Mitgliedschaft wurde bereits gekündigt.]]></de>
             <en><![CDATA[The membership has already been cancelled.]]></en>
+        </locale>
+        <locale name="verification.abortcancel.success.autoExtend">
+            <de><![CDATA[Die Kündigung Ihrer Mitgliedschaft wurde erfolgreich zurückgezogen! Die Mitgliedschaft erneuert sich weiterhin automatisch am [endDate].]]></de>
+            <en><![CDATA[The termination of your membership has been withdrawn successfully! You membership will automatically extend at [endDate].]]></en>
+        </locale>
+        <locale name="verification.abortcancel.success.noAutoExtend">
+            <de><![CDATA[Die Kündigung Ihrer Mitgliedschaft wurde erfolgreich zurückgezogen. Sie läuft automatisch zum [endDate] aus.]]></de>
+            <en><![CDATA[The termination of your membership has been withdrawn successfully. It automatically expires at [endDate].]]></en>
+        </locale>
+        <locale name="verification.abortcancel.error.general">
+            <de><![CDATA[Beim Zurückziehen Ihrer Kündigung ist ein Fehler aufgetreten. Bitte starten Sie den Vorgang erneut oder kontaktieren Sie einen Administrator.]]></de>
+            <en><![CDATA[There was an error while withdrawing the termination of your membership. Please restart the process or contact an administrator.]]></en>
+        </locale>
+        <locale name="verification.abortcancel.error.expired">
+            <de><![CDATA[Die Gültigkeit des Links zur Bestätigung des Zurückziehens Ihrer Kündigung ist leider abgelaufen. Bitte starten sie den Vorgang erneut.]]></de>
+            <en><![CDATA[The validity of your termination withdrawal link has unfortunately expired. Please restart the process.]]></en>
+        </locale>
+        <locale name="verification.abortcancel.error.already_verified">
+            <de><![CDATA[Die Kündigung der Mitgliedschaft wurde bereits zurückgezogen.]]></de>
+            <en><![CDATA[The membership cancellation has already been withdrawn.]]></en>
         </locale>
 
         <!-- Control: products/MembershipProducts -->

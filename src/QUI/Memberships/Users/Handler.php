@@ -11,25 +11,43 @@ use QUI\Permissions\Permission;
 
 class Handler extends Factory
 {
-    const HISTORY_TYPE_CREATED          = 'created';
-    const HISTORY_TYPE_UPDATED          = 'updated';
-    const HISTORY_TYPE_CANCEL_BY_EDIT   = 'cancel_by_edit';
-    const HISTORY_TYPE_UNCANCEL_BY_EDIT = 'uncancel_by_edit';
-    const HISTORY_TYPE_CANCEL_START     = 'cancel_start';
-    const HISTORY_TYPE_CANCEL_ABORT     = 'cancel_abort';
-    const HISTORY_TYPE_CANCEL_CONFIRM   = 'cancel_confirm';
-    const HISTORY_TYPE_CANCELLED        = 'cancelled';
-    const HISTORY_TYPE_EXPIRED          = 'expired';
-    const HISTORY_TYPE_DELETED          = 'deleted';
-    const HISTORY_TYPE_ARCHIVED         = 'archived';
-    const HISTORY_TYPE_EXTENDED         = 'extended';
-    const HISTORY_TYPE_MISC             = 'misc';
+    /**
+     * History entry types
+     */
+    const HISTORY_TYPE_CREATED              = 'created';
+    const HISTORY_TYPE_UPDATED              = 'updated';
+    const HISTORY_TYPE_CANCEL_BY_EDIT       = 'cancel_by_edit';
+    const HISTORY_TYPE_UNCANCEL_BY_EDIT     = 'uncancel_by_edit';
+    const HISTORY_TYPE_CANCEL_START         = 'cancel_start';
+    const HISTORY_TYPE_CANCEL_ABORT_START   = 'cancel_abort_start';
+    const HISTORY_TYPE_CANCEL_ABORT_CONFIRM = 'cancel_abort_confirm';
+    const HISTORY_TYPE_CANCEL_CONFIRM       = 'cancel_confirm';
+    const HISTORY_TYPE_CANCELLED            = 'cancelled';
+    const HISTORY_TYPE_EXPIRED              = 'expired';
+    const HISTORY_TYPE_DELETED              = 'deleted';
+    const HISTORY_TYPE_ARCHIVED             = 'archived';
+    const HISTORY_TYPE_EXTENDED             = 'extended';
+    const HISTORY_TYPE_MISC                 = 'misc';
 
+    /**
+     * Archive reasons
+     */
     const ARCHIVE_REASON_CANCELLED    = 'cancelled';
     const ARCHIVE_REASON_EXPIRED      = 'expired';
     const ARCHIVE_REASON_DELETED      = 'deleted';
     const ARCHIVE_REASON_USER_DELETED = 'user_deleted';
 
+    /**
+     * Cancel statusses
+     */
+    const CANCEL_STATUS_NOT_CANCELLED                = 0;
+    const CANCEL_STATUS_CANCEL_CONFIRM_PENDING       = 1;
+    const CANCEL_STATUS_ABORT_CANCEL_CONFIRM_PENDING = 2;
+    const CANCEL_STATUS_CANCELLED                    = 3;
+
+    /**
+     * Permissions
+     */
     const PERMISSION_EDIT_USERS = 'quiqqer.memberships.edit_users';
 
     /**
@@ -224,6 +242,7 @@ class Handler extends Factory
             'history',
             'cancelDate',
             'cancelled',
+            'cancelStatus',
             'archiveReason',
             'archiveDate',
             'extraData',

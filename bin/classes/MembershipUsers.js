@@ -113,7 +113,7 @@ define('package/quiqqer/memberships/bin/classes/MembershipUsers', [
          */
         abortCancel: function (membershipUserId) {
             return new Promise(function (resolve, reject) {
-                QUIAjax.post('package_quiqqer_memberships_ajax_memberships_users_abortCancel', resolve, {
+                QUIAjax.post('package_quiqqer_memberships_ajax_memberships_users_startAbortCancel', resolve, {
                     'package'       : pkg,
                     membershipUserId: membershipUserId,
                     onError         : reject

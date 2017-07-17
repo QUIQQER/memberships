@@ -10,9 +10,9 @@ use QUI;
 /**
  * Class CancelVerification
  *
- * Verification process for MembershipUser cancellation by frontend user
+ * Verification process for abortion of MembershipUser cancellation by frontend user
  */
-class CancelVerification implements VerificationInterface
+class AbortCancelVerification implements VerificationInterface
 {
     /**
      * Verification identifier
@@ -50,7 +50,12 @@ class CancelVerification implements VerificationInterface
      */
     public static function getValidDuration($identifier)
     {
-        return (int)MembershipUsersHandler::getSetting('cancelDuration');
+        $MembershipUser = MembershipUsersHandler::getInstance()->getChild((int)$identifier);
+        $endDate        = $MembershipUser->getAttribute('endDate');
+        $endDate        = strtotime($endDate) / 60; // minutes
+        $now            = time() / 60; // minutes
+
+        return $endDate - $now;
     }
 
     /**
@@ -63,7 +68,7 @@ class CancelVerification implements VerificationInterface
     {
         /** @var MembershipUser $MembershipUser */
         $MembershipUser = MembershipUsersHandler::getInstance()->getChild((int)$identifier);
-        $MembershipUser->confirmManualCancel();
+        $MembershipUser->confirmAbortCancel();
     }
 
     /**
@@ -85,10 +90,27 @@ class CancelVerification implements VerificationInterface
      */
     public static function getSuccessMessage($identifier)
     {
-        return QUI::getLocale()->get(
-            'quiqqer/memberships',
-            'verification.cancel.success'
-        );
+        /** @var MembershipUser $MembershipUser */
+        $MembershipUser = MembershipUsersHandler::getInstance()->getChild((int)$identifier);
+        $data           = $MembershipUser->getFrontendViewData();
+
+        if ($MembershipUser->getMembership()->isAutoExtend()) {
+            $msg = QUI::getLocale()->get(
+                'quiqqer/memberships',
+                'verification.abortcancel.success.autoExtend', array(
+                    'endDate' => $data['endDate']
+                )
+            );
+        } else {
+            $msg = QUI::getLocale()->get(
+                'quiqqer/memberships',
+                'verification.abortcancel.success.noAutoExtend', array(
+                    'endDate' => $data['endDate']
+                )
+            );
+        }
+
+        return $msg;
     }
 
     /**
@@ -104,21 +126,21 @@ class CancelVerification implements VerificationInterface
             case Verifier::ERROR_REASON_EXPIRED:
                 $msg = QUI::getLocale()->get(
                     'quiqqer/memberships',
-                    'verification.cancel.error.expired'
+                    'verification.abortcancel.error.expired'
                 );
                 break;
 
             case Verifier::ERROR_REASON_ALREADY_VERIFIED:
                 $msg = QUI::getLocale()->get(
                     'quiqqer/memberships',
-                    'verification.cancel.error.already_cancelled'
+                    'verification.abortcancel.error.already_verified'
                 );
                 break;
 
             default:
                 $msg = QUI::getLocale()->get(
                     'quiqqer/memberships',
-                    'verification.cancel.error.general'
+                    'verification.abortcancel.error.general'
                 );
         }
 

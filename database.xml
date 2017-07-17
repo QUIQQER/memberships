@@ -31,6 +31,7 @@
             <field type="SMALLINT UNSIGNED NOT NULL DEFAULT 0">extendCounter</field>
             <field type="DATETIME NULL DEFAULT NULL">cancelDate</field>
             <field type="TINYINT(1) NOT NULL DEFAULT 0">cancelled</field>
+            <field type="VARCHAR(255) NOT NULL DEFAULT 0">cancelStatus</field>
             <field type="TINYINT(1) NOT NULL DEFAULT 0">archived</field>
             <field type="DATETIME NULL DEFAULT NULL">archiveDate</field>
             <field type="VARCHAR(255) NULL">archiveReason</field>
