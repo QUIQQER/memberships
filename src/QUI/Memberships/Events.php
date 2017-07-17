@@ -5,10 +5,12 @@ namespace QUI\Memberships;
 use QUI;
 use QUI\Package\Package;
 use QUI\Memberships\Handler as MembershipsHandler;
+use QUI\Memberships\Users\Handler as MembershipUsersHandler;
 use QUI\Memberships\Products\MembershipField;
 use QUI\ERP\Products\Handler\Fields as ProductFields;
 use QUI\ERP\Products\Handler\Categories as ProductCategories;
 use QUI\ERP\Products\Handler\Search as ProductSearchHandler;
+use QUI\ERP\Products\Product\Product;
 
 /**
  * Class Events
@@ -42,6 +44,43 @@ class Events
                     // @todo setup routine for quiqqer/contracts
                     break;
             }
+        }
+    }
+
+    /**
+     * quiqqer/products: onQuiqqerProductsProductDelete
+     *
+     * @param Product $Product
+     * @return void
+     */
+    public static function onQuiqqerProductsProductDelete(Product $Product)
+    {
+        // check if Product is assigned to a Membership
+        $membershipId = $Product->getFieldValue(MembershipField::FIELD_ID);
+
+        if (empty($membershipId)) {
+            return;
+        }
+
+        // delete Product ID from MembershipUsers
+        try {
+            $Membership      = MembershipsHandler::getInstance()->getChild($membershipId);
+            $MembershipUsers = MembershipUsersHandler::getInstance();
+
+            $membershipUserIds = $Membership->searchUsers(array(
+                'productId' => $Product->getId()
+            ));
+
+            foreach ($membershipUserIds as $membershipUserId) {
+                $MembershipUser = $MembershipUsers->getChild($membershipUserId);
+                $MembershipUser->setAttribute('productId', null);
+                $MembershipUser->update();
+            }
+        } catch (\Exception $Exception) {
+            QUI\System\Log::addError(
+                self::class . ' :: onQuiqqerProductsProductDelete -> '
+                . $Exception->getMessage()
+            );
         }
     }
 

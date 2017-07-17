@@ -36,6 +36,9 @@
             <field type="VARCHAR(255) NULL">archiveReason</field>
             <field type="MEDIUMTEXT NULL">history</field>
             <field type="MEDIUMTEXT NULL">extraData</field>
+
+            <!-- quiqqer/products fields -->
+            <field type="BIGINT(20) NULL">productId</field>
         </table>
     </global>
 

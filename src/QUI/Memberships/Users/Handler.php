@@ -226,7 +226,8 @@ class Handler extends Factory
             'cancelled',
             'archiveReason',
             'archiveDate',
-            'extraData'
+            'extraData',
+            'productId'
         );
     }
 

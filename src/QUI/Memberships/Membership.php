@@ -314,6 +314,14 @@ class Membership extends Child
             $where[] = '(' . implode(' OR ', $whereOR) . ')';
         }
 
+        if (!empty($searchParams['productId'])) {
+            $where[]            = '`musers`.productId = :productId';
+            $binds['productId'] = array(
+                'value' => (int)$searchParams['productId'],
+                'type'  => \PDO::PARAM_INT
+            );
+        }
+
         // build WHERE query string
         if (!empty($where)) {
             $sql .= " WHERE " . implode(" AND ", $where);
@@ -440,7 +448,7 @@ class Membership extends Child
         try {
             $result = $Search->search(array(
                 'fields' => array(
-                    MembershipField::FIELD_ID => "$this->id"
+                    MembershipField::FIELD_ID => "$this->id" // has to be string
                 )
             ));
         } catch (QUI\Permissions\Exception $Exception) {
