@@ -453,7 +453,7 @@ class MembershipUser extends Child
         $history[] = array(
             'type' => $type,
             'time' => Utils::getFormattedTimestamp(),
-            'user' => $User->getUsername() . ' (' . $User->getId() . ')',
+            'user' => $User->getName() . ' (' . $User->getId() . ')',
             'msg'  => $msg
         );
 
@@ -645,7 +645,7 @@ class MembershipUser extends Child
         $extraData = $this->getExtraData();
 
         $User       = QUI::getUserBySession();
-        $userString = $User->getUsername() . ' (' . $User->getId() . ')';
+        $userString = $User->getName() . ' (' . $User->getId() . ')';
         $editString = Utils::getFormattedTimestamp() . ' - ' . $userString;
 
         if (isset($extraData[$key])) {
