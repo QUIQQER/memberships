@@ -191,6 +191,10 @@
             <de><![CDATA[Mitgliedschaft]]></de>
             <en><![CDATA[Membership]]></en>
         </locale>
+        <locale name="products.field.membershipflag">
+            <de><![CDATA[Ist Mitgliedschafts-Produkt]]></de>
+            <en><![CDATA[Is membership product]]></en>
+        </locale>
         <locale name="products.category.title">
             <de><![CDATA[Mitgliedschaften]]></de>
             <en><![CDATA[Memberships]]></en>
@@ -822,8 +826,8 @@
             <en><![CDATA[Membership ends]]></en>
         </locale>
         <locale name="controls.profile.userprofile.datatable.endDate.infinite">
-            <de><![CDATA[Nie]]></de>
-            <en><![CDATA[Never]]></en>
+            <de><![CDATA[-]]></de>
+            <en><![CDATA[-]]></en>
         </locale>
         <locale name="controls.profile.userprofile.datatable.labelStatus">
             <de><![CDATA[Status]]></de>

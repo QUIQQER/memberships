@@ -183,7 +183,18 @@ class MembershipUser extends Child
         }
 
         if ($this->isCancelled()) {
-            // @todo throw Exception?
+            return;
+        }
+
+        $Membership = $this->getMembership();
+
+        // cannot manually cancel infinite memberships
+        if ($Membership->isInfinite()) {
+            return;
+        }
+
+        // cannot manually cancel default membership
+        if ($Membership->isDefault()) {
             return;
         }
 

@@ -25,11 +25,6 @@ class MembershipField extends Products\Field\Field
     const TYPE = 'memberships.membership';
 
     /**
-     * Fixed field ID for this field
-     */
-    const FIELD_ID = 102;
-
-    /**
      * @var bool
      */
     public $searchable = true;

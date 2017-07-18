@@ -152,7 +152,7 @@ define('package/quiqqer/memberships/bin/controls/profile/UserProfile', [
                 endDateLabel = QUILocale.get(lg, lgPrefix + 'labelEndDate.noAutoExtend');
             }
 
-            if (Membership.infinite) {
+            if (Membership.infinite || !Membership.endDate) {
                 endDateValue = QUILocale.get(lg, lgPrefix + 'endDate.infinite');
             } else {
                 endDateValue = Membership.endDate;

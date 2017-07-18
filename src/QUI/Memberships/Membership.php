@@ -178,7 +178,7 @@ class Membership extends Child
         if (Utils::isQuiqqerProductsInstalled()) {
             /** @var QUI\ERP\Products\Product\Product $Product */
             foreach ($this->getProducts() as $Product) {
-                $MembershipField = $Product->getField(MembershipField::FIELD_ID);
+                $MembershipField = $Product->getField(Handler::PRODUCTS_FIELD_MEMBERSHIP);
                 $MembershipField->setValue(null);
                 $Product->deactivate();
                 $Product->save();
@@ -475,7 +475,7 @@ class Membership extends Child
         try {
             $result = $Search->search(array(
                 'fields' => array(
-                    MembershipField::FIELD_ID => "$this->id" // has to be string
+                    Handler::PRODUCTS_FIELD_MEMBERSHIP => "$this->id" // has to be string
                 )
             ));
         } catch (QUI\Permissions\Exception $Exception) {
@@ -516,11 +516,18 @@ class Membership extends Child
             $categories[] = $Category;
         }
 
-        $Field = Handler::getProductField();
+        $MembershipField = Handler::getProductMembershipField();
 
-        if ($Field) {
-            $Field->setValue($this->id);
-            $fields[] = $Field;
+        if ($MembershipField !== false) {
+            $MembershipField->setValue($this->id);
+            $fields[] = $MembershipField;
+        }
+
+        $MembershipFlagField = Handler::getProductMembershipFlagField();
+
+        if ($MembershipFlagField !== false) {
+            $MembershipFlagField->setValue(true);
+            $fields[] = $MembershipFlagField;
         }
 
         // set title and description

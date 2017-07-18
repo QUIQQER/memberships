@@ -12,10 +12,19 @@ use QUI\Memberships\Products\MembershipField;
 
 class Handler extends Factory
 {
+    /**
+     * quiqqer/memberships permissions
+     */
     const PERMISSION_CREATE     = 'quiqqer.memberships.create';
     const PERMISSION_EDIT       = 'quiqqer.memberships.edit';
     const PERMISSION_DELETE     = 'quiqqer.memberships.delete';
     const PERMISSION_FORCE_EDIT = 'quiqqer.memberships.force_edit';
+
+    /**
+     * quiqqer/products field IDs
+     */
+    const PRODUCTS_FIELD_MEMBERSHIP     = 102;
+    const PRODUCTS_FIELD_MEMBERSHIPFLAG = 103;
 
     /**
      * @inheritdoc
@@ -270,8 +279,10 @@ class Handler extends Factory
         try {
             return ProductCategories::getCategory((int)$categoryId);
         } catch (\Exception $Exception) {
-            QUI\System\Log::addError(self::class . ' :: getProductCategory()');
-            QUI\System\Log::writeException($Exception);
+            if ($Exception->getCode() !== 404) {
+                QUI\System\Log::addError(self::class . ' :: getProductCategory()');
+                QUI\System\Log::writeException($Exception);
+            }
 
             return false;
         }
@@ -284,12 +295,39 @@ class Handler extends Factory
      *
      * @return QUI\ERP\Products\Interfaces\FieldInterface|false
      */
-    public static function getProductField()
+    public static function getProductMembershipField()
     {
+        if (!Utils::isQuiqqerProductsInstalled()) {
+            return false;
+        }
+
         try {
-            return ProductFields::getField(MembershipField::FIELD_ID);
+            return ProductFields::getField(self::PRODUCTS_FIELD_MEMBERSHIP);
         } catch (\Exception $Exception) {
-            QUI\System\Log::addError(self::class . ' :: getProductField()');
+            QUI\System\Log::addError(self::class . ' :: getProductMembershipField()');
+            QUI\System\Log::writeException($Exception);
+
+            return false;
+        }
+    }
+
+    /**
+     * Require: quiqqer/products
+     *
+     * Get quiqqer/products membership flag Field
+     *
+     * @return QUI\ERP\Products\Interfaces\FieldInterface|false
+     */
+    public static function getProductMembershipFlagField()
+    {
+        if (!Utils::isQuiqqerProductsInstalled()) {
+            return false;
+        }
+
+        try {
+            return ProductFields::getField(self::PRODUCTS_FIELD_MEMBERSHIPFLAG);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::addError(self::class . ' :: getProductMembershipFlagField()');
             QUI\System\Log::writeException($Exception);
 
             return false;

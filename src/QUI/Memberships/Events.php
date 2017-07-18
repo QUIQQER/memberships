@@ -36,7 +36,7 @@ class Events
         foreach ($packages as $package) {
             switch ($package) {
                 case 'quiqqer/products':
-                    self::createProductField();
+                    self::createProductFields();
                     self::createProductCategory();
                     break;
 
@@ -56,7 +56,7 @@ class Events
     public static function onQuiqqerProductsProductDelete(Product $Product)
     {
         // check if Product is assigned to a Membership
-        $membershipId = $Product->getFieldValue(MembershipField::FIELD_ID);
+        $membershipId = $Product->getFieldValue(MembershipsHandler::PRODUCTS_FIELD_MEMBERSHIP);
 
         if (empty($membershipId)) {
             return;
@@ -112,13 +112,16 @@ class Events
     /**
      * quiqqer/products
      *
-     * Create a Membership field with a fixed id
+     * Create a Membership field with a fixed id and a membership flag field that
+     * identifies a product as a Membership product
      *
      * @return void
      */
-    protected static function createProductField()
+    protected static function createProductFields()
     {
-        $L            = new QUI\Locale();
+        $L = new QUI\Locale();
+
+        // Membership field
         $translations = array(
             'de' => '',
             'en' => ''
@@ -134,7 +137,7 @@ class Events
 
         try {
             $NewField = ProductFields::createField(array(
-                'id'            => MembershipField::FIELD_ID,
+                'id'            => MembershipsHandler::PRODUCTS_FIELD_MEMBERSHIP,
                 'type'          => MembershipField::TYPE,
                 'titles'        => $translations,
                 'workingtitles' => $translations
@@ -145,7 +148,45 @@ class Events
         } catch (\QUI\ERP\Products\Field\Exception $Exception) {
             // nothing, field exists
         } catch (\Exception $Exception) {
-            QUI\System\Log::addError(self::class . ' :: createProductField');
+            QUI\System\Log::addError(self::class . ' :: createProductFields');
+            QUI\System\Log::writeException($Exception);
+        }
+
+        // membership flag field
+        $translations = array(
+            'de' => '',
+            'en' => ''
+        );
+
+        foreach ($translations as $l => $t) {
+            $L->setCurrent($l);
+            $translations[$l] = $L->get(
+                'quiqqer/memberships',
+                'products.field.membershipflag'
+            );
+        }
+
+        try {
+            $NewField = ProductFields::createField(array(
+                'id'            => MembershipsHandler::PRODUCTS_FIELD_MEMBERSHIPFLAG,
+                'type'          => ProductFields::TYPE_BOOL,
+                'titles'        => $translations,
+                'workingtitles' => $translations
+            ));
+
+            $NewField->setAttribute('search_type', ProductSearchHandler::SEARCHTYPE_BOOL);
+            $NewField->save();
+
+            // add Flag field to backend search
+            $BackendSearch                    = ProductSearchHandler::getBackendSearch();
+            $searchFields                     = $BackendSearch->getSearchFields();
+            $searchFields[$NewField->getId()] = true;
+
+            $BackendSearch->setSearchFields($searchFields);
+        } catch (\QUI\ERP\Products\Field\Exception $Exception) {
+            // nothing, field exists
+        } catch (\Exception $Exception) {
+            QUI\System\Log::addError(self::class . ' :: createProductFields');
             QUI\System\Log::writeException($Exception);
         }
     }
@@ -225,7 +266,18 @@ class Events
         );
 
         // assign Membership Field to category
-        $Category->addField(MembershipsHandler::getProductField());
+        $MembershipField = MembershipsHandler::getProductMembershipField();
+
+        if ($MembershipField !== false) {
+            $Category->addField($MembershipField);
+        }
+
+        $MembershipFlagField = MembershipsHandler::getProductMembershipFlagField();
+
+        if ($MembershipFlagField !== false) {
+            $Category->addField($MembershipFlagField);
+        }
+
         $Category->save();
 
         // set new category as default product category for memberships
