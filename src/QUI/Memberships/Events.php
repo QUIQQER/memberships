@@ -11,6 +11,7 @@ use QUI\ERP\Products\Handler\Fields as ProductFields;
 use QUI\ERP\Products\Handler\Categories as ProductCategories;
 use QUI\ERP\Products\Handler\Search as ProductSearchHandler;
 use QUI\ERP\Products\Product\Product;
+use QUI\ERP\Order\AbstractOrder;
 
 /**
  * Class Events
@@ -188,6 +189,21 @@ class Events
         } catch (\Exception $Exception) {
             QUI\System\Log::addError(self::class . ' :: createProductFields');
             QUI\System\Log::writeException($Exception);
+        }
+    }
+
+    /**
+     * quiqqer/order: onOrderSuccess
+     *
+     * @param AbstractOrder $Order
+     * @return void
+     */
+    public static function onOrderSuccess(AbstractOrder $Order)
+    {
+        /** @var QUI\ERP\Accounting\Article $Article */
+        foreach ($Order->getArticles()->getArticles() as $Article) {
+            // @todo Membership Field holen und gucken, ob membershipId vergeben ist
+            // Wenn ja, dann Benutzer ($Order->getCustomer()) zu Membership hinzufügen
         }
     }
 
