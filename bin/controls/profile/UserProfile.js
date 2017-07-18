@@ -144,12 +144,18 @@ define('package/quiqqer/memberships/bin/controls/profile/UserProfile', [
             var self     = this;
             var lgPrefix = 'controls.profile.userprofile.datatable.';
 
-            var endDateLabel;
+            var endDateLabel, endDateValue;
 
-            if (Membership.autoExtend) {
+            if (Membership.autoExtend && !Membership.infinite) {
                 endDateLabel = QUILocale.get(lg, lgPrefix + 'labelEndDate.autoExtend');
             } else {
                 endDateLabel = QUILocale.get(lg, lgPrefix + 'labelEndDate.noAutoExtend');
+            }
+
+            if (Membership.infinite) {
+                endDateValue = QUILocale.get(lg, lgPrefix + 'endDate.infinite');
+            } else {
+                endDateValue = Membership.endDate;
             }
 
             var StatusElm;
@@ -174,7 +180,7 @@ define('package/quiqqer/memberships/bin/controls/profile/UserProfile', [
                     labelAddedDate : QUILocale.get(lg, lgPrefix + 'labelAddedDate'),
                     addedDate      : Membership.addedDate,
                     labelEndDate   : endDateLabel,
-                    endDate        : Membership.endDate,
+                    endDate        : endDateValue,
                     labelStatus    : QUILocale.get(lg, lgPrefix + 'labelStatus'),
                 })
             });
@@ -225,7 +231,7 @@ define('package/quiqqer/memberships/bin/controls/profile/UserProfile', [
             }
 
             // only show "cancel" and "withdraw cancellation" btns on autoextend
-            if (!Membership.autoExtend) {
+            if (!Membership.autoExtend || Membership.infinite) {
                 return MembershipElm;
             }
 

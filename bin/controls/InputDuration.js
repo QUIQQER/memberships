@@ -111,10 +111,14 @@ define('package/quiqqer/memberships/bin/controls/InputDuration', [
                 period = false;
 
             if (this.$Input.value !== '') {
-                var values = this.$Input.value.split('-');
+                if (this.$Input.value === 'infinite') {
+                    period = 'infinite';
+                } else {
+                    var values = this.$Input.value.split('-');
 
-                count  = values[0];
-                period = values[1];
+                    count  = values[0];
+                    period = values[1];
+                }
             }
 
             if (this.$durationMode === 'exact' ||
@@ -141,6 +145,9 @@ define('package/quiqqer/memberships/bin/controls/InputDuration', [
             ).appendChild(
                 QUILocale.get(lg, 'controls.inputduration.period.year'),
                 'year'
+            ).appendChild(
+                QUILocale.get(lg, 'controls.inputduration.period.infinite'),
+                'infinite'
             );
 
             if (count !== false) {
@@ -169,7 +176,17 @@ define('package/quiqqer/memberships/bin/controls/InputDuration', [
          * Set value
          */
         $setValue: function () {
-            this.$Input.value = this.$InputCount.value + '-' + this.$PeriodSelect.getValue();
+            var period = this.$PeriodSelect.getValue();
+
+            if (period === 'infinite') {
+                this.$Input.value         = 'infinite';
+                this.$InputCount.disabled = true;
+
+                return;
+            }
+
+            this.$InputCount.disabled = false;
+            this.$Input.value         = this.$InputCount.value + '-' + this.$PeriodSelect.getValue();
         }
     });
 });

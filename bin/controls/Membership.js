@@ -8,12 +8,14 @@
  * @require qui/controls/desktop/Panel
  * @require qui/controls/buttons/Button
  * @require qui/utils/Form
- * @require qui/utils/Object
  * @require Ajax
  * @require Locale
  * @require Mustache
  * @require utils/Lock
  * @require package/quiqqer/memberships/bin/Memberships
+ * @require package/quiqqer/memberships/bin/controls/users/MembershipUsers
+ * @require package/quiqqer/memberships/bin/controls/users/MembershipUsersArchive
+ * @require package/quiqqer/memberships/bin/controls/products/MembershipProducts
  * @require text!package/quiqqer/memberships/bin/controls/Membership.Settings.html
  * @require css!package/quiqqer/memberships/bin/controls/Membership.css
  * @require css!controls/desktop/panels/XML.css

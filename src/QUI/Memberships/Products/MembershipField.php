@@ -87,6 +87,6 @@ class MembershipField extends Products\Field\Field
      */
     public function getJavaScriptControl()
     {
-        return 'package/quiqqer/memberships/bin/controls/products/MembershipField';
+        return 'package/quiqqer/memberships/bin/controls/MembershipSelect';
     }
 }

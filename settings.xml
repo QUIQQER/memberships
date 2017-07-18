@@ -9,6 +9,10 @@
                     <type><![CDATA[string]]></type>
                     <defaultvalue>day</defaultvalue>
                 </conf>
+                <conf name="defaultMembershipId">
+                    <type><![CDATA[integer]]></type>
+                    <defaultvalue>0</defaultvalue>
+                </conf>
             </section>
 
             <section name="membershipusers">
@@ -72,6 +76,15 @@
                         <title>
                             <locale group="quiqqer/memberships" var="settings.membershipusers.title"/>
                         </title>
+
+                        <input conf="memberships.defaultMembershipId" type="text" data-qui="package/quiqqer/memberships/bin/controls/MembershipSelect">
+                            <text>
+                                <locale group="quiqqer/memberships" var="settings.defaultMembershipId.title"/>
+                            </text>
+                            <description>
+                                <locale group="quiqqer/memberships" var="settings.defaultMembershipId.description"/>
+                            </description>
+                        </input>
 
                         <select conf="membershipusers.extendMode">
                             <text>

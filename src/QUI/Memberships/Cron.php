@@ -46,6 +46,11 @@ class Cron
                     continue;
                 }
 
+                // never expire a membership with infinite duration
+                if ($Membership->isInfinite()) {
+                    continue;
+                }
+
                 // check if membership has expired
                 $endTimestamp = strtotime($Membership->getAttribute('endDate'));
 

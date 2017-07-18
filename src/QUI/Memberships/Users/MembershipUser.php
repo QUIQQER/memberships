@@ -32,23 +32,25 @@ class MembershipUser extends Child
         }
 
         // check certain attributes
-        $beginDate = strtotime($this->getAttribute('beginDate'));
-        $endDate   = strtotime($this->getAttribute('endDate'));
+        if (!$this->getMembership()->isInfinite()) {
+            $beginDate = strtotime($this->getAttribute('beginDate'));
+            $endDate   = strtotime($this->getAttribute('endDate'));
 
-        if ($beginDate === false
-            || $endDate === false
-        ) {
-            throw new QUI\Memberships\Exception(array(
-                'quiqqer/memberships',
-                'exception.users.membershipuser.wrong.dates'
-            ));
-        }
+            if ($beginDate === false
+                || $endDate === false
+            ) {
+                throw new QUI\Memberships\Exception(array(
+                    'quiqqer/memberships',
+                    'exception.users.membershipuser.wrong.dates'
+                ));
+            }
 
-        if ($beginDate >= $endDate) {
-            throw new QUI\Memberships\Exception(array(
-                'quiqqer/memberships',
-                'exception.users.membershipuser.begin.after.end'
-            ));
+            if ($beginDate >= $endDate) {
+                throw new QUI\Memberships\Exception(array(
+                    'quiqqer/memberships',
+                    'exception.users.membershipuser.begin.after.end'
+                ));
+            }
         }
 
         parent::update();
@@ -603,7 +605,8 @@ class MembershipUser extends Child
 //            'archived'        => $this->isArchived(),
 //            'archiveReason'   => $this->getAttribute('archiveReason'),
             'cancelled'         => $this->isCancelled(),
-            'autoExtend'        => $Membership->isAutoExtend()
+            'autoExtend'        => $Membership->isAutoExtend(),
+            'infinite'          => $Membership->isInfinite()
         );
     }
 
@@ -633,7 +636,8 @@ class MembershipUser extends Child
             'archiveReason'   => $this->getAttribute('archiveReason'),
             'archiveDate'     => $this->getAttribute('archiveDate'),
             'cancelled'       => $this->isCancelled(),
-            'extraData'       => $this->getExtraData()
+            'extraData'       => $this->getExtraData(),
+            'infinite'        => $Membership->isInfinite()
         );
     }
 

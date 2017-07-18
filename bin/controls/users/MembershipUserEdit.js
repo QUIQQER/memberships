@@ -136,6 +136,10 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserEdit', [
 
             QUIFormUtils.setDataToForm(this.$MembershipUser, Form);
 
+            //if (this.$MembershipUser.infinite) {
+            //    Form.getElement('input[name="endDate"]').setStyle('display', 'none');
+            //}
+
             // special cancel trigger
             Form.getElement('input[name="cancelled"]').addEvent('change', function (event) {
                 if (!self.$MembershipUser.cancelled) {

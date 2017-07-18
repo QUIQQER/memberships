@@ -41,6 +41,5 @@ QUI::$Ajax->registerFunction(
 
         return $data;
     },
-    array(),
-    'Permission::checkAdminUser'
+    array()
 );

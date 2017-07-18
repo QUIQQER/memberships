@@ -2,7 +2,6 @@
 
 namespace QUI\Memberships;
 
-use function PHPSTORM_META\type;
 use QUI;
 use QUI\CRUD\Child;
 use QUI\ERP\Products\Handler\Products;
@@ -124,13 +123,19 @@ class Membership extends Child
         $attributes['groupIds'] = ',' . $attributes['groupIds'] . ',';
 
         // check duration
-        $duration = explode('-', $attributes['duration']);
+        if (empty($attributes['duration'])
+            || $attributes['duration'] === 'infinite'
+        ) {
+            $attributes['duration'] = 'infinite';
+        } else {
+            $duration = explode('-', $attributes['duration']);
 
-        if ($duration[0] < 1) {
-            throw new QUI\Memberships\Exception(array(
-                'quiqqer/memberships',
-                'exception.membership.update.duration.invalid'
-            ));
+            if ($duration[0] < 1) {
+                throw new QUI\Memberships\Exception(array(
+                    'quiqqer/memberships',
+                    'exception.membership.update.duration.invalid'
+                ));
+            }
         }
 
         // edit user and timestamp
@@ -163,8 +168,26 @@ class Membership extends Child
             ));
         }
 
-        // @todo quiqqer/products abhandeln
-        // @todo quiqqer/contracts abhandeln
+        if ($this->isDefault()) {
+            $Conf = QUI::getPackage('quiqqer/memberships')->getConfig();
+            $Conf->set('memberships', 'defaultMembershipId', '0');
+            $Conf->save();
+        }
+
+        // remove from products
+        if (Utils::isQuiqqerProductsInstalled()) {
+            /** @var QUI\ERP\Products\Product\Product $Product */
+            foreach ($this->getProducts() as $Product) {
+                $MembershipField = $Product->getField(MembershipField::FIELD_ID);
+                $MembershipField->setValue(null);
+                $Product->deactivate();
+                $Product->save();
+            }
+        }
+
+        if (Utils::isQuiqqerContractsInstalled()) {
+            // @todo quiqqer/contracts abhandeln
+        }
 
         parent::delete();
     }
@@ -172,7 +195,7 @@ class Membership extends Child
     /**
      * Get a user of this membership (non-archived)
      *
-     * @param int $userId - User ID
+     * @param int $userId - QUIQQER User ID
      * @return QUI\Memberships\Users\MembershipUser
      * @throws QUI\Memberships\Exception
      */
@@ -400,10 +423,14 @@ class Membership extends Child
      * Calculate the end date for this membership based on a given time
      *
      * @param int $start (optional) - UNIX timestamp; if omitted use time()
-     * @return string - formatted timestamp
+     * @return string|null - formatted timestamp
      */
     public function calcEndDate($start = null)
     {
+        if ($this->isInfinite()) {
+            return null;
+        }
+
         if (is_null($start)) {
             $start = time();
         }
@@ -580,5 +607,45 @@ class Membership extends Child
             'description' => $this->getDescription(),
             'content'     => $this->getContent()
         );
+    }
+
+    /**
+     * Check if this membership has an infinite duration (never expires)
+     *
+     * @return bool
+     */
+    public function isInfinite()
+    {
+        return $this->getAttribute('duration') === 'infinite';
+    }
+
+    /**
+     * Check if this Membership is the default Memberships
+     *
+     * @return bool
+     */
+    public function isDefault()
+    {
+        $DefaultMembership = Handler::getDefaultMembership();
+
+        if ($DefaultMembership === false) {
+            return false;
+        }
+
+        return $DefaultMembership->getId() === $this->getId();
+    }
+
+    /**
+     * Add user to the membership
+     *
+     * @param QUI\Users\User $User
+     * @return QUI\Memberships\Users\MembershipUser
+     */
+    public function addUser(QUI\Users\User $User)
+    {
+        return MembershipUsersHandler::getInstance()->createChild(array(
+            'userId'       => $User->getId(),
+            'membershipId' => $this->id
+        ));
     }
 }

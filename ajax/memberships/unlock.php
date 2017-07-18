@@ -46,7 +46,7 @@ QUI::$Ajax->registerFunction(
             QUI::getMessagesHandler()->addError(
                 QUI::getLocale()->get(
                     'quiqqer/memberships',
-                    'message.memberships.general.error'
+                    'message.general.error'
                 )
             );
 

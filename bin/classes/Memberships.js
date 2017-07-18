@@ -52,22 +52,6 @@ define('package/quiqqer/memberships/bin/classes/Memberships', [
         },
 
         /**
-         * Get Membership data for product field
-         *
-         * @param {Number} membershipId
-         * @return {Promise}
-         */
-        getProductFieldData: function (membershipId) {
-            return new Promise(function (resolve, reject) {
-                QUIAjax.get('package_quiqqer_memberships_ajax_memberships_products_getFieldData', resolve, {
-                    'package'   : pkg,
-                    membershipId: membershipId,
-                    onError     : reject
-                })
-            });
-        },
-
-        /**
          * Get all Products that have a Membership assigned
          *
          * @param membershipId

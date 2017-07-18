@@ -295,4 +295,20 @@ class Handler extends Factory
             return false;
         }
     }
+
+    /**
+     * Get the default membership
+     *
+     * @return Membership|false - Membership or false if none set
+     */
+    public static function getDefaultMembership()
+    {
+        $membershipId = self::getSetting('defaultMembershipId');
+
+        if (empty($membershipId)) {
+            return false;
+        }
+
+        return self::getInstance()->getChild((int)$membershipId);
+    }
 }

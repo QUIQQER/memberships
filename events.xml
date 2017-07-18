@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <events>
     <event on="onPackageSetup" fire="\QUI\Memberships\Events::onPackageSetup"/>
+    <event on="onUserSave" fire="\QUI\Memberships\Events::onUserSave"/>
+    <event on="onQuiqqerProductsProductSave" fire="\QUI\Memberships\Events::onQuiqqerProductsProductSave"/>
 </events>

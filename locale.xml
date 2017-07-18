@@ -161,6 +161,14 @@
             <de><![CDATA[Produkt (wenn Verknüpfung vorhanden; benötigt quiqqer/products)]]></de>
             <en><![CDATA[Product (if assigned; requires quiqqer/products)]]></en>
         </locale>
+        <locale name="settings.defaultMembershipId.title">
+            <de><![CDATA[Standard Mitgliedschaft]]></de>
+            <en><![CDATA[Default membership]]></en>
+        </locale>
+        <locale name="settings.defaultMembershipId.description">
+            <de><![CDATA[Mitgliedschaft, in die alle Benutzer im System automatisch gesetzt werden. Benutzer haben keine Möglichkeit diese Mitgliedschaft zu kündigen.]]></de>
+            <en><![CDATA[Membership in which all users in the system are automatically put. Users have no option to cancel this membership.]]></en>
+        </locale>
 
         <!-- Cron -->
         <locale name="cron.checkMembershipUsers.title">
@@ -361,6 +369,10 @@
         </locale>
 
         <!-- Control: InputDuration -->
+        <locale name="controls.inputduration.period.infinite">
+            <de><![CDATA[Unbegrenzt]]></de>
+            <en><![CDATA[Unlimited]]></en>
+        </locale>
         <locale name="controls.inputduration.period.minute">
             <de><![CDATA[Minute(n)]]></de>
             <en><![CDATA[minute(s)]]></en>
@@ -593,7 +605,7 @@
         </locale>
 
         <!-- Control: products/MembershipField -->
-        <locale name="controls.products.membershipfield.empty.placeholder">
+        <locale name="controls.products.membershipselect.empty.placeholder">
             <de><![CDATA[Noch keine Mitgliedschaft zugeordnet]]></de>
             <en><![CDATA[No membership assigned yet]]></en>
         </locale>
@@ -808,6 +820,10 @@
         <locale name="controls.profile.userprofile.datatable.labelEndDate.noAutoExtend">
             <de><![CDATA[Mitgliedschaft endet]]></de>
             <en><![CDATA[Membership ends]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.datatable.endDate.infinite">
+            <de><![CDATA[Nie]]></de>
+            <en><![CDATA[Never]]></en>
         </locale>
         <locale name="controls.profile.userprofile.datatable.labelStatus">
             <de><![CDATA[Status]]></de>

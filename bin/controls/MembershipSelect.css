@@ -1,0 +1,15 @@
+.quiqqer-memberships-products-membershipselect-display {
+    line-height: 30px;
+}
+
+.quiqqer-memberships-membershipselect-remove {
+    font-size: 14px;
+    margin-left: 5px;
+    position: relative;
+    top: -7px;
+}
+
+.quiqqer-memberships-membershipselect-remove:hover {
+    cursor: pointer;
+    opacity: 0.8;
+}

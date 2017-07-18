@@ -85,6 +85,31 @@ class Events
     }
 
     /**
+     * quiqqer/quiqqer: onUserSave
+     *
+     * @param QUI\Users\User $User
+     * @return void
+     */
+    public static function onUserSave(QUI\Users\User $User)
+    {
+        $DefaultMembership = MembershipsHandler::getDefaultMembership();
+
+        if ($DefaultMembership === false) {
+            return;
+        }
+
+        try {
+            $DefaultMembership->getMembershipUser($User->getId());
+        } catch (\Exception $Exception) {
+            if ($Exception->getCode() !== 404) {
+                return;
+            }
+
+            $DefaultMembership->addUser($User);
+        }
+    }
+
+    /**
      * quiqqer/products
      *
      * Create a Membership field with a fixed id

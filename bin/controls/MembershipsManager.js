@@ -284,7 +284,11 @@ define('package/quiqqer/memberships/bin/controls/MembershipsManager', [
                     });
                 }
 
-                if (Row.duration) {
+                if (Row.duration === 'infinite') {
+                    Row.durationText = QUILocale.get(lg,
+                        'controls.inputduration.period.infinite'
+                    );
+                } else if (Row.duration) {
                     var duration = Row.duration.split('-');
 
                     Row.durationText = duration[0]
