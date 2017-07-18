@@ -8,7 +8,8 @@ use QUI;
 use QUI\Permissions\Permission;
 use QUI\ERP\Products\Handler\Categories as ProductCategories;
 use QUI\ERP\Products\Handler\Fields as ProductFields;
-use QUI\Memberships\Products\MembershipField;
+use QUI\Memberships\Users\Handler as MembershipUsersHandler;
+use QUI\Utils\Security\Orthos;
 
 class Handler extends Factory
 {
@@ -148,45 +149,111 @@ class Handler extends Factory
         $Grid        = new Grid($searchParams);
         $gridParams  = $Grid->parseDBParams($searchParams);
 
-        $whereOr = array();
+        $binds = array();
+        $where = array();
+
+        if ($countOnly) {
+            $sql = "SELECT COUNT(*)";
+        } else {
+            $sql = "SELECT id";
+        }
+
+        $sql .= " FROM `" . $this->getDataBaseTableName() . "`";
+
+        if (!empty($searchParams['userId'])) {
+            $memberhsipUsers = MembershipUsersHandler::getInstance()->getMembershipUsersByUserId(
+                (int)$searchParams['userId']
+            );
+
+            $membershipIds = array();
+
+            /** @var QUI\Memberships\Users\MembershipUser $MembershipUser */
+            foreach ($memberhsipUsers as $MembershipUser) {
+                $membershipIds[] = $MembershipUser->getMembership()->getId();
+            }
+
+            if (!empty($membershipIds)) {
+                $where[] = '`id` IN (' . implode(',', $membershipIds) . ')';
+            }
+        }
 
         if (!empty($searchParams['search'])) {
-            $search = $searchParams['search'];
-
-            $whereOr['title'] = array(
-                'type'  => '%LIKE%',
-                'value' => $search
+            $searchColumns = array(
+                'title',
+                'description',
+                'content'
             );
 
-            $whereOr['description'] = array(
-                'type'  => '%LIKE%',
-                'value' => $search
+            $whereOr = array();
+
+            foreach ($searchColumns as $searchColumn) {
+                $whereOr[] = '`' . $searchColumn . '` LIKE :search';
+            }
+
+            if (!empty($whereOr)) {
+                $where[] = '(' . implode(' OR ', $whereOr) . ')';
+
+                $binds['search'] = array(
+                    'value' => '%' . $searchParams['search'] . '%',
+                    'type'  => \PDO::PARAM_STR
+                );
+            }
+        }
+
+        // build WHERE query string
+        if (!empty($where)) {
+            $sql .= " WHERE " . implode(" AND ", $where);
+        }
+
+        // ORDER
+        if (!empty($searchParams['sortOn'])
+        ) {
+            $sortOn = Orthos::clear($searchParams['sortOn']);
+            $order  = "ORDER BY " . $sortOn;
+
+            if (isset($searchParams['sortBy']) &&
+                !empty($searchParams['sortBy'])
+            ) {
+                $order .= " " . Orthos::clear($searchParams['sortBy']);
+            } else {
+                $order .= " ASC";
+            }
+
+            $sql .= " " . $order;
+        }
+
+        // LIMIT
+        if (!empty($gridParams['limit'])
+            && !$countOnly
+        ) {
+            $sql .= " LIMIT " . $gridParams['limit'];
+        } else {
+            if (!$countOnly) {
+                $sql .= " LIMIT " . (int)20;
+            }
+        }
+
+        $Stmt = QUI::getPDO()->prepare($sql);
+
+        // bind search values
+        foreach ($binds as $var => $bind) {
+            $Stmt->bindValue(':' . $var, $bind['value'], $bind['type']);
+        }
+
+        try {
+            $Stmt->execute();
+            $result = $Stmt->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::addError(
+                self::class . ' :: searchUsers() -> ' . $Exception->getMessage()
             );
 
-            $whereOr['content'] = array(
-                'type'  => '%LIKE%',
-                'value' => $search
-            );
+            return array();
         }
 
         if ($countOnly) {
-            $result = QUI::getDataBase()->fetch(array(
-                'count'    => 1,
-                'from'     => $this->getDataBaseTableName(),
-                'where_or' => $whereOr
-            ));
-
-            return current(current($result));
+            return (int)current(current($result));
         }
-
-        $result = QUI::getDataBase()->fetch(array(
-            'select'   => array(
-                'id'
-            ),
-            'from'     => $this->getDataBaseTableName(),
-            'where_or' => $whereOr,
-            'limit'    => $gridParams['limit']
-        ));
 
         foreach ($result as $row) {
             $memberships[] = $row['id'];

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<user>
+    <window>
+        <tab name="memberships">
+            <text>
+                <locale group="quiqqer/memberships" var="menu.extras.memberships.title"/>
+            </text>
+            <image>fa fa-id-card-o</image>
+            <template>OPT_DIR/quiqqer/memberships/templates/user_panel.html</template>
+        </tab>
+    </window>
+</user>

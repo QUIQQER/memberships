@@ -76,6 +76,7 @@ define('package/quiqqer/memberships/bin/controls/MembershipsManager', [
         ],
 
         options: {
+            userId     : false, // Restrict memberships to memberships of specific user
             multiselect: true, // allow selection of multiple Memberships in table
             showButtons: true // shows buttons for create/edit/delete
         },
@@ -257,7 +258,24 @@ define('package/quiqqer/memberships/bin/controls/MembershipsManager', [
                 page   : Grid.getAttribute('page')
             };
 
+            switch (GridParams.sortOn) {
+                case 'durationText':
+                    GridParams.sortOn = 'duration';
+                    break;
+
+                case 'autoExtendStatus':
+                    GridParams.sortOn = 'autoExtend';
+                    break;
+
+                case 'userCount':
+                    return;
+            }
+
             this.Loader.show();
+
+            if (this.getAttribute('userId')) {
+                GridParams.userId = this.getAttribute('userId');
+            }
 
             Memberships.getList(GridParams).then(function (ResultData) {
                 self.Loader.hide();
