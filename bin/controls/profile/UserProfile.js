@@ -231,7 +231,7 @@ define('package/quiqqer/memberships/bin/controls/profile/UserProfile', [
             }
 
             // only show "cancel" and "withdraw cancellation" btns on autoextend
-            if (!Membership.autoExtend || Membership.infinite) {
+            if (!Membership.autoExtend || Membership.infinite || !Membership.endDate) {
                 return MembershipElm;
             }
 
