@@ -183,7 +183,9 @@ define('package/quiqqer/memberships/bin/controls/MembershipsManager', [
                     text     : QUILocale.get(lg, 'controls.membershipsmanager.tbl.btn.editmembership'),
                     textimage: 'fa fa-edit',
                     events   : {
-                        onClick: this.$openMembershipPanel
+                        onClick: function() {
+                            self.$openMembershipPanel();
+                        }
                     }
                 }, {
                     name     : 'delete',
