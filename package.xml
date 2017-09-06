@@ -11,15 +11,29 @@
         <!-- Hauptbild -->
         <image src='URL_OPT_DIR/quiqqer/memberships/bin/quiqqer_logo.png'/>
 
-         <!-- More preview images
-        <preview>
-            <image src="URL_OPT_DIR/quiqqer/quiqqer/bin/preview/1.png"/>
-            <image src="URL_OPT_DIR/quiqqer/quiqqer/bin/preview/2.png"/>
-            <image src="URL_OPT_DIR/quiqqer/quiqqer/bin/preview/3.png"/>
-            <image src="URL_OPT_DIR/quiqqer/quiqqer/bin/preview/4.png"/>
-            <image src="URL_OPT_DIR/quiqqer/quiqqer/bin/preview/5.png"/>
-        </preview>
-        -->
+        <support>
+            <email>support@pcsg.de</email>
+            <forum>https://community.quiqqer.com</forum>
+            <source>https://dev.quiqqer.com/quiqqer/memberships</source>
+            <issues>https://dev.quiqqer.com/quiqqer/memberships/issues</issues>
+            <wiki>https://dev.quiqqer.com/quiqqer/memberships/wikis/home</wiki>
+        </support>
+
+        <copyright>
+            <name><![CDATA[PCSG - Computer & Internet Service OHG]]></name>
+            <license></license>
+        </copyright>
+
+
+        <!-- More preview images
+       <preview>
+           <image src="URL_OPT_DIR/quiqqer/quiqqer/bin/preview/1.png"/>
+           <image src="URL_OPT_DIR/quiqqer/quiqqer/bin/preview/2.png"/>
+           <image src="URL_OPT_DIR/quiqqer/quiqqer/bin/preview/3.png"/>
+           <image src="URL_OPT_DIR/quiqqer/quiqqer/bin/preview/4.png"/>
+           <image src="URL_OPT_DIR/quiqqer/quiqqer/bin/preview/5.png"/>
+       </preview>
+       -->
 
     </package>
 </quiqqer>

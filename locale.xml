@@ -8,8 +8,8 @@
             <en><![CDATA[QUIQQER - Memberships]]></en>
         </locale>
         <locale name="package.description">
-            <de><![CDATA[QUIQQER - Mitgliedschaften]]></de>
-            <en><![CDATA[QUIQQER - Memberships]]></en>
+            <de><![CDATA[Das Mitgliedschaftsmodul ist ein einfach zu bedienendes Mitgliedschafts-Plugin. Es gibt Ihnen die Möglichkeit, die Mitgliedschaftsabonnements einfach zu erstellen, zu verwalten und zu verfolgen. Zusätzlich erlaubt Ihnen das Mitgliedschaftsmodul, den Benutzern automatisiert Berechtigungen zu erteilen und zu widerrufen.]]></de>
+            <en><![CDATA[The Membership Module is an easy to use Membership Plugin. It will give you the ability to confidently create, manage and track membership subscriptions. In addition to these powerful abilities, the Membership Module will allow you to grant and revoke permissions to Users.]]></en>
         </locale>
 
         <!-- Menu -->

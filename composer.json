@@ -1,7 +1,7 @@
 {
   "name": "quiqqer/memberships",
   "type": "quiqqer-module",
-  "description": "Mitgliedschafen für ERP",
+  "description": "The Membership Module is an easy to use Membership Plugin. It will give you the ability to confidently create, manage and track membership subscriptions. In addition to these powerful abilities, the Membership Module will allow you to grant and revoke permissions to Users.",
   "version": "dev-dev",
   "license": "GPL-3.0+",
   "authors": [
