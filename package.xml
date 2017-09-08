@@ -8,8 +8,8 @@
            <locale group='quiqqer/memberships' var='package.description'/>
         </description>
 
-        <!-- Hauptbild -->
-        <image src='URL_OPT_DIR/quiqqer/memberships/bin/quiqqer_logo.png'/>
+
+        <image src="URL_OPT_DIR/quiqqer/memberships/bin/images/Logo.jpg"/>
 
         <support>
             <email>support@pcsg.de</email>
