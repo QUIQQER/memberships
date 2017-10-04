@@ -12,11 +12,11 @@
         <image src="URL_OPT_DIR/quiqqer/memberships/bin/images/Logo.jpg"/>
 
         <support>
-            <email>support@pcsg.de</email>
-            <forum>https://community.quiqqer.com</forum>
-            <source>https://dev.quiqqer.com/quiqqer/memberships</source>
-            <issues>https://dev.quiqqer.com/quiqqer/memberships/issues</issues>
-            <wiki>https://dev.quiqqer.com/quiqqer/memberships/wikis/home</wiki>
+            <email><![CDATA[support@pcsg.de]]></email>
+            <forum><![CDATA[https://community.quiqqer.com]]></forum>
+            <source><![CDATA[https://dev.quiqqer.com/quiqqer/memberships]]></source>
+            <issues><![CDATA[https://dev.quiqqer.com/quiqqer/memberships/issues]]></issues>
+            <wiki><![CDATA[https://dev.quiqqer.com/quiqqer/memberships/wikis/home]]></wiki>
         </support>
 
         <copyright>
