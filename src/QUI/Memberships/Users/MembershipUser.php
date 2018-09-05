@@ -475,6 +475,7 @@ class MembershipUser extends Child
      * Get QUIQQER User
      *
      * @return QUI\Users\User
+     * @throws \QUI\Exception
      */
     public function getUser()
     {
@@ -534,6 +535,7 @@ class MembershipUser extends Child
      *
      * @param string $date - Formatted date YYYY-MM-DD HH:MM:SS
      * @return string|false - formatted date or false on error
+     * @throws \QUI\Exception
      */
     protected function formatDate($date)
     {

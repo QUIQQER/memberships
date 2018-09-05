@@ -5,18 +5,6 @@
  *
  * @module package/quiqqer/memberships/bin/controls/profile/UserProfile
  * @author www.pcsg.de (Patrick Müller)
- *
- * @require qui/controls/Control
- * @require qui/controls/loader/Loader
- * @require qui/controls/windows/Confirm
- * @require qui/controls/buttons/Button
- * @require package/quiqqer/memberships/bin/MembershipUsers
- * @require Locale
- * @require Ajax
- * @require Mustache
- * @require text!package/quiqqer/memberships/bin/controls/profile/UserProfile.html
- * @require text!package/quiqqer/memberships/bin/controls/profile/UserProfile.MembershipStatus.html
- * @require css!package/quiqqer/memberships/bin/controls/profile/UserProfile.css
  */
 define('package/quiqqer/memberships/bin/controls/profile/UserProfile', [
 
@@ -48,7 +36,7 @@ define('package/quiqqer/memberships/bin/controls/profile/UserProfile', [
         Type   : 'package/quiqqer/memberships/bin/controls/profile/UserProfile',
 
         Binds: [
-            '$onInject',
+            '$onImport',
             'refresh',
             '$build',
             '$openCancelConfirm',
@@ -67,14 +55,14 @@ define('package/quiqqer/memberships/bin/controls/profile/UserProfile', [
             this.$memberships = [];
 
             this.addEvents({
-                onInject: this.$onInject
+                onImport: this.$onImport
             });
         },
 
         /**
          * Event: onImport
          */
-        $onInject: function () {
+        $onImport: function () {
             this.$Elm.addClass('quiqqer-memberships-membershipusersarchive');
 
             var lgPrefix = 'controls.profile.userprofile.template.';
@@ -110,7 +98,7 @@ define('package/quiqqer/memberships/bin/controls/profile/UserProfile', [
          */
         $build: function () {
             var MembershipsElm = this.$Elm.getElement(
-                '.quiqqer-memberships-profile-userprofile-memberships'
+                '.quiqqer-memberships-profile-userprofile-memberships-container'
             );
 
             MembershipsElm.set('html', '');
@@ -173,15 +161,14 @@ define('package/quiqqer/memberships/bin/controls/profile/UserProfile', [
             }
 
             var MembershipElm = new Element('div', {
-                'class': 'quiqqer-memberships-profile-userprofile-membership grid-100',
-                html   : Mustache.render(membershipTemplate, {
+                html: Mustache.render(membershipTemplate, {
                     membershipTitle: Membership.membershipTitle,
                     membershipShort: Membership.membershipShort,
                     labelAddedDate : QUILocale.get(lg, lgPrefix + 'labelAddedDate'),
                     addedDate      : Membership.addedDate,
                     labelEndDate   : endDateLabel,
                     endDate        : endDateValue,
-                    labelStatus    : QUILocale.get(lg, lgPrefix + 'labelStatus'),
+                    labelStatus    : QUILocale.get(lg, lgPrefix + 'labelStatus')
                 })
             });
 
@@ -217,11 +204,11 @@ define('package/quiqqer/memberships/bin/controls/profile/UserProfile', [
             // show content btn
             if (Membership.membershipContent !== '') {
                 var ShowContentElm = MembershipElm.getElement(
-                    '.quiqqer-memberships-profile-userprofile-membership-info-title'
+                    '.quiqqer-memberships-profile-userprofile-membership-header-info'
                 );
 
                 new Element('span', {
-                    'class': 'fa fa-info-circle quiqqer-memberships-profile-userprofile-membership-info-content',
+                    'class': 'fa fa-info-circle quiqqer-memberships-profile-userprofile-membership-header-info-icon',
                     events : {
                         click: function () {
                             self.$showMembershipContent(Membership);

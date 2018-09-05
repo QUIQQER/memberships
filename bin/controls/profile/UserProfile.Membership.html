@@ -1,34 +1,42 @@
-<div class="quiqqer-memberships-profile-userprofile-membership-info grid-50">
-    <h2 class="quiqqer-memberships-profile-userprofile-membership-info-title">
-        {{membershipTitle}}
-    </h2>
-    <p>
-        {{membershipShort}}
-    </p>
-</div>
-<div class="quiqqer-memberships-profile-userprofile-membership-status-container grid-50 grid-parent">
-    <div class="grid-100">
-        <div class="grid-60">
-            {{labelAddedDate}}
+<section class="quiqqer-memberships-profile-userprofile-membership">
+
+    <header class="quiqqer-memberships-profile-userprofile-membership-header">
+        <div class="quiqqer-memberships-profile-userprofile-membership-header-title">
+            <h3>
+                {{membershipTitle}}
+            </h3>
         </div>
-        <div class="grid-40">
-            {{addedDate}}
+        <div class="quiqqer-memberships-profile-userprofile-membership-header-short">
+            <span>{{membershipShort}}</span>
+            <div class="quiqqer-memberships-profile-userprofile-membership-header-info"></div>
         </div>
+    </header>
+
+    <div class="quiqqer-memberships-profile-userprofile-membership-body">
+        <div class="quiqqer-memberships-profile-userprofile-membership-body-entry">
+            <div class="quiqqer-memberships-profile-userprofile-membership-body-entry-label">
+                {{labelAddedDate}}
+            </div>
+            <div class="quiqqer-memberships-profile-userprofile-membership-body-entry-value">
+                {{addedDate}}
+            </div>
+        </div>
+        <div class="quiqqer-memberships-profile-userprofile-membership-body-entry">
+            <div class="quiqqer-memberships-profile-userprofile-membership-body-entry-label">
+                {{labelEndDate}}
+            </div>
+            <div class="quiqqer-memberships-profile-userprofile-membership-body-entry-value">
+                {{endDate}}
+            </div>
+        </div>
+        <div class="quiqqer-memberships-profile-userprofile-membership-body-entry">
+            <div class="quiqqer-memberships-profile-userprofile-membership-body-entry-label">
+                {{labelStatus}}
+            </div>
+            <div class="quiqqer-memberships-profile-userprofile-membership-body-entry-value quiqqer-memberships-profile-userprofile-status"></div>
+            <div class="quiqqer-memberships-profile-userprofile-status-modifier"></div>
+        </div>
+        <div class="quiqqer-memberships-profile-userprofile-btn"></div>
     </div>
-    <div class="grid-100">
-        <div class="grid-60">
-            {{labelEndDate}}
-        </div>
-        <div class="grid-40">
-            {{endDate}}
-        </div>
-    </div>
-    <div class="grid-100">
-        <div class="grid-60">
-            {{labelStatus}}
-        </div>
-        <div class="quiqqer-memberships-profile-userprofile-status grid-40"></div>
-    </div>
-    <div class="quiqqer-memberships-profile-userprofile-status-modifier grid-100"></div>
-    <div class="quiqqer-memberships-profile-userprofile-btn grid-100"></div>
-</div>
+
+</section>

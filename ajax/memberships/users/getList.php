@@ -22,6 +22,8 @@ QUI::$Ajax->registerFunction(
         $Membership      = $Memberships->getChild((int)$membershipId);
         $membershipUsers = array();
 
+//        $Membership->addUser(QUI::getUserBySession());
+
         foreach ($Membership->searchUsers($searchParams) as $membershipUserId) {
             /** @var MembershipUser $MembershipUser */
             $MembershipUser    = $MembershipUsers->getChild($membershipUserId);

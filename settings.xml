@@ -54,6 +54,12 @@
                 <conf name="categoryId">
                     <type><![CDATA[integer]]></type>
                 </conf>
+                <conf name="membershipFieldId">
+                    <type><![CDATA[integer]]></type>
+                </conf>
+                <conf name="membershipFlagFieldId">
+                    <type><![CDATA[integer]]></type>
+                </conf>
             </section>
 
         </config>

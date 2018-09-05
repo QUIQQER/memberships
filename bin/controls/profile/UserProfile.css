@@ -1,25 +1,66 @@
+.quiqqer-memberships-profile-userprofile-info-header {
+    margin: 0 0 10px 0;
+}
+
 .quiqqer-memberships-profile-userprofile-membership {
+    border: 1px #ddd solid;
+    clear: both;
     float: left;
+    margin-bottom: 20px;
     width: 100%;
 }
 
-.quiqqer-memberships-profile-userprofile-membership:not(:last-of-type) {
-    margin-bottom: 20px;
+/*****************
+ * Header
+ *****************/
+.quiqqer-memberships-profile-userprofile-membership-header {
+    background: #f6f6f6;
+    border-bottom: 1px #ddd solid;
+    float: left;
+    padding: 10px;
+    width: 100%;
 }
 
-.quiqqer-memberships-profile-userprofile-membership-info-content:hover {
+.quiqqer-memberships-profile-userprofile-membership-header-title h3 {
+    margin: 0 0 5px 0;
+}
+
+.quiqqer-memberships-profile-userprofile-membership-header-info-icon:hover {
     cursor: pointer;
     opacity: 0.7;
 }
 
-.quiqqer-memberships-profile-userprofile-membership-info-content {
-    float: right;
-    font-size: 20px;
+.quiqqer-memberships-profile-userprofile-membership-header-info {
+    display: inline-block;
+}
+
+/*****************
+ * Body
+ *****************/
+.quiqqer-memberships-profile-userprofile-membership-body {
+    float: left;
+    padding: 10px;
+    width: 100%;
+}
+
+.quiqqer-memberships-profile-userprofile-membership-body-entry {
+    clear: both;
+    float: left;
+    width: 100%;
+}
+
+.quiqqer-memberships-profile-userprofile-membership-body-entry-label {
+    float: left;
+    min-width: 200px;
+}
+
+.quiqqer-memberships-profile-userprofile-membership-body-entry-value {
+    float: left;
 }
 
 .quiqqer-memberships-profile-userprofile-status-modifier {
-    font-size: 14px;
-    text-align: center;
+    float: left;
+    padding-left: 5px;
 }
 
 .quiqqer-memberships-profile-userprofile-status-cancelled {
@@ -34,9 +75,30 @@
     color: #008000;
 }
 
+.quiqqer-memberships-profile-userprofile-btn {
+    float: left;
+    width: 100%;
+    margin-top: 10px;
+}
+
 .quiqqer-memberships-profile-userprofile-btn .qui-button {
-    border: 1px solid #ff0000 !important;
     float: right;
-    font-size: 12px;
-    line-height: 20px;
+}
+
+@media (max-width: 768px) {
+    .quiqqer-memberships-profile-userprofile-membership-body-entry-label {
+        width: 100%;
+    }
+
+    .quiqqer-memberships-profile-userprofile-membership-body-entry {
+        margin-bottom: 10px;
+    }
+
+    .quiqqer-memberships-profile-userprofile-status-modifier {
+        padding: 0;
+    }
+
+    .quiqqer-memberships-profile-userprofile-btn .qui-button {
+        width: 100%;
+    }
 }

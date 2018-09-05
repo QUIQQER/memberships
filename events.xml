@@ -3,4 +3,5 @@
     <event on="onPackageSetup" fire="\QUI\Memberships\Events::onPackageSetup"/>
     <event on="onUserSave" fire="\QUI\Memberships\Events::onUserSave"/>
     <event on="onOrderSuccess" fire="\QUI\Memberships\Events::onOrderSuccess"/>
+    <event on="onQuiqqerProductsFieldDelete" fire="\QUI\Memberships\Events::onQuiqqerProductsFieldDelete"/>
 </events>

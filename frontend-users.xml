@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiqqer>
+    <frontend-users>
+        <profile>
+            <categories>
+                <category name="memberships">
+                    <title>
+                        <locale group="quiqqer/memberships" var="profile.category.memberships.title"/>
+                    </title>
+
+                    <!-- User Data -->
+                    <settings control="\QUI\Memberships\Controls\Profile\Memberships"
+                              name="mymemberships"
+                              icon="fa fa-id-card-o"
+                              showinprofilebar="1"
+                    >
+                        <title>
+                            <locale group="quiqqer/memberships" var="profile.mymemberships.title"/>
+                        </title>
+                    </settings>
+
+                </category>
+            </categories>
+
+        </profile>
+    </frontend-users>
+</quiqqer>

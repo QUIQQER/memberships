@@ -8,6 +8,7 @@ use QUI\Memberships\Handler as MembershipsHandler;
 use QUI\Memberships\Users\Handler as MembershipUsersHandler;
 use QUI\Memberships\Products\MembershipField;
 use QUI\ERP\Products\Handler\Fields as ProductFields;
+use QUI\ERP\Products\Field\Field as ProductField;
 use QUI\ERP\Products\Handler\Categories as ProductCategories;
 use QUI\ERP\Products\Handler\Search as ProductSearchHandler;
 use QUI\ERP\Products\Product\Product;
@@ -34,17 +35,21 @@ class Events
 
         $packages = Utils::getInstalledMembershipPackages();
 
-        foreach ($packages as $package) {
-            switch ($package) {
-                case 'quiqqer/products':
-                    self::createProductFields();
-                    self::createProductCategory();
-                    break;
+        try {
+            foreach ($packages as $package) {
+                switch ($package) {
+                    case 'quiqqer/products':
+                        self::createProductFields();
+                        self::createProductCategory();
+                        break;
 
-                case 'quiqqer/contracts':
-                    // @todo setup routine for quiqqer/contracts
-                    break;
+                    case 'quiqqer/contracts':
+                        // @todo setup routine for quiqqer/contracts
+                        break;
+                }
             }
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
         }
     }
 
@@ -56,8 +61,14 @@ class Events
      */
     public static function onQuiqqerProductsProductDelete(Product $Product)
     {
+        $membershipFieldId = Handler::getProductMembershipField()->getId();
+
+        if (!$membershipFieldId) {
+            return;
+        }
+
         // check if Product is assigned to a Membership
-        $membershipId = $Product->getFieldValue(MembershipsHandler::PRODUCTS_FIELD_MEMBERSHIP);
+        $membershipId = $Product->getFieldValue($membershipFieldId);
 
         if (empty($membershipId)) {
             return;
@@ -68,9 +79,9 @@ class Events
             $Membership      = MembershipsHandler::getInstance()->getChild($membershipId);
             $MembershipUsers = MembershipUsersHandler::getInstance();
 
-            $membershipUserIds = $Membership->searchUsers(array(
+            $membershipUserIds = $Membership->searchUsers([
                 'productId' => $Product->getId()
-            ));
+            ]);
 
             foreach ($membershipUserIds as $membershipUserId) {
                 $MembershipUser = $MembershipUsers->getChild($membershipUserId);
@@ -79,8 +90,8 @@ class Events
             }
         } catch (\Exception $Exception) {
             QUI\System\Log::addError(
-                self::class . ' :: onQuiqqerProductsProductDelete -> '
-                . $Exception->getMessage()
+                self::class.' :: onQuiqqerProductsProductDelete -> '
+                .$Exception->getMessage()
             );
         }
     }
@@ -113,82 +124,93 @@ class Events
     /**
      * quiqqer/products
      *
-     * Create a Membership field with a fixed id and a membership flag field that
-     * identifies a product as a Membership product
+     * Create necessary membership product fields and save their IDs to the config
      *
      * @return void
+     * @throws \QUI\Exception
      */
     protected static function createProductFields()
     {
-        $L = new QUI\Locale();
+        $L    = new QUI\Locale();
+        $Conf = QUI::getPackage('quiqqer/memberships')->getConfig();
 
-        // Membership field
-        $translations = array(
-            'de' => '',
-            'en' => ''
-        );
+        // Membership field (create new one is not configured)
+        $MembershipField = Handler::getProductMembershipField();
 
-        foreach ($translations as $l => $t) {
-            $L->setCurrent($l);
-            $translations[$l] = $L->get(
-                'quiqqer/memberships',
-                'products.field.membership'
-            );
+        if ($MembershipField === false) {
+            $translations = [
+                'de' => '',
+                'en' => ''
+            ];
+
+            foreach ($translations as $l => $t) {
+                $L->setCurrent($l);
+                $translations[$l] = $L->get(
+                    'quiqqer/memberships',
+                    'products.field.membership'
+                );
+            }
+
+            try {
+                $MembershipField = ProductFields::createField([
+                    'type'          => MembershipField::TYPE,
+                    'titles'        => $translations,
+                    'workingtitles' => $translations
+                ]);
+
+                $MembershipField->setAttribute('search_type', ProductSearchHandler::SEARCHTYPE_TEXT);
+                $MembershipField->save();
+
+                // add field id to config
+                $Conf->set('products', 'membershipFieldId', $MembershipField->getId());
+                $Conf->save();
+            } catch (\Exception $Exception) {
+                QUI\System\Log::addError(self::class.' :: createProductFields');
+                QUI\System\Log::writeException($Exception);
+            }
         }
 
-        try {
-            $NewField = ProductFields::createField(array(
-                'id'            => MembershipsHandler::PRODUCTS_FIELD_MEMBERSHIP,
-                'type'          => MembershipField::TYPE,
-                'titles'        => $translations,
-                'workingtitles' => $translations
-            ));
+        // Membership flag field (create new one is not configured)
+        $MembershipFlagField = Handler::getProductMembershipFlagField();
 
-            $NewField->setAttribute('search_type', ProductSearchHandler::SEARCHTYPE_TEXT);
-            $NewField->save();
-        } catch (\QUI\ERP\Products\Field\Exception $Exception) {
-            // nothing, field exists
-        } catch (\Exception $Exception) {
-            QUI\System\Log::addError(self::class . ' :: createProductFields');
-            QUI\System\Log::writeException($Exception);
-        }
+        if ($MembershipFlagField === false) {
+            $translations = [
+                'de' => '',
+                'en' => ''
+            ];
 
-        // membership flag field
-        $translations = array(
-            'de' => '',
-            'en' => ''
-        );
+            foreach ($translations as $l => $t) {
+                $L->setCurrent($l);
+                $translations[$l] = $L->get(
+                    'quiqqer/memberships',
+                    'products.field.membershipflag'
+                );
+            }
 
-        foreach ($translations as $l => $t) {
-            $L->setCurrent($l);
-            $translations[$l] = $L->get(
-                'quiqqer/memberships',
-                'products.field.membershipflag'
-            );
-        }
+            try {
+                $MembershipFlagField = ProductFields::createField([
+                    'type'          => ProductFields::TYPE_BOOL,
+                    'titles'        => $translations,
+                    'workingtitles' => $translations
+                ]);
 
-        try {
-            $NewField = ProductFields::createField(array(
-                'id'            => MembershipsHandler::PRODUCTS_FIELD_MEMBERSHIPFLAG,
-                'type'          => ProductFields::TYPE_BOOL,
-                'titles'        => $translations,
-                'workingtitles' => $translations
-            ));
+                $MembershipFlagField->setAttribute('search_type', ProductSearchHandler::SEARCHTYPE_BOOL);
+                $MembershipFlagField->save();
 
-            $NewField->setAttribute('search_type', ProductSearchHandler::SEARCHTYPE_BOOL);
-            $NewField->save();
+                // add Flag field to backend search
+                $BackendSearch                               = ProductSearchHandler::getBackendSearch();
+                $searchFields                                = $BackendSearch->getSearchFields();
+                $searchFields[$MembershipFlagField->getId()] = true;
 
-            // add Flag field to backend search
-            $BackendSearch                    = ProductSearchHandler::getBackendSearch();
-            $searchFields                     = $BackendSearch->getSearchFields();
-            $searchFields[$NewField->getId()] = true;
+                $BackendSearch->setSearchFields($searchFields);
 
-            $BackendSearch->setSearchFields($searchFields);
-        } catch (\QUI\ERP\Products\Field\Exception $Exception) {
-            // nothing, field exists
-        } catch (\Exception $Exception) {
-            QUI\System\Log::addError(self::class . ' :: createProductFields');
-            QUI\System\Log::writeException($Exception);
+                // add field id to config
+                $Conf->set('products', 'membershipFlagFieldId', $MembershipFlagField->getId());
+                $Conf->save();
+            } catch (\Exception $Exception) {
+                QUI\System\Log::addError(self::class.' :: createProductFields');
+                QUI\System\Log::writeException($Exception);
+            }
         }
     }
 
@@ -205,6 +227,12 @@ class Events
             // @todo Membership Field holen und gucken, ob membershipId vergeben ist
             // Wenn ja, dann Benutzer ($Order->getCustomer()) zu Membership hinzufügen
         }
+    }
+
+    public static function onQuiqqerProductsFieldDelete(ProductField $Field)
+    {
+        $Conf = QUI::getPackage('quiqqer/memberships')->getConfig();
+        $membershipFieldId =
     }
 
     /**
@@ -224,22 +252,22 @@ class Events
         try {
             $Category = ProductCategories::createCategory();
         } catch (\Exception $Exception) {
-            QUI\System\Log::addError(self::class . ' :: createProductCategory()');
+            QUI\System\Log::addError(self::class.' :: createProductCategory()');
             QUI\System\Log::writeException($Exception);
 
             return;
         }
 
         $catId  = $Category->getId();
-        $titles = array(
+        $titles = [
             'de' => '',
             'en' => ''
-        );
+        ];
 
-        $descriptions = array(
+        $descriptions = [
             'de' => '',
             'en' => ''
-        );
+        ];
 
         $L = new QUI\Locale();
 
@@ -248,36 +276,36 @@ class Events
             $t = $L->get('quiqqer/memberships', 'products.category.title');
             $d = $L->get('quiqqer/memberships', 'products.category.description');
 
-            $titles[$l]                 = $t;
-            $titles[$l . '_edit']       = $t;
-            $descriptions[$l]           = $d;
-            $descriptions[$l . '_edit'] = $d;
+            $titles[$l]               = $t;
+            $titles[$l.'_edit']       = $t;
+            $descriptions[$l]         = $d;
+            $descriptions[$l.'_edit'] = $d;
         }
 
         // change title and description
         QUI\Translator::edit(
             'quiqqer/products',
-            'products.category.' . $catId . '.title',
+            'products.category.'.$catId.'.title',
             'quiqqer/products',
             array_merge(
                 $titles,
-                array(
+                [
                     'datatype' => 'php,js',
                     'html'     => 0
-                )
+                ]
             )
         );
 
         QUI\Translator::edit(
             'quiqqer/products',
-            'products.category.' . $catId . '.description',
+            'products.category.'.$catId.'.description',
             'quiqqer/products',
             array_merge(
                 $descriptions,
-                array(
+                [
                     'datatype' => 'php,js',
                     'html'     => 0
-                )
+                ]
             )
         );
 

@@ -18,6 +18,7 @@ class AbortCancelVerification extends QUI\Verification\AbstractVerification
      *
      * @return int|false - duration in minutes;
      * if this method returns false use the module setting default value
+     * @throws \QUI\Exception
      */
     public function getValidDuration()
     {
@@ -33,6 +34,7 @@ class AbortCancelVerification extends QUI\Verification\AbstractVerification
      * Execute this method on successful verification
      *
      * @return void
+     * @throws \QUI\Exception
      */
     public function onSuccess()
     {
@@ -55,28 +57,32 @@ class AbortCancelVerification extends QUI\Verification\AbstractVerification
      * This message is displayed to the user on successful verification
      *
      * @return string
+     * @throws \QUI\Exception
      */
     public function getSuccessMessage()
     {
         /** @var MembershipUser $MembershipUser */
         $MembershipUser = MembershipUsersHandler::getInstance()->getChild($this->getIdentifier());
+        $Membership     = $MembershipUser->getMembership();
         $data           = $MembershipUser->getFrontendViewData();
 
-        if ($MembershipUser->getMembership()->isAutoExtend()) {
+        if ($Membership->isAutoExtend()) {
             $msg = QUI::getLocale()->get(
                 'quiqqer/memberships',
                 'verification.abortcancel.success.autoExtend',
-                array(
-                    'endDate' => $data['endDate']
-                )
+                [
+                    'endDate'         => $data['endDate'],
+                    'membershipTitle' => $Membership->getTitle()
+                ]
             );
         } else {
             $msg = QUI::getLocale()->get(
                 'quiqqer/memberships',
                 'verification.abortcancel.success.noAutoExtend',
-                array(
-                    'endDate' => $data['endDate']
-                )
+                [
+                    'endDate'         => $data['endDate'],
+                    'membershipTitle' => $Membership->getTitle()
+                ]
             );
         }
 
