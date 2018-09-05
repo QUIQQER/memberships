@@ -742,6 +742,12 @@
 
     <groups name="quiqqer/memberships" datatype="php">
 
+        <!-- Events -->
+        <locale name="exception.Events.onQuiqqerProductsFieldDelete.cannot_delete_field">
+            <de><![CDATA[Dieses Produkt-Feld kann nicht gelöscht werden, da es vom installierten Paket "quiqqer/memberships" benötigt wird.]]></de>
+            <en><![CDATA[This product field cannot be deleted since it is required by the installed package "quiqqer/memberships".]]></en>
+        </locale>
+        
         <!-- Class: Handler -->
         <locale name="exception.handler.no.title">
             <de><![CDATA[Eine Mitgliedschaft muss einen Titel haben.]]></de>

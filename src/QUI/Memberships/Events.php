@@ -229,10 +229,31 @@ class Events
         }
     }
 
-    public static function onQuiqqerProductsFieldDelete(ProductField $Field)
+    /**
+     * quiqqer/products: onQuiqqerProductsFieldDeleteBefore
+     *
+     * @param ProductField $Field
+     * @throws Exception
+     */
+    public static function onQuiqqerProductsFieldDeleteBefore(ProductField $Field)
     {
-        $Conf = QUI::getPackage('quiqqer/memberships')->getConfig();
-        $membershipFieldId =
+        $MembershipField = Handler::getProductMembershipField();
+
+        if ($MembershipField !== false && $MembershipField->getId() === $Field->getId()) {
+            throw new Exception([
+                'quiqqer/memberships',
+                'exception.Events.onQuiqqerProductsFieldDelete.cannot_delete_field'
+            ]);
+        }
+
+        $MembershipFlagField = Handler::getProductMembershipFlagField();
+
+        if ($MembershipFlagField !== false && $MembershipFlagField->getId() === $Field->getId()) {
+            throw new Exception([
+                'quiqqer/memberships',
+                'exception.Events.onQuiqqerProductsFieldDelete.cannot_delete_field'
+            ]);
+        }
     }
 
     /**
