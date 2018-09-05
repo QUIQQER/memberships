@@ -580,6 +580,8 @@ class Membership extends Child
      * Locks editing of this membership for the current session user
      *
      * @return void
+     * @throws \QUI\Lock\Exception
+     * @throws \QUI\Exception
      */
     public function lock()
     {
@@ -590,7 +592,9 @@ class Membership extends Child
      * Unlock membership (requires permission!)
      *
      * @return void
-     * @throws QUI\Permissions\Exception
+     * @throws \QUI\Permissions\Exception
+     * @throws \QUI\Lock\Exception
+     * @throws \QUI\Exception
      */
     public function unlock()
     {
@@ -605,6 +609,7 @@ class Membership extends Child
      * Check if this membership is currently locked
      *
      * @return bool
+     * @throws \QUI\Exception
      */
     public function isLocked()
     {
@@ -667,6 +672,7 @@ class Membership extends Child
      *
      * @param QUI\Users\User $User
      * @return QUI\Memberships\Users\MembershipUser
+     * @throws \QUI\Exception
      */
     public function addUser(QUI\Users\User $User)
     {

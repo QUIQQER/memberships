@@ -5,21 +5,6 @@
  *
  * @module package/quiqqer/memberships/bin/controls/products/MembershipProducts
  * @author www.pcsg.de (Patrick Müller)
- *
- * @require qui/controls/Control
- * @require qui/controls/loader/Loader
- * @require qui/controls/windows/Popup
- * @require qui/controls/windows/Confirm
- * @require qui/controls/buttons/Button
- * @require utils/Controls
- * @require controls/grid/Grid
- * @require package/quiqqer/memberships/bin/Licenses
- * @require package/quiqqer/memberships/bin/controls/LicenseBundles
- * @require Locale
- * @require Ajax
- * @require Mustache
- * @require text!package/quiqqer/memberships/bin/controls/products/MembershipProducts.html
- * @require css!package/quiqqer/memberships/bin/controls/products/MembershipProducts.css
  */
 define('package/quiqqer/memberships/bin/controls/products/MembershipProducts', [
 

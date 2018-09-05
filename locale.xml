@@ -738,6 +738,40 @@
             <en><![CDATA[This settings required the QUIQQER module <b>quiqqer/products</b>]]></en>
         </locale>
 
+        <!-- Control: products/MembershipProducts -->
+        <locale name="controls.products.membershipprouducts.tbl.btn.createproduct">
+            <de><![CDATA[Produkt erstellen]]></de>
+            <en><![CDATA[Create product]]></en>
+        </locale>
+        <locale name="controls.products.membershipprouducts.tbl.btn.viewproduct">
+            <de><![CDATA[Produkt-Details]]></de>
+            <en><![CDATA[Product details]]></en>
+        </locale>
+        <locale name="controls.products.membershipprouducts.tbl.header.id">
+            <de><![CDATA[Produkt-ID]]></de>
+            <en><![CDATA[Product ID]]></en>
+        </locale>
+        <locale name="controls.products.membershipprouducts.tbl.header.articleNo">
+            <de><![CDATA[Artikel-Nr.]]></de>
+            <en><![CDATA[Article no]]></en>
+        </locale>
+        <locale name="controls.products.membershipprouducts.tbl.header.title">
+            <de><![CDATA[Produkt-Titel]]></de>
+            <en><![CDATA[Product title]]></en>
+        </locale>
+        <locale name="controls.products.membershipprouducts.create.popup.information" html="true">
+            <de><![CDATA[Sind Sie sicher, dass sie ein neues Produkt für die Mitgliedschaft <b>[title]</b> erstellen möchten? Der Titel und die Kurzbeschreibung dieser Mitgliedschaft werden automatisch für das Produkt übernommen.]]></de>
+            <en><![CDATA[Are you sure you want to create new product for the membership <b>[title]</b>? Title and short description of this membership will be set automatically to the product.]]></en>
+        </locale>
+        <locale name="controls.products.membershipprouducts.create.popup.title">
+            <de><![CDATA[Neues Produkt erstellen]]></de>
+            <en><![CDATA[Create new product]]></en>
+        </locale>
+        <locale name="controls.products.membershipprouducts.create.popup.text" html="true">
+            <de><![CDATA[Neues Produkt für die Mitgliedschaft "[title]"]]></de>
+            <en><![CDATA[New product for membership "[title]"]]></en>
+        </locale>
+
     </groups>
 
     <groups name="quiqqer/memberships" datatype="php">
@@ -1022,40 +1056,6 @@
         <locale name="verification.abortcancel.error.already_verified">
             <de><![CDATA[Die Kündigung der Mitgliedschaft wurde bereits zurückgezogen.]]></de>
             <en><![CDATA[The membership cancellation has already been withdrawn.]]></en>
-        </locale>
-
-        <!-- Control: products/MembershipProducts -->
-        <locale name="controls.products.membershipprouducts.tbl.btn.createproduct">
-            <de><![CDATA[Produkt erstellen]]></de>
-            <en><![CDATA[Create product]]></en>
-        </locale>
-        <locale name="controls.products.membershipprouducts.tbl.btn.viewproduct">
-            <de><![CDATA[Produkt-Details]]></de>
-            <en><![CDATA[Product details]]></en>
-        </locale>
-        <locale name="controls.products.membershipprouducts.tbl.header.id">
-            <de><![CDATA[Produkt-ID]]></de>
-            <en><![CDATA[Product ID]]></en>
-        </locale>
-        <locale name="controls.products.membershipprouducts.tbl.header.articleNo">
-            <de><![CDATA[Artikel-Nr.]]></de>
-            <en><![CDATA[Article no]]></en>
-        </locale>
-        <locale name="controls.products.membershipprouducts.tbl.header.title">
-            <de><![CDATA[Produkt-Titel]]></de>
-            <en><![CDATA[Product title]]></en>
-        </locale>
-        <locale name="controls.products.membershipprouducts.create.popup.information" html="true">
-            <de><![CDATA[Sind Sie sicher, dass sie ein neues Produkt für die Mitgliedschaft <b>[title]</b> erstellen möchten? Der Titel und die Kurzbeschreibung dieser Mitgliedschaft werden automatisch für das Produkt übernommen.]]></de>
-            <en><![CDATA[Are you sure you want to create new product for the membership <b>[title]</b>? Title and short description of this membership will be set automatically to the product.]]></en>
-        </locale>
-        <locale name="controls.products.membershipprouducts.create.popup.title">
-            <de><![CDATA[Neues Produkt erstellen]]></de>
-            <en><![CDATA[Create new product]]></en>
-        </locale>
-        <locale name="controls.products.membershipprouducts.create.popup.text" html="true">
-            <de><![CDATA[Neues Produkt für die Mitgliedschaft "[title]"]]></de>
-            <en><![CDATA[New product for membership "[title]"]]></en>
         </locale>
 
     </groups>

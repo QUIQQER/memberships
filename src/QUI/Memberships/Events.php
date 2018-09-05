@@ -12,7 +12,7 @@ use QUI\ERP\Products\Field\Field as ProductField;
 use QUI\ERP\Products\Handler\Categories as ProductCategories;
 use QUI\ERP\Products\Handler\Search as ProductSearchHandler;
 use QUI\ERP\Products\Product\Product;
-use QUI\ERP\Order\AbstractOrder;
+use QUI\ERP\Products\Handler\Products as ProductsHandler;
 
 /**
  * Class Events
@@ -215,17 +215,60 @@ class Events
     }
 
     /**
-     * quiqqer/order: onOrderSuccess
+     * quiqqer/order: onQuiqqerOrderSuccessful
      *
-     * @param AbstractOrder $Order
+     * Add user to a membership if he ordered a product that contains one
+     *
+     * @param QUI\ERP\Order\Order|QUI\ERP\Order\OrderInProcess $Order
      * @return void
      */
-    public static function onOrderSuccess(AbstractOrder $Order)
+    public static function onQuiqqerOrderSuccessful($Order)
     {
+        $MembershipField = Handler::getProductMembershipField();
+
+        if ($MembershipField === false) {
+            QUI\System\Log::addError(
+                self::class.' :: onQuiqqerOrderSuccessful -> Could not parse membership'
+                .' from Order #'.$Order->getPrefixedId().' because no membership field'
+                .' is configured. Please execute a system setup.'
+            );
+
+            return;
+        }
+
+        $membershipFieldId = $MembershipField->getId();
+        $Memberships       = Handler::getInstance();
+
+        try {
+            $User = QUI::getUsers()->get($Order->getCustomer()->getId());
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeDebugException($Exception);
+            return;
+        }
+
+        // do not add guests to a membership!
+        if (!QUI::getUsers()->isAuth($User)) {
+            return;
+        }
+
         /** @var QUI\ERP\Accounting\Article $Article */
         foreach ($Order->getArticles()->getArticles() as $Article) {
-            // @todo Membership Field holen und gucken, ob membershipId vergeben ist
-            // Wenn ja, dann Benutzer ($Order->getCustomer()) zu Membership hinzufügen
+            try {
+                $Product                = ProductsHandler::getProduct($Article->getId());
+                $ProductMembershipField = $Product->getField($membershipFieldId);
+
+                $Membership     = $Memberships->getChild($ProductMembershipField->getValue());
+                $MembershipUser = $Membership->addUser($User);
+
+                $MembershipUser->addHistoryEntry(
+                    MembershipUsersHandler::HISTORY_TYPE_MISC,
+                    'Order: '.$Order->getPrefixedId()
+                );
+
+                $MembershipUser->update(false);
+            } catch (\Exception $Exception) {
+                QUI\System\Log::writeException($Exception);
+            }
         }
     }
 
