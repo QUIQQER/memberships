@@ -281,6 +281,8 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
                             })
                         );
 
+                        self.$refresh();
+
                         break;
                     }
                 }
