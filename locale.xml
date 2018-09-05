@@ -913,6 +913,14 @@
             <de><![CDATA[Eine Mitgliedschaft kann nur vom Mitgliedschafts-Benutzer selbst gekündigt werden.]]></de>
             <en><![CDATA[A membership can only be cancelled by the membership user himself.]]></en>
         </locale>
+        <locale name="exception.users.membershipuser.manualcancel.no_email_address">
+            <de><![CDATA[Sie können diese Mitgliedschaft nicht kündigen, da mit Ihrem Benutzerkonto keine oder keine gültige E-Mail-Adresse verknüpft ist. Bitte wenden Sie sich an einen Administrator.]]></de>
+            <en><![CDATA[You cannot cancel this membership because there is no valid email address associated with your account. Please contact an administrator.]]></en>
+        </locale>
+        <locale name="exception.users.membershipuser.abortcancel.no_email_address">
+            <de><![CDATA[Sie können die Kündigung Ihrer Mitgliedschaft nicht aufheben, da mit Ihrem Benutzerkonto keine oder keine gültige E-Mail-Adresse verknüpft ist. Bitte wenden Sie sich an einen Administrator.]]></de>
+            <en><![CDATA[You cannot withdraw the cancellation of this membership because there is no valid email address associated with your account. Please contact an administrator.]]></en>
+        </locale>
 
         <!-- Control: users/MembershipUserEdit -->
         <locale name="controls.users.membershipuseredit.cancelmail.popup.info">

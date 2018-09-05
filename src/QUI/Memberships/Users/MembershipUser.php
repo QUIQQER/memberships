@@ -171,6 +171,8 @@ class MembershipUser extends Child
      * @return void
      *
      * @throws QUI\Memberships\Exception
+     * @throws QUI\Verification\Exception
+     * @throws QUI\Exception
      */
     public function startManualCancel()
     {
@@ -196,6 +198,15 @@ class MembershipUser extends Child
         // cannot manually cancel default membership
         if ($Membership->isDefault()) {
             return;
+        }
+
+        $userEmail = $this->getUser()->getAttribute('email');
+
+        if (empty($userEmail)) {
+            throw new QUI\Memberships\Exception(array(
+                'quiqqer/memberships',
+                'exception.users.membershipuser.manualcancel.no_email_address'
+            ));
         }
 
         $cancelUrl  = Verifier::startVerification($this->getCancelVerification(), true);
@@ -227,6 +238,8 @@ class MembershipUser extends Child
      *
      * @return void
      * @throws QUI\Memberships\Exception
+     * @throws QUI\Verification\Exception
+     * @throws QUI\Exception
      */
     public function startAbortCancel()
     {
@@ -244,6 +257,15 @@ class MembershipUser extends Child
             && $cancelStatus !== MembershipUsersHandler::CANCEL_STATUS_CANCELLED
         ) {
             return;
+        }
+
+        $userEmail = $this->getUser()->getAttribute('email');
+
+        if (empty($userEmail)) {
+            throw new QUI\Memberships\Exception(array(
+                'quiqqer/memberships',
+                'exception.users.membershipuser.abortcancel.no_email_address'
+            ));
         }
 
         $abortCancelUrl = Verifier::startVerification($this->getAbortCancelVerification(), true);

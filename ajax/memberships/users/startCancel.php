@@ -66,5 +66,6 @@ QUI::$Ajax->registerFunction(
 
         return true;
     },
-    array('membershipUserId')
+    array('membershipUserId'),
+    'Permission::checkUser'
 );
