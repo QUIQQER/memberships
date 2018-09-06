@@ -2,7 +2,7 @@
   "name": "quiqqer/memberships",
   "type": "quiqqer-module",
   "description": "Create and manage memberships for your users. With memberships you can grant your users permissions for set periods of time in your system. In conjunction with the QUIQQER ERP system, this module also enables automated linking of memberships with products, so that you can offer memberships for sale.",
-  "version": "dev-master",
+  "version": "1.0.0",
   "license": [
     "PCSG QL-1.0",
     "CC BY-NC-SA 4.0"
