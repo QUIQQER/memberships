@@ -1,15 +1,21 @@
 <quiqqer>
     <package>
         <title>
-            <locale group='quiqqer/memberships' var='package.title'/>
+            <locale group="quiqqer/memberships" var="package.title"/>
         </title>
 
         <description>
-           <locale group='quiqqer/memberships' var='package.description'/>
+            <locale group="quiqqer/memberships" var="package.description"/>
         </description>
 
-
         <image src="URL_OPT_DIR/quiqqer/memberships/bin/images/Logo.jpg"/>
+
+        <preview>
+            <image src="URL_OPT_DIR/quiqqer/memberships/bin/images/preview/Frontend_Profile.png"/>
+            <image src="URL_OPT_DIR/quiqqer/memberships/bin/images/preview/Backend_List.png"/>
+            <image src="URL_OPT_DIR/quiqqer/memberships/bin/images/preview/Backend_Membership.png"/>
+            <image src="URL_OPT_DIR/quiqqer/memberships/bin/images/preview/Backend_Membership_History.png"/>
+        </preview>
 
         <support>
             <email><![CDATA[support@pcsg.de]]></email>
@@ -25,16 +31,10 @@
             <license><![CDATA[CC BY-NC-SA 4.0]]></license>
         </copyright>
 
-
-        <!-- More preview images
-       <preview>
-           <image src="URL_OPT_DIR/quiqqer/quiqqer/bin/preview/1.png"/>
-           <image src="URL_OPT_DIR/quiqqer/quiqqer/bin/preview/2.png"/>
-           <image src="URL_OPT_DIR/quiqqer/quiqqer/bin/preview/3.png"/>
-           <image src="URL_OPT_DIR/quiqqer/quiqqer/bin/preview/4.png"/>
-           <image src="URL_OPT_DIR/quiqqer/quiqqer/bin/preview/5.png"/>
-       </preview>
-       -->
+        <languages>
+            <language>de</language>
+            <language>en</language>
+        </languages>
 
     </package>
 </quiqqer>

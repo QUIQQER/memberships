@@ -3,13 +3,14 @@
 
     <groups name="quiqqer/memberships" datatype="php,js">
 
+        <!-- Package -->
         <locale name="package.title">
             <de><![CDATA[QUIQQER - Mitgliedschaften]]></de>
             <en><![CDATA[QUIQQER - Memberships]]></en>
         </locale>
         <locale name="package.description">
-            <de><![CDATA[Das Mitgliedschaftsmodul ist ein einfach zu bedienendes Mitgliedschafts-Plugin. Es gibt Ihnen die Möglichkeit, die Mitgliedschaftsabonnements einfach zu erstellen, zu verwalten und zu verfolgen. Zusätzlich erlaubt Ihnen das Mitgliedschaftsmodul, den Benutzern automatisiert Berechtigungen zu erteilen und zu widerrufen.]]></de>
-            <en><![CDATA[The Membership Module is an easy to use Membership Plugin. It will give you the ability to confidently create, manage and track membership subscriptions. In addition to these powerful abilities, the Membership Module will allow you to grant and revoke permissions to Users.]]></en>
+            <de><![CDATA[Erstellen und verwalten Sie Mitgliedschaften für Ihre Benutzer. Mit Mitgliedschaften können Sie Ihren Benutzern für konfigurierbare Zeiträume Berechtigungen in Ihrem System erteilen. In Verbindung mit dem QUIQQER ERP System ermöglicht dieses Modul auch die automatisierte Verknüpfungen von Mitgliedschaften mit Produkten, so dass Sie Mitgliedschaften auch zum Kauf anbieten können.]]></de>
+            <en><![CDATA[Create and manage memberships for your users. With memberships you can grant your users permissions for set periods of time in your system. In conjunction with the QUIQQER ERP system, this module also enables automated linking of memberships with products, so that you can offer memberships for sale.]]></en>
         </locale>
 
         <!-- Menu -->

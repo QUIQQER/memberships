@@ -38,7 +38,7 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserHistoryPopu
             'class'         : 'quiqqer-memberships-membershipuserhistorypopup',
 
             // buttons
-            closeButtonText: QUILocale.get('qui/controls/windows/Popup', 'btn.close')
+            closeButtonText: QUILocale.get('quiqqer/translator', 'edit.btn.close')
         },
 
         initialize: function (options) {

@@ -4,22 +4,6 @@
  * @authro www.pcsg.de (Patrick Müller)
  * @module package/quiqqer/memberships/bin/controls/Membership
  *
- * @require qui/QUI
- * @require qui/controls/desktop/Panel
- * @require qui/controls/buttons/Button
- * @require qui/utils/Form
- * @require Ajax
- * @require Locale
- * @require Mustache
- * @require utils/Lock
- * @require package/quiqqer/memberships/bin/Memberships
- * @require package/quiqqer/memberships/bin/controls/users/MembershipUsers
- * @require package/quiqqer/memberships/bin/controls/users/MembershipUsersArchive
- * @require package/quiqqer/memberships/bin/controls/products/MembershipProducts
- * @require text!package/quiqqer/memberships/bin/controls/Membership.Settings.html
- * @require css!package/quiqqer/memberships/bin/controls/Membership.css
- * @require css!controls/desktop/panels/XML.css
- *
  * @event onSave [this] - If the user saves the membership data
  */
 define('package/quiqqer/memberships/bin/controls/Membership', [
@@ -28,6 +12,7 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
     'qui/controls/desktop/Panel',
     'qui/controls/buttons/Button',
     'qui/utils/Form',
+    'utils/Controls',
 
     'Ajax',
     'Locale',
@@ -44,7 +29,7 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
     'css!package/quiqqer/memberships/bin/controls/Membership.css',
     'css!controls/desktop/panels/XML.css'
 
-], function (QUI, QUIPanel, QUIButton, QUIFormUtils, QUIAjax, QUILocale, Mustache,
+], function (QUI, QUIPanel, QUIButton, QUIFormUtils, QUIControlUtils, QUIAjax, QUILocale, Mustache,
              QUILocker, Memberships, MembershipUsers, MembershipUsersArchive,
              MembershipProducts, templateSettings) {
     "use strict";
@@ -263,7 +248,7 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
             this.Loader.show();
 
             Memberships.getMembership(this.getAttribute('id')).then(function (Membership) {
-                self.$Membership      = Membership;
+                self.$Membership = Membership;
 
                 // set title
                 var Titles = JSON.decode(self.$Membership.title);
@@ -346,6 +331,14 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
 
             QUI.parse(PanelContent).then(function () {
                 self.Loader.hide();
+                //
+                //QUIControlUtils.getControlByElement(
+                //    PanelContent.getElement(
+                //        'input[data-qui="controls/lang/ContentMultiLang"]'
+                //    )
+                //).then(function(ContentLangControl) {
+                //    ContentLangControl.$loadLangContent(QUILocale.getCurrent());
+                //});
             });
         },
 
@@ -656,9 +649,9 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
                 var LockInfoElm = new Element('div', {
                     'class': 'quiqqer-memberships-membership-lock-info',
                     html   : '<span class="fa fa-lock quiqqer-memberships-membership-lock-info-icon"></span>' +
-                    '<h1>' + QUILocale.get(lg, 'controls.membership.lock.title') + '</h1>' +
-                    '<p>' + lockInfo + '</p>' +
-                    '<div class="quiqqer-memberships-membership-lock-btn"></div>'
+                        '<h1>' + QUILocale.get(lg, 'controls.membership.lock.title') + '</h1>' +
+                        '<p>' + lockInfo + '</p>' +
+                        '<div class="quiqqer-memberships-membership-lock-btn"></div>'
                 }).inject(self.$Elm);
 
                 if (canUnlock) {
