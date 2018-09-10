@@ -266,6 +266,8 @@ class Events
                 );
 
                 $MembershipUser->update(false);
+            } catch (\QUI\ERP\Products\Product\Exception $Exception) {
+                // nothing, this can happen if the $Product does not have a membership field assigned
             } catch (\Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
             }
