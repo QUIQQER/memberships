@@ -17,17 +17,18 @@ class Cron
     {
         $MembershipUsers = MembershipUsersHandler::getInstance();
 
-        $result = QUI::getDataBase()->fetch(array(
-            'select' => array(
+        $result = QUI::getDataBase()->fetch([
+            'select' => [
                 'id'
-            ),
+            ],
             'from'   => $MembershipUsers->getDataBaseTableName(),
-            'where'  => array(
+            'where'  => [
                 'archived' => 0
-            )
-        ));
+            ]
+        ]);
 
         $now = time();
+        $Now = new \DateTime();
 
         foreach ($result as $row) {
             try {
@@ -52,9 +53,9 @@ class Cron
                 }
 
                 // check if membership has expired
-                $endTimestamp = strtotime($Membership->getAttribute('endDate'));
+                $endTimestamp = strtotime($MembershipUser->getAttribute('endDate'));
 
-                if ($now < $endTimestamp) {
+                if ($now <= $endTimestamp) {
                     continue;
                 }
 
@@ -74,7 +75,7 @@ class Cron
                 $MembershipUser->expire();
             } catch (\Exception $Exception) {
                 QUI\System\Log::addError(
-                    self::class . ' :: checkMembershipUsers() -> ' . $Exception->getMessage()
+                    self::class.' :: checkMembershipUsers() -> '.$Exception->getMessage()
                 );
             }
 
