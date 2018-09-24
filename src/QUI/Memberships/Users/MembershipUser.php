@@ -66,7 +66,9 @@ class MembershipUser extends Child
                     }
                     break;
 
-                default:
+                case 'cancelled':
+                    $this->setAttribute($k, $v ? 1 : 0);
+                    break;
             }
         }
 
