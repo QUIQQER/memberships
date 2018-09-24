@@ -16,9 +16,10 @@ QUI::$Ajax->registerFunction(
         try {
             $MembershipUsers = MembershipUsersHandler::getInstance();
             /** @var \QUI\Memberships\Users\MembershipUser $MembershipUser */
-            $MembershipUser = $MembershipUsers->getChild((int)$membershipUserId);
-            $attributes     = json_decode($attributes, true);
-            $updated        = array();
+            $MembershipUser     = $MembershipUsers->getChild((int)$membershipUserId);
+            $attributes         = json_decode($attributes, true);
+            $updated            = [];
+            $sendAutoExtendMail = false;
 
             foreach ($attributes as $k => $v) {
                 switch ($k) {
@@ -27,9 +28,16 @@ QUI::$Ajax->registerFunction(
                         $v      = Utils::getFormattedTimestamp(strtotime($v));
                         $oldVal = $MembershipUser->getAttribute($k);
 
-                        if ($oldVal != $v) {
-                            $updated[$k] = $oldVal . ' => ' . $v;
-                            $MembershipUser->sendManualExtendMail();
+                        $updated[$k] = $oldVal.' => '.$v;
+
+                        if ($k === 'endDate') {
+                            $oldEndDate = strtotime($MembershipUser->getAttribute('endDate'));
+                            $newEndDate = strtotime($v);
+                            $now        = time();
+
+                            if ($newEndDate >= $now && $newEndDate > $oldEndDate) {
+                                $sendAutoExtendMail = true;
+                            }
                         }
                         break;
 
@@ -65,14 +73,18 @@ QUI::$Ajax->registerFunction(
             }
 
             $MembershipUser->update();
+
+            if ($sendAutoExtendMail) {
+                $MembershipUser->sendManualExtendMail();
+            }
         } catch (QUI\Memberships\Exception $Exception) {
             QUI::getMessagesHandler()->addError(
                 QUI::getLocale()->get(
                     'quiqqer/memberships',
                     'message.ajax.memberships.users.update.error',
-                    array(
+                    [
                         'error' => $Exception->getMessage()
-                    )
+                    ]
                 )
             );
 
@@ -85,9 +97,9 @@ QUI::$Ajax->registerFunction(
                 QUI::getLocale()->get(
                     'quiqqer/memberships',
                     'message.ajax.general.error',
-                    array(
+                    [
                         'error' => $Exception->getMessage()
-                    )
+                    ]
                 )
             );
 
@@ -98,15 +110,15 @@ QUI::$Ajax->registerFunction(
             QUI::getLocale()->get(
                 'quiqqer/memberships',
                 'message.ajax.memberships.users.update.success',
-                array(
+                [
                     'membershipUserId'   => $MembershipUser->getId(),
                     'membershipUserName' => $MembershipUser->getUser()->getName()
-                )
+                ]
             )
         );
 
         return true;
     },
-    array('membershipUserId', 'attributes'),
+    ['membershipUserId', 'attributes'],
     'Permission::checkAdminUser'
 );
