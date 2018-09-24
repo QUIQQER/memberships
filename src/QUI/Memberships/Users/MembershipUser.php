@@ -53,6 +53,23 @@ class MembershipUser extends Child
             }
         }
 
+        // check dates
+        foreach ($this->getAttributes() as $k => $v) {
+            switch ($k) {
+                case 'addedDate':
+                case 'beginDate':
+                case 'endDate':
+                case 'cancelDate':
+                case 'archiveDate':
+                    if (empty($v) || $v === '0000-00-00 00:00:00') {
+                        $this->setAttribute($k, null);
+                    }
+                    break;
+
+                default:
+            }
+        }
+
         parent::update();
     }
 
