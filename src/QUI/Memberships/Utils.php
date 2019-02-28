@@ -85,7 +85,8 @@ class Utils
         $packages         = array();
         $relevantPackages = array(
             'quiqqer/products',
-            'quiqqer/contracts'
+            'quiqqer/contracts',
+            'quiqqer/erp-plans'
         );
 
         foreach ($relevantPackages as $package) {
@@ -107,7 +108,17 @@ class Utils
      */
     public static function isQuiqqerProductsInstalled()
     {
-        return in_array('quiqqer/products', self::getInstalledMembershipPackages());
+        return QUI::getPackageManager()->isInstalled('quiqqer/products');
+    }
+
+    /**
+     * Check if quiqqer/erp-plans is installed
+     *
+     * @return bool
+     */
+    public static function isQuiqqerErpPlansInstalled()
+    {
+        return QUI::getPackageManager()->isInstalled('quiqqer/erp-plans');
     }
 
     /**
@@ -117,6 +128,6 @@ class Utils
      */
     public static function isQuiqqerContractsInstalled()
     {
-        return in_array('quiqqer/contracts', self::getInstalledMembershipPackages());
+        return QUI::getPackageManager()->isInstalled('quiqqer/contracts');
     }
 }

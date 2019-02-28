@@ -361,7 +361,7 @@ class Handler extends Factory
      *
      * Get quiqqer/products membership Field
      *
-     * @return QUI\ERP\Products\Interfaces\FieldInterface|false
+     * @return QUI\ERP\Products\Field\Field|false
      */
     public static function getProductMembershipField()
     {
@@ -389,7 +389,7 @@ class Handler extends Factory
      *
      * Get quiqqer/products membership flag Field
      *
-     * @return QUI\ERP\Products\Interfaces\FieldInterface|false
+     * @return QUI\ERP\Products\Field\Field|false
      */
     public static function getProductMembershipFlagField()
     {

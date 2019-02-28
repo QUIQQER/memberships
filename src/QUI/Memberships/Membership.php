@@ -11,9 +11,9 @@ use QUI\Memberships\Users\Handler as MembershipUsersHandler;
 use QUI\Permissions\Permission;
 use QUI\Utils\Security\Orthos;
 use QUI\ERP\Products\Search\BackendSearch;
-use QUI\Memberships\Products\MembershipField;
 use QUI\ERP\Products\Handler\Products as ProductsHandler;
 use QUI\ERP\Products\Handler\Fields as ProductFields;
+use QUI\ERP\Plans\Handler as ErpPlansHandler;
 
 class Membership extends Child
 {
@@ -536,6 +536,7 @@ class Membership extends Child
         $MembershipField = Handler::getProductMembershipField();
 
         if ($MembershipField !== false) {
+            $MembershipField->setOwnFieldStatus(true);
             $MembershipField->setValue($this->id);
             $fields[] = $MembershipField;
         }
@@ -543,6 +544,7 @@ class Membership extends Child
         $MembershipFlagField = Handler::getProductMembershipFlagField();
 
         if ($MembershipFlagField !== false) {
+            $MembershipFlagField->setOwnFieldStatus(true);
             $MembershipFlagField->setValue(true);
             $fields[] = $MembershipFlagField;
         }
@@ -561,6 +563,31 @@ class Membership extends Child
         if (!empty($description)) {
             $DescField->setValue($description);
             $fields[] = $DescField;
+        }
+
+        // Add fields for contract product type
+        if (Utils::isQuiqqerErpPlansInstalled()) {
+            $planFields = ErpPlansHandler::getPlanProductFields();
+
+            foreach ($planFields as $Field) {
+                try {
+                    $Field->setOwnFieldStatus(true);
+
+                    switch ($Field->getId()) {
+                        case ErpPlansHandler::FIELD_DURATION:
+                            $Field->setValue($this->getAttribute('duration'));
+                            break;
+
+                        case ErpPlansHandler::FIELD_AUTO_EXTEND:
+                            $Field->setValue($this->isAutoExtend());
+                            break;
+                    }
+
+                    $fields[] = $Field;
+                } catch (\Exception $Exception) {
+                    QUI\System\Log::writeException($Exception);
+                }
+            }
         }
 
         $Product = ProductsHandler::createProduct($categories, $fields);
