@@ -565,37 +565,17 @@ class Membership extends Child
             $fields[] = $DescField;
         }
 
-        // Add fields for contract product type
-        if (Utils::isQuiqqerErpPlansInstalled()) {
-            $planFields = ErpPlansHandler::getPlanProductFields();
-
-            foreach ($planFields as $Field) {
-                try {
-                    $Field->setOwnFieldStatus(true);
-
-                    switch ($Field->getId()) {
-                        case ErpPlansHandler::FIELD_DURATION:
-                            $Field->setValue($this->getAttribute('duration'));
-                            break;
-
-                        case ErpPlansHandler::FIELD_AUTO_EXTEND:
-                            $Field->setValue($this->isAutoExtend());
-                            break;
-                    }
-
-                    $fields[] = $Field;
-                } catch (\Exception $Exception) {
-                    QUI\System\Log::writeException($Exception);
-                }
-            }
-        }
-
         $Product = ProductsHandler::createProduct($categories, $fields);
 
         if (!empty($categories)) {
             $Product->setMainCategory($categories[0]);
             $Product->save();
         }
+
+        QUI::getEvents()->fireEvent(
+            'quiqqerMembershipsCreateProduct',
+            [$this, $Product]
+        );
 
         return $Product;
     }
