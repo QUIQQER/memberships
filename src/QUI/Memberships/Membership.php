@@ -11,9 +11,9 @@ use QUI\Memberships\Users\Handler as MembershipUsersHandler;
 use QUI\Permissions\Permission;
 use QUI\Utils\Security\Orthos;
 use QUI\ERP\Products\Search\BackendSearch;
-use QUI\Memberships\Products\MembershipField;
 use QUI\ERP\Products\Handler\Products as ProductsHandler;
 use QUI\ERP\Products\Handler\Fields as ProductFields;
+use QUI\ERP\Plans\Handler as ErpPlansHandler;
 
 class Membership extends Child
 {
@@ -185,11 +185,6 @@ class Membership extends Child
                 );
                 $MembershipField->setValue(null);
 
-                $MembershipFlagField = $Product->getField(
-                    Handler::getProductMembershipFlagField()->getId()
-                );
-                $MembershipFlagField->setValue(null);
-
                 $Product->deactivate();
                 $Product->save();
             }
@@ -200,6 +195,8 @@ class Membership extends Child
         }
 
         parent::delete();
+
+        QUI::getEvents()->fireEvent('quiqqerMembershipsDelete', [$this->getId()]);
     }
 
     /**
@@ -539,6 +536,7 @@ class Membership extends Child
         $MembershipField = Handler::getProductMembershipField();
 
         if ($MembershipField !== false) {
+            $MembershipField->setOwnFieldStatus(true);
             $MembershipField->setValue($this->id);
             $fields[] = $MembershipField;
         }
@@ -546,6 +544,7 @@ class Membership extends Child
         $MembershipFlagField = Handler::getProductMembershipFlagField();
 
         if ($MembershipFlagField !== false) {
+            $MembershipFlagField->setOwnFieldStatus(true);
             $MembershipFlagField->setValue(true);
             $fields[] = $MembershipFlagField;
         }
@@ -572,6 +571,11 @@ class Membership extends Child
             $Product->setMainCategory($categories[0]);
             $Product->save();
         }
+
+        QUI::getEvents()->fireEvent(
+            'quiqqerMembershipsCreateProduct',
+            [$this, $Product]
+        );
 
         return $Product;
     }

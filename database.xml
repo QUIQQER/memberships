@@ -30,6 +30,7 @@
             <field type="DATETIME NULL DEFAULT NULL">endDate</field>
             <field type="SMALLINT UNSIGNED NOT NULL DEFAULT 0">extendCounter</field>
             <field type="DATETIME NULL DEFAULT NULL">cancelDate</field>
+            <field type="DATETIME NULL DEFAULT NULL">cancelEndDate</field>
             <field type="TINYINT(1) NOT NULL DEFAULT 0">cancelled</field>
             <field type="VARCHAR(255) NOT NULL DEFAULT 0">cancelStatus</field>
             <field type="TINYINT(1) NOT NULL DEFAULT 0">archived</field>
@@ -40,6 +41,9 @@
 
             <!-- quiqqer/products fields -->
             <field type="BIGINT(20) NULL">productId</field>
+
+            <!-- quiqqer/contracts fields -->
+            <field type="BIGINT(20) NULL">contractId</field>
         </table>
     </global>
 

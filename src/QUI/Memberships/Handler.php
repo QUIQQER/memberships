@@ -68,12 +68,17 @@ class Handler extends Factory
             $Groups->get((int)$groupId);
         }
 
-        $data['groupIds'] = ','.implode(',', $groupIds).',';
-        $data['duration'] = '1-month';
+        $data['groupIds']   = ','.implode(',', $groupIds).',';
+        $data['duration']   = '1-month';
+        $data['autoExtend'] = 0;
+        $data['editDate']   = null;
+        $data['editUser']   = null;
 
         /** @var Membership $NewMembership */
         $NewMembership = parent::createChild($data);
         $NewMembership->createProduct();
+
+        QUI::getEvents()->fireEvent('quiqqerMembershipsCreate', [$NewMembership]);
 
         return $NewMembership;
     }
@@ -122,6 +127,8 @@ class Handler extends Factory
             'autoExtend',
             'editDate',
             'editUser',
+            'createDate',
+            'createUser',
 
             // these fields require quiqqer/order
             'paymentInterval'
@@ -354,7 +361,7 @@ class Handler extends Factory
      *
      * Get quiqqer/products membership Field
      *
-     * @return QUI\ERP\Products\Interfaces\FieldInterface|false
+     * @return QUI\ERP\Products\Field\Field|false
      */
     public static function getProductMembershipField()
     {
@@ -382,7 +389,7 @@ class Handler extends Factory
      *
      * Get quiqqer/products membership flag Field
      *
-     * @return QUI\ERP\Products\Interfaces\FieldInterface|false
+     * @return QUI\ERP\Products\Field\Field|false
      */
     public static function getProductMembershipFlagField()
     {

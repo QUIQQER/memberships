@@ -107,7 +107,7 @@ class Utils
      */
     public static function isQuiqqerProductsInstalled()
     {
-        return in_array('quiqqer/products', self::getInstalledMembershipPackages());
+        return QUI::getPackageManager()->isInstalled('quiqqer/products');
     }
 
     /**
@@ -117,6 +117,6 @@ class Utils
      */
     public static function isQuiqqerContractsInstalled()
     {
-        return in_array('quiqqer/contracts', self::getInstalledMembershipPackages());
+        return QUI::getPackageManager()->isInstalled('quiqqer/contracts');
     }
 }

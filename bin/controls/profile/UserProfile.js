@@ -134,13 +134,17 @@ define('package/quiqqer/memberships/bin/controls/profile/UserProfile', [
 
             var endDateLabel, endDateValue;
 
-            if (Membership.autoExtend && !Membership.infinite) {
+            if (Membership.cancelled) {
+                endDateLabel = QUILocale.get(lg, lgPrefix + 'labelEndDate.cancelled');
+            } else if (Membership.autoExtend && !Membership.infinite) {
                 endDateLabel = QUILocale.get(lg, lgPrefix + 'labelEndDate.autoExtend');
             } else {
                 endDateLabel = QUILocale.get(lg, lgPrefix + 'labelEndDate.noAutoExtend');
             }
 
-            if (Membership.infinite || !Membership.endDate) {
+            if (Membership.cancelled) {
+                endDateValue = Membership.cancelEndDate;
+            } else if (Membership.infinite || !Membership.endDate) {
                 endDateValue = QUILocale.get(lg, lgPrefix + 'endDate.infinite');
             } else {
                 endDateValue = Membership.endDate;
@@ -302,7 +306,7 @@ define('package/quiqqer/memberships/bin/controls/profile/UserProfile', [
 
                 information: QUILocale.get(lg, 'controls.profile.userprofile.cancelconfirm.info', {
                     title  : Membership.membershipTitle,
-                    endDate: Membership.endDate
+                    endDate: Membership.cancelEndDate
                 }),
                 'title'    : QUILocale.get(lg, 'controls.profile.userprofile.cancelconfirm.title'),
                 'texticon' : 'icon-remove fa fa-ban',
