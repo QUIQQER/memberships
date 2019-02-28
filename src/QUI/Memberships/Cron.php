@@ -82,7 +82,6 @@ class Cron
                     self::class.' :: checkMembershipUsers() -> '.$Exception->getMessage()
                 );
             }
-
         }
     }
 }
