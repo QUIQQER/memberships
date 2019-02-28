@@ -2,6 +2,8 @@
 <events>
     <event on="onPackageSetup" fire="\QUI\Memberships\Events::onPackageSetup"/>
     <event on="onUserSave" fire="\QUI\Memberships\Events::onUserSave"/>
-    <event on="onQuiqqerOrderSuccessful" fire="\QUI\Memberships\Events::onQuiqqerOrderSuccessful"/>
+    <event on="onQuiqqerOrderSuccessful" fire="\QUI\Memberships\Events::onQuiqqerOrderSuccessful" priority="5"/>
     <event on="onQuiqqerProductsFieldDeleteBefore" fire="\QUI\Memberships\Events::onQuiqqerProductsFieldDeleteBefore"/>
+
+    <event on="onQuiqqerContractCreateFromOrder" fire="\QUI\Memberships\Events::onQuiqqerContractCreateFromOrder"/>
 </events>

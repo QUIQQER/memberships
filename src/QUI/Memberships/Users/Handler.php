@@ -54,7 +54,7 @@ class Handler extends Factory
      * @inheritdoc
      * @throws QUI\Memberships\Exception
      */
-    public function createChild($data = array())
+    public function createChild($data = [])
     {
         Permission::checkPermission(MembershipUsersHandler::PERMISSION_EDIT_USERS);
 
@@ -62,18 +62,18 @@ class Handler extends Factory
 
         // user
         if (empty($data['userId'])) {
-            throw new QUI\Memberships\Exception(array(
+            throw new QUI\Memberships\Exception([
                 'quiqqer/memberships',
                 'exception.users.handler.no.user'
-            ));
+            ]);
         }
 
         // membership
         if (empty($data['membershipId'])) {
-            throw new QUI\Memberships\Exception(array(
+            throw new QUI\Memberships\Exception([
                 'quiqqer/memberships',
                 'exception.users.handler.no.membership'
-            ));
+            ]);
         }
 
         $Membership = MembershipsHandler::getInstance()->getChild($data['membershipId']);
@@ -91,11 +91,26 @@ class Handler extends Factory
         $data['beginDate'] = Utils::getFormattedTimestamp();
         $data['endDate']   = $Membership->calcEndDate();
 
+        $data['extendCounter'] = 0;
+        $data['cancelDate']    = null;
+        $data['cancelEndDate'] = null;
+        $data['cancelled']     = 0;
+        $data['cancelStatus']  = 0;
+        $data['archived']      = 0;
+        $data['archiveDate']   = null;
+        $data['archiveReason'] = null;
+        $data['history']       = null;
+        $data['extraData']     = null;
+        $data['productId']     = null;
+        $data['contractId']    = null;
+
         /** @var MembershipUser $NewChild */
         $NewChild = parent::createChild($data);
         $NewChild->addHistoryEntry(self::HISTORY_TYPE_CREATED);
         $NewChild->addToGroups();
         $NewChild->update();
+
+        QUI::getEvents()->fireEvent('quiqqerMembershipsUserCreate', [$NewChild]);
 
         return $NewChild;
     }
@@ -109,24 +124,24 @@ class Handler extends Factory
      */
     public function getIdsByMembershipId($membershipId, $includeArchived = false)
     {
-        $where = array(
+        $where = [
             'membershipId' => $membershipId,
             'archived'     => 0
-        );
+        ];
 
         if ($includeArchived === true) {
             unset($where['archived']);
         }
 
-        $result = QUI::getDataBase()->fetch(array(
-            'select' => array(
+        $result = QUI::getDataBase()->fetch([
+            'select' => [
                 'id'
-            ),
+            ],
             'from'   => MembershipUsersHandler::getDataBaseTableName(),
             'where'  => $where
-        ));
+        ]);
 
-        $membershipUserIds = array();
+        $membershipUserIds = [];
 
         foreach ($result as $row) {
             $membershipUserIds[] = $row['id'];
@@ -144,24 +159,24 @@ class Handler extends Factory
      */
     public function getMembershipUsersByUserId($userId, $includeArchived = false)
     {
-        $where = array(
+        $where = [
             'userId'   => $userId,
             'archived' => 0
-        );
+        ];
 
         if ($includeArchived === true) {
             unset($where['archived']);
         }
 
-        $result = QUI::getDataBase()->fetch(array(
-            'select' => array(
+        $result = QUI::getDataBase()->fetch([
+            'select' => [
                 'id'
-            ),
+            ],
             'from'   => self::getDataBaseTableName(),
             'where'  => $where
-        ));
+        ]);
 
-        $membershipUsers = array();
+        $membershipUsers = [];
 
         foreach ($result as $row) {
             $membershipUsers[] = self::getChild($row['id']);
@@ -232,7 +247,7 @@ class Handler extends Factory
      */
     public function getChildAttributes()
     {
-        return array(
+        return [
             'membershipId',
             'userId',
             'addedDate',
@@ -241,13 +256,15 @@ class Handler extends Factory
             'archived',
             'history',
             'cancelDate',
+            'cancelEndDate',
             'cancelled',
             'cancelStatus',
             'archiveReason',
             'archiveDate',
             'extraData',
-            'productId'
-        );
+            'productId',
+            'contractId'
+        ];
     }
 
     /**

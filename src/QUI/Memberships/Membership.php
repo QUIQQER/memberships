@@ -185,11 +185,6 @@ class Membership extends Child
                 );
                 $MembershipField->setValue(null);
 
-                $MembershipFlagField = $Product->getField(
-                    Handler::getProductMembershipFlagField()->getId()
-                );
-                $MembershipFlagField->setValue(null);
-
                 $Product->deactivate();
                 $Product->save();
             }
@@ -200,6 +195,8 @@ class Membership extends Child
         }
 
         parent::delete();
+
+        QUI::getEvents()->fireEvent('quiqqerMembershipsDelete', [$this->getId()]);
     }
 
     /**

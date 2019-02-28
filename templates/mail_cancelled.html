@@ -4,9 +4,9 @@
 </h1>
 
 <p>
-    {locale group="quiqqer/memberships" value="templates.mail.startcancel.body" Locale=$Locale
+    {locale group="quiqqer/memberships" value="templates.mail.cancelled.body" Locale=$Locale
     membershipTitle=$data['membershipTitle']
-    endDate=$cancelEndDate
-    cancelUrl=$cancelUrl
+    endDate=$data['cancelEndDate']
+    cancelDate=$data['cancelDate']
     }
 </p>

@@ -5,21 +5,6 @@
  *
  * @module package/quiqqer/memberships/bin/controls/users/MembershipUsers
  * @author www.pcsg.de (Patrick Müller)
- *
- * @require qui/controls/Control
- * @require qui/controls/loader/Loader
- * @require qui/controls/windows/Popup
- * @require qui/controls/windows/Confirm
- * @require qui/controls/buttons/Button
- * @require utils/Controls
- * @require controls/grid/Grid
- * @require package/quiqqer/memberships/bin/Licenses
- * @require package/quiqqer/memberships/bin/controls/LicenseBundles
- * @require Locale
- * @require Ajax
- * @require Mustache
- * @require text!package/quiqqer/memberships/bin/controls/users/MembershipUsers.html
- * @require css!package/quiqqer/memberships/bin/controls/users/MembershipUsers.css
  */
 define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
 
@@ -191,6 +176,11 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
                     dataType : 'number',
                     width    : 100
                 }, {
+                    header   : QUILocale.get(lg, 'controls.membershipusers.tbl.header.contractId'),
+                    dataIndex: 'contractId',
+                    dataType : 'string',
+                    width    : 100
+                }, {
                     header   : QUILocale.get(lg, 'controls.membershipusers.tbl.header.username'),
                     dataIndex: 'username',
                     dataType : 'string',
@@ -311,6 +301,10 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
         $setGridData: function (GridData) {
             for (var i = 0, len = GridData.data.length; i < len; i++) {
                 var Row = GridData.data[i];
+
+                if (!Row.contractId) {
+                    Row.contractId = '---';
+                }
 
                 if (Row.cancelled) {
                     Row.status = new Element('span', {

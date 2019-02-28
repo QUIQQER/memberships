@@ -225,16 +225,6 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
                     }));
                 }
 
-                if (installedPackages.contains('quiqqer/contracts')) {
-                    self.addCategory(new QUIButton({
-                        icon  : 'fa fa-handshake-o',
-                        text  : QUILocale.get(lg, 'controls.membership.category.contracts'),
-                        events: {
-                            onActive: self.$loadContracts
-                        }
-                    }));
-                }
-
                 self.refresh();
             });
         },

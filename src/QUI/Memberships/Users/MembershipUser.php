@@ -11,6 +11,7 @@ use QUI\Mail\Mailer;
 use QUI\Permissions\Permission;
 use QUI\Verification\Verifier;
 use QUI\ERP\Products\Handler\Products as ProductsHandler;
+use QUI\ERP\Accounting\Contracts\Handler as ContractsHandler;
 
 /**
  * Class MembershipUser
@@ -171,6 +172,7 @@ class MembershipUser extends Child
      * Expires this memberships user
      *
      * @return void
+     * @throws \QUI\Exception
      */
     public function expire()
     {
@@ -180,6 +182,8 @@ class MembershipUser extends Child
         // send expire mail
         $subject = $this->getUser()->getLocale()->get('quiqqer/memberships', 'templates.mail.expired.subject');
         $this->sendMail($subject, dirname(__FILE__, 5).'/templates/mail_expired.html');
+
+        QUI::getEvents()->fireEvent('quiqqerMembershipsExpired', [$this]);
     }
 
     /**
@@ -246,8 +250,9 @@ class MembershipUser extends Child
             QUI::getLocale()->get('quiqqer/memberships', 'templates.mail.startcancel.subject'),
             dirname(__FILE__, 5).'/templates/mail_startcancel.html',
             [
-                'cancelDate' => $cancelDate,
-                'cancelUrl'  => $cancelUrl
+                'cancelDate'    => $cancelDate,
+                'cancelUrl'     => $cancelUrl,
+                'cancelEndDate' => $this->getCurrentCancelEndDate()->format('Y-m-d H:i:s')
             ]
         );
     }
@@ -315,9 +320,10 @@ class MembershipUser extends Child
     public function confirmAbortCancel()
     {
         $this->setAttributes([
-            'cancelDate'   => null,
-            'cancelStatus' => MembershipUsersHandler::CANCEL_STATUS_NOT_CANCELLED,
-            'cancelled'    => false
+            'cancelDate'    => null,
+            'cancelStatus'  => MembershipUsersHandler::CANCEL_STATUS_NOT_CANCELLED,
+            'cancelled'     => false,
+            'cancelEndDate' => null
         ]);
 
         Verifier::removeVerification($this->getAbortCancelVerification());
@@ -327,11 +333,11 @@ class MembershipUser extends Child
     }
 
     /**
-     * Confirm membership cancellation
+     * Confirm membership cancellation by user
      *
      * @return void
-     *
      * @throws QUI\Memberships\Exception
+     * @throws QUI\ExceptionStack|QUI\Exception
      */
     public function confirmManualCancel()
     {
@@ -340,8 +346,9 @@ class MembershipUser extends Child
         }
 
         $this->setAttributes([
-            'cancelled'    => true,
-            'cancelStatus' => MembershipUsersHandler::CANCEL_STATUS_CANCELLED
+            'cancelled'     => true,
+            'cancelStatus'  => MembershipUsersHandler::CANCEL_STATUS_CANCELLED,
+            'cancelEndDate' => $this->getCurrentCancelEndDate()->format('Y-m-d H:i:s')
         ]);
 
         $this->addHistoryEntry(MembershipUsersHandler::HISTORY_TYPE_CANCEL_CONFIRM);
@@ -349,6 +356,8 @@ class MembershipUser extends Child
 
         // send confirm cancel mail
         $this->sendConfirmCancelMail();
+
+        QUI::getEvents()->fireEvent('quiqqerMembershipsCancelConfirm', [$this]);
     }
 
     /**
@@ -366,6 +375,7 @@ class MembershipUser extends Child
      * Cancel membership
      *
      * @return void
+     * @throws \QUI\Exception
      */
     public function cancel()
     {
@@ -373,7 +383,9 @@ class MembershipUser extends Child
 
         // send expired mail
         $subject = $this->getUser()->getLocale()->get('quiqqer/memberships', 'templates.mail.expired.subject');
-        $this->sendMail($subject, dirname(__FILE__, 5).'/templates/mail_expired.html');
+        $this->sendMail($subject, dirname(__FILE__, 5).'/templates/mail_cancelled.html');
+
+        QUI::getEvents()->fireEvent('quiqqerMembershipsCancelled', [$this]);
     }
 
     /**
@@ -401,6 +413,8 @@ class MembershipUser extends Child
 
         // do not delete, just set to archived
         $this->archive(MembershipUsersHandler::ARCHIVE_REASON_DELETED);
+
+        QUI::getEvents()->fireEvent('quiqqerMembershipsUserDelete', [$this]);
     }
 
     /**
@@ -521,6 +535,23 @@ class MembershipUser extends Child
     public function getUser()
     {
         return QUI::getUsers()->get($this->getUserId());
+    }
+
+    /**
+     * Get ID of the Contract if this MembershipUser was created due to a
+     * contract.
+     *
+     * @return int|false
+     */
+    public function getContractId()
+    {
+        $contractId = $this->getAttribute('contractId');
+
+        if (empty($contractId)) {
+            return false;
+        }
+
+        return (int)$contractId;
     }
 
     /**
@@ -654,6 +685,7 @@ class MembershipUser extends Child
             'addedDate'         => $this->formatDate($this->getAttribute('addedDate')),
             'beginDate'         => $this->formatDate($this->getAttribute('beginDate')),
             'endDate'           => $this->formatDate($this->getAttribute('endDate')),
+            'cancelEndDate'     => $this->formatDate($this->getCurrentCancelEndDate()->format('Y-m-d H:i:s')),
             'cancelDate'        => $this->formatDate($this->getAttribute('cancelDate')),
             'cancelStatus'      => $this->getAttribute('cancelStatus'),
 //            'archived'        => $this->isArchived(),
@@ -691,7 +723,8 @@ class MembershipUser extends Child
             'archiveDate'     => $this->getAttribute('archiveDate'),
             'cancelled'       => $this->isCancelled(),
             'extraData'       => $this->getExtraData(),
-            'infinite'        => $Membership->isInfinite()
+            'infinite'        => $Membership->isInfinite(),
+            'contractId'      => $this->getContractId()
         ];
     }
 
@@ -813,5 +846,37 @@ class MembershipUser extends Child
         }
 
         return $extraData[$key]['value'];
+    }
+
+    /**
+     * Calculates the date the membership for this user would end
+     * if it was cancelled NOW
+     *
+     * @return \DateTime
+     * @throws \Exception
+     */
+    public function getCurrentCancelEndDate()
+    {
+        $endDate    = $this->getAttribute('endDate');
+        $EndDate    = new \DateTime($endDate);
+        $contractId = $this->getContractId();
+
+        if (empty($contractId)) {
+            return $EndDate;
+        }
+
+        /**
+         * If a contract is connected to this MembershipUser
+         * the period of notice of this contract has to be considered
+         * when cancelling the membership.
+         */
+        $Contract = ContractsHandler::getInstance()->get($contractId);
+
+        if ($Contract->isInPeriodOfNotice()) {
+            return $EndDate;
+        }
+
+        $actualEndTime = $this->getMembership()->calcEndDate($EndDate->getTimestamp());
+        return new \DateTime($actualEndTime);
     }
 }

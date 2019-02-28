@@ -49,10 +49,29 @@ QUI::$Ajax->registerFunction(
                                 $MembershipUser->addHistoryEntry(
                                     MembershipUsersHandler::HISTORY_TYPE_CANCEL_BY_EDIT
                                 );
+
+                                /**
+                                 * If an administrator cancels a membership for a user
+                                 * the 'cancelEndDate' attribute is always equivalent to the
+                                 * 'endDate'.
+                                 *
+                                 * This means that a period of notice that may be considered
+                                 * if a contract is connected to the MembershipUser is NOT
+                                 * considered here.
+                                 */
+                                $MembershipUser->setAttributes([
+                                    'cancelStatus'  => MembershipUsersHandler::CANCEL_STATUS_CANCELLED,
+                                    'cancelEndDate' => $MembershipUser->getAttribute('endDate')
+                                ]);
                             } else {
                                 $MembershipUser->addHistoryEntry(
                                     MembershipUsersHandler::HISTORY_TYPE_UNCANCEL_BY_EDIT
                                 );
+
+                                $MembershipUser->setAttributes([
+                                    'cancelStatus'  => MembershipUsersHandler::CANCEL_STATUS_NOT_CANCELLED,
+                                    'cancelEndDate' => null
+                                ]);
                             }
                         }
                         break;

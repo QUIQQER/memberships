@@ -13,6 +13,9 @@ use QUI\ERP\Products\Handler\Categories as ProductCategories;
 use QUI\ERP\Products\Handler\Search as ProductSearchHandler;
 use QUI\ERP\Products\Product\Product;
 use QUI\ERP\Products\Handler\Products as ProductsHandler;
+use QUI\ERP\Accounting\Contracts\Contract;
+use QUI\ERP\Accounting\Contracts\Utils\Contracts as ContractsUtils;
+use QUI\ERP\Order\Order;
 
 /**
  * Class Events
@@ -266,6 +269,55 @@ class Events
                 );
 
                 $MembershipUser->update(false);
+            } catch (\QUI\ERP\Products\Product\Exception $Exception) {
+                // nothing, this can happen if the $Product does not have a membership field assigned
+            } catch (\Exception $Exception) {
+                QUI\System\Log::writeException($Exception);
+            }
+        }
+    }
+
+    /**
+     * quiqqer/contracts: onQuiqqerContractCreateFromOrder
+     *
+     * If a contract is created from an order, check if the Order also contains a
+     *
+     * @param Contract $Contract
+     * @param Order $Order
+     * @return void
+     */
+    public static function onQuiqqerContractCreateFromOrder(Contract $Contract, Order $Order)
+    {
+        $MembershipField = Handler::getProductMembershipField();
+
+        if ($MembershipField === false) {
+            QUI\System\Log::addError(
+                self::class.' :: onQuiqqerContractCreateFromOrder -> Could not parse membership'
+                .' from Order #'.$Order->getPrefixedId().' because no membership field'
+                .' is configured. Please execute a system setup.'
+            );
+
+            return;
+        }
+
+        $membershipFieldId = $MembershipField->getId();
+        $Memberships       = Handler::getInstance();
+        $Customer          = $Order->getCustomer();
+
+        // Look for the article/product that contains a membership and add
+        /** @var QUI\ERP\Accounting\Article $Article */
+        foreach ($Order->getArticles()->getArticles() as $Article) {
+            try {
+                $Product                = ProductsHandler::getProduct($Article->getId());
+                $ProductMembershipField = $Product->getField($membershipFieldId);
+
+                $Membership     = $Memberships->getChild($ProductMembershipField->getValue());
+                $MembershipUser = $Membership->getMembershipUser($Customer->getId());
+
+                $MembershipUser->setAttribute('contractId', $Contract->getId());
+                $MembershipUser->update(false);
+
+                break;
             } catch (\QUI\ERP\Products\Product\Exception $Exception) {
                 // nothing, this can happen if the $Product does not have a membership field assigned
             } catch (\Exception $Exception) {

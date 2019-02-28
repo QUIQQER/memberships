@@ -28,7 +28,6 @@ class Cron
         ]);
 
         $now = time();
-        $Now = new \DateTime();
 
         foreach ($result as $row) {
             try {
@@ -61,8 +60,13 @@ class Cron
 
                 // if membership has been cancelled -> archive it immediately
                 if ($MembershipUser->isCancelled()) {
-                    $MembershipUser->cancel();
-                    continue;
+                    $cancelEndDate = $MembershipUser->getAttribute('cancelEndDate');
+                    $cancelEndTime = strtotime($cancelEndDate);
+
+                    if ($now >= $cancelEndTime) {
+                        $MembershipUser->cancel();
+                        continue;
+                    }
                 }
 
                 // extend if membership is extended automatically
