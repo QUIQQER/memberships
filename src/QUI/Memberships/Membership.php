@@ -572,10 +572,15 @@ class Membership extends Child
             $Product->save();
         }
 
-        QUI::getEvents()->fireEvent(
-            'quiqqerMembershipsCreateProduct',
-            [$this, $Product]
-        );
+        // Add fields for contract product type
+        if ($this->isAutoExtend() && Utils::isQuiqqerErpPlansInstalled()) {
+            ErpPlansHandler::turnIntoPlanProduct($Product, [
+                ErpPlansHandler::FIELD_DURATION    => $this->getAttribute('duration'),
+                ErpPlansHandler::FIELD_AUTO_EXTEND => true
+            ]);
+        }
+
+        QUI::getEvents()->fireEvent('quiqqerMembershipsCreateProduct', [$this, $Product]);
 
         return $Product;
     }

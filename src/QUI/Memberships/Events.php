@@ -14,7 +14,6 @@ use QUI\ERP\Products\Handler\Search as ProductSearchHandler;
 use QUI\ERP\Products\Product\Product;
 use QUI\ERP\Products\Handler\Products as ProductsHandler;
 use QUI\ERP\Accounting\Contracts\Contract;
-use QUI\ERP\Accounting\Contracts\Utils\Contracts as ContractsUtils;
 use QUI\ERP\Order\Order;
 
 /**
@@ -324,6 +323,43 @@ class Events
                 QUI\System\Log::writeException($Exception);
             }
         }
+    }
+
+    /**
+     * quiqqer/contracts: onQuiqqerContractCancel
+     *
+     * Cancel a membership if a contract is cancelled
+     *
+     * @param Contract $Contract
+     * @return void
+     * @throws \QUI\Exception
+     * @throws \Exception
+     */
+    public static function onQuiqqerContractCancel(Contract $Contract)
+    {
+        $MembershipUsers = MembershipUsersHandler::getInstance();
+
+        $result = QUI::getDataBase()->fetch([
+            'select' => ['id'],
+            'from'   => $MembershipUsers->getDataBaseTableName(),
+            'where'  => [
+                'contractId' => $Contract->getCleanId()
+            ]
+        ]);
+
+        if (empty($result)) {
+            return;
+        }
+
+        /** @var QUI\Memberships\Users\MembershipUser $MembershipUser */
+        $MembershipUser = $MembershipUsers->getChild($result[0]['id']);
+
+        $MembershipUser->setAttributes([
+            'cancelStatus'  => MembershipUsersHandler::CANCEL_STATUS_CANCELLED,
+            'cancelEndDate' => $Contract->getTerminationDate()->format('Y-m-d 23:59:59')
+        ]);
+
+        $MembershipUser->sendConfirmCancelMail();
     }
 
     /**
