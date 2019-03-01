@@ -63,6 +63,8 @@ QUI::$Ajax->registerFunction(
                                     'cancelStatus'  => MembershipUsersHandler::CANCEL_STATUS_CANCELLED,
                                     'cancelEndDate' => $MembershipUser->getAttribute('endDate')
                                 ]);
+
+                                QUI::getEvents()->fireEvent('quiqqerMembershipsCancelAdmin', [$MembershipUser]);
                             } else {
                                 $MembershipUser->addHistoryEntry(
                                     MembershipUsersHandler::HISTORY_TYPE_UNCANCEL_BY_EDIT

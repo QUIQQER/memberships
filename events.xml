@@ -6,4 +6,5 @@
     <event on="onQuiqqerProductsFieldDeleteBefore" fire="\QUI\Memberships\Events::onQuiqqerProductsFieldDeleteBefore"/>
 
     <event on="onQuiqqerContractCreateFromOrder" fire="\QUI\Memberships\Events::onQuiqqerContractCreateFromOrder"/>
+    <event on="onQuiqqerContractCancel" fire="\QUI\Memberships\Events::onQuiqqerContractCancel"/>
 </events>
