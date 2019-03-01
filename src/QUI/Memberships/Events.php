@@ -363,6 +363,39 @@ class Events
     }
 
     /**
+     * quiqqer/contracts: onQuiqqerContractDelete
+     *
+     * Delete contract from all MembershipUsers
+     *
+     * @param Contract $Contract
+     * @throws QUI\Database\Exception
+     */
+    public static function onQuiqqerContractDelete(Contract $Contract)
+    {
+        $MembershipUsers = MembershipUsersHandler::getInstance();
+
+        $result = QUI::getDataBase()->fetch([
+            'select' => ['id'],
+            'from'   => $MembershipUsers->getDataBaseTableName(),
+            'where'  => [
+                'contractId' => $Contract->getCleanId()
+            ]
+        ]);
+
+        foreach ($result as $row) {
+            QUI::getDataBase()->update(
+                $MembershipUsers->getDataBaseTableName(),
+                [
+                    'contractId' => null
+                ],
+                [
+                    'id' => $row['id']
+                ]
+            );
+        }
+    }
+
+    /**
      * quiqqer/products: onQuiqqerProductsFieldDeleteBefore
      *
      * @param ProductField $Field
