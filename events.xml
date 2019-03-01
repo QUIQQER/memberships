@@ -7,4 +7,6 @@
 
     <event on="onQuiqqerContractCreateFromOrder" fire="\QUI\Memberships\Events::onQuiqqerContractCreateFromOrder"/>
     <event on="onQuiqqerContractCancel" fire="\QUI\Memberships\Events::onQuiqqerContractCancel"/>
+    <event on="onQuiqqerContractDelete" fire="\QUI\Memberships\Events::onQuiqqerContractDelete"/>
+
 </events>
