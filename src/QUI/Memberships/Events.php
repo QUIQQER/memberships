@@ -314,7 +314,7 @@ class Events
                 $Membership     = $Memberships->getChild($ProductMembershipField->getValue());
                 $MembershipUser = $Membership->getMembershipUser($Customer->getId());
 
-                $MembershipUser->setAttribute('contractId', $Contract->getId());
+                $MembershipUser->setAttribute('contractId', $Contract->getCleanId());
                 $MembershipUser->update(false);
 
                 break;
