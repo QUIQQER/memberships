@@ -71,11 +71,6 @@ class Cron
 
                 // extend if membership is extended automatically
                 if ($Membership->isAutoExtend()) {
-
-                    \QUI\System\Log::writeRecursive("Extending membership user #".$MembershipUser->getId());
-                    \QUI\System\Log::writeRecursive($now);
-                    \QUI\System\Log::writeRecursive($endTimestamp);
-
                     $MembershipUser->extend();
                     continue;
                 }
