@@ -14,6 +14,7 @@ use QUI\ERP\Products\Search\BackendSearch;
 use QUI\ERP\Products\Handler\Products as ProductsHandler;
 use QUI\ERP\Products\Handler\Fields as ProductFields;
 use QUI\ERP\Plans\Handler as ErpPlansHandler;
+use QUI\ERP\Plans\Utils as ErpPlansUtils;
 
 class Membership extends Child
 {
@@ -517,6 +518,7 @@ class Membership extends Child
      * of previous calls!
      *
      * @return QUI\ERP\Products\Product\Product|false
+     * @throws \QUI\Exception
      */
     public function createProduct()
     {
