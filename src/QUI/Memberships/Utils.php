@@ -8,7 +8,7 @@ use QUI\Utils\Security\Orthos;
 class Utils
 {
     /**
-     * Clear a JSON string from evil code but keep JSON intact
+     * Clears a JSON string from evil code but keep JSON intact
      *
      * @param string $str - JSON string
      * @return string - cleared JSON string
