@@ -277,7 +277,7 @@ class Events
     }
 
     /**
-     * quiqqer/contracts: onQuiqqerContractCreateFromOrder
+     * quiqqer/contracts: onQuiqqerContractsCreateFromOrder
      *
      * If a contract is created from an order, check if the Order also contains a
      *
@@ -285,13 +285,13 @@ class Events
      * @param Order $Order
      * @return void
      */
-    public static function onQuiqqerContractCreateFromOrder(Contract $Contract, Order $Order)
+    public static function onQuiqqerContractsCreateFromOrder(Contract $Contract, Order $Order)
     {
         $MembershipField = Handler::getProductMembershipField();
 
         if ($MembershipField === false) {
             QUI\System\Log::addError(
-                self::class.' :: onQuiqqerContractCreateFromOrder -> Could not parse membership'
+                self::class.' :: onQuiqqerContractsCreateFromOrder -> Could not parse membership'
                 .' from Order #'.$Order->getPrefixedId().' because no membership field'
                 .' is configured. Please execute a system setup.'
             );
@@ -326,7 +326,7 @@ class Events
     }
 
     /**
-     * quiqqer/contracts: onQuiqqerContractCancel
+     * quiqqer/contracts: onQuiqqerContractsCancel
      *
      * Cancel a membership if a contract is cancelled
      *
@@ -335,7 +335,7 @@ class Events
      * @throws \QUI\Exception
      * @throws \Exception
      */
-    public static function onQuiqqerContractCancel(Contract $Contract)
+    public static function onQuiqqerContractsCancel(Contract $Contract)
     {
         $MembershipUsers = MembershipUsersHandler::getInstance();
 
@@ -363,14 +363,14 @@ class Events
     }
 
     /**
-     * quiqqer/contracts: onQuiqqerContractDelete
+     * quiqqer/contracts: onQuiqqerContractsDelete
      *
      * Delete contract from all MembershipUsers
      *
      * @param Contract $Contract
      * @throws QUI\Database\Exception
      */
-    public static function onQuiqqerContractDelete(Contract $Contract)
+    public static function onQuiqqerContractsDelete(Contract $Contract)
     {
         $MembershipUsers = MembershipUsersHandler::getInstance();
 
