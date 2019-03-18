@@ -18,7 +18,7 @@ define('package/quiqqer/memberships/bin/controls/settings/ProductSettings', [
 
     'package/quiqqer/memberships/bin/Memberships',
 
-    'css!package/quiqqer/memberships/bin/controls/settings/ProductSettings'
+    'css!package/quiqqer/memberships/bin/controls/settings/ProductSettings.css'
 
 ], function (QUIControl, QUILoader, QUILocale, Memberships) {
     "use strict";
