@@ -38,7 +38,6 @@ class Memberships extends AbstractProfileControl
      */
     public function onSave()
     {
-        \QUI\System\Log::writeRecursive("onSave");
     }
 
     /**
@@ -49,7 +48,6 @@ class Memberships extends AbstractProfileControl
      */
     public function validate()
     {
-        \QUI\System\Log::writeRecursive("validate");
     }
 
 }
