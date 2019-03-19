@@ -43,11 +43,11 @@ class Events
                     case 'quiqqer/products':
                         self::createProductFields();
                         self::createProductCategory();
-                        break;
+                        continue 2;
 
                     case 'quiqqer/contracts':
                         // @todo setup routine for quiqqer/contracts
-                        break;
+                        continue 2;
                 }
             }
         } catch (\Exception $Exception) {
