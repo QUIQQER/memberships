@@ -653,7 +653,7 @@ class MembershipUser extends Child
     {
         $QuiqqerUser = $this->getUser();
         $Membership  = $this->getMembership();
-        $Locale      = $QuiqqerUser->getLocale();
+        $Locale      = QUI::getLocale();
 
         // determine source of title, short and content
         $viewDataMode = MembershipUsersHandler::getSetting('viewDataMode');
