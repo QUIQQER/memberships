@@ -318,6 +318,7 @@ class Events
 
                 break;
             } catch (\QUI\ERP\Products\Product\Exception $Exception) {
+                QUI\System\Log::writeDebugException($Exception);
                 // nothing, this can happen if the $Product does not have a membership field assigned
             } catch (\Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
