@@ -43,11 +43,11 @@ class Events
                     case 'quiqqer/products':
                         self::createProductFields();
                         self::createProductCategory();
-                        break;
+                        continue 2;
 
                     case 'quiqqer/contracts':
                         // @todo setup routine for quiqqer/contracts
-                        break;
+                        continue 2;
                 }
             }
         } catch (\Exception $Exception) {
@@ -318,6 +318,7 @@ class Events
 
                 break;
             } catch (\QUI\ERP\Products\Product\Exception $Exception) {
+                QUI\System\Log::writeDebugException($Exception);
                 // nothing, this can happen if the $Product does not have a membership field assigned
             } catch (\Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
