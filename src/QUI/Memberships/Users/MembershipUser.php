@@ -330,6 +330,8 @@ class MembershipUser extends Child
 
         $this->addHistoryEntry(MembershipUsersHandler::HISTORY_TYPE_CANCEL_ABORT_CONFIRM);
         $this->update(false);
+
+        QUI::getEvents()->fireEvent('quiqqerMembershipsCancelAbort', [$this]);
     }
 
     /**
