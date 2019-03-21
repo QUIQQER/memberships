@@ -49,5 +49,4 @@ class Memberships extends AbstractProfileControl
     public function validate()
     {
     }
-
 }
