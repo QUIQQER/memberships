@@ -26,7 +26,7 @@ QUI::$Ajax->registerFunction(
                 'title'       => $Membership->getTitle(),
                 'description' => $Membership->getDescription(),
                 'duration'    => $data['duration'],
-                'userCount'   => 0,
+                'userCount'   => count($Membership->getMembershipUserIds()),
                 'autoExtend'  => boolval($data['autoExtend'])
             );
         }

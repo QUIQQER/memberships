@@ -235,6 +235,43 @@ class Membership extends Child
     }
 
     /**
+     * Get all membership user IDs
+     *
+     * @param bool $includeArchived (optional) - Include archived MembershipUsers
+     * @return int[]
+     */
+    public function getMembershipUserIds($includeArchived = false)
+    {
+        $membershipUserIds = [];
+
+        $where = [
+            'membershipId' => $this->id,
+            'archived'     => 0
+        ];
+
+        if ($includeArchived) {
+            unset($where['archived']);
+        }
+
+        try {
+            $result = QUI::getDataBase()->fetch([
+                'select' => 'id',
+                'from'   => QUI\Memberships\Users\Handler::getInstance()->getDataBaseTableName(),
+                'where'  => $where
+            ]);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+            return $membershipUserIds;
+        }
+
+        foreach ($result as $row) {
+            $membershipUserIds[] = $row['id'];
+        }
+
+        return $membershipUserIds;
+    }
+
+    /**
      * Get IDs of all QUIQQER Groups that are UNIQUE to this membership
      *
      * @return int[]
