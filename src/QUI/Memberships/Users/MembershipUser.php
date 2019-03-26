@@ -12,6 +12,7 @@ use QUI\Permissions\Permission;
 use QUI\Verification\Verifier;
 use QUI\ERP\Products\Handler\Products as ProductsHandler;
 use QUI\ERP\Accounting\Contracts\Handler as ContractsHandler;
+use QUI\Interfaces\Users\User as QUIUserInterface;
 
 /**
  * Class MembershipUser
@@ -23,14 +24,29 @@ use QUI\ERP\Accounting\Contracts\Handler as ContractsHandler;
 class MembershipUser extends Child
 {
     /**
+     * User that is editing this MembershipUser in the current runtime
+     *
+     * @var QUIUserInterface
+     */
+    protected $EditUser = null;
+
+    /**
+     * Set User that is editing this MembershipUser in the current runtime
+     *
+     * @param QUIUserInterface $EditUser
+     */
+    public function setEditUser(QUIUserInterface $EditUser)
+    {
+        $this->EditUser = $EditUser;
+    }
+
+    /**
      * @inheritdoc
      * @param bool $withPermission - check permissions on update [default: true]
      */
-    public function update($withPermission = true)
+    public function update()
     {
-        if ($withPermission !== false) {
-            Permission::checkPermission(MembershipUsersHandler::PERMISSION_EDIT_USERS);
-        }
+        Permission::checkPermission(MembershipUsersHandler::PERMISSION_EDIT_USERS, $this->EditUser);
 
         // check certain attributes
         if (!$this->getMembership()->isInfinite()) {
@@ -243,7 +259,8 @@ class MembershipUser extends Child
         $this->addHistoryEntry(MembershipUsersHandler::HISTORY_TYPE_CANCEL_START);
 
         // save cancel hash and date to database
-        $this->update(false);
+        $this->setEditUser(QUI::getUsers()->getSystemUser());
+        $this->update();
 
         // send cancellation mail
         $this->sendMail(
@@ -299,8 +316,8 @@ class MembershipUser extends Child
         ]);
 
         $this->addHistoryEntry(MembershipUsersHandler::HISTORY_TYPE_CANCEL_ABORT_START);
-
-        $this->update(false);
+        $this->setEditUser(QUI::getUsers()->getSystemUser());
+        $this->update();
 
         // send abort cancellation mail
         $this->sendMail(
@@ -329,7 +346,8 @@ class MembershipUser extends Child
         Verifier::removeVerification($this->getAbortCancelVerification());
 
         $this->addHistoryEntry(MembershipUsersHandler::HISTORY_TYPE_CANCEL_ABORT_CONFIRM);
-        $this->update(false);
+        $this->setEditUser(QUI::getUsers()->getSystemUser());
+        $this->update();
 
         QUI::getEvents()->fireEvent('quiqqerMembershipsCancelAbort', [$this]);
     }
@@ -409,7 +427,7 @@ class MembershipUser extends Child
      */
     public function delete()
     {
-        Permission::checkPermission(MembershipUsersHandler::PERMISSION_EDIT_USERS);
+        Permission::checkPermission(MembershipUsersHandler::PERMISSION_EDIT_USERS, $this->EditUser);
 
         $this->addHistoryEntry(MembershipUsersHandler::HISTORY_TYPE_DELETED);
 

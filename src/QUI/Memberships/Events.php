@@ -253,21 +253,26 @@ class Events
             return;
         }
 
+        $SystemUser = QUI::getUsers()->getSystemUser();
+
         /** @var QUI\ERP\Accounting\Article $Article */
         foreach ($Order->getArticles()->getArticles() as $Article) {
             try {
                 $Product                = ProductsHandler::getProduct($Article->getId());
                 $ProductMembershipField = $Product->getField($membershipFieldId);
 
-                $Membership     = $Memberships->getChild($ProductMembershipField->getValue());
+                $Membership = $Memberships->getChild($ProductMembershipField->getValue());
+                $Membership->setEditUser($SystemUser);
+
                 $MembershipUser = $Membership->addUser($User);
+                $MembershipUser->setEditUser($SystemUser);
 
                 $MembershipUser->addHistoryEntry(
                     MembershipUsersHandler::HISTORY_TYPE_MISC,
                     'Order: '.$Order->getPrefixedId()
                 );
 
-                $MembershipUser->update(false);
+                $MembershipUser->update();
             } catch (\QUI\ERP\Products\Product\Exception $Exception) {
                 // nothing, this can happen if the $Product does not have a membership field assigned
             } catch (\Exception $Exception) {
@@ -312,9 +317,10 @@ class Events
 
                 $Membership     = $Memberships->getChild($ProductMembershipField->getValue());
                 $MembershipUser = $Membership->getMembershipUser($Customer->getId());
+                $MembershipUser->setEditUser(QUI::getUsers()->getSystemUser());
 
                 $MembershipUser->setAttribute('contractId', $Contract->getCleanId());
-                $MembershipUser->update(false);
+                $MembershipUser->update();
 
                 break;
             } catch (\QUI\ERP\Products\Product\Exception $Exception) {

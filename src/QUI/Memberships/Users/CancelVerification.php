@@ -33,6 +33,7 @@ class CancelVerification extends QUI\Verification\AbstractVerification
     {
         /** @var MembershipUser $MembershipUser */
         $MembershipUser = MembershipUsersHandler::getInstance()->getChild($this->getIdentifier());
+        $MembershipUser->setEditUser(QUI::getUsers()->getSystemUser());
         $MembershipUser->confirmManualCancel();
     }
 
