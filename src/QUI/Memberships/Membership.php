@@ -14,10 +14,27 @@ use QUI\ERP\Products\Search\BackendSearch;
 use QUI\ERP\Products\Handler\Products as ProductsHandler;
 use QUI\ERP\Products\Handler\Fields as ProductFields;
 use QUI\ERP\Plans\Handler as ErpPlansHandler;
-use QUI\ERP\Plans\Utils as ErpPlansUtils;
+use QUI\Interfaces\Users\User as QUIUserInterface;
 
 class Membership extends Child
 {
+    /**
+     * User that is editing this Membership in this runtime
+     *
+     * @var QUIUserInterface
+     */
+    protected $EditUser = null;
+
+    /**
+     * Set User that is editing this Membership in this runtime
+     *
+     * @param QUIUserInterface $EditUser
+     */
+    public function setEditUser(QUIUserInterface $EditUser)
+    {
+        $this->EditUser = $EditUser;
+    }
+
     /**
      * Get IDs of all QUIQQER Groups
      *
@@ -108,7 +125,7 @@ class Membership extends Child
      */
     public function update()
     {
-        Permission::checkPermission(Handler::PERMISSION_EDIT);
+        Permission::checkPermission(Handler::PERMISSION_EDIT, $this->EditUser);
 
         $attributes = $this->getAttributes();
 
@@ -160,7 +177,7 @@ class Membership extends Child
      */
     public function delete()
     {
-        Permission::checkPermission(Handler::PERMISSION_DELETE);
+        Permission::checkPermission(Handler::PERMISSION_DELETE, $this->EditUser);
 
         $MembershipUsers = MembershipUsersHandler::getInstance();
 
@@ -727,6 +744,6 @@ class Membership extends Child
         return MembershipUsersHandler::getInstance()->createChild([
             'userId'       => $User->getId(),
             'membershipId' => $this->id
-        ]);
+        ], $this->EditUser);
     }
 }
