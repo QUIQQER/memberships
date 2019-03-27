@@ -976,61 +976,71 @@
         </locale>
 
         <!-- Templates -->
-        <locale name="templates.mail.greeting">
-            <de><![CDATA[Hallo [name]!]]></de>
-            <en><![CDATA[Hello [name]!]]></en>
-        </locale>
         <locale name="templates.mail.startcancel.subject">
             <de><![CDATA[Kündigung Ihrer Mitgliedschaft]]></de>
             <en><![CDATA[Termination of your membership]]></en>
         </locale>
         <locale name="templates.mail.startcancel.body" html="true">
-            <de><![CDATA[Die Kündigung Ihrer Mitgliedschaft <b>[membershipTitle]</b> zum <b>[endDate]</b> wurde beantragt. Um diese Kündigung zu bestätigen besuchen Sie bitte folgenden Link:<br><br><a href="[cancelUrl]">[cancelUrl]</a><br/><br/>Bitte beachten Sie, dass Ihre Kündigung erst dann als eingegangen gilt und wirksam ist, wenn sie über den o.g. Link bestätigt wurde.]]></de>
-            <en><![CDATA[The termination of your membership <b>[membershipTitle]</b> on <b>[endDate]</b> was applied for. To confirm this termination please visit the following link:<br><br><a href="[cancelUrl]">[cancelUrl]</a><br/><br/>Please note that your cancellation will not be considered received and effective until it has been confirmed via the above link.]]></en>
+            <de><![CDATA[<h1>Hallo [name]!</h1>
+            <p>Die Kündigung Ihrer Mitgliedschaft <b>[membershipTitle]</b> zum <b>[endDate]</b> wurde beantragt. Um diese Kündigung zu bestätigen besuchen Sie bitte folgenden Link:<br><br><a href="[cancelUrl]">[cancelUrl]</a><br/><br/>Bitte beachten Sie, dass Ihre Kündigung erst dann als eingegangen gilt und wirksam ist, wenn sie über den o.g. Link bestätigt wurde.</p>]]></de>
+            <en><![CDATA[<h1>Hello [name]!</h1>
+            <p>The termination of your membership <b>[membershipTitle]</b> on <b>[endDate]</b> was applied for. To confirm this termination please visit the following link:<br><br><a href="[cancelUrl]">[cancelUrl]</a><br/><br/>Please note that your cancellation will not be considered received and effective until it has been confirmed via the above link.</p>]]></en>
         </locale>
         <locale name="templates.mail.confirmcancel.subject">
             <de><![CDATA[Bestätigung der Kündigung Ihrer Mitgliedschaft]]></de>
             <en><![CDATA[Confirmation of termination of your membership]]></en>
         </locale>
         <locale name="templates.mail.confirmcancel.body" html="true">
-            <de><![CDATA[Hiermit bestätigen wir die Kündigung Ihrer Mitgliedschaft <b>[membershipTitle]</b> zum <b>[endDate]</b>. Bis zu diesem Zeitpunkt können Sie weiterhin alle Vorteile Ihrer Mitgliedschaft nutzen.]]></de>
-            <en><![CDATA[We hereby confirm the termination of your membership <b>[membershipTitle]</b> as of <b>[endDate]</b>. Until that time, you can continue to take advantage of all the benefits of your membership.]]></en>
+            <de><![CDATA[<h1>Hallo [name]!</h1>
+            <p>Hiermit bestätigen wir die Kündigung Ihrer Mitgliedschaft <b>[membershipTitle]</b> zum <b>[endDate]</b>. Bis zu diesem Zeitpunkt können Sie weiterhin alle Vorteile Ihrer Mitgliedschaft nutzen.</p>]]></de>
+            <en><![CDATA[<h1>Hello [name]!</h1>
+            <p>We hereby confirm the termination of your membership <b>[membershipTitle]</b> as of <b>[endDate]</b>. Until that time, you can continue to take advantage of all the benefits of your membership.</p>]]></en>
         </locale>
         <locale name="templates.mail.expired.subject" html="true">
             <de><![CDATA[Ablauf Ihrer Mitgliedschaft]]></de>
             <en><![CDATA[Expiration of your membership]]></en>
         </locale>
         <locale name="templates.mail.expired.body" html="true">
-            <de><![CDATA[Ihre Mitgliedschaft <b>[membershipTitle]</b> ist am <b>[endDate]</b> automatisch abgelaufen.]]></de>
-            <en><![CDATA[Your membership <b>[membershipTitle]</b> expired automatically on <b>[endDate]</b>.]]></en>
+            <de><![CDATA[<h1>Hallo [name]!</h1>
+            <p>Ihre Mitgliedschaft <b>[membershipTitle]</b> ist am <b>[endDate]</b> automatisch abgelaufen.</p>]]></de>
+            <en><![CDATA[<h1>Hello [name]!</h1>
+            <p>Your membership <b>[membershipTitle]</b> expired automatically on <b>[endDate]</b>.</p>]]></en>
         </locale>
-        <locale name="templates.mail.cancelled.body">
-            <de><![CDATA[Ihre Mitgliedschaft <b>[membershipTitle]</b> ist am <b>[endDate]</b> auf Grund Ihrer Kündigung vom [cancelDate] abgelaufen.]]></de>
-            <en><![CDATA[Your membership <b>[membershipTitle]</b> expired on <b>[endDate]</b> due to your cancellation from [cancelDate].]]></en>
+        <locale name="templates.mail.cancelled.body" html="true">
+            <de><![CDATA[<h1>Hallo [name]!</h1>
+            <p>Ihre Mitgliedschaft <b>[membershipTitle]</b> ist am <b>[endDate]</b> auf Grund Ihrer Kündigung vom [cancelDate] abgelaufen.</p>]]></de>
+            <en><![CDATA[<h1>Hello [name]!</h1>
+            <p>Your membership <b>[membershipTitle]</b> expired on <b>[endDate]</b> due to your cancellation from [cancelDate].</p>]]></en>
         </locale>
         <locale name="templates.mail.autoextend.subject" html="true">
             <de><![CDATA[Automatische Verlängerung Ihrer Mitgliedschaft]]></de>
             <en><![CDATA[Automatic extension of your membership]]></en>
         </locale>
         <locale name="templates.mail.autoextend.body" html="true">
-            <de><![CDATA[Ihre Mitgliedschaft <b>[membershipTitle]</b> wurde automatisch bis zum <b>[endDate]</b> verlängert.]]></de>
-            <en><![CDATA[Your membership <b>[membershipTitle]</b> has been extended automatically until <b>[endDate]</b>.]]></en>
+            <de><![CDATA[<h1>Hallo [name]!</h1>
+            <p>Ihre Mitgliedschaft <b>[membershipTitle]</b> wurde automatisch bis zum <b>[endDate]</b> verlängert.</p>]]></de>
+            <en><![CDATA[<h1>Hello [name]!</h1>
+            <p>Your membership <b>[membershipTitle]</b> has been extended automatically until <b>[endDate]</b>.</p>]]></en>
         </locale>
         <locale name="templates.mail.manualextend.subject" html="true">
             <de><![CDATA[Verlängerung Ihrer Mitgliedschaft]]></de>
             <en><![CDATA[Extension of your membership]]></en>
         </locale>
         <locale name="templates.mail.manualextend.body" html="true">
-            <de><![CDATA[Ihre Mitgliedschaft <b>[membershipTitle]</b> wurde bis zum <b>[endDate]</b> verlängert.]]></de>
-            <en><![CDATA[Your membership <b>[membershipTitle]</b> has been extended until <b>[endDate]</b>.]]></en>
+            <de><![CDATA[<h1>Hallo [name]!</h1>
+            <p>Ihre Mitgliedschaft <b>[membershipTitle]</b> wurde bis zum <b>[endDate]</b> verlängert.</p>]]></de>
+            <en><![CDATA[<h1>Hello [name]!</h1>
+            <p>Your membership <b>[membershipTitle]</b> has been extended until <b>[endDate]</b>.</p>]]></en>
         </locale>
         <locale name="templates.mail.startabortcancel.subject" html="true">
             <de><![CDATA[Zurückziehen der Kündigung Ihrer Mitgliedschaft]]></de>
             <en><![CDATA[Withdrawal of your membership termination]]></en>
         </locale>
         <locale name="templates.mail.startabortcancel.body" html="true">
-            <de><![CDATA[Es wurde beantragt, die Kündigung Ihrer Mitgliedschaft <b>[membershipTitle]</b> vom <b>[cancelDate]</b> zurückzuziehen. Um diese Vorgang zu bestätigen, besuchen Sie bitte folgenden Link:<br><br><a href="[abortCancelUrl]">[abortCancelUrl]</a>]]></de>
-            <en><![CDATA[It was requests to withdraw the termination of your membership <b>[membershipTitle]</b> from <b>[cancelDate]</b>. To confirm this process please visit the following link:<br><br><a href="[abortCancelUrl]">[abortCancelUrl]</a>]]></en>
+            <de><![CDATA[<h1>Hallo [name]!</h1>
+            <p>Es wurde beantragt, die Kündigung Ihrer Mitgliedschaft <b>[membershipTitle]</b> vom <b>[cancelDate]</b> zurückzuziehen. Um diese Vorgang zu bestätigen, besuchen Sie bitte folgenden Link:<br><br><a href="[abortCancelUrl]">[abortCancelUrl]</a></p>]]></de>
+            <en><![CDATA[<h1>Hello [name]!</h1>
+            <p>It was requests to withdraw the termination of your membership <b>[membershipTitle]</b> from <b>[cancelDate]</b>. To confirm this process please visit the following link:<br><br><a href="[abortCancelUrl]">[abortCancelUrl]</a></p>]]></en>
         </locale>
 
         <!-- CancelVerification -->

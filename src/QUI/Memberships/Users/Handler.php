@@ -52,11 +52,16 @@ class Handler extends Factory
 
     /**
      * @inheritdoc
+     * @param QUI\Users\User $PermissionUser (optional)
      * @throws QUI\Memberships\Exception
      */
-    public function createChild($data = [])
+    public function createChild($data = [], $PermissionUser = null)
     {
-        Permission::checkPermission(MembershipUsersHandler::PERMISSION_EDIT_USERS);
+        if (is_null($PermissionUser)) {
+            $PermissionUser = QUI::getUserBySession();
+        }
+
+        Permission::checkPermission(MembershipUsersHandler::PERMISSION_EDIT_USERS, $PermissionUser);
 
         $data['addedDate'] = Utils::getFormattedTimestamp();
 
@@ -106,6 +111,8 @@ class Handler extends Factory
 
         /** @var MembershipUser $NewChild */
         $NewChild = parent::createChild($data);
+        $NewChild->setEditUser($PermissionUser);
+
         $NewChild->addHistoryEntry(self::HISTORY_TYPE_CREATED);
         $NewChild->addToGroups();
         $NewChild->update();
