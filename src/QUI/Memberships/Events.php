@@ -284,7 +284,7 @@ class Events
     /**
      * quiqqer/contracts: onQuiqqerContractsCreateFromOrder
      *
-     * If a contract is created from an order, check if the Order also contains a
+     * If a contract is created from an order, check if the Order also contains a Membership product
      *
      * @param Contract $Contract
      * @param QUI\ERP\Order\OrderInProcess $Order
@@ -292,6 +292,17 @@ class Events
      */
     public static function onQuiqqerContractsCreateFromOrder(Contract $Contract, $Order)
     {
+        try {
+            $Conf = QUI::getPackage('quiqqer/memberships')->getConfig();
+
+            if (!$Conf->get('membershipusers', 'linkWithContracts')) {
+                return;
+            }
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+            return;
+        }
+
         $MembershipField = Handler::getProductMembershipField();
 
         if ($MembershipField === false) {
