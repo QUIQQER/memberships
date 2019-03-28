@@ -114,6 +114,15 @@
             <de><![CDATA[Bei einer manuellen Verlängerung der Mitgliedschaft wird eine E-Mail an den Benutzer gesendet. Manuelle Verlängerung = Bearbeitung des End-Datums einer Mitgliedschaft durch einen Administrator oder das erneute Hinzufügen eines Benutzers zu einer Mitgliedschaft, in der er sich bereits befindet.]]></de>
             <en><![CDATA[A manual extension of the membership will send an e-mail to the user. Manual Extension = The end date of a membership is edited by an administrator or a user is re-added to a membership that he already is in.]]></en>
         </locale>
+        <locale name="settings.linkWithContracts.title">
+            <de><![CDATA[Verknüpfung mit Verträgen]]></de>
+            <en><![CDATA[Link with contracts]]></en>
+        </locale>
+        <locale name="settings.linkWithContracts.description" html="true">
+            <de><![CDATA[Mitgliedschaften, die aus derselben Bestellung erstellt werden, aus der auch ein Vertrag erstellt wird, werden mit diesem Vertrag verknüpft. Dies bewirkt, dass bei Kündigung der Mitgliedschaft u.U. auch der Vertrag gekündigt wird (abhängig von Einstellung im Vertrags-Modul). Setzt voraus, dass <b>quiqqer/contracts</b> installiert ist.]]></de>
+            <en><![CDATA[Memberships created from the same purchase order from which a contract is created are linked to this contract. This means that if the membership is cancelled, the contract may also be cancelled (depending on the setting in the contract module). Requires <b>quiqqer/contracts</b> to be installed.]]></en>
+        </locale>
+
         <locale name="settings.dateformat.title">
             <de><![CDATA[Datumsformatierung]]></de>
             <en><![CDATA[Date format]]></en>

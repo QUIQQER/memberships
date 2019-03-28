@@ -36,6 +36,10 @@
                     <type><![CDATA[string]]></type>
                     <defaultvalue>membership</defaultvalue>
                 </conf>
+                <conf name="linkWithContracts">
+                    <type><![CDATA[bool]]></type>
+                    <defaultvalue>1</defaultvalue>
+                </conf>
             </section>
 
             <section name="date_formats_short">
@@ -163,6 +167,15 @@
                                 <locale group="quiqqer/memberships" var="settings.viewDataMode.option.product"/>
                             </option>
                         </select>
+
+                        <input conf="membershipusers.linkWithContracts" type="checkbox">
+                            <text>
+                                <locale group="quiqqer/memberships" var="settings.linkWithContracts.title"/>
+                            </text>
+                            <description>
+                                <locale group="quiqqer/memberships" var="settings.linkWithContracts.description"/>
+                            </description>
+                        </input>
 
                     </settings>
 

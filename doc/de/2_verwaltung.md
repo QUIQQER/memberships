@@ -23,5 +23,7 @@ markiert und auf `Bearbeiten` klickt oder einen **Doppelklick** auf einen Eintra
 Mit einem Klick auf `Löschen` kann die aktuelle Mitgliedschaft gelöscht werden. Die muss nochmals separat
 bestätigt werden.
 
-Das Löschen einer Mitgliedschaft ist nur möglich, wenn sich **kein Benutzer** mehr in einer der verknüpften Gruppen
-befindet. 
+Das Löschen einer Mitgliedschaft ist nur möglich, wenn sich **kein Benutzer** mehr in einer der verknüpften Benutzergruppen
+befindet.
+
+Eine gelöscht Mitgliedschaft lässt sich **nicht wiederherstellen** (außer durch das Einspielen eines Datenbank-Backups)!
