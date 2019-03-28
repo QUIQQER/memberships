@@ -304,8 +304,8 @@
             <en><![CDATA[Cancel membership]]></en>
         </locale>
         <locale name="controls.profile.userprofile.abortcancel.info" html="true">
-            <de><![CDATA[Sind Sie sicher, dass Sie die Kündigung Ihrer Mitgliedschaft <b>[title]</b> zurückziehen wollen?]]></de>
-            <en><![CDATA[Are you sure you want to withdraw the cancellation of your <b>[title]</b> membership?]]></en>
+            <de><![CDATA[Sind Sie sicher, dass Sie die Kündigung Ihrer Mitgliedschaft <b>[title]</b> zurückziehen wollen? Dies kann u.U. zur Folge haben, dass regelmäßige Zahlungen weiterhin ausgeführt werden.]]></de>
+            <en><![CDATA[Are you sure you want to withdraw the cancellation of your <b>[title]</b> membership? This may result in regular payments continuing to be made.]]></en>
         </locale>
         <locale name="controls.profile.userprofile.abortcancel.text">
             <de><![CDATA[Kündigung der Mitgliedschaft "[title]" zurückziehen]]></de>
