@@ -240,9 +240,10 @@ class Events
 
         $membershipFieldId = $MembershipField->getId();
         $Memberships       = Handler::getInstance();
+        $Users             = QUI::getUsers();
 
         try {
-            $User = QUI::getUsers()->get($Order->getCustomer()->getId());
+            $User = $Users->get($Order->getCustomer()->getId());
         } catch (\Exception $Exception) {
             QUI\System\Log::writeDebugException($Exception);
             return;
