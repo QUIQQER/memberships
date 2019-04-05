@@ -250,8 +250,10 @@ class Events
         }
 
         // do not add guests to a membership!
-        if (!QUI::getUserBySession()->isSU()
-            && !$Users->isSystemUser($User)
+        $SessionUser = QUI::getUserBySession();
+
+        if (!$SessionUser->isSU()
+            && !$Users->isSystemUser($SessionUser)
             && !$Users->isAuth($User)) {
             return;
         }
