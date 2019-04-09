@@ -297,7 +297,7 @@
         </locale>
         <locale name="controls.profile.userprofile.cancelconfirm.cancel">
             <de><![CDATA[Abbrechen]]></de>
-            <en><![CDATA[Abbrechen]]></en>
+            <en><![CDATA[Do not cancel]]></en>
         </locale>
         <locale name="controls.profile.userprofile.cancelconfirm.ok">
             <de><![CDATA[Mitgliedschaft kündigen]]></de>
