@@ -81,6 +81,8 @@ class Cron
                 QUI\System\Log::addError(
                     self::class.' :: checkMembershipUsers() -> '.$Exception->getMessage()
                 );
+
+                QUI\System\Log::writeException($Exception);
             }
         }
     }
