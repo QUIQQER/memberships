@@ -332,8 +332,8 @@
             <en><![CDATA[Membership "[title]"]]></en>
         </locale>
         <locale name="controls.profile.userprofile.status.modifier.cancel_confirm">
-            <de><![CDATA[(Kündigung beantragt - Bestätigung ausstehend)]]></de>
-            <en><![CDATA[(Cancellation requested - confirmation pending)]]></en>
+            <de><![CDATA[(Kündigung beantragt - Bitte Bestätigungslink in E-Mail anklicken)]]></de>
+            <en><![CDATA[(Cancellation requested - Please click the confirmation link in the e-mail)]]></en>
         </locale>
         <locale name="controls.profile.userprofile.status.modifier.abortcancel_confirm">
             <de><![CDATA[(Kündigung zurückgezogen - Bestätigung ausstehend)]]></de>
@@ -890,8 +890,8 @@
             <en><![CDATA[The membership could not be cancelled:<br><br>[error]]]></en>
         </locale>
         <locale name="message.ajax.memberships.users.startCancel.success" html="true">
-            <de><![CDATA[Die Mitgliedschaft wurde erfolgreich gekündigt.]]></de>
-            <en><![CDATA[The membership has been cancelled succesfully.]]></en>
+            <de><![CDATA[Die Kündigung der Mitgliedschaft wurde erfolgreich beantragt. <b>Sie erhalten eine E-Mail mit weiteren Anweisung zur Bestätigung der Kündigung!</b>]]></de>
+            <en><![CDATA[The cancellation of your membership has been successfully applied for. <b>You will receive an e-mail with further instructions to confirm the cancellation!</b>]]></en>
         </locale>
         <locale name="message.ajax.memberships.users.abortCancel.login.necessary">
             <de><![CDATA[Bitte loggen Sie sich ein, um die Kündigung Ihrer Mitgliedschaft aufzuheben.]]></de>
