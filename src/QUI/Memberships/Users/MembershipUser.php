@@ -387,8 +387,16 @@ class MembershipUser extends Child
      */
     public function sendConfirmCancelMail()
     {
-        $subject = $this->getUser()->getLocale()->get('quiqqer/memberships', 'templates.mail.confirmcancel.subject');
-        $this->sendMail($subject, dirname(__FILE__, 5).'/templates/mail_confirmcancel.html');
+        try {
+            $subject = $this->getUser()->getLocale()->get(
+                'quiqqer/memberships',
+                'templates.mail.confirmcancel.subject'
+            );
+
+            $this->sendMail($subject, dirname(__FILE__, 5).'/templates/mail_confirmcancel.html');
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
     }
 
     /**
