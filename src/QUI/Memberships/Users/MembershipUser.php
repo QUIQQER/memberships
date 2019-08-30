@@ -467,11 +467,26 @@ class MembershipUser extends Child
      * his membership)
      *
      * @return void
+     * @throws QUI\Exception
      */
     protected function removeFromGroups()
     {
+        /**
+         * Check if the user exists first. If he does NOT, then he does not need to be removed
+         * from QUIQQER groups (anymore).
+         */
+        try {
+            $User = QUI::getUsers()->get($this->getUserId());
+        } catch (\Exception $Exception) {
+            if ($Exception->getCode() === 404) {
+                return;
+            }
+
+            QUI\System\Log::writeException($Exception);
+            return;
+        }
+
         $Groups             = QUI::getGroups();
-        $User               = QUI::getUsers()->get($this->getUserId());
         $Memberships        = MembershipsHandler::getInstance();
         $Membership         = $this->getMembership();
         $membershipGroupIds = $Membership->getGroupIds();
