@@ -122,6 +122,14 @@
             <de><![CDATA[Mitgliedschaften, die aus derselben Bestellung erstellt werden, aus der auch ein Vertrag erstellt wird, werden mit diesem Vertrag verknüpft. Dies bewirkt, dass bei Kündigung der Mitgliedschaft u.U. auch der Vertrag gekündigt wird (abhängig von Einstellung im Vertrags-Modul). Setzt voraus, dass <b>quiqqer/contracts</b> installiert ist.]]></de>
             <en><![CDATA[Memberships created from the same purchase order from which a contract is created are linked to this contract. This means that if the membership is cancelled, the contract may also be cancelled (depending on the setting in the contract module). Requires <b>quiqqer/contracts</b> to be installed.]]></en>
         </locale>
+        <locale name="settings.cancelReminderDays.title">
+            <de><![CDATA[Kündigungserinnerung nach X Tagen]]></de>
+            <en><![CDATA[Cancel confirmation reminder after X days]]></en>
+        </locale>
+        <locale name="settings.cancelReminderDays.description" html="true">
+            <de><![CDATA[Anzahl an <b>Tagen</b>, nach denen Mitgliedschafts-Benutzer eine Erinnerung an ausstehende Kündigungs-Bestätigungen per E-Mail erhalten. Nicht gekündigte Mitgliedschafen laufen nach Ablauf der Gültigkeit des Bestätigungs-Links automatisch weiter.<br/><br/>Ein Wert von <b>0</b> bedeutet, dass <b>keine</b> Erinnerung verschickt wird.]]></de>
+            <en><![CDATA[Memberships created from the same purchase order from which a contract is created are linked to this contract. This means that if the membership is cancelled, the contract may also be cancelled (depending on the setting in the contract module). Requires <b>quiqqer/contracts</b> to be installed.<br/><br/>A value of <b>0</b> means that <b>no</b> reminder will be sent.]]></en>
+        </locale>
 
         <locale name="settings.dateformat.title">
             <de><![CDATA[Datumsformatierung]]></de>
@@ -336,8 +344,8 @@
             <en><![CDATA[(Cancellation requested - Please click the confirmation link in the e-mail)]]></en>
         </locale>
         <locale name="controls.profile.userprofile.status.modifier.abortcancel_confirm">
-            <de><![CDATA[(Kündigung zurückgezogen - Bestätigung ausstehend)]]></de>
-            <en><![CDATA[(Cancellation withdrawn - confirmation pending)]]></en>
+            <de><![CDATA[(Kündigung zurückgezogen - Bitte Bestätigungslink in E-Mail anklicken)]]></de>
+            <en><![CDATA[(Cancellation withdrawn - Please click the confirmation link in the e-mail)]]></en>
         </locale>
 
         <!-- Control: MembershipsSearchPopup -->
@@ -902,8 +910,8 @@
             <en><![CDATA[The cancellation of the membership could not be withdrawn:<br><br>[error]]]></en>
         </locale>
         <locale name="message.ajax.memberships.users.abortCancel.success" html="true">
-            <de><![CDATA[Die Kündigung der Mitgliedschaft wurde erfolgreich aufgehoben.]]></de>
-            <en><![CDATA[The cancellation of the membership was withdrawn successfully.]]></en>
+            <de><![CDATA[Die Aufhebung der Kündigung Ihrer Mitgliedschaft wurde erfolgreich beantragt. <b>Sie erhalten eine E-Mail mit weiteren Anweisung zur Bestätigung dieses Vorgangs!</b>]]></de>
+            <en><![CDATA[The recission of the cancellation of your membership has been successfully applied for. <b>You will receive an e-mail with further instructions to confirm this process!</b>]]></en>
         </locale>
         <locale name="message.ajax.memberships.products.createMembershipProducts.error" html="true">
             <de><![CDATA[Das Produkt konnte nicht erstellt werden:<br><br>[error]]]></de>
@@ -1045,11 +1053,20 @@
             <de><![CDATA[Zurückziehen der Kündigung Ihrer Mitgliedschaft]]></de>
             <en><![CDATA[Withdrawal of your membership termination]]></en>
         </locale>
-        <locale name="templates.mail.startabortcancel.body" html="true">
+        <locale name="templates.mail.confirmcancel_reminder.subject">
+            <de><![CDATA[Kündigung Ihrer Mitgliedschaft - Bestätigung ausstehend]]></de>
+            <en><![CDATA[Termination of your membership - Confirmation pending]]></en>
+        </locale>
+        <locale name="templates.mail.confirmcancel_reminder.body">
             <de><![CDATA[<h1>Hallo [name]!</h1>
-            <p>Es wurde beantragt, die Kündigung Ihrer Mitgliedschaft <b>[membershipTitle]</b> vom <b>[cancelDate]</b> zurückzuziehen. Um diese Vorgang zu bestätigen, besuchen Sie bitte folgenden Link:<br><br><a href="[abortCancelUrl]">[abortCancelUrl]</a></p>]]></de>
+            <p>Am <b>[cancelDate]</b> wurde die Kündigung Ihrer Mitgliedschaft <b>[membershipTitle]</b> beantragt. Wir haben bisher keine Bestätigung dieser Kündigung erhalten.</p>
+            <p>Um die Kündigung Ihrer Mitgliedschaft zu bestätigen, besuchen Sie bitte folgenden Link:<br><br><a href="[cancelUrl]">[cancelUrl]</a>
+<p>Sollten keine Kündigung wünschen, können Sie diese E-Mail ignorieren. Ihre Mitgliedschaft läuft dann automatisch wie gewohnt weiter.</p>]]></de>
             <en><![CDATA[<h1>Hello [name]!</h1>
-            <p>It was requests to withdraw the termination of your membership <b>[membershipTitle]</b> from <b>[cancelDate]</b>. To confirm this process please visit the following link:<br><br><a href="[abortCancelUrl]">[abortCancelUrl]</a></p>]]></en>
+            <p>At <b>[cancelDate]</b> the cancellation of your membership <b>[membershipTitle]</b> was requested. We did not receive a confirmation of this cancellation yet.</p>
+<p>To confirm the cancellation please visit the following link:<br><br><a href="[cancelUrl]">[cancelUrl]</p>
+<p>If you do not wish to cancel your membership you can just ignore this email. Your membership will then automatically continue as usual.</p>
+]]></en>
         </locale>
 
         <!-- CancelVerification -->
@@ -1088,6 +1105,11 @@
         <locale name="verification.abortcancel.error.already_verified">
             <de><![CDATA[Die Kündigung der Mitgliedschaft wurde bereits zurückgezogen.]]></de>
             <en><![CDATA[The membership cancellation has already been withdrawn.]]></en>
+        </locale>
+
+        <locale name="history.misc.cancel_abort_unverified">
+            <de><![CDATA[Kündigung der Mitgliedschaft automatisch zurückgezogen, da die Kündigung durch den Benutzer nicht bestätigt wurde.]]></de>
+            <en><![CDATA[Cancellation of membership automatically withdrawn, as the cancellation was not confirmed by the user.]]></en>
         </locale>
 
     </groups>

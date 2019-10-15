@@ -447,6 +447,36 @@ class Events
     }
 
     /**
+     * quiqqer/verification: onQuiqqerVerificationDeleteUnverified
+     *
+     * Send message to a membership user if he has not verified a cancellation.
+     *
+     * @param int $membershipUserId
+     * @return void
+     */
+    public static function onQuiqqerVerificationDeleteUnverified($membershipUserId)
+    {
+        try {
+            /** @var QUI\Memberships\Users\MembershipUser $MembershipUser */
+            $MembershipUser = MembershipUsersHandler::getInstance()->getChild($membershipUserId);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeDebugException($Exception);
+            return;
+        }
+
+        if ((int)$MembershipUser->getAttribute('cancelStatus') !== MembershipUsersHandler::CANCEL_STATUS_CANCEL_CONFIRM_PENDING) {
+            return;
+        }
+
+        $MembershipUser->addHistoryEntry(
+            QUI\Memberships\Users\Handler::HISTORY_TYPE_MISC,
+            QUI::getLocale()->get('quiqqer/memberships', 'history.misc.cancel_abort_unverified')
+        );
+
+        $MembershipUser->confirmAbortCancel();
+    }
+
+    /**
      * Create a product category for memberships
      *
      * @return void

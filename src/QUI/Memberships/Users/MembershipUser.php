@@ -275,7 +275,7 @@ class MembershipUser extends Child
     }
 
     /**
-     * Start to abort a manually stared cancellation process
+     * Start to abort a manually started cancellation process
      *
      * @return void
      * @throws QUI\Memberships\Exception
@@ -343,13 +343,21 @@ class MembershipUser extends Child
             'cancelEndDate' => null
         ]);
 
-        Verifier::removeVerification($this->getAbortCancelVerification());
+        try {
+            Verifier::removeVerification($this->getAbortCancelVerification());
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
 
         $this->addHistoryEntry(MembershipUsersHandler::HISTORY_TYPE_CANCEL_ABORT_CONFIRM);
         $this->setEditUser(QUI::getUsers()->getSystemUser());
-        $this->update();
 
-        QUI::getEvents()->fireEvent('quiqqerMembershipsCancelAbort', [$this]);
+        try {
+            $this->update();
+            QUI::getEvents()->fireEvent('quiqqerMembershipsCancelAbort', [$this]);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
     }
 
     /**
@@ -394,6 +402,31 @@ class MembershipUser extends Child
             );
 
             $this->sendMail($subject, dirname(__FILE__, 5).'/templates/mail_confirmcancel.html');
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
+    }
+
+    /**
+     * Send e-mail to remind user of an outstanding cancellation confirmation.
+     *
+     * @return void
+     */
+    public function sendConfirmCancelReminderMail()
+    {
+        try {
+            $subject = $this->getUser()->getLocale()->get(
+                'quiqqer/memberships',
+                'templates.mail.confirmcancel_reminder.subject'
+            );
+
+            $this->sendMail(
+                $subject,
+                dirname(__FILE__, 5).'/templates/mail_confirmcancel_reminder.html',
+                [
+                    'cancelUrl' => Verifier::getVerificationUrl($this->getCancelVerification())
+                ]
+            );
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }
@@ -801,7 +834,7 @@ class MembershipUser extends Child
      *
      * @throws \QUI\Exception
      */
-    protected function sendMail($subject, $templateFile, $templateVars = [])
+    public function sendMail($subject, $templateFile, $templateVars = [])
     {
         $User  = $this->getUser();
         $email = $User->getAttribute('email');
@@ -811,6 +844,8 @@ class MembershipUser extends Child
                 'Could not send mail to user #'.$User->getId().' because the user has'
                 .' no email address!'
             );
+
+            return;
         }
 
         $Engine = QUI::getTemplateManager()->getEngine();
