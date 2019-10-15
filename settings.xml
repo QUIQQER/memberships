@@ -40,6 +40,10 @@
                     <type><![CDATA[bool]]></type>
                     <defaultvalue>1</defaultvalue>
                 </conf>
+                <conf name="cancelReminderDays">
+                    <type><![CDATA[integer]]></type>
+                    <defaultvalue>3</defaultvalue>
+                </conf>
             </section>
 
             <section name="date_formats_short">
@@ -174,6 +178,15 @@
                             </text>
                             <description>
                                 <locale group="quiqqer/memberships" var="settings.linkWithContracts.description"/>
+                            </description>
+                        </input>
+
+                        <input conf="membershipusers.cancelReminderDays" type="number" min="0">
+                            <text>
+                                <locale group="quiqqer/memberships" var="settings.cancelReminderDays.title"/>
+                            </text>
+                            <description>
+                                <locale group="quiqqer/memberships" var="settings.cancelReminderDays.description"/>
                             </description>
                         </input>
 

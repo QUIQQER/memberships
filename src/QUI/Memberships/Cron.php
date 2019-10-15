@@ -27,7 +27,9 @@ class Cron
             ]
         ]);
 
-        $now = time();
+        $now                            = time();
+        $cancelConfirmReminderAfterDays = (int)MembershipUsersHandler::getSetting('cancelReminderDays');
+        $Now                            = date_create();
 
         foreach ($result as $row) {
             try {
@@ -44,6 +46,21 @@ class Cron
                     }
 
                     continue;
+                }
+
+                // Check if cancellation of membership has been started but NOT yet confirmed.
+                // Send reminder e-mail after X days of unconfirmed cancellation.
+                if (!empty($cancelConfirmReminderAfterDays)
+                    && (int)$MembershipUser->getAttribute('cancelStatus') === MembershipUsersHandler::CANCEL_STATUS_CANCEL_CONFIRM_PENDING) {
+                    $CancelDate = \date_create($MembershipUser->getAttribute('cancelDate'));
+
+                    if ($CancelDate) {
+                        $RemindDate = $CancelDate->add(new \DateInterval('P'.$cancelConfirmReminderAfterDays.'D'));
+
+//                        if ($Now > $RemindDate) {
+                            $MembershipUser->sendConfirmCancelReminderMail();
+//                        }
+                    }
                 }
 
                 // never expire a membership with infinite duration
