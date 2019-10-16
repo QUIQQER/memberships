@@ -60,7 +60,7 @@ QUI::$Ajax->registerFunction(
                                  * considered here.
                                  */
                                 $MembershipUser->setAttributes([
-                                    'cancelStatus'  => MembershipUsersHandler::CANCEL_STATUS_CANCELLED,
+                                    'cancelStatus'  => MembershipUsersHandler::CANCEL_STATUS_CANCELLED_BY_SYSTEM,
                                     'cancelEndDate' => $MembershipUser->getAttribute('endDate')
                                 ]);
 

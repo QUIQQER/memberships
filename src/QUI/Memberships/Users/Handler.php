@@ -19,6 +19,7 @@ class Handler extends Factory
     const HISTORY_TYPE_CANCEL_BY_EDIT       = 'cancel_by_edit';
     const HISTORY_TYPE_UNCANCEL_BY_EDIT     = 'uncancel_by_edit';
     const HISTORY_TYPE_CANCEL_START         = 'cancel_start';
+    const HISTORY_TYPE_CANCEL_START_SYSTEM  = 'cancel_system';
     const HISTORY_TYPE_CANCEL_ABORT_START   = 'cancel_abort_start';
     const HISTORY_TYPE_CANCEL_ABORT_CONFIRM = 'cancel_abort_confirm';
     const HISTORY_TYPE_CANCEL_CONFIRM       = 'cancel_confirm';
@@ -44,6 +45,7 @@ class Handler extends Factory
     const CANCEL_STATUS_CANCEL_CONFIRM_PENDING       = 1;
     const CANCEL_STATUS_ABORT_CANCEL_CONFIRM_PENDING = 2;
     const CANCEL_STATUS_CANCELLED                    = 3;
+    const CANCEL_STATUS_CANCELLED_BY_SYSTEM          = 4;
 
     /**
      * Permissions
@@ -190,6 +192,43 @@ class Handler extends Factory
         }
 
         return $membershipUsers;
+    }
+
+    /**
+     * Get MembershipUser of associated contract
+     *
+     * @param int $contractId
+     * @return MembershipUser|false
+     */
+    public function getMembershipUserByContractId(int $contractId)
+    {
+        try {
+            $result = QUI::getDataBase()->fetch([
+                'select' => [
+                    'id'
+                ],
+                'from'   => self::getDataBaseTableName(),
+                'where'  => [
+                    'contractId' => $contractId
+                ]
+            ]);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+            return false;
+        }
+
+        if (empty($result)) {
+            return false;
+        }
+
+        try {
+            /** @var MembershipUser $MembershipUser */
+            $MembershipUser = self::getChild($result[0]['id']);
+            return $MembershipUser;
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+            return false;
+        }
     }
 
 //    /**

@@ -420,6 +420,40 @@ class Events
     }
 
     /**
+     * quiqqer/contracts: onQuiqqerContractsCancel
+     *
+     * Cancel MembershipUser of associated contract
+     *
+     * @param Contract $Contract
+     * @throws QUI\Database\Exception
+     */
+    public static function onQuiqqerContractsCancel(Contract $Contract)
+    {
+        try {
+            $Conf = QUI::getPackage('quiqqer/memberships')->getConfig();
+
+            if (!$Conf->get('membershipusers', 'linkWithContracts')) {
+                return;
+            }
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+            return;
+        }
+
+        $MembershipUser = MembershipUsersHandler::getInstance()->getMembershipUserByContractId($Contract->getCleanId());
+
+        if (!$MembershipUser) {
+            return;
+        }
+
+        try {
+            $MembershipUser->autoCancel();
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
+    }
+
+    /**
      * quiqqer/products: onQuiqqerProductsFieldDeleteBefore
      *
      * @param ProductField $Field
