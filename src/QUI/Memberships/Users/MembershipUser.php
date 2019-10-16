@@ -275,6 +275,57 @@ class MembershipUser extends Child
     }
 
     /**
+     * Automatic cancellation of a MembershipUser.
+     *
+     * HINT: This is not supposed to be executed by the user, but programmatically only if
+     * a membership needs to be cancelled for other reasons than a manual cancellation by the user.
+     *
+     * A user CANNOT revoke a cancellation executed this way!
+     *
+     * @return void
+     * @throws \Exception
+     */
+    public function autoCancel()
+    {
+        if ($this->isCancelled()) {
+            return;
+        }
+
+        $Membership = $this->getMembership();
+
+        // cannot cancel infinite memberships
+        if ($Membership->isInfinite()) {
+            return;
+        }
+
+        // cannot cancel default membership
+        if ($Membership->isDefault()) {
+            return;
+        }
+
+        $cancelDate = Utils::getFormattedTimestamp();
+
+        $this->setAttributes([
+            'cancelStatus'  => MembershipUsersHandler::CANCEL_STATUS_CANCELLED_BY_SYSTEM,
+            'cancelDate'    => $cancelDate,
+            'cancelled'     => true,
+            'cancelEndDate' => $this->getCurrentCancelEndDate()->format('Y-m-d H:i:s')
+        ]);
+
+        $this->addHistoryEntry(MembershipUsersHandler::HISTORY_TYPE_CANCEL_START_SYSTEM);
+
+        // save cancel hash and date to database
+        $this->setEditUser(QUI::getUsers()->getSystemUser());
+
+        try {
+            $this->update();
+            QUI::getEvents()->fireEvent('quiqqerMembershipsAutoCancel', [$this]);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
+    }
+
+    /**
      * Start to abort a manually started cancellation process
      *
      * @return void
@@ -293,6 +344,14 @@ class MembershipUser extends Child
         }
 
         $cancelStatus = (int)$this->getAttribute('cancelStatus');
+
+        // If cancellation was initiated programmatically (by system), a user cannot undo this
+        if ($cancelStatus === MembershipUsersHandler::CANCEL_STATUS_CANCELLED_BY_SYSTEM) {
+            throw new QUI\Memberships\Exception([
+                'quiqqer/memberships',
+                'exception.users.membershipuser.manualcancel.no_system_uncancel'
+            ]);
+        }
 
         if ($cancelStatus !== MembershipUsersHandler::CANCEL_STATUS_CANCEL_CONFIRM_PENDING
             && $cancelStatus !== MembershipUsersHandler::CANCEL_STATUS_CANCELLED

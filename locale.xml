@@ -683,6 +683,10 @@
             <de><![CDATA[Kündigungs-Anfrage gestellt]]></de>
             <en><![CDATA[Termination requested]]></en>
         </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.cancel_system">
+            <de><![CDATA[Mitgliedschaft vom System gekündigt]]></de>
+            <en><![CDATA[Membership cancelled by system]]></en>
+        </locale>
         <locale name="controls.users.membershipuserhistory.entry.type.cancel_confirm">
             <de><![CDATA[Kündigung bestätigt]]></de>
             <en><![CDATA[Termination confirmed]]></en>
@@ -982,6 +986,10 @@
         <locale name="exception.users.membershipuser.manualcancel.no.permission">
             <de><![CDATA[Eine Mitgliedschaft kann nur vom Mitgliedschafts-Benutzer selbst gekündigt werden.]]></de>
             <en><![CDATA[A membership can only be cancelled by the membership user himself.]]></en>
+        </locale>
+        <locale name="exception.users.membershipuser.manualcancel.no_system_uncancel">
+            <de><![CDATA[Die Kündigung dieser Mitgliedschaft kann nicht rückgängig gemacht werden.]]></de>
+            <en><![CDATA[The cancellation of this membership cannot be revoked.]]></en>
         </locale>
         <locale name="exception.users.membershipuser.manualcancel.no_email_address">
             <de><![CDATA[Sie können diese Mitgliedschaft nicht kündigen, da mit Ihrem Benutzerkonto keine oder keine gültige E-Mail-Adresse verknüpft ist. Bitte wenden Sie sich an einen Administrator.]]></de>

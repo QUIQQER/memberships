@@ -180,7 +180,7 @@ define('package/quiqqer/memberships/bin/controls/profile/UserProfile', [
                 MembershipElm.getElement('.quiqqer-memberships-profile-userprofile-status')
             );
 
-            // status modofiers
+            // status modifiers
             if (Membership.cancelStatus == 1) {
                 new Element('span', {
                     html: QUILocale.get(lg,
