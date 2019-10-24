@@ -56,10 +56,17 @@ class Cron
 
                     if ($CancelDate) {
                         $RemindDate = $CancelDate->add(new \DateInterval('P'.$cancelConfirmReminderAfterDays.'D'));
+                        $User       = $MembershipUser->getUser();
 
-//                        if ($Now > $RemindDate) {
-                            $MembershipUser->sendConfirmCancelReminderMail();
-//                        }
+                        if (!$User->getAttribute(MembershipUsersHandler::USER_ATTR_CANCEL_REMINDER_SENT)
+                            && $Now > $RemindDate) {
+                            $sent = $MembershipUser->sendConfirmCancelReminderMail();
+
+                            if ($sent) {
+                                $User->setAttribute(MembershipUsersHandler::USER_ATTR_CANCEL_REMINDER_SENT, true);
+                                $User->save(QUI::getUsers()->getSystemUser());
+                            }
+                        }
                     }
                 }
 

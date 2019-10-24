@@ -469,7 +469,7 @@ class MembershipUser extends Child
     /**
      * Send e-mail to remind user of an outstanding cancellation confirmation.
      *
-     * @return void
+     * @return bool - success
      */
     public function sendConfirmCancelReminderMail()
     {
@@ -486,8 +486,11 @@ class MembershipUser extends Child
                     'cancelUrl' => Verifier::getVerificationUrl($this->getCancelVerification())
                 ]
             );
+
+            return true;
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
+            return false;
         }
     }
 

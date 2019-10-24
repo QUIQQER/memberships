@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <user>
+    <attributes>
+        <attribute>quiqqer.memberships.cancel_reminder_sent</attribute>
+    </attributes>
+
     <window>
         <tab name="memberships">
             <text>
