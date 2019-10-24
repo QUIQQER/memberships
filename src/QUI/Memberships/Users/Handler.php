@@ -48,6 +48,11 @@ class Handler extends Factory
     const CANCEL_STATUS_CANCELLED_BY_SYSTEM          = 4;
 
     /**
+     * User attributes
+     */
+    const USER_ATTR_CANCEL_REMINDER_SENT = 'quiqqer.memberships.cancel_reminder_sent';
+
+    /**
      * Permissions
      */
     const PERMISSION_EDIT_USERS = 'quiqqer.memberships.edit_users';
