@@ -160,6 +160,13 @@ class Membership extends Child
         $attributes['editUser'] = QUI::getUserBySession()->getId();
         $attributes['editDate'] = Utils::getFormattedTimestamp();
 
+        // autoExtend
+        if (empty($attributes['autoExtend'])) {
+            $attributes['autoExtend'] = 0;
+        } else {
+            $attributes['autoExtend'] = $attributes['autoExtend'] ? 1 : 0;
+        }
+
         $this->setAttributes($attributes);
 
         parent::update();
