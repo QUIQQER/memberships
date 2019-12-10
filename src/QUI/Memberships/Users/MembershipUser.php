@@ -4,6 +4,7 @@ namespace QUI\Memberships\Users;
 
 use QUI;
 use QUI\CRUD\Child;
+use QUI\Memberships\Handler;
 use QUI\Memberships\Handler as MembershipsHandler;
 use QUI\Memberships\Users\Handler as MembershipUsersHandler;
 use QUI\Memberships\Utils;
@@ -98,27 +99,31 @@ class MembershipUser extends Child
      * @param bool $auto (optional) - Used if the membership is automatically extended.
      * If set to false, the setting membershipusers.extendMode is used [default: true]
      * @return void
+     * @throws QUI\Exception
      */
     public function extend($auto = true)
     {
-        $Membership = $this->getMembership();
-        $extendMode = MembershipUsersHandler::getSetting('extendMode');
+        $extendMode     = MembershipUsersHandler::getSetting('extendMode');
+        $currentEndDate = $this->getAttribute('endDate');
+
+        if (empty($currentEndDate)) {
+            $CurrentEndDate = \date_create();
+        } else {
+            $CurrentEndDate = \date_create($currentEndDate);
+        }
 
         // Calculate new start and/or end time
         if ($auto || $extendMode === 'reset') {
-            $start         = time();
             $extendCounter = $this->getAttribute('extendCounter');
 
             $this->setAttributes([
-                'beginDate'     => Utils::getFormattedTimestamp($start),
-                'endDate'       => $Membership->calcEndDate($start),
+                'beginDate'     => Utils::getFormattedTimestamp($CurrentEndDate->getTimestamp()),
+                'endDate'       => Utils::getFormattedTimestamp($this->calcEndDate($CurrentEndDate)->getTimestamp()),
                 'extendCounter' => $extendCounter + 1
             ]);
         } else {
-            $endDate = $this->getAttribute('endDate');
-
             $this->setAttributes([
-                'endDate' => $Membership->calcEndDate(strtotime($endDate))
+                'endDate' => Utils::getFormattedTimestamp($this->calcEndDate($CurrentEndDate)->getTimestamp())
             ]);
         }
 
@@ -140,6 +145,50 @@ class MembershipUser extends Child
     }
 
     /**
+     * Calculate the end date of the current cycle based on a start date
+     *
+     * @param \DateTime $Start (optional) - Calculate based on this start date [default: now]
+     * @return \DateTime
+     */
+    public function calcEndDate($Start = null)
+    {
+        if (empty($Start)) {
+            $Start = \date_create();
+        }
+
+        $contractId = $this->getContractId();
+        $NewEndDate = \date_create($this->getMembership()->calcEndDate($Start->getTimestamp()));
+
+        if (empty($contractId)) {
+            return $NewEndDate;
+        }
+
+        try {
+            $Contract                  = ContractsHandler::getInstance()->getContract($contractId);
+            $ContractExtensionInterval = $Contract->getExtensionInterval();
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+            return $NewEndDate;
+        }
+
+        if (!$ContractExtensionInterval) {
+            return $NewEndDate;
+        }
+
+        $NewEndDate   = $Start->add($ContractExtensionInterval);
+        $durationMode = Handler::getSetting('durationMode');
+
+        switch ($durationMode) {
+            case 'day':
+                $NewEndDate->add(new \DateInterval('P1D'));
+                $NewEndDate->setTime(23, 59, 59);
+                break;
+        }
+
+        return $NewEndDate;
+    }
+
+    /**
      * Send mail to the user if the membership is extended automatically
      *
      * @return void
@@ -152,12 +201,16 @@ class MembershipUser extends Child
             return;
         }
 
-        $subject = $this->getUser()->getLocale()->get(
-            'quiqqer/memberships',
-            'templates.mail.autoextend.subject'
-        );
+        try {
+            $subject = $this->getUser()->getLocale()->get(
+                'quiqqer/memberships',
+                'templates.mail.autoextend.subject'
+            );
 
-        $this->sendMail($subject, dirname(__FILE__, 5).'/templates/mail_autoextend.html');
+            $this->sendMail($subject, dirname(__FILE__, 5).'/templates/mail_autoextend.html');
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
     }
 
     /**
@@ -176,12 +229,16 @@ class MembershipUser extends Child
             return;
         }
 
-        $subject = $this->getUser()->getLocale()->get(
-            'quiqqer/memberships',
-            'templates.mail.manualextend.subject'
-        );
+        try {
+            $subject = $this->getUser()->getLocale()->get(
+                'quiqqer/memberships',
+                'templates.mail.manualextend.subject'
+            );
 
-        $this->sendMail($subject, dirname(__FILE__, 5).'/templates/mail_manualextend.html');
+            $this->sendMail($subject, dirname(__FILE__, 5).'/templates/mail_manualextend.html');
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
     }
 
     /**
@@ -248,12 +305,14 @@ class MembershipUser extends Child
             ]);
         }
 
-        $cancelUrl  = Verifier::startVerification($this->getCancelVerification(), true);
-        $cancelDate = Utils::getFormattedTimestamp();
+        $cancelUrl     = Verifier::startVerification($this->getCancelVerification(), true);
+        $cancelDate    = Utils::getFormattedTimestamp();
+        $CancelEndDate = $this->getCurrentCancelEndDate();
 
         $this->setAttributes([
-            'cancelStatus' => MembershipUsersHandler::CANCEL_STATUS_CANCEL_CONFIRM_PENDING,
-            'cancelDate'   => $cancelDate
+            'cancelStatus'  => MembershipUsersHandler::CANCEL_STATUS_CANCEL_CONFIRM_PENDING,
+            'cancelDate'    => $cancelDate,
+            'cancelEndDate' => $CancelEndDate->format('Y-m-d H:i:s')
         ]);
 
         $this->addHistoryEntry(MembershipUsersHandler::HISTORY_TYPE_CANCEL_START);
@@ -263,13 +322,15 @@ class MembershipUser extends Child
         $this->update();
 
         // send cancellation mail
+        $User = $this->getUser();
+
         $this->sendMail(
             QUI::getLocale()->get('quiqqer/memberships', 'templates.mail.startcancel.subject'),
             dirname(__FILE__, 5).'/templates/mail_startcancel.html',
             [
                 'cancelDate'    => $cancelDate,
                 'cancelUrl'     => $cancelUrl,
-                'cancelEndDate' => $this->getCurrentCancelEndDate()->format('Y-m-d H:i:s')
+                'cancelEndDate' => $User->getLocale()->formatDate($CancelEndDate->getTimestamp())
             ]
         );
     }
@@ -306,10 +367,9 @@ class MembershipUser extends Child
         $cancelDate = Utils::getFormattedTimestamp();
 
         $this->setAttributes([
-            'cancelStatus'  => MembershipUsersHandler::CANCEL_STATUS_CANCELLED_BY_SYSTEM,
-            'cancelDate'    => $cancelDate,
-            'cancelled'     => true,
-            'cancelEndDate' => $this->getCurrentCancelEndDate()->format('Y-m-d H:i:s')
+            'cancelStatus' => MembershipUsersHandler::CANCEL_STATUS_CANCELLED_BY_SYSTEM,
+            'cancelDate'   => $cancelDate,
+            'cancelled'    => true
         ]);
 
         $this->addHistoryEntry(MembershipUsersHandler::HISTORY_TYPE_CANCEL_START_SYSTEM);
@@ -693,6 +753,34 @@ class MembershipUser extends Child
     }
 
     /**
+     * Permanently links this MembershipUser to a contract (quiqqer/contracts)
+     *
+     * This causes the end date of this MembershipUser to be equal with the contract end date.
+     *
+     * @param int $contractId
+     * @return void
+     * @throws QUI\Exception
+     */
+    public function linkToContract($contractId)
+    {
+        try {
+            $Contract             = ContractsHandler::getInstance()->getContract($contractId);
+            $ContractCycleEndDate = $Contract->getCycleEndDate();
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+            return;
+        }
+
+        $this->setAttribute('contractId', $contractId);
+
+        if ($ContractCycleEndDate) {
+            $this->setAttribute('endDate', $ContractCycleEndDate->format('Y-m-d 23:59:59'));
+        }
+
+        $this->update();
+    }
+
+    /**
      * Add an entry to the membership user history
      *
      * @param string $type - History entry type (see \QUI\Memberships\Users\Handler)
@@ -993,12 +1081,17 @@ class MembershipUser extends Child
      * if it was cancelled NOW
      *
      * @return \DateTime
-     * @throws \Exception
      */
     public function getCurrentCancelEndDate()
     {
         $endDate    = $this->getAttribute('endDate');
-        $EndDate    = new \DateTime($endDate);
+        $EndDate    = \date_create($endDate);
+        $Membership = $this->getMembership();
+
+        if (!$EndDate) {
+            $EndDate = $this->calcEndDate();
+        }
+
         $contractId = $this->getContractId();
 
         if (empty($contractId)) {
@@ -1010,13 +1103,40 @@ class MembershipUser extends Child
          * the period of notice of this contract has to be considered
          * when cancelling the membership.
          */
-        $Contract = ContractsHandler::getInstance()->get($contractId);
+        try {
+            $Contract = ContractsHandler::getInstance()->get($contractId);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+            return $EndDate;
+        }
 
         if ($Contract->isInPeriodOfNotice()) {
             return $EndDate;
         }
 
-        $actualEndTime = $this->getMembership()->calcEndDate($EndDate->getTimestamp());
-        return new \DateTime($actualEndTime);
+        $ActualEndTime   = false;
+        $ContractEndDate = false;
+
+        try {
+            $ContractEndDate = $Contract->getEndDate();
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
+
+        if ($ContractEndDate) {
+            try {
+                $ContractCycleBeginDate = $ContractEndDate->sub($Contract->getExtensionInterval());
+                $ActualEndTime          = \date_create($Membership->calcEndDate($ContractCycleBeginDate->getTimestamp()));
+            } catch (\Exception $Exception) {
+                QUI\System\Log::writeException($Exception);
+                return $EndDate;
+            }
+        }
+
+        if (!$ActualEndTime) {
+            return $EndDate;
+        }
+
+        return $ActualEndTime;
     }
 }

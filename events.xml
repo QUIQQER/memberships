@@ -8,6 +8,7 @@
     <event on="onQuiqqerContractsCreateFromOrder" fire="\QUI\Memberships\Events::onQuiqqerContractsCreateFromOrder"/>
     <event on="onQuiqqerContractsDelete" fire="\QUI\Memberships\Events::onQuiqqerContractsDelete"/>
     <event on="onQuiqqerContractsCancel" fire="\QUI\Memberships\Events::onQuiqqerContractsCancel"/>
+    <event on="onQuiqqerContractsExtend" fire="\QUI\Memberships\Events::onQuiqqerContractsExtend"/>
 
     <event on="onQuiqqerVerificationDeleteUnverified" fire="\QUI\Memberships\Events::onQuiqqerVerificationDeleteUnverified"/>
 </events>

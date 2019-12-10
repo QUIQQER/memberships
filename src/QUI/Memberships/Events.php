@@ -287,6 +287,54 @@ class Events
     }
 
     /**
+     * quiqqer/contracts: onQuiqqerContractsExtend
+     *
+     * Automatically extend all MembershipUsers associated with the contract that is extended
+     *
+     * @param Contract $Contract
+     * @param \DateTime $EndDate
+     * @param \DateTime $NewEndDate
+     */
+    public static function onQuiqqerContractsExtend(Contract $Contract, \DateTime $EndDate, \DateTime $NewEndDate)
+    {
+        try {
+            $Conf = QUI::getPackage('quiqqer/memberships')->getConfig();
+
+            if (!$Conf->get('membershipusers', 'linkWithContracts')) {
+                return;
+            }
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+            return;
+        }
+
+        $MembershipUsers = MembershipUsersHandler::getInstance();
+
+        try {
+            $result = QUI::getDataBase()->fetch([
+                'select' => ['id'],
+                'from'   => $MembershipUsers->getDataBaseTableName(),
+                'where'  => [
+                    'contractId' => $Contract->getCleanId()
+                ]
+            ]);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+            return;
+        }
+
+        foreach ($result as $row) {
+            try {
+                /** @var QUI\Memberships\Users\MembershipUser $MembershipUser */
+                $MembershipUser = $MembershipUsers->getChild($row['id']);
+                $MembershipUser->extend();
+            } catch (\Exception $Exception) {
+                QUI\System\Log::writeException($Exception);
+            }
+        }
+    }
+
+    /**
      * quiqqer/contracts: onQuiqqerContractsCreateFromOrder
      *
      * If a contract is created from an order, check if the Order also contains a Membership product
@@ -335,9 +383,7 @@ class Events
                 $MembershipUser = $Membership->getMembershipUser($Customer->getId());
                 $MembershipUser->setEditUser(QUI::getUsers()->getSystemUser());
 
-                $MembershipUser->setAttribute('contractId', $Contract->getCleanId());
-                $MembershipUser->update();
-
+                $MembershipUser->linkToContract($Contract->getCleanId());
                 break;
             } catch (\QUI\ERP\Products\Product\Exception $Exception) {
                 QUI\System\Log::writeDebugException($Exception);
