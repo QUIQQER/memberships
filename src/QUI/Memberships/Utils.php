@@ -33,7 +33,7 @@ class Utils
     public static function clearArrayWithJSON(array $array)
     {
         if (!is_array($array)) {
-            return array();
+            return [];
         }
 
         foreach ($array as $k => $v) {
@@ -82,12 +82,12 @@ class Utils
      */
     public static function getInstalledMembershipPackages()
     {
-        $packages         = array();
-        $relevantPackages = array(
+        $packages         = [];
+        $relevantPackages = [
             'quiqqer/products',
             'quiqqer/contracts',
             'quiqqer/erp-plans'
-        );
+        ];
 
         foreach ($relevantPackages as $package) {
             try {
@@ -99,6 +99,44 @@ class Utils
         }
 
         return $packages;
+    }
+
+    /**
+     * Parse a DateInterval from a contract duration setting
+     *
+     * @param string $duration
+     * @return \DateInterval|false
+     * @throws \Exception
+     */
+    public static function parseIntervalFromDuration($duration)
+    {
+        if (empty($duration)) {
+            return false;
+        }
+
+        $duration       = \explode('-', $duration);
+        $intervalNumber = $duration[0];
+
+        switch ($duration[1]) {
+            case 'week':
+                $intervalPeriod = 'W';
+                break;
+
+            case 'month':
+                $intervalPeriod = 'M';
+                break;
+
+            case 'year':
+                $intervalPeriod = 'Y';
+                break;
+
+            case 'day':
+            default:
+                $intervalPeriod = 'D';
+                break;
+        }
+
+        return new \DateInterval('P'.$intervalNumber.$intervalPeriod);
     }
 
     /**
