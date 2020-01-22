@@ -119,8 +119,8 @@
             <en><![CDATA[Link with contracts]]></en>
         </locale>
         <locale name="settings.linkWithContracts.description" html="true">
-            <de><![CDATA[Mitgliedschaften, die aus derselben Bestellung erstellt werden, aus der auch ein Vertrag erstellt wird, werden mit diesem Vertrag verknüpft. Dies bewirkt, dass bei Kündigung der Mitgliedschaft u.U. auch der Vertrag gekündigt wird (abhängig von Einstellung im Vertrags-Modul). Setzt voraus, dass <b>quiqqer/contracts</b> installiert ist.]]></de>
-            <en><![CDATA[Memberships created from the same purchase order from which a contract is created are linked to this contract. This means that if the membership is cancelled, the contract may also be cancelled (depending on the setting in the contract module). Requires <b>quiqqer/contracts</b> to be installed.]]></en>
+            <de><![CDATA[Mitgliedschaften, die aus derselben Bestellung erstellt werden, aus der auch ein Vertrag erstellt wird, werden mit diesem Vertrag verknüpft. Dies bewirkt, dass bei Kündigung der Mitgliedschaft u.U. auch der Vertrag gekündigt wird (abhängig von Einstellung im Vertrags-Modul). Ebenso wird bei Kündigung eines Vertrages die verknüpfte Mitgliedschaft eines Benutzers gekündigt. Setzt voraus, dass <b>quiqqer/contracts</b> installiert ist.]]></de>
+            <en><![CDATA[Memberships created from the same purchase order from which a contract is created are linked to this contract. This means that if the membership is cancelled, the contract may also be cancelled (depending on the setting in the contract module). Likewise, when a contract is terminated, the linked membership of a user is terminated as well. Requires <b>quiqqer/contracts</b> to be installed.]]></en>
         </locale>
         <locale name="settings.cancelReminderDays.title">
             <de><![CDATA[Kündigungserinnerung nach X Tagen]]></de>
