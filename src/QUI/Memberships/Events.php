@@ -265,8 +265,13 @@ class Events
             try {
                 $Product                = ProductsHandler::getProduct($Article->getId());
                 $ProductMembershipField = $Product->getField($membershipFieldId);
+                $membershipId           = $ProductMembershipField->getValue();
 
-                $Membership = $Memberships->getChild($ProductMembershipField->getValue());
+                if (empty($membershipId)) {
+                    continue;
+                }
+
+                $Membership = $Memberships->getChild($membershipId);
                 $Membership->setEditUser($SystemUser);
 
                 $MembershipUser = $Membership->addUser($User);
