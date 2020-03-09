@@ -94,7 +94,7 @@ class Cron
                 }
 
                 // extend if membership is extended automatically
-                if ($Membership->isAutoExtend()) {
+                if ($Membership->isAutoExtend() && !$MembershipUser->getContractId()) {
                     $MembershipUser->extend();
                     continue;
                 }
