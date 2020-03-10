@@ -427,4 +427,25 @@ class Handler extends Factory
 
         return self::getInstance()->getChild((int)$membershipId);
     }
+
+    /**
+     * Check if memberships are linked to contracts
+     *
+     * @return bool
+     */
+    public static function isLinkedToContracts()
+    {
+        try {
+            $Conf = QUI::getPackage('quiqqer/memberships')->getConfig();
+
+            if ((int)$Conf->get('membershipusers', 'linkWithContracts')) {
+                return true;
+            }
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+            return false;
+        }
+
+        return false;
+    }
 }
