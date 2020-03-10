@@ -30,6 +30,7 @@ class Cron
         $now                            = time();
         $cancelConfirmReminderAfterDays = (int)MembershipUsersHandler::getSetting('cancelReminderDays');
         $Now                            = date_create();
+        $isLinkedToContracts            = Handler::isLinkedToContracts();
 
         foreach ($result as $row) {
             try {
@@ -94,8 +95,11 @@ class Cron
                 }
 
                 // extend if membership is extended automatically
-                if ($Membership->isAutoExtend() && !$MembershipUser->getContractId()) {
-                    $MembershipUser->extend();
+                if ($Membership->isAutoExtend()) {
+                    // Only extend if not extended by contract
+                    if (!$isLinkedToContracts || !$MembershipUser->getContractId()) {
+                        $MembershipUser->extend();
+                    }
                     continue;
                 }
 
