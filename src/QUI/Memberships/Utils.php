@@ -62,13 +62,21 @@ class Utils
     /**
      * Get formatted timestamp for a given UNIX timestamp
      *
-     * @param int $time (optional) - if omitted use time()
+     * @param int|\DateTime $time (optional) - Timestamp or \DateTime object [default: now]
      * @return string
      */
     public static function getFormattedTimestamp($time = null)
     {
         if (is_null($time)) {
             $time = time();
+        }
+
+        if ($time instanceof \DateTime) {
+            return $time->format('Y-m-d H:i:s');
+        }
+
+        if (\is_string($time) && !\is_numeric($time)) {
+            $time = \strtotime($time);
         }
 
         return date('Y-m-d H:i:s', $time);

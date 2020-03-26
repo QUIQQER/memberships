@@ -291,6 +291,19 @@
             <de><![CDATA[Kündigung zurückziehen]]></de>
             <en><![CDATA[Withdraw cancellation]]></en>
         </locale>
+        <locale name="controls.profile.userprofile.cancel_info.title">
+            <de><![CDATA[Kündigungsinformation]]></de>
+            <en><![CDATA[Cancellation info]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.cancel_info.text">
+            <de><![CDATA[Kündigungsinformation]]></de>
+            <en><![CDATA[Cancellation info]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.cancel_info.btn_title">
+            <de><![CDATA[Informationen zur Vertragslaufzeit]]></de>
+            <en><![CDATA[Information about contract duration]]></en>
+        </locale>
+
         <locale name="controls.profile.userprofile.cancelconfirm.info" html="true">
             <de><![CDATA[Sind Sie sicher, dass Sie die Mitgliedschaft <b>[title]</b> kündigen wollen? Bitte beachten Sie, dass Ihre Mitgliedschaft dann zum <b>[endDate]</b> ausläuft. Bis dahin können Sie weiterhin alle Vorteile Ihrer Mitgliedschaft nutzen. Bis zum Ablaufdatum können Sie die Kündigung jederzeit zurückziehen.]]></de>
             <en><![CDATA[Are you sure you want to cancel your <b>[title]</b> membership? Please note that your membership expires by <b>[endDate]</b>. Until then, you can continue to take full advantage of your membership. Until the expiration date, you can withdraw the cancellation at any time.]]></en>
@@ -998,6 +1011,18 @@
         <locale name="exception.users.membershipuser.abortcancel.no_email_address">
             <de><![CDATA[Sie können die Kündigung Ihrer Mitgliedschaft nicht aufheben, da mit Ihrem Benutzerkonto keine oder keine gültige E-Mail-Adresse verknüpft ist. Bitte wenden Sie sich an einen Administrator.]]></de>
             <en><![CDATA[You cannot withdraw the cancellation of this membership because there is no valid email address associated with your account. Please contact an administrator.]]></en>
+        </locale>
+        <locale name="MembershipUser.cancel.info_text.cancel_until_date">
+            <de><![CDATA[Sie haben Ihre Mitgliedschaft am [addedDate] abgeschlossen. Wenn Sie diese nicht bis zum [cancelUntilDate] kündigen, verlängert sie sich am [cycleEndDate] automatisch bis zum [nextCycleEndDate].]]></de>
+            <en><![CDATA[You subscribed to your membership at [addedDate]. If you do not cancel until [cancelUntilDate] it will automatically be extended at [cycleEndDate] to [nextCycleEndDate].]]></en>
+        </locale>
+        <locale name="MembershipUser.cancel.info_text.cycle_cancel_anytime">
+            <de><![CDATA[Sie haben Ihre Mitgliedschaft am [addedDate] abgeschlossen. Sofern Sie diese nicht kündigen, verlängert sie sich am [cycleEndDate] automatisch bis zum [nextCycleEndDate].]]></de>
+            <en><![CDATA[You subscribed to your membership at [addedDate]. If you do not cancel the membership, it will automatically be extended at [cycleEndDate] to [nextCycleEndDate].]]></en>
+        </locale>
+        <locale name="MembershipUser.cancel.info_text.cancel_anytime">
+            <de><![CDATA[Sie haben Ihre Mitgliedschaft am [addedDate] abgeschlossen und können diese jederzeit kündigen.]]></de>
+            <en><![CDATA[You subscribed to your membership at [addedDate] and can cancel it at any time.]]></en>
         </locale>
 
         <!-- Templates -->

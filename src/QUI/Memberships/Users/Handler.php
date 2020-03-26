@@ -12,6 +12,22 @@ use QUI\Permissions\Permission;
 class Handler extends Factory
 {
     /**
+     * Extend modes
+     *
+     * Determines how the cycle begin date is set if a membership user is extended
+     */
+    const EXTEND_MODE_RESET   = 'reset';
+    const EXTEND_MODE_PROLONG = 'prolong';
+
+    /**
+     * Duration modes
+     *
+     * Determines how exact membership user dates are calculated
+     */
+    const DURATION_MODE_DAY   = 'day';
+    const DURATION_MODE_EXACT = 'exact';
+
+    /**
      * History entry types
      */
     const HISTORY_TYPE_CREATED              = 'created';
@@ -323,10 +339,46 @@ class Handler extends Factory
      *
      * @param string $key
      * @return array|string
+     *
+     * @throws QUI\Exception
      */
     public static function getSetting($key)
     {
         $Config = QUI::getPackage('quiqqer/memberships')->getConfig();
         return $Config->get('membershipusers', $key);
+    }
+
+    /**
+     * Get membership extend mode
+     *
+     * see self::EXTEND_MODE_*
+     *
+     * @return string
+     */
+    public static function getExtendMode()
+    {
+        try {
+            return self::getSetting('extendMode');
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+            return self::EXTEND_MODE_PROLONG;
+        }
+    }
+
+    /**
+     * Get membership duration mode
+     *
+     * see self::DURATION_MODE_*
+     *
+     * @return string
+     */
+    public static function getDurationMode()
+    {
+        try {
+            return QUI\Memberships\Handler::getSetting('durationMode');
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+            return self::DURATION_MODE_DAY;
+        }
     }
 }

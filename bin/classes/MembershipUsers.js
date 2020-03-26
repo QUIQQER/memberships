@@ -33,7 +33,7 @@ define('package/quiqqer/memberships/bin/classes/MembershipUsers', [
                     membershipId: membershipId,
                     userIds     : JSON.encode(userIds),
                     onError     : reject
-                })
+                });
             });
         },
 
@@ -49,7 +49,7 @@ define('package/quiqqer/memberships/bin/classes/MembershipUsers', [
                     'package': pkg,
                     userIds  : JSON.encode(userIds),
                     onError  : reject
-                })
+                });
             });
         },
 
@@ -67,7 +67,7 @@ define('package/quiqqer/memberships/bin/classes/MembershipUsers', [
                     membershipId: membershipId,
                     searchParams: JSON.encode(SearchParams),
                     onError     : reject
-                })
+                });
             });
         },
 
@@ -85,7 +85,7 @@ define('package/quiqqer/memberships/bin/classes/MembershipUsers', [
                     membershipUserId: membershipUserId,
                     attributes      : JSON.encode(Attributes),
                     onError         : reject
-                })
+                });
             });
         },
 
@@ -101,7 +101,7 @@ define('package/quiqqer/memberships/bin/classes/MembershipUsers', [
                     'package'       : pkg,
                     membershipUserId: membershipUserId,
                     onError         : reject
-                })
+                });
             });
         },
 
@@ -117,7 +117,7 @@ define('package/quiqqer/memberships/bin/classes/MembershipUsers', [
                     'package'       : pkg,
                     membershipUserId: membershipUserId,
                     onError         : reject
-                })
+                });
             });
         },
 
@@ -133,7 +133,7 @@ define('package/quiqqer/memberships/bin/classes/MembershipUsers', [
                     'package'       : pkg,
                     membershipUserId: membershipUserId,
                     onError         : reject
-                })
+                });
             });
         },
 
@@ -147,7 +147,7 @@ define('package/quiqqer/memberships/bin/classes/MembershipUsers', [
                 QUIAjax.get('package_quiqqer_memberships_ajax_memberships_users_getProfileData', resolve, {
                     'package': pkg,
                     onError  : reject
-                })
+                });
             });
         },
 
@@ -163,7 +163,7 @@ define('package/quiqqer/memberships/bin/classes/MembershipUsers', [
                     'package'       : pkg,
                     membershipUserId: membershipUserId,
                     onError         : reject
-                })
+                });
             });
         },
 
@@ -181,7 +181,7 @@ define('package/quiqqer/memberships/bin/classes/MembershipUsers', [
                     membershipId: membershipId,
                     searchParams: JSON.encode(SearchParams),
                     onError     : reject
-                })
+                });
             });
         }
     });
