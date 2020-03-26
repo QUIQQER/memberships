@@ -292,12 +292,12 @@
             <en><![CDATA[Withdraw cancellation]]></en>
         </locale>
         <locale name="controls.profile.userprofile.cancel_info.title">
-            <de><![CDATA[Kündigungsinformation]]></de>
-            <en><![CDATA[Cancellation info]]></en>
+            <de><![CDATA[Informationen zur Vertragslaufzeit]]></de>
+            <en><![CDATA[Information about contract duration]]></en>
         </locale>
         <locale name="controls.profile.userprofile.cancel_info.text">
-            <de><![CDATA[Kündigungsinformation]]></de>
-            <en><![CDATA[Cancellation info]]></en>
+            <de><![CDATA[Vertragslaufzeit und Kündigung]]></de>
+            <en><![CDATA[Contract duration and cancellation]]></en>
         </locale>
         <locale name="controls.profile.userprofile.cancel_info.btn_title">
             <de><![CDATA[Informationen zur Vertragslaufzeit]]></de>
