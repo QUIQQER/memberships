@@ -85,6 +85,16 @@
     float: right;
 }
 
+.quiqqer-memberships-profile-userprofile-membership-cancelinfo {
+    cursor:pointer;
+    float: left;
+    margin: 0 5px;
+}
+
+.quiqqer-memberships-profile-userprofile-membership-cancelinfo:hover {
+    color: #a7a7a7;
+}
+
 @media (max-width: 768px) {
     .quiqqer-memberships-profile-userprofile-membership-body-entry-label {
         width: 100%;

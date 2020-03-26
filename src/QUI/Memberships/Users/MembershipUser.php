@@ -25,6 +25,13 @@ use QUI\Interfaces\Users\User as QUIUserInterface;
 class MembershipUser extends Child
 {
     /**
+     * The Membership this MembershipUser is assigned to
+     *
+     * @var QUI\Memberships\Membership
+     */
+    protected $Membership = null;
+
+    /**
      * User that is editing this MembershipUser in the current runtime
      *
      * @var QUIUserInterface
@@ -74,13 +81,15 @@ class MembershipUser extends Child
         // check dates
         foreach ($this->getAttributes() as $k => $v) {
             switch ($k) {
-                case 'addedDate':
                 case 'beginDate':
                 case 'endDate':
+                case 'addedDate':
                 case 'cancelDate':
                 case 'archiveDate':
                     if (empty($v) || $v === '0000-00-00 00:00:00') {
                         $this->setAttribute($k, null);
+                    } else {
+                        $this->setAttribute($k, Utils::getFormattedTimestamp($v));
                     }
                     break;
 
@@ -103,33 +112,27 @@ class MembershipUser extends Child
      */
     public function extend($auto = true)
     {
-        $extendMode     = MembershipUsersHandler::getSetting('extendMode');
-        $currentEndDate = $this->getAttribute('endDate');
-
-        if (empty($currentEndDate)) {
-            $CurrentEndDate = \date_create();
-        } else {
-            $CurrentEndDate = \date_create($currentEndDate);
-        }
-
         // Calculate new start and/or end time
-        if ($auto || $extendMode === 'reset') {
+        $NextBeginDate = $this->getNextCycleBeginDate();
+        $NextEndDate   = $this->getNextCycleEndDate();
+
+        if ($auto) {
             $extendCounter = $this->getAttribute('extendCounter');
 
             $this->setAttributes([
-                'beginDate'     => Utils::getFormattedTimestamp($CurrentEndDate->getTimestamp()),
-                'endDate'       => Utils::getFormattedTimestamp($this->calcEndDate($CurrentEndDate)->getTimestamp()),
+                'beginDate'     => Utils::getFormattedTimestamp($NextBeginDate),
+                'endDate'       => Utils::getFormattedTimestamp($NextEndDate),
                 'extendCounter' => $extendCounter + 1
             ]);
         } else {
             $this->setAttributes([
-                'endDate' => Utils::getFormattedTimestamp($this->calcEndDate($CurrentEndDate)->getTimestamp())
+                'endDate' => Utils::getFormattedTimestamp($NextEndDate)
             ]);
         }
 
         $historyData = [
-            'start' => $this->getAttribute('beginDate'),
-            'end'   => $this->getAttribute('endDate'),
+            'start' => Utils::getFormattedTimestamp($NextBeginDate),
+            'end'   => Utils::getFormattedTimestamp($NextEndDate),
             'auto'  => $auto ? '1' : '0'
         ];
 
@@ -175,11 +178,10 @@ class MembershipUser extends Child
             return $NewEndDate;
         }
 
-        $NewEndDate   = $Start->add($ContractExtensionInterval);
-        $durationMode = Handler::getSetting('durationMode');
+        $NewEndDate = $Start->add($ContractExtensionInterval);
 
-        switch ($durationMode) {
-            case 'day':
+        switch (MembershipUsersHandler::getDurationMode()) {
+            case MembershipUsersHandler::DURATION_MODE_DAY:
                 $NewEndDate->add(new \DateInterval('P1D'));
                 $NewEndDate->setTime(23, 59, 59);
                 break;
@@ -709,9 +711,15 @@ class MembershipUser extends Child
      */
     public function getMembership()
     {
-        return MembershipsHandler::getInstance()->getChild(
+        if ($this->Membership) {
+            return $this->Membership;
+        }
+
+        $this->Membership = MembershipsHandler::getInstance()->getChild(
             $this->getAttribute('membershipId')
         );
+
+        return $this->Membership;
     }
 
     /**
@@ -750,6 +758,27 @@ class MembershipUser extends Child
         }
 
         return (int)$contractId;
+    }
+
+    /**
+     * Get contract that is currently associated to this MembershipUser
+     *
+     * @return false|QUI\ERP\Accounting\Contracts\Contract
+     */
+    public function getContract()
+    {
+        $contractId = $this->getContractId();
+
+        if (!$contractId) {
+            return false;
+        }
+
+        try {
+            return QUI\ERP\Accounting\Contracts\Handler::getInstance()->get($contractId);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+            return false;
+        }
     }
 
     /**
@@ -831,25 +860,24 @@ class MembershipUser extends Child
     /**
      * Format date based on User Locale and duration mode
      *
-     * @param string $date - Formatted date YYYY-MM-DD HH:MM:SS
+     * @param string|\DateTime $date - Formatted date YYYY-MM-DD HH:MM:SS or \DateTime object
      * @return string|false - formatted date or false on error
      * @throws \QUI\Exception
      */
     protected function formatDate($date)
     {
-        if (empty($date)
-            || $date === '0000-00-00 00:00:00'
-        ) {
+        if (empty($date) || $date === '0000-00-00 00:00:00') {
             return false;
+        } elseif ($date instanceof \DateTime) {
+            $date = $date->format('Y-m-d H:i:s');
         }
 
-        $Locale       = $this->getUser()->getLocale();
-        $lang         = $Locale->getCurrent();
-        $durationMode = MembershipsHandler::getSetting('durationMode');
-        $Conf         = QUI::getPackage('quiqqer/memberships')->getConfig();
+        $Locale = $this->getUser()->getLocale();
+        $lang   = $Locale->getCurrent();
+        $Conf   = QUI::getPackage('quiqqer/memberships')->getConfig();
 
-        switch ($durationMode) {
-            case 'day':
+        switch (MembershipUsersHandler::getDurationMode()) {
+            case MembershipUsersHandler::DURATION_MODE_DAY:
                 $dateFormat = $Conf->get('date_formats_short', $lang);
 
                 // fallback to default value
@@ -899,6 +927,72 @@ class MembershipUser extends Child
             $content     = $Membership->getContent($Locale);
         }
 
+        $CurrentCancelEndDate = $this->getCurrentCancelEndDate();
+        $CancelUntilDate      = false;
+        $cancelAllowed        = !$this->isCancelled();
+        $Contract             = $this->getContract();
+
+        if (!$this->isCancelled() && $Contract) {
+            try {
+                if (!$Contract->isInPeriodOfNotice()) {
+                    $cancelAllowed = false;
+                } else {
+                    $PeriodOfNoticeInterval = $Contract->getPeriodOfNoticeInterval();
+                    $EndBaseDate            = clone $CurrentCancelEndDate;
+                    $CancelUntilDate        = $EndBaseDate->sub($PeriodOfNoticeInterval);
+                }
+            } catch (\Exception $Exception) {
+                QUI\System\Log::writeException($Exception);
+            }
+        }
+
+        $addedDate        = $this->formatDate($this->getAttribute('addedDate'));
+        $CycleEndDate     = $this->getCycleEndDate();
+        $cycleEndDate     = $CycleEndDate ? $this->formatDate($CycleEndDate) : '-';
+        $NextCycleEndDate = $this->getNextCycleEndDate();
+        $nextCycleEndDate = $NextCycleEndDate ? $this->formatDate($NextCycleEndDate) : '-';
+
+        // Determine cancel info text
+        if ($Contract) {
+            if ($CancelUntilDate) {
+                $cancelInfoText = QUI::getLocale()->get(
+                    'quiqqer/memberships',
+                    'MembershipUser.cancel.info_text.cancel_until_date',
+                    [
+                        'addedDate'        => $addedDate,
+                        'cancelUntilDate'  => $this->formatDate($CancelUntilDate),
+                        'cycleEndDate'     => $cycleEndDate,
+                        'nextCycleEndDate' => $nextCycleEndDate
+                    ]
+                );
+            } else {
+                $cancelInfoText = QUI::getLocale()->get(
+                    'quiqqer/memberships',
+                    'MembershipUser.cancel.info_text.cycle_cancel_anytime',
+                    [
+                        'addedDate'        => $addedDate,
+                        'cycleEndDate'     => $cycleEndDate,
+                        'nextCycleEndDate' => $nextCycleEndDate
+                    ]
+                );
+            }
+        } elseif ($this->getMembership()->isInfinite()) {
+            $cancelInfoText = QUI::getLocale()->get(
+                'quiqqer/memberships',
+                'MembershipUser.cancel.info_text.cancel_anytime'
+            );
+        } else {
+            $cancelInfoText = QUI::getLocale()->get(
+                'quiqqer/memberships',
+                'MembershipUser.cancel.info_text.cycle_cancel_anytime',
+                [
+                    'addedDate'        => $addedDate,
+                    'cycleEndDate'     => $cycleEndDate,
+                    'nextCycleEndDate' => $nextCycleEndDate
+                ]
+            );
+        }
+
         return [
             'id'                => $this->getId(),
             'userId'            => $QuiqqerUser->getId(),
@@ -908,12 +1002,15 @@ class MembershipUser extends Child
             'membershipContent' => $content,
             'username'          => $QuiqqerUser->getUsername(),
             'fullName'          => $QuiqqerUser->getName(),
-            'addedDate'         => $this->formatDate($this->getAttribute('addedDate')),
-            'beginDate'         => $this->formatDate($this->getAttribute('beginDate')),
-            'endDate'           => $this->formatDate($this->getAttribute('endDate')),
-            'cancelEndDate'     => $this->formatDate($this->getCurrentCancelEndDate()->format('Y-m-d H:i:s')),
+            'addedDate'         => $addedDate,
+            'beginDate'         => $this->formatDate($this->getCycleBeginDate()),
+            'endDate'           => $cycleEndDate,
+            'cancelEndDate'     => $this->formatDate($CurrentCancelEndDate),
             'cancelDate'        => $this->formatDate($this->getAttribute('cancelDate')),
+//            'cancelUntilDate'   => $CancelUntilDate ? $this->formatDate($CancelUntilDate) : false,
             'cancelStatus'      => $this->getAttribute('cancelStatus'),
+            'cancelAllowed'     => $cancelAllowed,
+            'cancelInfoText'    => $cancelInfoText,
 //            'archived'        => $this->isArchived(),
 //            'archiveReason'   => $this->getAttribute('archiveReason'),
             'cancelled'         => $this->isCancelled(),
@@ -1077,6 +1174,127 @@ class MembershipUser extends Child
     }
 
     /**
+     * Get begin Date of the current cycle
+     *
+     * @return \DateTime
+     */
+    public function getCycleBeginDate()
+    {
+        return \date_create($this->getAttribute('beginDate'));
+    }
+
+    /**
+     * Get end Date of the current cycle
+     *
+     * @return \DateTime|false - DateTime of the cycle end or false if Membership has no cycle end (i.e. is infinite)
+     */
+    public function getCycleEndDate()
+    {
+        $Contract = $this->getContract();
+
+        if ($Contract) {
+            return $Contract->getCycleEndDate();
+        }
+
+        if ($this->getMembership()->isInfinite()) {
+            return false;
+        }
+
+        return \date_create($this->getAttribute('endDate'));
+    }
+
+    /**
+     * Get begin date of the (hypothetical) next cycle
+     *
+     * @return \DateTime|false - DateTime of the cycle end or false if Membership has no next cycle (i.e. is infinite)
+     */
+    public function getNextCycleBeginDate()
+    {
+        $Contract = $this->getContract();
+
+        if ($Contract) {
+            $EndDate       = $Contract->getCycleEndDate();
+            $NextBeginDate = clone $EndDate;
+            $NextBeginDate->add(\date_interval_create_from_date_string('1 day'));
+            $NextBeginDate->setTime(0, 0, 0);
+
+            return $NextBeginDate;
+        }
+
+        if ($this->getMembership()->isInfinite()) {
+            return false;
+        }
+
+        $EndDate = $this->getCycleEndDate();
+
+        if (!$EndDate) {
+            return false;
+        }
+
+        if (MembershipUsersHandler::getExtendMode() === MembershipUsersHandler::EXTEND_MODE_PROLONG) {
+            return $this->getCycleBeginDate();
+        }
+
+        $NextBeginDate = clone $EndDate;
+
+        switch (MembershipUsersHandler::getDurationMode()) {
+            case MembershipUsersHandler::DURATION_MODE_EXACT:
+                $NextBeginDate->add(\date_interval_create_from_date_string('1 second'));
+                break;
+
+            default:
+                $NextBeginDate->add(\date_interval_create_from_date_string('1 day'));
+                $NextBeginDate->setTime(0, 0, 0);
+        }
+
+        return $NextBeginDate;
+    }
+
+    /**
+     * Get the end Date of the (hypothetical) next cycle
+     *
+     * @return \DateTime|false - DateTime of the next cycle end or false if Membership has no next cycle end (i.e. is infinite)
+     */
+    public function getNextCycleEndDate()
+    {
+        $Contract = $this->getContract();
+
+        if ($Contract) {
+            return $Contract->getNextCycleEndDate();
+        }
+
+        $Membership = $this->getMembership();
+
+        if ($Membership->isInfinite()) {
+            return false;
+        }
+
+        $NextCycleBeginDate = $this->getNextCycleBeginDate();
+
+        if (!$NextCycleBeginDate) {
+            return false;
+        }
+
+        $start         = $NextCycleBeginDate->getTimestamp();
+        $duration      = explode('-', $Membership->getAttribute('duration'));
+        $durationCount = $duration[0];
+        $durationScope = $duration[1];
+
+        switch (MembershipUsersHandler::getDurationMode()) {
+            case MembershipUsersHandler::DURATION_MODE_DAY:
+                $endTime    = strtotime($start.' +'.$durationCount.' '.$durationScope);
+                $beginOfDay = strtotime("midnight", $endTime);
+                $end        = strtotime("tomorrow", $beginOfDay) - 1;
+                break;
+
+            default:
+                $end = strtotime($start.' +'.$durationCount.' '.$durationScope);
+        }
+
+        return \date_create('@'.$end);
+    }
+
+    /**
      * Calculates the date the membership for this user would end
      * if it was cancelled NOW
      *
@@ -1084,59 +1302,20 @@ class MembershipUser extends Child
      */
     public function getCurrentCancelEndDate()
     {
-        $endDate    = $this->getAttribute('endDate');
-        $EndDate    = \date_create($endDate);
-        $Membership = $this->getMembership();
-
-        if (!$EndDate) {
-            $EndDate = $this->calcEndDate();
-        }
-
-        $contractId = $this->getContractId();
-
-        if (empty($contractId)) {
-            return $EndDate;
-        }
-
         /**
          * If a contract is connected to this MembershipUser
-         * the period of notice of this contract has to be considered
-         * when cancelling the membership.
+         * the contract cancel termination date has priority!
          */
-        try {
-            $Contract = ContractsHandler::getInstance()->get($contractId);
-        } catch (\Exception $Exception) {
-            QUI\System\Log::writeException($Exception);
-            return $EndDate;
-        }
+        $Contract = $this->getContract();
 
-        if ($Contract->isInPeriodOfNotice()) {
-            return $EndDate;
-        }
-
-        $ActualEndTime   = false;
-        $ContractEndDate = false;
-
-        try {
-            $ContractEndDate = $Contract->getEndDate();
-        } catch (\Exception $Exception) {
-            QUI\System\Log::writeException($Exception);
-        }
-
-        if ($ContractEndDate) {
+        if ($Contract) {
             try {
-                $ContractCycleBeginDate = $ContractEndDate->sub($Contract->getExtensionInterval());
-                $ActualEndTime          = \date_create($Membership->calcEndDate($ContractCycleBeginDate->getTimestamp()));
+                return $Contract->getCurrentCancelTerminationDate();
             } catch (\Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
-                return $EndDate;
             }
         }
 
-        if (!$ActualEndTime) {
-            return $EndDate;
-        }
-
-        return $ActualEndTime;
+        return $this->getCycleEndDate();
     }
 }

@@ -513,7 +513,7 @@ class Membership extends Child
         $durationMode = Handler::getSetting('durationMode');
 
         switch ($durationMode) {
-            case 'day':
+            case MembershipUsersHandler::DURATION_MODE_DAY:
                 $endTime    = strtotime($start.' +'.$durationCount.' '.$durationScope);
                 $beginOfDay = strtotime("midnight", $endTime);
                 $end        = strtotime("tomorrow", $beginOfDay) - 1;

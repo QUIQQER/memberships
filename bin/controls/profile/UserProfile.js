@@ -172,7 +172,8 @@ define('package/quiqqer/memberships/bin/controls/profile/UserProfile', [
                     addedDate      : Membership.addedDate,
                     labelEndDate   : endDateLabel,
                     endDate        : endDateValue,
-                    labelStatus    : QUILocale.get(lg, lgPrefix + 'labelStatus')
+                    labelStatus    : QUILocale.get(lg, lgPrefix + 'labelStatus'),
+                    cancelInfoText : Membership.cancelInfoText
                 })
             });
 
@@ -228,6 +229,8 @@ define('package/quiqqer/memberships/bin/controls/profile/UserProfile', [
 
             // if autoextend and not cancelled -> hide endDate
             if (Membership.cancelStatus == 0) {
+                var CancelContainer = MembershipElm.getElement('.quiqqer-memberships-profile-userprofile-btn');
+
                 // cancel btn
                 new QUIButton({
                     membership: Membership,
@@ -240,11 +243,24 @@ define('package/quiqqer/memberships/bin/controls/profile/UserProfile', [
                             );
                         }
                     }
-                }).inject(
-                    MembershipElm.getElement(
-                        '.quiqqer-memberships-profile-userprofile-btn'
-                    )
-                );
+                }).inject(CancelContainer);
+
+                new Element('span', {
+                    'class': 'fa fa-info-circle',
+                    title  : QUILocale.get(lg, 'controls.profile.userprofile.cancel_info.btn_title'),
+                    events : {
+                        click: function () {
+                            new QUIConfirm({
+                                information  : Membership.cancelInfoText,
+                                title        : QUILocale.get(lg, 'controls.profile.userprofile.cancel_info.title'),
+                                texticon     : 'fa fa-info-circle',
+                                text         : QUILocale.get(lg, 'controls.profile.userprofile.cancel_info.text'),
+                                icon         : 'fa fa-info-circle',
+                                cancel_button: false
+                            }).open();
+                        }
+                    }
+                }).inject(MembershipElm.getElement('.quiqqer-memberships-profile-userprofile-membership-cancelinfo'));
             }
 
             if (Membership.cancelStatus == 1

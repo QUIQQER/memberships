@@ -17,7 +17,7 @@ QUI::$Ajax->registerFunction(
             $membershipUsers = MembershipUsersHandler::getInstance()
                 ->getMembershipUsersByUserId($SessionUser->getId());
 
-            $data = array();
+            $data = [];
 
             foreach ($membershipUsers as $MembershipUser) {
                 $data[] = $MembershipUser->getFrontendViewData();
@@ -49,17 +49,17 @@ QUI::$Ajax->registerFunction(
                 QUI::getLocale()->get(
                     'quiqqer/memberships',
                     'message.ajax.general.error',
-                    array(
+                    [
                         'error' => $Exception->getMessage()
-                    )
+                    ]
                 )
             );
 
-            return array();
+            return [];
         }
 
         return $data;
     },
-    array(),
+    [],
     'Permission::checkUser'
 );
