@@ -939,7 +939,10 @@ class MembershipUser extends Child
                 } else {
                     $PeriodOfNoticeInterval = $Contract->getPeriodOfNoticeInterval();
                     $EndBaseDate            = clone $CurrentCancelEndDate;
-                    $CancelUntilDate        = $EndBaseDate->sub($PeriodOfNoticeInterval);
+                    $EndBaseDate->setTime(0, 0, 0);
+                    $EndBaseDate->sub(\date_interval_create_from_date_string('1 second'));
+
+                    $CancelUntilDate = $EndBaseDate->sub($PeriodOfNoticeInterval);
                 }
             } catch (\Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
