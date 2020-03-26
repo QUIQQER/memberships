@@ -1024,6 +1024,10 @@
             <de><![CDATA[Sie haben Ihre Mitgliedschaft am [addedDate] abgeschlossen und können diese jederzeit kündigen.]]></de>
             <en><![CDATA[You subscribed to your membership at [addedDate] and can cancel it at any time.]]></en>
         </locale>
+        <locale name="MembershipUser.cancel.info_text.period_of_notice_expired">
+            <de><![CDATA[Die Kündigungsfrist für den aktuellen Turnus ([cycleBeginDate] bis [cycleEndDate]) ist am [cancelUntilDate] abgelaufen. Ihre Mitgliedschaft wird daher am [cycleEndDate] automatisch bis zum [nextCycleEndDate] verlängert.]]></de>
+            <en><![CDATA[The period of notice for the current membership period ([cycleBeginDate] to [cycleEndDate]) expired at [cancelUntilDate]. Thus your membership will be automatically extended to [nextCycleEndDate] at [cycleEndDate].]]></en>
+        </locale>
 
         <!-- Templates -->
         <locale name="templates.mail.startcancel.subject">

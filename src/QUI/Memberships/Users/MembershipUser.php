@@ -936,14 +936,14 @@ class MembershipUser extends Child
             try {
                 if (!$Contract->isInPeriodOfNotice()) {
                     $cancelAllowed = false;
-                } else {
-                    $PeriodOfNoticeInterval = $Contract->getPeriodOfNoticeInterval();
-                    $EndBaseDate            = clone $CurrentCancelEndDate;
-                    $EndBaseDate->setTime(0, 0, 0);
-                    $EndBaseDate->sub(\date_interval_create_from_date_string('1 second'));
-
-                    $CancelUntilDate = $EndBaseDate->sub($PeriodOfNoticeInterval);
                 }
+
+                $PeriodOfNoticeInterval = $Contract->getPeriodOfNoticeInterval();
+                $EndBaseDate            = clone $CurrentCancelEndDate;
+                $EndBaseDate->setTime(0, 0, 0);
+                $EndBaseDate->sub(\date_interval_create_from_date_string('1 second'));
+
+                $CancelUntilDate = $EndBaseDate->sub($PeriodOfNoticeInterval);
             } catch (\Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
             }
@@ -952,22 +952,37 @@ class MembershipUser extends Child
         $addedDate        = $this->formatDate($this->getAttribute('addedDate'));
         $CycleEndDate     = $this->getCycleEndDate();
         $cycleEndDate     = $CycleEndDate ? $this->formatDate($CycleEndDate) : '-';
+        $cycleBeginDate   = $this->formatDate($this->getCycleBeginDate());
         $NextCycleEndDate = $this->getNextCycleEndDate();
         $nextCycleEndDate = $NextCycleEndDate ? $this->formatDate($NextCycleEndDate) : '-';
 
         // Determine cancel info text
         if ($Contract) {
-            if ($CancelUntilDate) {
-                $cancelInfoText = QUI::getLocale()->get(
-                    'quiqqer/memberships',
-                    'MembershipUser.cancel.info_text.cancel_until_date',
-                    [
-                        'addedDate'        => $addedDate,
-                        'cancelUntilDate'  => $this->formatDate($CancelUntilDate),
-                        'cycleEndDate'     => $cycleEndDate,
-                        'nextCycleEndDate' => $nextCycleEndDate
-                    ]
-                );
+            if ($Contract->getPeriodOfNoticeInterval()) {
+                if ($Contract->isInPeriodOfNotice()) {
+                    $cancelInfoText = QUI::getLocale()->get(
+                        'quiqqer/memberships',
+                        'MembershipUser.cancel.info_text.cancel_until_date',
+                        [
+                            'addedDate'        => $addedDate,
+                            'cancelUntilDate'  => $this->formatDate($CancelUntilDate),
+                            'cycleEndDate'     => $cycleEndDate,
+                            'nextCycleEndDate' => $nextCycleEndDate
+                        ]
+                    );
+                } else {
+                    $cancelInfoText = QUI::getLocale()->get(
+                        'quiqqer/memberships',
+                        'MembershipUser.cancel.info_text.period_of_notice_expired',
+                        [
+                            'addedDate'        => $addedDate,
+                            'cancelUntilDate'  => $this->formatDate($CancelUntilDate),
+                            'cycleBeginDate'   => $cycleBeginDate,
+                            'cycleEndDate'     => $cycleEndDate,
+                            'nextCycleEndDate' => $nextCycleEndDate
+                        ]
+                    );
+                }
             } else {
                 $cancelInfoText = QUI::getLocale()->get(
                     'quiqqer/memberships',
@@ -1006,7 +1021,7 @@ class MembershipUser extends Child
             'username'          => $QuiqqerUser->getUsername(),
             'fullName'          => $QuiqqerUser->getName(),
             'addedDate'         => $addedDate,
-            'beginDate'         => $this->formatDate($this->getCycleBeginDate()),
+            'beginDate'         => $cycleBeginDate,
             'endDate'           => $cycleEndDate,
             'cancelEndDate'     => $this->formatDate($CurrentCancelEndDate),
             'cancelDate'        => $this->formatDate($this->getAttribute('cancelDate')),
