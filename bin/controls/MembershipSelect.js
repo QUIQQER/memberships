@@ -36,7 +36,8 @@ define('package/quiqqer/memberships/bin/controls/MembershipSelect', [
             '$onImport',
             '$refresh',
             'openMembershipSelect',
-            'getValue'
+            'getValue',
+            'setValue'
         ],
 
         initialize: function (options) {
@@ -141,6 +142,16 @@ define('package/quiqqer/memberships/bin/controls/MembershipSelect', [
                     }
                 }
             }).open();
+        },
+
+        /**
+         * Set value
+         *
+         * @param {Number} memebershipId
+         */
+        setData: function(memebershipId) {
+            this.$Input.value = memebershipId;
+            this.$refresh();
         },
 
         /**
