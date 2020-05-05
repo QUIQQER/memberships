@@ -638,8 +638,10 @@ class Membership extends Child
         // Add fields for contract product type
         if ($this->isAutoExtend() && Utils::isQuiqqerErpPlansInstalled()) {
             ErpPlansHandler::turnIntoPlanProduct($Product, [
-                ErpPlansHandler::FIELD_DURATION    => $this->getAttribute('duration'),
-                ErpPlansHandler::FIELD_AUTO_EXTEND => true
+                ErpPlansHandler::FIELD_DURATION         => $this->getAttribute('duration'),
+                ErpPlansHandler::FIELD_AUTO_EXTEND      => true,
+                ErpPlansHandler::FIELD_INVOICE_INTERVAL => $this->getAttribute('duration'),
+                ErpPlansHandler::FIELD_MIN_DURATION     => $this->getAttribute('duration')
             ]);
         }
 
