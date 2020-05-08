@@ -1299,7 +1299,7 @@ class MembershipUser extends Child
             return false;
         }
 
-        $start         = $NextCycleBeginDate->getTimestamp();
+        $start         = $NextCycleBeginDate->format('Y-m-d');
         $duration      = explode('-', $Membership->getAttribute('duration'));
         $durationCount = $duration[0];
         $durationScope = $duration[1];
