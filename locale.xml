@@ -985,12 +985,12 @@
             <en><![CDATA[The cancel check hash for this membership cancellation is wrong.]]></en>
         </locale>
         <locale name="exception.users.membershipuser.wrong.dates">
-            <de><![CDATA[Die Datumsangaben für den Start- oder Endzeitpunkt sind in einem inkorrekten Format.]]></de>
-            <en><![CDATA[The dates for the start or end time are in an incorrect format.]]></en>
+            <de><![CDATA[#[id] - Die Datumsangaben für den Start- oder Endzeitpunkt sind in einem inkorrekten Format.]]></de>
+            <en><![CDATA[#[id] - The dates for the start or end time are in an incorrect format.]]></en>
         </locale>
         <locale name="exception.users.membershipuser.begin.after.end">
-            <de><![CDATA[Der Startzeitpunkt darf nicht nach dem Endzeitpunkt liegen.]]></de>
-            <en><![CDATA[The start time must not be after the end time.]]></en>
+            <de><![CDATA[#[id] - Der Startzeitpunkt darf nicht nach dem Endzeitpunkt liegen.]]></de>
+            <en><![CDATA[#[id] - The start time must not be after the end time.]]></en>
         </locale>
         <locale name="exception.users.membershipuser.no.email">
             <de><![CDATA[Es können keine E-Mails an den Mitgliedschafts-Benutzer gesendet werden, da er keine eingetragene E-Mail-Adresse hat.]]></de>

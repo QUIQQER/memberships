@@ -66,14 +66,20 @@ class MembershipUser extends Child
             ) {
                 throw new QUI\Memberships\Exception([
                     'quiqqer/memberships',
-                    'exception.users.membershipuser.wrong.dates'
+                    'exception.users.membershipuser.wrong.dates',
+                    [
+                        'id' => $this->getId()
+                    ]
                 ]);
             }
 
             if ($beginDate >= $endDate) {
                 throw new QUI\Memberships\Exception([
                     'quiqqer/memberships',
-                    'exception.users.membershipuser.begin.after.end'
+                    'exception.users.membershipuser.begin.after.end',
+                    [
+                        'id' => $this->getId()
+                    ]
                 ]);
             }
         }
