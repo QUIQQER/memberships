@@ -332,7 +332,13 @@ class Events
             try {
                 /** @var QUI\Memberships\Users\MembershipUser $MembershipUser */
                 $MembershipUser = $MembershipUsers->getChild($row['id']);
-                $MembershipUser->extend();
+
+                // Calculate new cylce begin date
+                $NextBeginDate = clone $EndDate;
+                $NextBeginDate->add(\date_interval_create_from_date_string('1 day'));
+                $NextBeginDate->setTime(0, 0, 0);
+
+                $MembershipUser->extend(true, $NextBeginDate, $NewEndDate);
             } catch (\Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
             }

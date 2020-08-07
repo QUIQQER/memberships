@@ -94,6 +94,10 @@ class Cron
                     }
                 }
 
+                if ($MembershipUser->getId() == 84) {
+                    \QUI\System\Log::writeRecursive(1);
+                }
+
                 // extend if membership is extended automatically
                 if ($Membership->isAutoExtend()) {
                     // Only extend if not extended by contract
