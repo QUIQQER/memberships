@@ -113,14 +113,21 @@ class MembershipUser extends Child
      *
      * @param bool $auto (optional) - Used if the membership is automatically extended.
      * If set to false, the setting membershipusers.extendMode is used [default: true]
+     * @param \DateTime $NextBeginDate (optional) - New cycle begin date
+     * @param \DateTime $NextEndDate (optional) - New cycle end date
      * @return void
      * @throws QUI\Exception
      */
-    public function extend($auto = true)
+    public function extend($auto = true, \DateTime $NextBeginDate = null, \DateTime $NextEndDate = null)
     {
         // Calculate new start and/or end time
-        $NextBeginDate = $this->getNextCycleBeginDate();
-        $NextEndDate   = $this->getNextCycleEndDate();
+        if (empty($NextBeginDate)) {
+            $NextBeginDate = $this->getNextCycleBeginDate();
+        }
+
+        if (empty($NextEndDate)) {
+            $NextEndDate = $this->getNextCycleEndDate();
+        }
 
         if ($auto) {
             $extendCounter = $this->getAttribute('extendCounter');
