@@ -76,22 +76,10 @@ class Handler extends Factory
 
         /** @var Membership $NewMembership */
         $NewMembership = parent::createChild($data);
-        $NewMembership->createProduct();
 
         QUI::getEvents()->fireEvent('quiqqerMembershipsCreate', [$NewMembership]);
 
         return $NewMembership;
-    }
-
-    /**
-     * Get membership
-     *
-     * @param int $id
-     * @return Membership
-     */
-    public function getChild($id)
-    {
-        return parent::getChild($id);
     }
 
     /**

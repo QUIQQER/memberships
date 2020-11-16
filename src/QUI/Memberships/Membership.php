@@ -628,22 +628,22 @@ class Membership extends Child
             $fields[] = $DescField;
         }
 
-        $Product = ProductsHandler::createProduct($categories, $fields);
+        if ($this->isAutoExtend() && Utils::isQuiqqerErpPlansInstalled()) {
+            $Product = ProductsHandler::createProduct($categories, $fields, QUI\ERP\Plans\PlanProduct::class);
+
+            $Product->getField(ErpPlansHandler::FIELD_DURATION)->setValue($this->getAttribute('duration'));
+            $Product->getField(ErpPlansHandler::FIELD_AUTO_EXTEND)->setValue(true);
+            $Product->getField(ErpPlansHandler::FIELD_INVOICE_INTERVAL)->setValue($this->getAttribute('duration'));
+            $Product->getField(ErpPlansHandler::FIELD_MIN_DURATION)->setValue($this->getAttribute('duration'));
+        } else {
+            $Product = ProductsHandler::createProduct($categories, $fields);
+        }
 
         if (!empty($categories)) {
             $Product->setMainCategory($categories[0]);
-            $Product->save();
         }
 
-        // Add fields for contract product type
-        if ($this->isAutoExtend() && Utils::isQuiqqerErpPlansInstalled()) {
-            ErpPlansHandler::turnIntoPlanProduct($Product, [
-                ErpPlansHandler::FIELD_DURATION         => $this->getAttribute('duration'),
-                ErpPlansHandler::FIELD_AUTO_EXTEND      => true,
-                ErpPlansHandler::FIELD_INVOICE_INTERVAL => $this->getAttribute('duration'),
-                ErpPlansHandler::FIELD_MIN_DURATION     => $this->getAttribute('duration')
-            ]);
-        }
+        $Product->save(QUI::getUsers()->getSystemUser());
 
         QUI::getEvents()->fireEvent('quiqqerMembershipsCreateProduct', [$this, $Product]);
 
