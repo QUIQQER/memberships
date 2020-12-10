@@ -246,17 +246,22 @@ class Events
             $User = $Users->get($Order->getCustomer()->getId());
         } catch (\Exception $Exception) {
             QUI\System\Log::writeDebugException($Exception);
+
+            QUI\System\Log::addError(
+                self::class.' :: onQuiqqerOrderSuccessful -> Could not load user #'.$Order->getCustomer()->getId()
+                .' from Order #'.$Order->getPrefixedId().'. Cannot add user to membership'
+            );
             return;
         }
 
         // do not add guests to a membership!
-        $SessionUser = QUI::getUserBySession();
-
-        if (!$SessionUser->isSU()
-            && !$Users->isSystemUser($SessionUser)
-            && !$Users->isAuth($User)) {
-            return;
-        }
+//        $SessionUser = QUI::getUserBySession();
+//
+//        if (!$SessionUser->isSU()
+//            && !$Users->isSystemUser($SessionUser)
+//            && !$Users->isAuth($User)) {
+//            return;
+//        }
 
         $SystemUser = QUI::getUsers()->getSystemUser();
 
@@ -285,6 +290,7 @@ class Events
                 $MembershipUser->update();
             } catch (\QUI\ERP\Products\Product\Exception $Exception) {
                 // nothing, this can happen if the $Product does not have a membership field assigned
+                QUI\System\Log::writeDebugException($Exception);
             } catch (\Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
             }
