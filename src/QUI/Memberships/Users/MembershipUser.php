@@ -562,6 +562,17 @@ class MembershipUser extends Child
                 ]
             );
 
+            $this->addHistoryEntry(
+                \QUI\Memberships\Users\Handler::HISTORY_TYPE_MISC,
+                QUI::getLocale()->get(
+                    'quiqqer/memberships',
+                    'history.MembershipUser.cancel_confirm_reminder_sent'
+                )
+            );
+
+            $this->EditUser = QUI::getUsers()->getSystemUser();
+            $this->update();
+
             return true;
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);

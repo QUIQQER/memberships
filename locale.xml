@@ -829,6 +829,11 @@
 
     <groups name="quiqqer/memberships" datatype="php">
 
+        <locale name="history.MembershipUser.cancel_confirm_reminder_sent">
+            <de><![CDATA[E-Mail zur Erinnerung an ausstehende Kündigungsbestätigung versandt.]]></de>
+            <en><![CDATA[Email sent to remind of pending cancellation confirmation.]]></en>
+        </locale>
+        
         <!-- Events -->
         <locale name="exception.Events.onQuiqqerProductsFieldDelete.cannot_delete_field">
             <de><![CDATA[Dieses Produkt-Feld kann nicht gelöscht werden, da es vom installierten Paket "quiqqer/memberships" benötigt wird.]]></de>
