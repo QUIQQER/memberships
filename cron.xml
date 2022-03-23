@@ -7,5 +7,10 @@
         <description>
             <locale group="quiqqer/memberships" var="cron.checkMembershipUsers.description" />
         </description>
+
+        <autocreate>
+            <interval>0 0 * * *</interval>
+            <active>1</active>
+        </autocreate>
     </cron>
 </crons>
