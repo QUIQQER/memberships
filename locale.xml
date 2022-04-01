@@ -1095,6 +1095,12 @@
             <de><![CDATA[Zurückziehen der Kündigung Ihrer Mitgliedschaft]]></de>
             <en><![CDATA[Withdrawal of your membership termination]]></en>
         </locale>
+        <locale name="templates.mail.startcancel.body" html="true">
+            <de><![CDATA[<h1>Hallo [name]!</h1>
+            <p>Sie haben beantragt, die Kündigung Ihrer Mitgliedschaft <b>[membershipTitle]</b> vom <b>[cancelDate]</b> zu widerrufen. Um diesen Widerruf zu bestätigen, besuchen Sie bitte folgenden Link:<br><br><a href="[abortCancelUrl]">[abortCancelUrl]</a><br/><br/>Bitte beachten Sie, dass Ihre Kündigung erst dann wirksam widerrufen ist, wenn der Vorgang über den o.g. Link bestätigt wurde.</p>]]></de>
+            <en><![CDATA[<h1>Hello [name]!</h1>
+            <p>You applied for the cancellation of your membership <b>[membershipTitle]</b> from <b>[cancelDate]</b>. To confirm this withdrawal, please visit the following link:<br><br><a href="[abortCancelUrl]">[abortCancelUrl]</a><br/><br/>Please note that your cancellation will not be considered withdrawn until this process has been confirmed via the above link.</p>]]></en>
+        </locale>
         <locale name="templates.mail.confirmcancel_reminder.subject">
             <de><![CDATA[Kündigung Ihrer Mitgliedschaft - Bestätigung ausstehend]]></de>
             <en><![CDATA[Termination of your membership - Confirmation pending]]></en>
