@@ -124,6 +124,23 @@ class Events
     }
 
     /**
+     * quiqqer/quiqqer: onUserDelete
+     *
+     * Delete user from alle memberships
+     *
+     * @param QUI\Users\User $User
+     * @return void
+     */
+    public static function onUserDelete(QUI\Users\User $User): void
+    {
+        $membershipUsers = QUI\Memberships\Users\Handler::getInstance()->getMembershipUsersByUserId($User->getId());
+
+        foreach ($membershipUsers as $MembershipUser) {
+            $MembershipUser->delete();
+        }
+    }
+
+    /**
      * quiqqer/products
      *
      * Create necessary membership product fields and save their IDs to the config
