@@ -375,9 +375,10 @@ class Membership extends Child
             $sql = "SELECT `musers`.id";
         }
 
-        $sql .= " FROM `".$tbl."` musers, `".$usersTbl."` users";
+        $sql .= " FROM `".$tbl."` musers LEFT JOIN `".$usersTbl."` users";
+        $sql .= ' ON `musers`.userId = `users`.id';
 
-        $where[] = '`musers`.userId = `users`.id';
+//        $where[] = '`musers`.userId = `users`.id';
         $where[] = '`musers`.membershipId = '.$this->id;
 
         if ($archivedOnly === false) {
@@ -420,8 +421,7 @@ class Membership extends Child
         }
 
         // ORDER
-        if (!empty($searchParams['sortOn'])
-        ) {
+        if (!empty($searchParams['sortOn'])) {
             $sortOn = Orthos::clear($searchParams['sortOn']);
 
             switch ($sortOn) {

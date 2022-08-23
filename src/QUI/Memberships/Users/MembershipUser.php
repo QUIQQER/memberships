@@ -762,9 +762,14 @@ class MembershipUser extends Child
      * @return QUI\Users\User
      * @throws \QUI\Exception
      */
-    public function getUser()
+    public function getUser(): ?QUI\Users\User
     {
-        return QUI::getUsers()->get($this->getUserId());
+        try {
+            return QUI::getUsers()->get($this->getUserId());
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+            return null;
+        }
     }
 
     /**
@@ -1073,13 +1078,13 @@ class MembershipUser extends Child
 
         return [
             'id'              => $this->getId(),
-            'userId'          => $QuiqqerUser->getId(),
+            'userId'          => $this->getUserId(),
             'membershipId'    => $Membership->getId(),
             'membershipTitle' => $Membership->getTitle(),
-            'username'        => $QuiqqerUser->getUsername(),
-            'firstname'       => $QuiqqerUser->getAttribute('firstname'),
-            'lastname'        => $QuiqqerUser->getAttribute('lastname'),
-            'fullName'        => $QuiqqerUser->getName(),
+            'username'        => $QuiqqerUser ? $QuiqqerUser->getUsername() : '-',
+            'firstname'       => $QuiqqerUser ? $QuiqqerUser->getAttribute('firstname') : '-',
+            'lastname'        => $QuiqqerUser ? $QuiqqerUser->getAttribute('lastname') : '-',
+            'fullName'        => $QuiqqerUser ? $QuiqqerUser->getName() : '-',
             'addedDate'       => $this->getAttribute('addedDate'),
             'beginDate'       => $this->getAttribute('beginDate'),
             'endDate'         => $this->getAttribute('endDate'),
