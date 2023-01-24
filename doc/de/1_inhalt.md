@@ -15,4 +15,4 @@ Funktionalitäten, die im Kapitel "ERP-Integration" näher erläutert werden.
 * [Verwaltung](2_verwaltung.md)
 * [Mitgliedschaft](3_mitgliedschaft.md)
 * [Konfiguration & Einstellungen](4_konfiguration_und_einstellungen.md)
-* ERP-Integration
+* [ERP-Integration](5_erp_integration.md)
