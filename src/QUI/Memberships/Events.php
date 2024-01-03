@@ -3,18 +3,17 @@
 namespace QUI\Memberships;
 
 use QUI;
-use QUI\Package\Package;
-use QUI\Memberships\Handler as MembershipsHandler;
-use QUI\Memberships\Users\Handler as MembershipUsersHandler;
-use QUI\Memberships\Products\MembershipField;
-use QUI\ERP\Products\Handler\Fields as ProductFields;
+use QUI\ERP\Accounting\Contracts\Contract;
 use QUI\ERP\Products\Field\Field as ProductField;
 use QUI\ERP\Products\Handler\Categories as ProductCategories;
+use QUI\ERP\Products\Handler\Fields as ProductFields;
+use QUI\ERP\Products\Handler\Products as ProductsHandler;
 use QUI\ERP\Products\Handler\Search as ProductSearchHandler;
 use QUI\ERP\Products\Product\Product;
-use QUI\ERP\Products\Handler\Products as ProductsHandler;
-use QUI\ERP\Accounting\Contracts\Contract;
-use QUI\ERP\Order\Order;
+use QUI\Memberships\Handler as MembershipsHandler;
+use QUI\Memberships\Products\MembershipField;
+use QUI\Memberships\Users\Handler as MembershipUsersHandler;
+use QUI\Package\Package;
 
 /**
  * Class Events
@@ -78,7 +77,7 @@ class Events
 
         // delete Product ID from MembershipUsers
         try {
-            $Membership      = MembershipsHandler::getInstance()->getChild($membershipId);
+            $Membership = MembershipsHandler::getInstance()->getChild($membershipId);
             $MembershipUsers = MembershipUsersHandler::getInstance();
 
             $membershipUserIds = $Membership->searchUsers([
@@ -92,8 +91,8 @@ class Events
             }
         } catch (\Exception $Exception) {
             QUI\System\Log::addError(
-                self::class.' :: onQuiqqerProductsProductDelete -> '
-                .$Exception->getMessage()
+                self::class . ' :: onQuiqqerProductsProductDelete -> '
+                . $Exception->getMessage()
             );
         }
     }
@@ -150,7 +149,7 @@ class Events
      */
     protected static function createProductFields()
     {
-        $L    = new QUI\Locale();
+        $L = new QUI\Locale();
         $Conf = QUI::getPackage('quiqqer/memberships')->getConfig();
 
         // Membership field (create new one is not configured)
@@ -172,8 +171,8 @@ class Events
 
             try {
                 $MembershipField = ProductFields::createField([
-                    'type'          => MembershipField::TYPE,
-                    'titles'        => $translations,
+                    'type' => MembershipField::TYPE,
+                    'titles' => $translations,
                     'workingtitles' => $translations
                 ]);
 
@@ -184,7 +183,7 @@ class Events
                 $Conf->set('products', 'membershipFieldId', $MembershipField->getId());
                 $Conf->save();
             } catch (\Exception $Exception) {
-                QUI\System\Log::addError(self::class.' :: createProductFields');
+                QUI\System\Log::addError(self::class . ' :: createProductFields');
                 QUI\System\Log::writeException($Exception);
             }
         }
@@ -208,8 +207,8 @@ class Events
 
             try {
                 $MembershipFlagField = ProductFields::createField([
-                    'type'          => ProductFields::TYPE_BOOL,
-                    'titles'        => $translations,
+                    'type' => ProductFields::TYPE_BOOL,
+                    'titles' => $translations,
                     'workingtitles' => $translations
                 ]);
 
@@ -217,8 +216,8 @@ class Events
                 $MembershipFlagField->save();
 
                 // add Flag field to backend search
-                $BackendSearch                               = ProductSearchHandler::getBackendSearch();
-                $searchFields                                = $BackendSearch->getSearchFields();
+                $BackendSearch = ProductSearchHandler::getBackendSearch();
+                $searchFields = $BackendSearch->getSearchFields();
                 $searchFields[$MembershipFlagField->getId()] = true;
 
                 $BackendSearch->setSearchFields($searchFields);
@@ -227,7 +226,7 @@ class Events
                 $Conf->set('products', 'membershipFlagFieldId', $MembershipFlagField->getId());
                 $Conf->save();
             } catch (\Exception $Exception) {
-                QUI\System\Log::addError(self::class.' :: createProductFields');
+                QUI\System\Log::addError(self::class . ' :: createProductFields');
                 QUI\System\Log::writeException($Exception);
             }
         }
@@ -247,17 +246,17 @@ class Events
 
         if ($MembershipField === false) {
             QUI\System\Log::addError(
-                self::class.' :: onQuiqqerOrderSuccessful -> Could not parse membership'
-                .' from Order #'.$Order->getPrefixedId().' because no membership field'
-                .' is configured. Please execute a system setup.'
+                self::class . ' :: onQuiqqerOrderSuccessful -> Could not parse membership'
+                . ' from Order #' . $Order->getPrefixedId() . ' because no membership field'
+                . ' is configured. Please execute a system setup.'
             );
 
             return;
         }
 
         $membershipFieldId = $MembershipField->getId();
-        $Memberships       = Handler::getInstance();
-        $Users             = QUI::getUsers();
+        $Memberships = Handler::getInstance();
+        $Users = QUI::getUsers();
 
         try {
             $User = $Users->get($Order->getCustomer()->getId());
@@ -265,8 +264,8 @@ class Events
             QUI\System\Log::writeDebugException($Exception);
 
             QUI\System\Log::addError(
-                self::class.' :: onQuiqqerOrderSuccessful -> Could not load user #'.$Order->getCustomer()->getId()
-                .' from Order #'.$Order->getPrefixedId().'. Cannot add user to membership'
+                self::class . ' :: onQuiqqerOrderSuccessful -> Could not load user #' . $Order->getCustomer()->getId()
+                . ' from Order #' . $Order->getPrefixedId() . '. Cannot add user to membership'
             );
             return;
         }
@@ -285,9 +284,9 @@ class Events
         /** @var QUI\ERP\Accounting\Article $Article */
         foreach ($Order->getArticles()->getArticles() as $Article) {
             try {
-                $Product                = ProductsHandler::getProduct($Article->getId());
+                $Product = ProductsHandler::getProduct($Article->getId());
                 $ProductMembershipField = $Product->getField($membershipFieldId);
-                $membershipId           = $ProductMembershipField->getValue();
+                $membershipId = $ProductMembershipField->getValue();
 
                 if (empty($membershipId)) {
                     continue;
@@ -301,7 +300,7 @@ class Events
 
                 $MembershipUser->addHistoryEntry(
                     MembershipUsersHandler::HISTORY_TYPE_MISC,
-                    'Order: '.$Order->getPrefixedId()
+                    'Order: ' . $Order->getPrefixedId()
                 );
 
                 $MembershipUser->update();
@@ -341,8 +340,8 @@ class Events
         try {
             $result = QUI::getDataBase()->fetch([
                 'select' => ['id'],
-                'from'   => $MembershipUsers->getDataBaseTableName(),
-                'where'  => [
+                'from' => $MembershipUsers->getDataBaseTableName(),
+                'where' => [
                     'contractId' => $Contract->getCleanId()
                 ]
             ]);
@@ -394,26 +393,26 @@ class Events
 
         if ($MembershipField === false) {
             QUI\System\Log::addError(
-                self::class.' :: onQuiqqerContractsCreateFromOrder -> Could not parse membership'
-                .' from Order #'.$Order->getPrefixedId().' because no membership field'
-                .' is configured. Please execute a system setup.'
+                self::class . ' :: onQuiqqerContractsCreateFromOrder -> Could not parse membership'
+                . ' from Order #' . $Order->getPrefixedId() . ' because no membership field'
+                . ' is configured. Please execute a system setup.'
             );
 
             return;
         }
 
         $membershipFieldId = $MembershipField->getId();
-        $Memberships       = Handler::getInstance();
-        $Customer          = $Order->getCustomer();
+        $Memberships = Handler::getInstance();
+        $Customer = $Order->getCustomer();
 
         // Look for the article/product that contains a membership and add
         /** @var QUI\ERP\Accounting\Article $Article */
         foreach ($Order->getArticles()->getArticles() as $Article) {
             try {
-                $Product                = ProductsHandler::getProduct($Article->getId());
+                $Product = ProductsHandler::getProduct($Article->getId());
                 $ProductMembershipField = $Product->getField($membershipFieldId);
 
-                $Membership     = $Memberships->getChild($ProductMembershipField->getValue());
+                $Membership = $Memberships->getChild($ProductMembershipField->getValue());
                 $MembershipUser = $Membership->getMembershipUser($Customer->getId());
                 $MembershipUser->setEditUser(QUI::getUsers()->getSystemUser());
 
@@ -480,8 +479,8 @@ class Events
 
         $result = QUI::getDataBase()->fetch([
             'select' => ['id'],
-            'from'   => $MembershipUsers->getDataBaseTableName(),
-            'where'  => [
+            'from' => $MembershipUsers->getDataBaseTableName(),
+            'where' => [
                 'contractId' => $Contract->getCleanId()
             ]
         ]);
@@ -578,7 +577,11 @@ class Events
             return;
         }
 
-        if ((int)$MembershipUser->getAttribute('cancelStatus') !== MembershipUsersHandler::CANCEL_STATUS_CANCEL_CONFIRM_PENDING) {
+        if (
+            (int)$MembershipUser->getAttribute(
+                'cancelStatus'
+            ) !== MembershipUsersHandler::CANCEL_STATUS_CANCEL_CONFIRM_PENDING
+        ) {
             return;
         }
 
@@ -607,13 +610,13 @@ class Events
         try {
             $Category = ProductCategories::createCategory();
         } catch (\Exception $Exception) {
-            QUI\System\Log::addError(self::class.' :: createProductCategory()');
+            QUI\System\Log::addError(self::class . ' :: createProductCategory()');
             QUI\System\Log::writeException($Exception);
 
             return;
         }
 
-        $catId  = $Category->getId();
+        $catId = $Category->getId();
         $titles = [
             'de' => '',
             'en' => ''
@@ -631,35 +634,35 @@ class Events
             $t = $L->get('quiqqer/memberships', 'products.category.title');
             $d = $L->get('quiqqer/memberships', 'products.category.description');
 
-            $titles[$l]               = $t;
-            $titles[$l.'_edit']       = $t;
-            $descriptions[$l]         = $d;
-            $descriptions[$l.'_edit'] = $d;
+            $titles[$l] = $t;
+            $titles[$l . '_edit'] = $t;
+            $descriptions[$l] = $d;
+            $descriptions[$l . '_edit'] = $d;
         }
 
         // change title and description
         QUI\Translator::edit(
             'quiqqer/products',
-            'products.category.'.$catId.'.title',
+            'products.category.' . $catId . '.title',
             'quiqqer/products',
             array_merge(
                 $titles,
                 [
                     'datatype' => 'php,js',
-                    'html'     => 0
+                    'html' => 0
                 ]
             )
         );
 
         QUI\Translator::edit(
             'quiqqer/products',
-            'products.category.'.$catId.'.description',
+            'products.category.' . $catId . '.description',
             'quiqqer/products',
             array_merge(
                 $descriptions,
                 [
                     'datatype' => 'php,js',
-                    'html'     => 0
+                    'html' => 0
                 ]
             )
         );

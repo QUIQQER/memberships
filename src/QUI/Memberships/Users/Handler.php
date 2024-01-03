@@ -4,9 +4,9 @@ namespace QUI\Memberships\Users;
 
 use QUI;
 use QUI\CRUD\Factory;
-use QUI\Memberships\Utils;
 use QUI\Memberships\Handler as MembershipsHandler;
 use QUI\Memberships\Users\Handler as MembershipUsersHandler;
+use QUI\Memberships\Utils;
 use QUI\Permissions\Permission;
 
 class Handler extends Factory
@@ -16,7 +16,7 @@ class Handler extends Factory
      *
      * Determines how the cycle begin date is set if a membership user is extended
      */
-    const EXTEND_MODE_RESET   = 'reset';
+    const EXTEND_MODE_RESET = 'reset';
     const EXTEND_MODE_PROLONG = 'prolong';
 
     /**
@@ -24,44 +24,44 @@ class Handler extends Factory
      *
      * Determines how exact membership user dates are calculated
      */
-    const DURATION_MODE_DAY   = 'day';
+    const DURATION_MODE_DAY = 'day';
     const DURATION_MODE_EXACT = 'exact';
 
     /**
      * History entry types
      */
-    const HISTORY_TYPE_CREATED              = 'created';
-    const HISTORY_TYPE_UPDATED              = 'updated';
-    const HISTORY_TYPE_CANCEL_BY_EDIT       = 'cancel_by_edit';
-    const HISTORY_TYPE_UNCANCEL_BY_EDIT     = 'uncancel_by_edit';
-    const HISTORY_TYPE_CANCEL_START         = 'cancel_start';
-    const HISTORY_TYPE_CANCEL_START_SYSTEM  = 'cancel_system';
-    const HISTORY_TYPE_CANCEL_ABORT_START   = 'cancel_abort_start';
+    const HISTORY_TYPE_CREATED = 'created';
+    const HISTORY_TYPE_UPDATED = 'updated';
+    const HISTORY_TYPE_CANCEL_BY_EDIT = 'cancel_by_edit';
+    const HISTORY_TYPE_UNCANCEL_BY_EDIT = 'uncancel_by_edit';
+    const HISTORY_TYPE_CANCEL_START = 'cancel_start';
+    const HISTORY_TYPE_CANCEL_START_SYSTEM = 'cancel_system';
+    const HISTORY_TYPE_CANCEL_ABORT_START = 'cancel_abort_start';
     const HISTORY_TYPE_CANCEL_ABORT_CONFIRM = 'cancel_abort_confirm';
-    const HISTORY_TYPE_CANCEL_CONFIRM       = 'cancel_confirm';
-    const HISTORY_TYPE_CANCELLED            = 'cancelled';
-    const HISTORY_TYPE_EXPIRED              = 'expired';
-    const HISTORY_TYPE_DELETED              = 'deleted';
-    const HISTORY_TYPE_ARCHIVED             = 'archived';
-    const HISTORY_TYPE_EXTENDED             = 'extended';
-    const HISTORY_TYPE_MISC                 = 'misc';
+    const HISTORY_TYPE_CANCEL_CONFIRM = 'cancel_confirm';
+    const HISTORY_TYPE_CANCELLED = 'cancelled';
+    const HISTORY_TYPE_EXPIRED = 'expired';
+    const HISTORY_TYPE_DELETED = 'deleted';
+    const HISTORY_TYPE_ARCHIVED = 'archived';
+    const HISTORY_TYPE_EXTENDED = 'extended';
+    const HISTORY_TYPE_MISC = 'misc';
 
     /**
      * Archive reasons
      */
-    const ARCHIVE_REASON_CANCELLED    = 'cancelled';
-    const ARCHIVE_REASON_EXPIRED      = 'expired';
-    const ARCHIVE_REASON_DELETED      = 'deleted';
+    const ARCHIVE_REASON_CANCELLED = 'cancelled';
+    const ARCHIVE_REASON_EXPIRED = 'expired';
+    const ARCHIVE_REASON_DELETED = 'deleted';
     const ARCHIVE_REASON_USER_DELETED = 'user_deleted';
 
     /**
      * Cancel statusses
      */
-    const CANCEL_STATUS_NOT_CANCELLED                = 0;
-    const CANCEL_STATUS_CANCEL_CONFIRM_PENDING       = 1;
+    const CANCEL_STATUS_NOT_CANCELLED = 0;
+    const CANCEL_STATUS_CANCEL_CONFIRM_PENDING = 1;
     const CANCEL_STATUS_ABORT_CANCEL_CONFIRM_PENDING = 2;
-    const CANCEL_STATUS_CANCELLED                    = 3;
-    const CANCEL_STATUS_CANCELLED_BY_SYSTEM          = 4;
+    const CANCEL_STATUS_CANCELLED = 3;
+    const CANCEL_STATUS_CANCELLED_BY_SYSTEM = 4;
 
     /**
      * User attributes
@@ -105,7 +105,7 @@ class Handler extends Factory
         }
 
         $Membership = MembershipsHandler::getInstance()->getChild($data['membershipId']);
-        $User       = QUI::getUsers()->get($data['userId']);
+        $User = QUI::getUsers()->get($data['userId']);
 
         // if the user is already in the membership -> extend runtime
         if ($Membership->hasMembershipUserId($User->getId())) {
@@ -117,20 +117,20 @@ class Handler extends Factory
 
         // current begin and end
         $data['beginDate'] = Utils::getFormattedTimestamp();
-        $data['endDate']   = $Membership->calcEndDate();
+        $data['endDate'] = $Membership->calcEndDate();
 
         $data['extendCounter'] = 0;
-        $data['cancelDate']    = null;
+        $data['cancelDate'] = null;
         $data['cancelEndDate'] = null;
-        $data['cancelled']     = 0;
-        $data['cancelStatus']  = 0;
-        $data['archived']      = 0;
-        $data['archiveDate']   = null;
+        $data['cancelled'] = 0;
+        $data['cancelStatus'] = 0;
+        $data['archived'] = 0;
+        $data['archiveDate'] = null;
         $data['archiveReason'] = null;
-        $data['history']       = null;
-        $data['extraData']     = null;
-        $data['productId']     = null;
-        $data['contractId']    = null;
+        $data['history'] = null;
+        $data['extraData'] = null;
+        $data['productId'] = null;
+        $data['contractId'] = null;
 
         /** @var MembershipUser $NewChild */
         $NewChild = parent::createChild($data);
@@ -156,7 +156,7 @@ class Handler extends Factory
     {
         $where = [
             'membershipId' => $membershipId,
-            'archived'     => 0
+            'archived' => 0
         ];
 
         if ($includeArchived === true) {
@@ -167,8 +167,8 @@ class Handler extends Factory
             'select' => [
                 'id'
             ],
-            'from'   => MembershipUsersHandler::getDataBaseTableName(),
-            'where'  => $where
+            'from' => MembershipUsersHandler::getDataBaseTableName(),
+            'where' => $where
         ]);
 
         $membershipUserIds = [];
@@ -190,7 +190,7 @@ class Handler extends Factory
     public function getMembershipUsersByUserId($userId, $includeArchived = false)
     {
         $where = [
-            'userId'   => $userId,
+            'userId' => $userId,
             'archived' => 0
         ];
 
@@ -202,8 +202,8 @@ class Handler extends Factory
             'select' => [
                 'id'
             ],
-            'from'   => self::getDataBaseTableName(),
-            'where'  => $where
+            'from' => self::getDataBaseTableName(),
+            'where' => $where
         ]);
 
         $membershipUsers = [];
@@ -228,8 +228,8 @@ class Handler extends Factory
                 'select' => [
                     'id'
                 ],
-                'from'   => self::getDataBaseTableName(),
-                'where'  => [
+                'from' => self::getDataBaseTableName(),
+                'where' => [
                     'contractId' => $contractId
                 ]
             ]);

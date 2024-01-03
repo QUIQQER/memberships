@@ -1,14 +1,14 @@
 <?php
 
-use QUI\Memberships\Users\Handler as MembershipUsersHandler;
-use QUI\Memberships\Utils;
-
 /**
  * Send cancel email to user (manually)
  *
  * @param int $membershipUserId
  * @return bool - success
  */
+
+use QUI\Memberships\Users\Handler as MembershipUsersHandler;
+
 QUI::$Ajax->registerFunction(
     'package_quiqqer_memberships_ajax_memberships_users_sendCancelMail',
     function ($membershipUserId) {
@@ -23,9 +23,9 @@ QUI::$Ajax->registerFunction(
                 QUI::getLocale()->get(
                     'quiqqer/memberships',
                     'message.ajax.memberships.users.sendCancelMail.error',
-                    array(
+                    [
                         'error' => $Exception->getMessage()
-                    )
+                    ]
                 )
             );
 
@@ -38,9 +38,9 @@ QUI::$Ajax->registerFunction(
                 QUI::getLocale()->get(
                     'quiqqer/memberships',
                     'message.ajax.general.error',
-                    array(
+                    [
                         'error' => $Exception->getMessage()
-                    )
+                    ]
                 )
             );
 
@@ -51,15 +51,15 @@ QUI::$Ajax->registerFunction(
             QUI::getLocale()->get(
                 'quiqqer/memberships',
                 'message.ajax.memberships.users.sendCancelMail.success',
-                array(
-                    'membershipUserId'   => $MembershipUser->getId(),
+                [
+                    'membershipUserId' => $MembershipUser->getId(),
                     'membershipUserName' => $MembershipUser->getUser()->getName()
-                )
+                ]
             )
         );
 
         return true;
     },
-    array('membershipUserId'),
+    ['membershipUserId'],
     'Permission::checkAdminUser'
 );

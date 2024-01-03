@@ -2,13 +2,13 @@
 
 namespace QUI\Memberships;
 
-use QUI\CRUD\Factory;
-use QUI\Utils\Grid;
 use QUI;
-use QUI\Permissions\Permission;
+use QUI\CRUD\Factory;
 use QUI\ERP\Products\Handler\Categories as ProductCategories;
 use QUI\ERP\Products\Handler\Fields as ProductFields;
 use QUI\Memberships\Users\Handler as MembershipUsersHandler;
+use QUI\Permissions\Permission;
+use QUI\Utils\Grid;
 use QUI\Utils\Security\Orthos;
 
 class Handler extends Factory
@@ -16,9 +16,9 @@ class Handler extends Factory
     /**
      * quiqqer/memberships permissions
      */
-    const PERMISSION_CREATE     = 'quiqqer.memberships.create';
-    const PERMISSION_EDIT       = 'quiqqer.memberships.edit';
-    const PERMISSION_DELETE     = 'quiqqer.memberships.delete';
+    const PERMISSION_CREATE = 'quiqqer.memberships.create';
+    const PERMISSION_EDIT = 'quiqqer.memberships.edit';
+    const PERMISSION_DELETE = 'quiqqer.memberships.delete';
     const PERMISSION_FORCE_EDIT = 'quiqqer.memberships.force_edit';
 
     /**
@@ -51,10 +51,11 @@ class Handler extends Factory
         $data['title'] = json_encode($data['title']);
 
         // groupIds
-        $Groups   = QUI::getGroups();
+        $Groups = QUI::getGroups();
         $groupIds = $data['groupIds'];
 
-        if (empty($groupIds)
+        if (
+            empty($groupIds)
             || !is_array($groupIds)
         ) {
             throw new QUI\Memberships\Exception([
@@ -68,11 +69,11 @@ class Handler extends Factory
             $Groups->get((int)$groupId);
         }
 
-        $data['groupIds']   = ','.implode(',', $groupIds).',';
-        $data['duration']   = '1-month';
+        $data['groupIds'] = ',' . implode(',', $groupIds) . ',';
+        $data['duration'] = '1-month';
         $data['autoExtend'] = 0;
-        $data['editDate']   = null;
-        $data['editUser']   = null;
+        $data['editDate'] = null;
+        $data['editUser'] = null;
 
         /** @var Membership $NewMembership */
         $NewMembership = parent::createChild($data);
@@ -135,8 +136,8 @@ class Handler extends Factory
     public function search($searchParams, $countOnly = false)
     {
         $memberships = [];
-        $Grid        = new Grid($searchParams);
-        $gridParams  = $Grid->parseDBParams($searchParams);
+        $Grid = new Grid($searchParams);
+        $gridParams = $Grid->parseDBParams($searchParams);
 
         $binds = [];
         $where = [];
@@ -147,7 +148,7 @@ class Handler extends Factory
             $sql = "SELECT id";
         }
 
-        $sql .= " FROM `".$this->getDataBaseTableName()."`";
+        $sql .= " FROM `" . $this->getDataBaseTableName() . "`";
 
         if (!empty($searchParams['userId'])) {
             $memberhsipUsers = MembershipUsersHandler::getInstance()->getMembershipUsersByUserId(
@@ -162,7 +163,7 @@ class Handler extends Factory
             }
 
             if (!empty($membershipIds)) {
-                $where[] = '`id` IN ('.implode(',', $membershipIds).')';
+                $where[] = '`id` IN (' . implode(',', $membershipIds) . ')';
             }
         }
 
@@ -176,49 +177,44 @@ class Handler extends Factory
             $whereOr = [];
 
             foreach ($searchColumns as $searchColumn) {
-                $whereOr[] = '`'.$searchColumn.'` LIKE :search';
+                $whereOr[] = '`' . $searchColumn . '` LIKE :search';
             }
 
             if (!empty($whereOr)) {
-                $where[] = '('.implode(' OR ', $whereOr).')';
+                $where[] = '(' . implode(' OR ', $whereOr) . ')';
 
                 $binds['search'] = [
-                    'value' => '%'.$searchParams['search'].'%',
-                    'type'  => \PDO::PARAM_STR
+                    'value' => '%' . $searchParams['search'] . '%',
+                    'type' => \PDO::PARAM_STR
                 ];
             }
         }
 
         // build WHERE query string
         if (!empty($where)) {
-            $sql .= " WHERE ".implode(" AND ", $where);
+            $sql .= " WHERE " . implode(" AND ", $where);
         }
 
         // ORDER
-        if (!empty($searchParams['sortOn'])
-        ) {
+        if (!empty($searchParams['sortOn'])) {
             $sortOn = Orthos::clear($searchParams['sortOn']);
-            $order  = "ORDER BY ".$sortOn;
+            $order = "ORDER BY " . $sortOn;
 
-            if (isset($searchParams['sortBy']) &&
-                !empty($searchParams['sortBy'])
-            ) {
-                $order .= " ".Orthos::clear($searchParams['sortBy']);
+            if (!empty($searchParams['sortBy'])) {
+                $order .= " " . Orthos::clear($searchParams['sortBy']);
             } else {
                 $order .= " ASC";
             }
 
-            $sql .= " ".$order;
+            $sql .= " " . $order;
         }
 
         // LIMIT
-        if (!empty($gridParams['limit'])
-            && !$countOnly
-        ) {
-            $sql .= " LIMIT ".$gridParams['limit'];
+        if (!empty($gridParams['limit']) && !$countOnly) {
+            $sql .= " LIMIT " . $gridParams['limit'];
         } else {
             if (!$countOnly) {
-                $sql .= " LIMIT ".(int)20;
+                $sql .= " LIMIT " . (int)20;
             }
         }
 
@@ -226,7 +222,7 @@ class Handler extends Factory
 
         // bind search values
         foreach ($binds as $var => $bind) {
-            $Stmt->bindValue(':'.$var, $bind['value'], $bind['type']);
+            $Stmt->bindValue(':' . $var, $bind['value'], $bind['type']);
         }
 
         try {
@@ -234,7 +230,7 @@ class Handler extends Factory
             $result = $Stmt->fetchAll(\PDO::FETCH_ASSOC);
         } catch (\Exception $Exception) {
             QUI\System\Log::addError(
-                self::class.' :: searchUsers() -> '.$Exception->getMessage()
+                self::class . ' :: searchUsers() -> ' . $Exception->getMessage()
             );
 
             return [];
@@ -265,28 +261,28 @@ class Handler extends Factory
             return $ids;
         }
 
-        $sql = 'SELECT `id` FROM '.self::getDataBaseTableName();
+        $sql = 'SELECT `id` FROM ' . self::getDataBaseTableName();
         $sql .= ' WHERE ';
 
         $whereOr = [];
-        $binds   = [];
+        $binds = [];
 
         foreach ($groupIds as $groupId) {
-            $whereOr[]       = '`groupIds` LIKE :'.$groupId;
+            $whereOr[] = '`groupIds` LIKE :' . $groupId;
             $binds[$groupId] = [
-                'value' => '%,'.$groupId.',%',
-                'type'  => \PDO::PARAM_INT
+                'value' => '%,' . $groupId . ',%',
+                'type' => \PDO::PARAM_INT
             ];
         }
 
         $sql .= implode(" OR ", $whereOr);
 
-        $PDO  = QUI::getDataBase()->getPDO();
+        $PDO = QUI::getDataBase()->getPDO();
         $Stmt = $PDO->prepare($sql);
 
         // bind search values
         foreach ($binds as $var => $bind) {
-            $Stmt->bindValue(':'.$var, $bind['value'], $bind['type']);
+            $Stmt->bindValue(':' . $var, $bind['value'], $bind['type']);
         }
 
         try {
@@ -325,7 +321,7 @@ class Handler extends Factory
      */
     public static function getProductCategory()
     {
-        $Conf       = QUI::getPackage('quiqqer/memberships')->getConfig();
+        $Conf = QUI::getPackage('quiqqer/memberships')->getConfig();
         $categoryId = $Conf->get('products', 'categoryId');
 
         if (empty($categoryId)) {
@@ -336,7 +332,7 @@ class Handler extends Factory
             return ProductCategories::getCategory((int)$categoryId);
         } catch (\Exception $Exception) {
             if ($Exception->getCode() !== 404) {
-                QUI\System\Log::addError(self::class.' :: getProductCategory()');
+                QUI\System\Log::addError(self::class . ' :: getProductCategory()');
                 QUI\System\Log::writeException($Exception);
             }
 
@@ -358,7 +354,7 @@ class Handler extends Factory
         }
 
         try {
-            $Conf    = QUI::getPackage('quiqqer/memberships')->getConfig();
+            $Conf = QUI::getPackage('quiqqer/memberships')->getConfig();
             $fieldId = $Conf->get('products', 'membershipFieldId');
 
             if (empty($fieldId)) {
@@ -386,7 +382,7 @@ class Handler extends Factory
         }
 
         try {
-            $Conf    = QUI::getPackage('quiqqer/memberships')->getConfig();
+            $Conf = QUI::getPackage('quiqqer/memberships')->getConfig();
             $fieldId = $Conf->get('products', 'membershipFlagFieldId');
 
             if (empty($fieldId)) {
