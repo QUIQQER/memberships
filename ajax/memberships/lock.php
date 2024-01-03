@@ -1,8 +1,5 @@
 <?php
 
-use QUI\Memberships\Handler as MembershipsHandler;
-use QUI\Watcher;
-
 /**
  * Locks a membership panel if the user has the necessary permission(s)
  *
@@ -10,6 +7,10 @@ use QUI\Watcher;
  * @param string $lockKey - Membership panel lock key
  * @return bool - success
  */
+
+use QUI\Memberships\Handler as MembershipsHandler;
+use QUI\Watcher;
+
 QUI::$Ajax->registerFunction(
     'package_quiqqer_memberships_ajax_memberships_lock',
     function ($id) {
@@ -25,9 +26,9 @@ QUI::$Ajax->registerFunction(
                     QUI::getLocale()->get(
                         'quiqqer/memberships',
                         'watcher.membership.force.edit',
-                        array(
+                        [
                             'id' => $id
-                        )
+                        ]
                     ),
                     'package_quiqqer_memberships_ajax_memberships_lock'
                 );
@@ -53,6 +54,6 @@ QUI::$Ajax->registerFunction(
 
         return true;
     },
-    array('id'),
+    ['id'],
     'Permission::checkAdminUser'
 );

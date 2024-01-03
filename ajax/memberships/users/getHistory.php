@@ -1,14 +1,15 @@
 <?php
 
-use QUI\Memberships\Users\Handler as MembershipUsersHandler;
-use QUI\Memberships\Users\MembershipUser;
-
 /**
  * Get history of a MembershipUser
  *
  * @param int $membershipUserId
  * @return array|false - history data or false on error
  */
+
+use QUI\Memberships\Users\Handler as MembershipUsersHandler;
+use QUI\Memberships\Users\MembershipUser;
+
 QUI::$Ajax->registerFunction(
     'package_quiqqer_memberships_ajax_memberships_users_getHistory',
     function ($membershipUserId) {
@@ -16,7 +17,7 @@ QUI::$Ajax->registerFunction(
             $MembershipUsers = MembershipUsersHandler::getInstance();
             /** @var MembershipUser $MembershipUser */
             $MembershipUser = $MembershipUsers->getChild((int)$membershipUserId);
-            $history        = $MembershipUser->getHistory();
+            $history = $MembershipUser->getHistory();
 
             // reverse history entries so the latest entries come first
             return array_reverse($history);
@@ -28,15 +29,15 @@ QUI::$Ajax->registerFunction(
                 QUI::getLocale()->get(
                     'quiqqer/memberships',
                     'message.ajax.general.error',
-                    array(
+                    [
                         'error' => $Exception->getMessage()
-                    )
+                    ]
                 )
             );
 
             return false;
         }
     },
-    array('membershipUserId'),
+    ['membershipUserId'],
     'Permission::checkAdminUser'
 );

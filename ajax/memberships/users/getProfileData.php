@@ -1,13 +1,14 @@
 <?php
 
-use QUI\Memberships\Users\Handler as MembershipUsersHandler;
-use QUI\Memberships\Handler as MembershipsHandler;
-
 /**
  * Get all MembershipUser Objects data for the current session user (for frontend)
  *
  * @return array - view data for all relevant MembershipUser objects
  */
+
+use QUI\Memberships\Handler as MembershipsHandler;
+use QUI\Memberships\Users\Handler as MembershipUsersHandler;
+
 QUI::$Ajax->registerFunction(
     'package_quiqqer_memberships_ajax_memberships_users_getProfileData',
     function () {

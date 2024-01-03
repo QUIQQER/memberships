@@ -28,7 +28,7 @@ class Memberships extends AbstractProfileControl
     public function getBody()
     {
         $Engine = QUI::getTemplateManager()->getEngine();
-        return $Engine->fetch(dirname(__FILE__).'/Memberships.html');
+        return $Engine->fetch(dirname(__FILE__) . '/Memberships.html');
     }
 
     /**

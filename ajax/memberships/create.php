@@ -1,8 +1,5 @@
 <?php
 
-use QUI\Memberships\Handler as MembershipsHandler;
-use QUI\Utils\Security\Orthos;
-
 /**
  * Create a new QUIQQER membership
  *
@@ -10,6 +7,10 @@ use QUI\Utils\Security\Orthos;
  * @param array $groupIds - IDs of all groups belonging to the new membership
  * @return integer|false - ID of new membership or false on error
  */
+
+use QUI\Memberships\Handler as MembershipsHandler;
+use QUI\Utils\Security\Orthos;
+
 QUI::$Ajax->registerFunction(
     'package_quiqqer_memberships_ajax_memberships_create',
     function ($title, $groupIds) {
@@ -17,18 +18,18 @@ QUI::$Ajax->registerFunction(
             $Memberships = MembershipsHandler::getInstance();
 
             /** @var \QUI\Memberships\Membership $NewMembership */
-            $NewMembership = $Memberships->createChild(array(
-                'title'    => Orthos::clear($title),
+            $NewMembership = $Memberships->createChild([
+                'title' => Orthos::clear($title),
                 'groupIds' => Orthos::clearArray(json_decode($groupIds, true))
-            ));
+            ]);
         } catch (QUI\Memberships\Exception $Exception) {
             QUI::getMessagesHandler()->addError(
                 QUI::getLocale()->get(
                     'quiqqer/memberships',
                     'message.ajax.memberships.create.error',
-                    array(
+                    [
                         'error' => $Exception->getMessage()
-                    )
+                    ]
                 )
             );
 
@@ -41,9 +42,9 @@ QUI::$Ajax->registerFunction(
                 QUI::getLocale()->get(
                     'quiqqer/memberships',
                     'message.ajax.general.error',
-                    array(
+                    [
                         'error' => $Exception->getMessage()
-                    )
+                    ]
                 )
             );
 
@@ -54,14 +55,14 @@ QUI::$Ajax->registerFunction(
             QUI::getLocale()->get(
                 'quiqqer/memberships',
                 'message.ajax.memberships.create.success',
-                array(
+                [
                     'title' => $title
-                )
+                ]
             )
         );
 
         return $NewMembership->getId();
     },
-    array('title', 'groupIds'),
+    ['title', 'groupIds'],
     'Permission::checkAdminUser'
 );

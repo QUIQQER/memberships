@@ -1,13 +1,14 @@
 <?php
 
-use QUI\Memberships\Users\Handler as MembershipUsersHandler;
-
 /**
  * Abort cancellation process
  *
  * @param int $membershipUserId
  * @return bool - success
  */
+
+use QUI\Memberships\Users\Handler as MembershipUsersHandler;
+
 QUI::$Ajax->registerFunction(
     'package_quiqqer_memberships_ajax_memberships_users_startAbortCancel',
     function ($membershipUserId) {
@@ -33,9 +34,9 @@ QUI::$Ajax->registerFunction(
                 QUI::getLocale()->get(
                     'quiqqer/memberships',
                     'message.ajax.memberships.users.abortCancel.error',
-                    array(
+                    [
                         'error' => $Exception->getMessage()
-                    )
+                    ]
                 )
             );
 
@@ -48,9 +49,9 @@ QUI::$Ajax->registerFunction(
                 QUI::getLocale()->get(
                     'quiqqer/memberships',
                     'message.ajax.general.error',
-                    array(
+                    [
                         'error' => $Exception->getMessage()
-                    )
+                    ]
                 )
             );
 
@@ -66,6 +67,6 @@ QUI::$Ajax->registerFunction(
 
         return true;
     },
-    array('membershipUserId'),
+    ['membershipUserId'],
     'Permission::checkUser'
 );

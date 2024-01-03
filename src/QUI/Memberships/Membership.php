@@ -4,17 +4,16 @@ namespace QUI\Memberships;
 
 use QUI;
 use QUI\CRUD\Child;
-use QUI\ERP\Products\Handler\Products;
+use QUI\ERP\Plans\Handler as ErpPlansHandler;
+use QUI\ERP\Products\Handler\Fields as ProductFields;
+use QUI\ERP\Products\Handler\Products as ProductsHandler;
+use QUI\ERP\Products\Search\BackendSearch;
+use QUI\Interfaces\Users\User as QUIUserInterface;
 use QUI\Locale;
 use QUI\Lock\Locker;
 use QUI\Memberships\Users\Handler as MembershipUsersHandler;
 use QUI\Permissions\Permission;
 use QUI\Utils\Security\Orthos;
-use QUI\ERP\Products\Search\BackendSearch;
-use QUI\ERP\Products\Handler\Products as ProductsHandler;
-use QUI\ERP\Products\Handler\Fields as ProductFields;
-use QUI\ERP\Plans\Handler as ErpPlansHandler;
-use QUI\Interfaces\Users\User as QUIUserInterface;
 
 class Membership extends Child
 {
@@ -138,10 +137,11 @@ class Membership extends Child
             ]);
         }
 
-        $attributes['groupIds'] = ','.$attributes['groupIds'].',';
+        $attributes['groupIds'] = ',' . $attributes['groupIds'] . ',';
 
         // check duration
-        if (empty($attributes['duration'])
+        if (
+            empty($attributes['duration'])
             || $attributes['duration'] === 'infinite'
         ) {
             $attributes['duration'] = 'infinite';
@@ -237,11 +237,11 @@ class Membership extends Child
             'select' => [
                 'id'
             ],
-            'from'   => MembershipUsersHandler::getInstance()->getDataBaseTableName(),
-            'where'  => [
+            'from' => MembershipUsersHandler::getInstance()->getDataBaseTableName(),
+            'where' => [
                 'membershipId' => $this->id,
-                'userId'       => $userId,
-                'archived'     => 0
+                'userId' => $userId,
+                'archived' => 0
             ]
         ]);
 
@@ -270,7 +270,7 @@ class Membership extends Child
 
         $where = [
             'membershipId' => $this->id,
-            'archived'     => 0
+            'archived' => 0
         ];
 
         if ($includeArchived) {
@@ -280,8 +280,8 @@ class Membership extends Child
         try {
             $result = QUI::getDataBase()->fetch([
                 'select' => 'id',
-                'from'   => QUI\Memberships\Users\Handler::getInstance()->getDataBaseTableName(),
-                'where'  => $where
+                'from' => QUI\Memberships\Users\Handler::getInstance()->getDataBaseTableName(),
+                'where' => $where
             ]);
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
@@ -302,8 +302,8 @@ class Membership extends Child
      */
     public function getUniqueGroupIds()
     {
-        $Memberships    = Handler::getInstance();
-        $groupIds       = $this->getGroupIds();
+        $Memberships = Handler::getInstance();
+        $groupIds = $this->getGroupIds();
         $uniqueGroupIds = $groupIds;
 
         foreach ($Memberships->getMembershipIdsByGroupIds($groupIds) as $membershipId) {
@@ -336,15 +336,15 @@ class Membership extends Child
     public function hasMembershipUserId($userId)
     {
         $result = QUI::getDataBase()->fetch([
-            'count'  => 1,
+            'count' => 1,
             'select' => [
                 'id'
             ],
-            'from'   => MembershipUsersHandler::getInstance()->getDataBaseTableName(),
-            'where'  => [
+            'from' => MembershipUsersHandler::getInstance()->getDataBaseTableName(),
+            'where' => [
                 'membershipId' => $this->id,
-                'userId'       => $userId,
-                'archived'     => 0
+                'userId' => $userId,
+                'archived' => 0
             ]
         ]);
 
@@ -362,12 +362,12 @@ class Membership extends Child
     public function searchUsers($searchParams, $archivedOnly = false, $countOnly = false)
     {
         $membershipUserIds = [];
-        $Grid              = new QUI\Utils\Grid($searchParams);
-        $gridParams        = $Grid->parseDBParams($searchParams);
-        $tbl               = MembershipUsersHandler::getInstance()->getDataBaseTableName();
-        $usersTbl          = QUI::getDBTableName('users');
-        $binds             = [];
-        $where             = [];
+        $Grid = new QUI\Utils\Grid($searchParams);
+        $gridParams = $Grid->parseDBParams($searchParams);
+        $tbl = MembershipUsersHandler::getInstance()->getDataBaseTableName();
+        $usersTbl = QUI::getDBTableName('users');
+        $binds = [];
+        $where = [];
 
         if ($countOnly) {
             $sql = "SELECT COUNT(*)";
@@ -375,11 +375,11 @@ class Membership extends Child
             $sql = "SELECT `musers`.id";
         }
 
-        $sql .= " FROM `".$tbl."` musers LEFT JOIN `".$usersTbl."` users";
+        $sql .= " FROM `" . $tbl . "` musers LEFT JOIN `" . $usersTbl . "` users";
         $sql .= ' ON `musers`.userId = `users`.id';
 
 //        $where[] = '`musers`.userId = `users`.id';
-        $where[] = '`musers`.membershipId = '.$this->id;
+        $where[] = '`musers`.membershipId = ' . $this->id;
 
         if ($archivedOnly === false) {
             $where[] = '`musers`.archived = 0';
@@ -397,27 +397,27 @@ class Membership extends Child
             ];
 
             foreach ($searchColumns as $tbl => $column) {
-                $whereOR[]       = $column.' LIKE :search';
+                $whereOR[] = $column . ' LIKE :search';
                 $binds['search'] = [
-                    'value' => '%'.$searchParams['search'].'%',
-                    'type'  => \PDO::PARAM_STR
+                    'value' => '%' . $searchParams['search'] . '%',
+                    'type' => \PDO::PARAM_STR
                 ];
             }
 
-            $where[] = '('.implode(' OR ', $whereOR).')';
+            $where[] = '(' . implode(' OR ', $whereOR) . ')';
         }
 
         if (!empty($searchParams['productId'])) {
-            $where[]            = '`musers`.productId = :productId';
+            $where[] = '`musers`.productId = :productId';
             $binds['productId'] = [
                 'value' => (int)$searchParams['productId'],
-                'type'  => \PDO::PARAM_INT
+                'type' => \PDO::PARAM_INT
             ];
         }
 
         // build WHERE query string
         if (!empty($where)) {
-            $sql .= " WHERE ".implode(" AND ", $where);
+            $sql .= " WHERE " . implode(" AND ", $where);
         }
 
         // ORDER
@@ -428,34 +428,36 @@ class Membership extends Child
                 case 'username':
                 case 'firstname':
                 case 'lastname':
-                    $sortOn = '`users`.'.$sortOn;
+                    $sortOn = '`users`.' . $sortOn;
                     break;
 
                 default:
-                    $sortOn = '`musers`.'.$sortOn;
+                    $sortOn = '`musers`.' . $sortOn;
             }
 
-            $order = "ORDER BY ".$sortOn;
+            $order = "ORDER BY " . $sortOn;
 
-            if (isset($searchParams['sortBy']) &&
+            if (
+                isset($searchParams['sortBy']) &&
                 !empty($searchParams['sortBy'])
             ) {
-                $order .= " ".Orthos::clear($searchParams['sortBy']);
+                $order .= " " . Orthos::clear($searchParams['sortBy']);
             } else {
                 $order .= " ASC";
             }
 
-            $sql .= " ".$order;
+            $sql .= " " . $order;
         }
 
         // LIMIT
-        if (!empty($gridParams['limit'])
+        if (
+            !empty($gridParams['limit'])
             && !$countOnly
         ) {
-            $sql .= " LIMIT ".$gridParams['limit'];
+            $sql .= " LIMIT " . $gridParams['limit'];
         } else {
             if (!$countOnly) {
-                $sql .= " LIMIT ".(int)20;
+                $sql .= " LIMIT " . (int)20;
             }
         }
 
@@ -463,7 +465,7 @@ class Membership extends Child
 
         // bind search values
         foreach ($binds as $var => $bind) {
-            $Stmt->bindValue(':'.$var, $bind['value'], $bind['type']);
+            $Stmt->bindValue(':' . $var, $bind['value'], $bind['type']);
         }
 
         try {
@@ -471,7 +473,7 @@ class Membership extends Child
             $result = $Stmt->fetchAll(\PDO::FETCH_ASSOC);
         } catch (\Exception $Exception) {
             QUI\System\Log::addError(
-                self::class.' :: searchUsers() -> '.$Exception->getMessage()
+                self::class . ' :: searchUsers() -> ' . $Exception->getMessage()
             );
 
             return [];
@@ -506,7 +508,7 @@ class Membership extends Child
 
         $start = Utils::getFormattedTimestamp($start);
 
-        $duration      = explode('-', $this->getAttribute('duration'));
+        $duration = explode('-', $this->getAttribute('duration'));
         $durationCount = $duration[0];
         $durationScope = $duration[1];
 
@@ -514,13 +516,13 @@ class Membership extends Child
 
         switch ($durationMode) {
             case MembershipUsersHandler::DURATION_MODE_DAY:
-                $endTime    = strtotime($start.' +'.$durationCount.' '.$durationScope);
+                $endTime = strtotime($start . ' +' . $durationCount . ' ' . $durationScope);
                 $beginOfDay = strtotime("midnight", $endTime);
-                $end        = strtotime("tomorrow", $beginOfDay) - 1;
+                $end = strtotime("tomorrow", $beginOfDay) - 1;
                 break;
 
             default:
-                $end = strtotime($start.' +'.$durationCount.' '.$durationScope);
+                $end = strtotime($start . ' +' . $durationCount . ' ' . $durationScope);
         }
 
         return Utils::getFormattedTimestamp($end);
@@ -540,7 +542,7 @@ class Membership extends Child
         }
 
         try {
-            $Search          = new BackendSearch();
+            $Search = new BackendSearch();
             $MembershipField = Handler::getProductMembershipField();
 
             if ($MembershipField === false) {
@@ -588,7 +590,7 @@ class Membership extends Child
         }
 
         $categories = [];
-        $fields     = [];
+        $fields = [];
 
         $Category = Handler::getProductCategory();
 
@@ -613,9 +615,9 @@ class Membership extends Child
         }
 
         // set title and description
-        $TitleField  = ProductFields::getField(ProductFields::FIELD_TITLE);
-        $DescField   = ProductFields::getField(ProductFields::FIELD_SHORT_DESC);
-        $title       = json_decode($this->getAttribute('title'), true);
+        $TitleField = ProductFields::getField(ProductFields::FIELD_TITLE);
+        $DescField = ProductFields::getField(ProductFields::FIELD_SHORT_DESC);
+        $title = json_decode($this->getAttribute('title'), true);
         $description = json_decode($this->getAttribute('description'), true);
 
         if (!empty($title)) {
@@ -697,7 +699,7 @@ class Membership extends Child
      */
     protected function getLockKey()
     {
-        return 'membership_'.$this->id;
+        return 'membership_' . $this->id;
     }
 
     /**
@@ -708,10 +710,10 @@ class Membership extends Child
     public function getBackendViewData()
     {
         return [
-            'id'          => $this->getId(),
-            'title'       => $this->getTitle(),
+            'id' => $this->getId(),
+            'title' => $this->getTitle(),
             'description' => $this->getDescription(),
-            'content'     => $this->getContent()
+            'content' => $this->getContent()
         ];
     }
 
@@ -751,7 +753,7 @@ class Membership extends Child
     public function addUser(QUI\Users\User $User)
     {
         return MembershipUsersHandler::getInstance()->createChild([
-            'userId'       => $User->getId(),
+            'userId' => $User->getId(),
             'membershipId' => $this->id
         ], $this->EditUser);
     }

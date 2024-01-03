@@ -6,7 +6,6 @@
 
 namespace QUI\Memberships\Products;
 
-use QUI;
 use QUI\ERP\Products;
 use QUI\Memberships\Handler as MembershipsHandler;
 
@@ -65,15 +64,15 @@ class MembershipField extends Products\Field\Field
         try {
             MembershipsHandler::getInstance()->getChild($value);
         } catch (\Exception $Exception) {
-            throw new Products\Field\Exception(array(
+            throw new Products\Field\Exception([
                 'quiqqer/products',
                 'exception.field.invalid',
-                array(
-                    'fieldId'    => $this->getId(),
+                [
+                    'fieldId' => $this->getId(),
                     'fieldTitle' => $this->getTitle(),
-                    'fieldType'  => $this->getType()
-                )
-            ));
+                    'fieldType' => $this->getType()
+                ]
+            ]);
         }
     }
 
