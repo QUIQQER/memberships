@@ -1,9 +1,5 @@
 <?php
 
-use QUI\Memberships\Handler as MembershipsHandler;
-use QUI\Lock\Locker;
-use QUI\Watcher;
-
 /**
  * Unlocks a location panel if the user has the necessary permission(s)
  *
@@ -12,6 +8,10 @@ use QUI\Watcher;
  *
  * @throws \QUI\Permissions\Exception
  */
+
+use QUI\Memberships\Handler as MembershipsHandler;
+use QUI\Watcher;
+
 QUI::$Ajax->registerFunction(
     'package_quiqqer_memberships_ajax_memberships_unlock',
     function ($id) {
@@ -27,9 +27,9 @@ QUI::$Ajax->registerFunction(
                     QUI::getLocale()->get(
                         'quiqqer/memberships',
                         'watcher.location.force.edit',
-                        array(
+                        [
                             'id' => $Membership->getId()
-                        )
+                        ]
                     ),
                     'package_quiqqer_memberships_ajax_memberships_lock'
                 );
@@ -55,6 +55,6 @@ QUI::$Ajax->registerFunction(
 
         return true;
     },
-    array('id'),
+    ['id'],
     'Permission::checkAdminUser'
 );

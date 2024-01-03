@@ -21,22 +21,22 @@ class Cron
             'select' => [
                 'id'
             ],
-            'from'   => $MembershipUsers->getDataBaseTableName(),
-            'where'  => [
+            'from' => $MembershipUsers->getDataBaseTableName(),
+            'where' => [
                 'archived' => 0
             ]
         ]);
 
-        $now                            = time();
+        $now = time();
         $cancelConfirmReminderAfterDays = (int)MembershipUsersHandler::getSetting('cancelReminderDays');
-        $Now                            = date_create();
-        $isLinkedToContracts            = Handler::isLinkedToContracts();
+        $Now = date_create();
+        $isLinkedToContracts = Handler::isLinkedToContracts();
 
         foreach ($result as $row) {
             try {
                 /** @var MembershipUser $MembershipUser */
                 $MembershipUser = $MembershipUsers->getChild($row['id']);
-                $Membership     = $MembershipUser->getMembership();
+                $Membership = $MembershipUser->getMembership();
 
                 try {
                     $MembershipUser->getUser();
@@ -51,16 +51,22 @@ class Cron
 
                 // Check if cancellation of membership has been started but NOT yet confirmed.
                 // Send reminder e-mail after X days of unconfirmed cancellation.
-                if (!empty($cancelConfirmReminderAfterDays)
-                    && (int)$MembershipUser->getAttribute('cancelStatus') === MembershipUsersHandler::CANCEL_STATUS_CANCEL_CONFIRM_PENDING) {
+                if (
+                    !empty($cancelConfirmReminderAfterDays)
+                    && (int)$MembershipUser->getAttribute(
+                        'cancelStatus'
+                    ) === MembershipUsersHandler::CANCEL_STATUS_CANCEL_CONFIRM_PENDING
+                ) {
                     $CancelDate = \date_create($MembershipUser->getAttribute('cancelDate'));
 
                     if ($CancelDate) {
-                        $RemindDate = $CancelDate->add(new \DateInterval('P'.$cancelConfirmReminderAfterDays.'D'));
-                        $User       = $MembershipUser->getUser();
+                        $RemindDate = $CancelDate->add(new \DateInterval('P' . $cancelConfirmReminderAfterDays . 'D'));
+                        $User = $MembershipUser->getUser();
 
-                        if (!$User->getAttribute(MembershipUsersHandler::USER_ATTR_CANCEL_REMINDER_SENT)
-                            && $Now > $RemindDate) {
+                        if (
+                            !$User->getAttribute(MembershipUsersHandler::USER_ATTR_CANCEL_REMINDER_SENT)
+                            && $Now > $RemindDate
+                        ) {
                             $sent = $MembershipUser->sendConfirmCancelReminderMail();
 
                             if ($sent) {
@@ -107,7 +113,7 @@ class Cron
                 $MembershipUser->expire();
             } catch (\Exception $Exception) {
                 QUI\System\Log::addError(
-                    self::class.' :: checkMembershipUsers() -> '.$Exception->getMessage()
+                    self::class . ' :: checkMembershipUsers() -> ' . $Exception->getMessage()
                 );
 
                 QUI\System\Log::writeException($Exception);

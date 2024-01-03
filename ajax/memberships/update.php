@@ -1,8 +1,5 @@
 <?php
 
-use QUI\Memberships\Handler as MembershipsHandler;
-use QUI\Memberships\Utils;
-
 /**
  * Update a membership
  *
@@ -10,6 +7,10 @@ use QUI\Memberships\Utils;
  * @param array $attributes - Update attributes
  * @return array|false - License data or false on error
  */
+
+use QUI\Memberships\Handler as MembershipsHandler;
+use QUI\Memberships\Utils;
+
 QUI::$Ajax->registerFunction(
     'package_quiqqer_memberships_ajax_memberships_update',
     function ($id, $attributes) {
@@ -19,10 +20,10 @@ QUI::$Ajax->registerFunction(
             $Membership = $Memberships->getChild((int)$id);
 
             if ($Membership->isLocked()) {
-                throw new QUI\Memberships\Exception(array(
+                throw new QUI\Memberships\Exception([
                     'quiqqer/memberships',
                     'exception.membership.cannot.update.when.locked'
-                ));
+                ]);
             }
 
             $attributes = json_decode($attributes, true);
@@ -53,9 +54,9 @@ QUI::$Ajax->registerFunction(
                 QUI::getLocale()->get(
                     'quiqqer/memberships',
                     'message.ajax.memberships.update.error',
-                    array(
+                    [
                         'error' => $Exception->getMessage()
-                    )
+                    ]
                 )
             );
 
@@ -68,9 +69,9 @@ QUI::$Ajax->registerFunction(
                 QUI::getLocale()->get(
                     'quiqqer/memberships',
                     'message.ajax.general.error',
-                    array(
+                    [
                         'error' => $Exception->getMessage()
-                    )
+                    ]
                 )
             );
 
@@ -81,15 +82,15 @@ QUI::$Ajax->registerFunction(
             QUI::getLocale()->get(
                 'quiqqer/memberships',
                 'message.ajax.memberships.update.success',
-                array(
-                    'id'    => $Membership->getId(),
+                [
+                    'id' => $Membership->getId(),
                     'title' => $Membership->getTitle()
-                )
+                ]
             )
         );
 
         return true;
     },
-    array('id', 'attributes'),
+    ['id', 'attributes'],
     'Permission::checkAdminUser'
 );

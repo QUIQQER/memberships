@@ -90,7 +90,7 @@ class Utils
      */
     public static function getInstalledMembershipPackages()
     {
-        $packages         = [];
+        $packages = [];
         $relevantPackages = [
             'quiqqer/products',
             'quiqqer/contracts',
@@ -122,7 +122,7 @@ class Utils
             return false;
         }
 
-        $duration       = \explode('-', $duration);
+        $duration = \explode('-', $duration);
         $intervalNumber = $duration[0];
 
         switch ($duration[1]) {
@@ -144,7 +144,7 @@ class Utils
                 break;
         }
 
-        return new \DateInterval('P'.$intervalNumber.$intervalPeriod);
+        return new \DateInterval('P' . $intervalNumber . $intervalPeriod);
     }
 
     /**

@@ -1,8 +1,5 @@
 <?php
 
-use QUI\Memberships\Users\Handler as MembershipUsersHandler;
-use QUI\Memberships\Utils;
-
 /**
  * Update a MembershipUser
  *
@@ -10,30 +7,34 @@ use QUI\Memberships\Utils;
  * @param array $attributes - Update attributes
  * @return bool - success
  */
+
+use QUI\Memberships\Users\Handler as MembershipUsersHandler;
+use QUI\Memberships\Utils;
+
 QUI::$Ajax->registerFunction(
     'package_quiqqer_memberships_ajax_memberships_users_update',
     function ($membershipUserId, $attributes) {
         try {
             $MembershipUsers = MembershipUsersHandler::getInstance();
             /** @var \QUI\Memberships\Users\MembershipUser $MembershipUser */
-            $MembershipUser     = $MembershipUsers->getChild((int)$membershipUserId);
-            $attributes         = json_decode($attributes, true);
-            $updated            = [];
+            $MembershipUser = $MembershipUsers->getChild((int)$membershipUserId);
+            $attributes = json_decode($attributes, true);
+            $updated = [];
             $sendAutoExtendMail = false;
 
             foreach ($attributes as $k => $v) {
                 switch ($k) {
                     case 'beginDate':
                     case 'endDate':
-                        $v      = Utils::getFormattedTimestamp(strtotime($v));
+                        $v = Utils::getFormattedTimestamp(strtotime($v));
                         $oldVal = $MembershipUser->getAttribute($k);
 
-                        $updated[$k] = $oldVal.' => '.$v;
+                        $updated[$k] = $oldVal . ' => ' . $v;
 
                         if ($k === 'endDate') {
                             $oldEndDate = strtotime($MembershipUser->getAttribute('endDate'));
                             $newEndDate = strtotime($v);
-                            $now        = time();
+                            $now = time();
 
                             if ($newEndDate >= $now && $newEndDate > $oldEndDate) {
                                 $sendAutoExtendMail = true;
@@ -60,7 +61,7 @@ QUI::$Ajax->registerFunction(
                                  * considered here.
                                  */
                                 $MembershipUser->setAttributes([
-                                    'cancelStatus'  => MembershipUsersHandler::CANCEL_STATUS_CANCELLED_BY_SYSTEM,
+                                    'cancelStatus' => MembershipUsersHandler::CANCEL_STATUS_CANCELLED_BY_SYSTEM,
                                     'cancelEndDate' => $MembershipUser->getAttribute('endDate')
                                 ]);
 
@@ -71,7 +72,7 @@ QUI::$Ajax->registerFunction(
                                 );
 
                                 $MembershipUser->setAttributes([
-                                    'cancelStatus'  => MembershipUsersHandler::CANCEL_STATUS_NOT_CANCELLED,
+                                    'cancelStatus' => MembershipUsersHandler::CANCEL_STATUS_NOT_CANCELLED,
                                     'cancelEndDate' => null
                                 ]);
                             }
@@ -132,7 +133,7 @@ QUI::$Ajax->registerFunction(
                 'quiqqer/memberships',
                 'message.ajax.memberships.users.update.success',
                 [
-                    'membershipUserId'   => $MembershipUser->getId(),
+                    'membershipUserId' => $MembershipUser->getId(),
                     'membershipUserName' => $MembershipUser->getUser()->getName()
                 ]
             )

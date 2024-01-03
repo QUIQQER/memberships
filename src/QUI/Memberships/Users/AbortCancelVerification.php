@@ -2,9 +2,9 @@
 
 namespace QUI\Memberships\Users;
 
+use QUI;
 use QUI\Memberships\Users\Handler as MembershipUsersHandler;
 use QUI\Verification\Verifier;
-use QUI;
 
 /**
  * Class CancelVerification
@@ -23,9 +23,9 @@ class AbortCancelVerification extends QUI\Verification\AbstractVerification
     public function getValidDuration()
     {
         $MembershipUser = MembershipUsersHandler::getInstance()->getChild($this->getIdentifier());
-        $endDate        = $MembershipUser->getAttribute('endDate');
-        $endDate        = strtotime($endDate) / 60; // minutes
-        $now            = time() / 60; // minutes
+        $endDate = $MembershipUser->getAttribute('endDate');
+        $endDate = strtotime($endDate) / 60; // minutes
+        $now = time() / 60; // minutes
 
         return $endDate - $now;
     }
@@ -64,15 +64,15 @@ class AbortCancelVerification extends QUI\Verification\AbstractVerification
     {
         /** @var MembershipUser $MembershipUser */
         $MembershipUser = MembershipUsersHandler::getInstance()->getChild($this->getIdentifier());
-        $Membership     = $MembershipUser->getMembership();
-        $data           = $MembershipUser->getFrontendViewData();
+        $Membership = $MembershipUser->getMembership();
+        $data = $MembershipUser->getFrontendViewData();
 
         if ($Membership->isAutoExtend()) {
             $msg = QUI::getLocale()->get(
                 'quiqqer/memberships',
                 'verification.abortcancel.success.autoExtend',
                 [
-                    'endDate'         => $data['endDate'],
+                    'endDate' => $data['endDate'],
                     'membershipTitle' => $Membership->getTitle()
                 ]
             );
@@ -81,7 +81,7 @@ class AbortCancelVerification extends QUI\Verification\AbstractVerification
                 'quiqqer/memberships',
                 'verification.abortcancel.success.noAutoExtend',
                 [
-                    'endDate'         => $data['endDate'],
+                    'endDate' => $data['endDate'],
                     'membershipTitle' => $Membership->getTitle()
                 ]
             );

@@ -1,8 +1,5 @@
 <?php
 
-use QUI\Memberships\Users\Handler as MembershipUsersHandler;
-use QUI\Memberships\Handler as MembershipsHandler;
-
 /**
  * Add user(s) to a QUIQQER membership
  *
@@ -10,27 +7,31 @@ use QUI\Memberships\Handler as MembershipsHandler;
  * @param array $userIds - QUIQQER user IDs
  * @return bool - success
  */
+
+use QUI\Memberships\Handler as MembershipsHandler;
+use QUI\Memberships\Users\Handler as MembershipUsersHandler;
+
 QUI::$Ajax->registerFunction(
     'package_quiqqer_memberships_ajax_memberships_users_create',
     function ($membershipId, $userIds) {
         try {
             $MembershipUsers = MembershipUsersHandler::getInstance();
-            $userIds         = json_decode($userIds, true);
+            $userIds = json_decode($userIds, true);
 
             foreach ($userIds as $userId) {
-                $MembershipUsers->createChild(array(
+                $MembershipUsers->createChild([
                     'membershipId' => (int)$membershipId,
-                    'userId'       => (int)$userId
-                ));
+                    'userId' => (int)$userId
+                ]);
             }
         } catch (QUI\Memberships\Exception $Exception) {
             QUI::getMessagesHandler()->addError(
                 QUI::getLocale()->get(
                     'quiqqer/memberships',
                     'message.ajax.memberships.users.create.error',
-                    array(
+                    [
                         'error' => $Exception->getMessage()
-                    )
+                    ]
                 )
             );
 
@@ -43,9 +44,9 @@ QUI::$Ajax->registerFunction(
                 QUI::getLocale()->get(
                     'quiqqer/memberships',
                     'message.ajax.general.error',
-                    array(
+                    [
                         'error' => $Exception->getMessage()
-                    )
+                    ]
                 )
             );
 
@@ -58,15 +59,15 @@ QUI::$Ajax->registerFunction(
             QUI::getLocale()->get(
                 'quiqqer/memberships',
                 'message.ajax.memberships.users.create.success',
-                array(
-                    'membershipId'    => $Membership->getId(),
+                [
+                    'membershipId' => $Membership->getId(),
                     'membershipTitle' => $Membership->getTitle()
-                )
+                ]
             )
         );
 
         return true;
     },
-    array('membershipId', 'userIds'),
+    ['membershipId', 'userIds'],
     'Permission::checkAdminUser'
 );
