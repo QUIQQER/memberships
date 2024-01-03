@@ -23,17 +23,11 @@ QUI::$Ajax->registerFunction(
         $Membership = $Memberships->getChild((int)$membershipId);
         $membershipUsers = [];
 
-//        $Membership->addUser(QUI::getUserBySession());
-
         foreach ($Membership->searchUsers($searchParams) as $membershipUserId) {
             /** @var MembershipUser $MembershipUser */
             $MembershipUser = $MembershipUsers->getChild($membershipUserId);
             $membershipUsers[] = $MembershipUser->getBackendViewData();
         }
-
-        /** @var \QUI\Memberships\Users\MembershipUser $TEST */
-//        $TEST = $MembershipUsers->getChild(26);
-//        $TEST->startManualCancel();
 
         $Grid = new Grid($searchParams);
 

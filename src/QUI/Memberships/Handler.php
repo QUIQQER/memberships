@@ -196,15 +196,11 @@ class Handler extends Factory
         }
 
         // ORDER
-        if (!empty($searchParams['sortOn'])
-        ) {
+        if (!empty($searchParams['sortOn'])) {
             $sortOn = Orthos::clear($searchParams['sortOn']);
             $order = "ORDER BY " . $sortOn;
 
-            if (
-                isset($searchParams['sortBy']) &&
-                !empty($searchParams['sortBy'])
-            ) {
+            if (!empty($searchParams['sortBy'])) {
                 $order .= " " . Orthos::clear($searchParams['sortBy']);
             } else {
                 $order .= " ASC";
@@ -214,10 +210,7 @@ class Handler extends Factory
         }
 
         // LIMIT
-        if (
-            !empty($gridParams['limit'])
-            && !$countOnly
-        ) {
+        if (!empty($gridParams['limit']) && !$countOnly) {
             $sql .= " LIMIT " . $gridParams['limit'];
         } else {
             if (!$countOnly) {

@@ -113,7 +113,7 @@ class Membership extends Child
      *
      * @return bool
      */
-    public function isAutoExtend()
+    public function isAutoExtend(): bool
     {
         return $this->getAttribute('autoExtend') ? true : false;
     }
@@ -129,8 +129,7 @@ class Membership extends Child
         $attributes = $this->getAttributes();
 
         // check groups
-        if (empty($attributes['groupIds'])
-        ) {
+        if (empty($attributes['groupIds'])) {
             throw new QUI\Memberships\Exception([
                 'quiqqer/memberships',
                 'exception.handler.no.groups'
