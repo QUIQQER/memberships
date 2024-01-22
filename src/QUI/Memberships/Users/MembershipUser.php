@@ -122,7 +122,11 @@ class MembershipUser extends Child
     {
         // Calculate new start and/or end time
         if (empty($NextBeginDate)) {
-            $NextBeginDate = $this->getNextCycleBeginDate();
+            if (MembershipUsersHandler::getExtendMode() === MembershipUsersHandler::EXTEND_MODE_PROLONG) {
+                $NextBeginDate = $this->getCycleBeginDate();
+            } else {
+                $NextBeginDate = $this->getNextCycleBeginDate();
+            }
         }
 
         if (empty($NextEndDate)) {
@@ -1284,10 +1288,6 @@ class MembershipUser extends Child
 
         if (!$EndDate) {
             return false;
-        }
-
-        if (MembershipUsersHandler::getExtendMode() === MembershipUsersHandler::EXTEND_MODE_PROLONG) {
-            return $this->getCycleBeginDate();
         }
 
         $NextBeginDate = clone $EndDate;
