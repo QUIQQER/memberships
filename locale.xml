@@ -1095,7 +1095,7 @@
             <de><![CDATA[Zurückziehen der Kündigung Ihrer Mitgliedschaft]]></de>
             <en><![CDATA[Withdrawal of your membership termination]]></en>
         </locale>
-        <locale name="templates.mail.startcancel.body" html="true">
+        <locale name="templates.mail.startabortcancel.body" html="true">
             <de><![CDATA[<h1>Hallo [name]!</h1>
             <p>Sie haben beantragt, die Kündigung Ihrer Mitgliedschaft <b>[membershipTitle]</b> vom <b>[cancelDate]</b> zu widerrufen. Um diesen Widerruf zu bestätigen, besuchen Sie bitte folgenden Link:<br><br><a href="[abortCancelUrl]">[abortCancelUrl]</a><br/><br/>Bitte beachten Sie, dass Ihre Kündigung erst dann wirksam widerrufen ist, wenn der Vorgang über den o.g. Link bestätigt wurde.</p>]]></de>
             <en><![CDATA[<h1>Hello [name]!</h1>
