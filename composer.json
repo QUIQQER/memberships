@@ -19,7 +19,8 @@
         "url": "http:\/\/www.pcsg.de"
     },
     "require": {
-        "quiqqer\/verification": "^1.3|*@dev"
+        "quqiqer\/core": "^2",
+        "quiqqer\/verification": "^2"
     },
     "autoload": {
         "psr-4": {
