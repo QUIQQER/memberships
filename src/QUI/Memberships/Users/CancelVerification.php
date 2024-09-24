@@ -19,7 +19,7 @@ class CancelVerification extends QUI\Verification\AbstractVerification
      * @return int|false - duration in minutes;
      * if this method returns false use the module setting default value
      */
-    public function getValidDuration()
+    public function getValidDuration(): bool|int
     {
         return (int)MembershipUsersHandler::getSetting('cancelDuration');
     }
@@ -29,7 +29,7 @@ class CancelVerification extends QUI\Verification\AbstractVerification
      *
      * @return void
      */
-    public function onSuccess()
+    public function onSuccess(): void
     {
         /** @var MembershipUser $MembershipUser */
         $MembershipUser = MembershipUsersHandler::getInstance()->getChild($this->getIdentifier());
@@ -42,7 +42,7 @@ class CancelVerification extends QUI\Verification\AbstractVerification
      *
      * @return void
      */
-    public function onError()
+    public function onError(): void
     {
         // nothing
     }
@@ -52,7 +52,7 @@ class CancelVerification extends QUI\Verification\AbstractVerification
      *
      * @return string
      */
-    public function getSuccessMessage()
+    public function getSuccessMessage(): string
     {
         return QUI::getLocale()->get(
             'quiqqer/memberships',
@@ -66,7 +66,7 @@ class CancelVerification extends QUI\Verification\AbstractVerification
      * @param string $reason - The reason for the error (see \QUI\Verification\Verifier::REASON_)
      * @return string
      */
-    public function getErrorMessage($reason)
+    public function getErrorMessage($reason): string
     {
         switch ($reason) {
             case Verifier::ERROR_REASON_EXPIRED:
@@ -98,7 +98,7 @@ class CancelVerification extends QUI\Verification\AbstractVerification
      *
      * @return string|false - If this method returns false, no redirection takes place
      */
-    public function getOnSuccessRedirectUrl()
+    public function getOnSuccessRedirectUrl(): bool|string
     {
         return false;
     }
@@ -110,7 +110,7 @@ class CancelVerification extends QUI\Verification\AbstractVerification
      *
      * @return string|false - If this method returns false, no redirection takes place
      */
-    public function getOnErrorRedirectUrl()
+    public function getOnErrorRedirectUrl(): bool|string
     {
         return false;
     }

@@ -26,14 +26,14 @@ class MembershipField extends Products\Field\Field
     /**
      * @var bool
      */
-    public $searchable = true;
+    public bool $searchable = true;
 
     /**
      * Column type for database table (cache column)
      *
      * @var string
      */
-    protected $columnType = 'BIGINT';
+    protected string $columnType = 'BIGINT';
 
     /**
      * Cleanup the value, the value is valid now
@@ -41,7 +41,7 @@ class MembershipField extends Products\Field\Field
      * @param mixed $value
      * @return int
      */
-    public function cleanup($value)
+    public function cleanup($value): mixed
     {
         return (int)$value;
     }
@@ -53,7 +53,7 @@ class MembershipField extends Products\Field\Field
      * @param mixed $value
      * @throws \QUI\ERP\Products\Field\Exception
      */
-    public function validate($value)
+    public function validate($value): void
     {
         if (empty($value)) {
             return;
@@ -79,7 +79,7 @@ class MembershipField extends Products\Field\Field
     /**
      * @return string
      */
-    public function getJavaScriptControl()
+    public function getJavaScriptControl(): string
     {
         return 'package/quiqqer/memberships/bin/controls/MembershipSelect';
     }

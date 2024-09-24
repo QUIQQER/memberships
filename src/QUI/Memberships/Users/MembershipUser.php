@@ -51,7 +51,7 @@ class MembershipUser extends Child
      * @inheritdoc
      * @param bool $withPermission - check permissions on update [default: true]
      */
-    public function update()
+    public function update(): void
     {
         Permission::checkPermission(MembershipUsersHandler::PERMISSION_EDIT_USERS, $this->EditUser);
 
@@ -619,7 +619,7 @@ class MembershipUser extends Child
      *
      * @return void
      */
-    public function delete()
+    public function delete(): void
     {
         Permission::checkPermission(MembershipUsersHandler::PERMISSION_EDIT_USERS, $this->EditUser);
 

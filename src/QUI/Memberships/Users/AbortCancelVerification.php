@@ -20,7 +20,7 @@ class AbortCancelVerification extends QUI\Verification\AbstractVerification
      * if this method returns false use the module setting default value
      * @throws \QUI\Exception
      */
-    public function getValidDuration()
+    public function getValidDuration(): bool|int
     {
         $MembershipUser = MembershipUsersHandler::getInstance()->getChild($this->getIdentifier());
         $endDate = $MembershipUser->getAttribute('endDate');
@@ -36,7 +36,7 @@ class AbortCancelVerification extends QUI\Verification\AbstractVerification
      * @return void
      * @throws \QUI\Exception
      */
-    public function onSuccess()
+    public function onSuccess(): void
     {
         /** @var MembershipUser $MembershipUser */
         $MembershipUser = MembershipUsersHandler::getInstance()->getChild($this->getIdentifier());
@@ -49,7 +49,7 @@ class AbortCancelVerification extends QUI\Verification\AbstractVerification
      *
      * @return void
      */
-    public function onError()
+    public function onError(): void
     {
         // nothing
     }
@@ -60,7 +60,7 @@ class AbortCancelVerification extends QUI\Verification\AbstractVerification
      * @return string
      * @throws \QUI\Exception
      */
-    public function getSuccessMessage()
+    public function getSuccessMessage(): string
     {
         /** @var MembershipUser $MembershipUser */
         $MembershipUser = MembershipUsersHandler::getInstance()->getChild($this->getIdentifier());
@@ -96,7 +96,7 @@ class AbortCancelVerification extends QUI\Verification\AbstractVerification
      * @param string $reason - The reason for the error (see \QUI\Verification\Verifier::REASON_)
      * @return string
      */
-    public function getErrorMessage($reason)
+    public function getErrorMessage($reason): string
     {
         switch ($reason) {
             case Verifier::ERROR_REASON_EXPIRED:
@@ -128,7 +128,7 @@ class AbortCancelVerification extends QUI\Verification\AbstractVerification
      *
      * @return string|false - If this method returns false, no redirection takes place
      */
-    public function getOnSuccessRedirectUrl()
+    public function getOnSuccessRedirectUrl(): bool|string
     {
         return false;
     }
@@ -140,7 +140,7 @@ class AbortCancelVerification extends QUI\Verification\AbstractVerification
      *
      * @return string|false - If this method returns false, no redirection takes place
      */
-    public function getOnErrorRedirectUrl()
+    public function getOnErrorRedirectUrl(): bool|string
     {
         return false;
     }
