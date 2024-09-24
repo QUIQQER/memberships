@@ -66,7 +66,7 @@ class Handler extends Factory
 
         foreach ($groupIds as $groupId) {
             // check if group exist by getting them
-            $Groups->get((int)$groupId);
+            $Groups->get($groupId);
         }
 
         $data['groupIds'] = ',' . implode(',', $groupIds) . ',';
