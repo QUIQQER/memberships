@@ -25,7 +25,7 @@ class Handler extends Factory
      * @inheritdoc
      * @throws QUI\Memberships\Exception
      */
-    public function createChild($data = [])
+    public function createChild($data = []): QUI\CRUD\Child
     {
         Permission::checkPermission(self::PERMISSION_CREATE);
 
@@ -87,7 +87,7 @@ class Handler extends Factory
      * @inheritdoc
      * @return string
      */
-    public function getDataBaseTableName()
+    public function getDataBaseTableName(): string
     {
         return 'quiqqer_memberships';
     }
@@ -96,7 +96,7 @@ class Handler extends Factory
      * @inheritdoc
      * @return string
      */
-    public function getChildClass()
+    public function getChildClass(): string
     {
         return Membership::class;
     }
@@ -105,7 +105,7 @@ class Handler extends Factory
      * @inheritdoc
      * @return array
      */
-    public function getChildAttributes()
+    public function getChildAttributes(): array
     {
         return [
             'title',

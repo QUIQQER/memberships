@@ -78,7 +78,7 @@ class Handler extends Factory
      * @param QUI\Users\User $PermissionUser (optional)
      * @throws QUI\Memberships\Exception
      */
-    public function createChild($data = [], $PermissionUser = null)
+    public function createChild($data = [], $PermissionUser = null): QUI\CRUD\Child
     {
         if (is_null($PermissionUser)) {
             $PermissionUser = QUI::getUserBySession();
@@ -294,7 +294,7 @@ class Handler extends Factory
      * @inheritdoc
      * @return string
      */
-    public function getDataBaseTableName()
+    public function getDataBaseTableName(): string
     {
         return 'quiqqer_memberships_users';
     }
@@ -303,7 +303,7 @@ class Handler extends Factory
      * @inheritdoc
      * @return string
      */
-    public function getChildClass()
+    public function getChildClass(): string
     {
         return MembershipUser::class;
     }
@@ -312,7 +312,7 @@ class Handler extends Factory
      * @inheritdoc
      * @return array
      */
-    public function getChildAttributes()
+    public function getChildAttributes(): array
     {
         return [
             'membershipId',
@@ -355,7 +355,7 @@ class Handler extends Factory
      *
      * @return string
      */
-    public static function getExtendMode()
+    public static function getExtendMode(): string
     {
         try {
             return self::getSetting('extendMode');
@@ -372,7 +372,7 @@ class Handler extends Factory
      *
      * @return string
      */
-    public static function getDurationMode()
+    public static function getDurationMode(): string
     {
         try {
             return QUI\Memberships\Handler::getSetting('durationMode');

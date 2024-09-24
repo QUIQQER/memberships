@@ -122,7 +122,7 @@ class Membership extends Child
      * @inheritdoc
      * @throws QUI\Memberships\Exception
      */
-    public function update()
+    public function update(): void
     {
         Permission::checkPermission(Handler::PERMISSION_EDIT, $this->EditUser);
 
@@ -181,7 +181,7 @@ class Membership extends Child
      * @throws \QUI\Permissions\Exception
      * @throws \QUI\Exception
      */
-    public function delete()
+    public function delete(): void
     {
         Permission::checkPermission(Handler::PERMISSION_DELETE, $this->EditUser);
 

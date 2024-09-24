@@ -25,7 +25,7 @@ class Memberships extends AbstractProfileControl
      * @return string
      * @throws \QUI\Exception
      */
-    public function getBody()
+    public function getBody(): string
     {
         $Engine = QUI::getTemplateManager()->getEngine();
         return $Engine->fetch(dirname(__FILE__) . '/Memberships.html');
@@ -36,7 +36,7 @@ class Memberships extends AbstractProfileControl
      *
      * @return mixed|void
      */
-    public function onSave()
+    public function onSave(): void
     {
     }
 
@@ -46,7 +46,7 @@ class Memberships extends AbstractProfileControl
      * @return mixed|void
      * @throws \Exception
      */
-    public function validate()
+    public function validate(): void
     {
     }
 }
