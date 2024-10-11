@@ -186,6 +186,11 @@ class Events
                 QUI\System\Log::addError(self::class . ' :: createProductFields');
                 QUI\System\Log::writeException($Exception);
             }
+        } elseif (!($MembershipField instanceof MembershipField)) {
+            QUI\System\Log::addError(
+                'quiqqer/memberships :: Cannot create memership field because product field with ID ' .
+                $MembershipField->getId() . ' is not a membership field.'
+            );
         }
 
         // Membership flag field (create new one is not configured)
