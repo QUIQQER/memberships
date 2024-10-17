@@ -916,7 +916,11 @@ class MembershipUser extends Child
 
                 // fallback to default value
                 if (empty($dateFormat)) {
-                    $dateFormat = '%D';
+                    if (QUI::getPackageManager()->isInstalled('quiqqer/erp')) {
+                        $dateFormat = QUI\ERP\Defaults::getDateFormat($lang);
+                    } else {
+                        $dateFormat = '%D';
+                    }
                 }
                 break;
 
@@ -925,7 +929,11 @@ class MembershipUser extends Child
 
                 // fallback to default value
                 if (empty($dateFormat)) {
-                    $dateFormat = '%D %H:%M';
+                    if (QUI::getPackageManager()->isInstalled('quiqqer/erp')) {
+                        $dateFormat = QUI\ERP\Defaults::getTimestampFormat($lang);
+                    } else {
+                        $dateFormat = '%D %H:%M';
+                    }
                 }
         }
 
