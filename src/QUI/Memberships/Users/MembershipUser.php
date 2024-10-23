@@ -919,7 +919,7 @@ class MembershipUser extends Child
                     if (QUI::getPackageManager()->isInstalled('quiqqer/erp')) {
                         $dateFormat = QUI\ERP\Defaults::getDateFormat($lang);
                     } else {
-                        $dateFormat = '%D';
+                        $dateFormat = '';
                     }
                 }
                 break;
@@ -932,7 +932,14 @@ class MembershipUser extends Child
                     if (QUI::getPackageManager()->isInstalled('quiqqer/erp')) {
                         $dateFormat = QUI\ERP\Defaults::getTimestampFormat($lang);
                     } else {
-                        $dateFormat = '%D %H:%M';
+                        switch ($lang) {
+                            case 'de':
+                                $dateFormat = 'dd.MM.yyyy HH:mm:ss';
+                                break;
+
+                            default:
+                                $dateFormat = 'MMM dd, yyyy, HH:mm:ss';
+                        }
                     }
                 }
         }
