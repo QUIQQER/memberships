@@ -268,10 +268,11 @@ class Handler extends Factory
         $binds = [];
 
         foreach ($groupIds as $groupId) {
-            $whereOr[] = '`groupIds` LIKE :' . $groupId;
-            $binds[$groupId] = [
+            $bindParam = md5($groupId);
+            $whereOr[] = '`groupIds` LIKE :' . $bindParam;
+            $binds[$bindParam] = [
                 'value' => '%,' . $groupId . ',%',
-                'type' => \PDO::PARAM_INT
+                'type' => \PDO::PARAM_STR
             ];
         }
 
