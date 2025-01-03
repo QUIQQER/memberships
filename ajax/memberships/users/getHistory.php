@@ -16,7 +16,7 @@ QUI::$Ajax->registerFunction(
         try {
             $MembershipUsers = MembershipUsersHandler::getInstance();
             /** @var MembershipUser $MembershipUser */
-            $MembershipUser = $MembershipUsers->getChild((int)$membershipUserId);
+            $MembershipUser = $MembershipUsers->getChild($membershipUserId);
             $history = $MembershipUser->getHistory();
 
             // reverse history entries so the latest entries come first

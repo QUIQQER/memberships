@@ -152,7 +152,7 @@ class Handler extends Factory
 
         if (!empty($searchParams['userId'])) {
             $memberhsipUsers = MembershipUsersHandler::getInstance()->getMembershipUsersByUserId(
-                (int)$searchParams['userId']
+                $searchParams['userId']
             );
 
             $membershipIds = [];

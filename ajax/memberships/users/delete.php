@@ -17,7 +17,7 @@ QUI::$Ajax->registerFunction(
             $userIds = json_decode($userIds, true);
 
             foreach ($userIds as $userId) {
-                $MembershipUsers->getChild((int)$userId)->delete();
+                $MembershipUsers->getChild($userId)->delete();
             }
         } catch (QUI\Memberships\Exception $Exception) {
             QUI::getMessagesHandler()->addError(

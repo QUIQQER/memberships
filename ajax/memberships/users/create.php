@@ -21,7 +21,7 @@ QUI::$Ajax->registerFunction(
             foreach ($userIds as $userId) {
                 $MembershipUsers->createChild([
                     'membershipId' => (int)$membershipId,
-                    'userId' => (int)$userId
+                    'userId' => $userId
                 ]);
             }
         } catch (QUI\Memberships\Exception $Exception) {
