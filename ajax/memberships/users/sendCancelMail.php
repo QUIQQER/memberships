@@ -16,7 +16,7 @@ QUI::$Ajax->registerFunction(
             $MembershipUsers = MembershipUsersHandler::getInstance();
 
             /** @var \QUI\Memberships\Users\MembershipUser $MembershipUser */
-            $MembershipUser = $MembershipUsers->getChild((int)$membershipUserId);
+            $MembershipUser = $MembershipUsers->getChild($membershipUserId);
             $MembershipUser->sendConfirmCancelMail();
         } catch (QUI\Memberships\Exception $Exception) {
             QUI::getMessagesHandler()->addError(

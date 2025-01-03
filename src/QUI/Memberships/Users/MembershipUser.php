@@ -736,9 +736,9 @@ class MembershipUser extends Child
     /**
      * Get the Membership this membership user is assigned to
      *
-     * @return QUI\Memberships\Membership
+     * @return QUI\Memberships\Membership|null
      */
-    public function getMembership()
+    public function getMembership(): ?QUI\Memberships\Membership
     {
         if ($this->Membership) {
             return $this->Membership;
@@ -754,20 +754,19 @@ class MembershipUser extends Child
     /**
      * Get QUIQQER User ID of membership user
      *
-     * @return int
+     * @return int|string
      */
-    public function getUserId()
+    public function getUserId(): int|string
     {
-        return (int)$this->getAttribute('userId');
+        return $this->getAttribute('userId');
     }
 
     /**
      * Get QUIQQER User
      *
-     * @return QUI\Users\User
-     * @throws \QUI\Exception
+     * @return QUIUserInterface|null
      */
-    public function getUser(): ?QUI\Users\User
+    public function getUser(): ?QUIUserInterface
     {
         try {
             return QUI::getUsers()->get($this->getUserId());
@@ -783,7 +782,7 @@ class MembershipUser extends Child
      *
      * @return int|false
      */
-    public function getContractId()
+    public function getContractId(): false|int
     {
         $contractId = $this->getAttribute('contractId');
 

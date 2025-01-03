@@ -16,7 +16,7 @@ QUI::$Ajax->registerFunction(
         try {
             $MembershipUsers = MembershipUsersHandler::getInstance();
             /** @var MembershipUser $MembershipUser */
-            $MembershipUser = $MembershipUsers->getChild((int)$membershipUserId);
+            $MembershipUser = $MembershipUsers->getChild($membershipUserId);
             return $MembershipUser->getBackendViewData();
         } catch (\Exception $Exception) {
             QUI\System\Log::addError('AJAX :: package_quiqqer_memberships_ajax_memberships_users_getHistory');

@@ -17,7 +17,7 @@ QUI::$Ajax->registerFunction(
         try {
             $MembershipUsers = MembershipUsersHandler::getInstance();
             /** @var \QUI\Memberships\Users\MembershipUser $MembershipUser */
-            $MembershipUser = $MembershipUsers->getChild((int)$membershipUserId);
+            $MembershipUser = $MembershipUsers->getChild($membershipUserId);
             $attributes = json_decode($attributes, true);
             $updated = [];
             $sendAutoExtendMail = false;
