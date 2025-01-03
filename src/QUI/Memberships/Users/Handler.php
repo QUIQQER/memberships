@@ -2,8 +2,12 @@
 
 namespace QUI\Memberships\Users;
 
+use Exception;
 use QUI;
+use QUI\CRUD\Child;
 use QUI\CRUD\Factory;
+use QUI\ExceptionStack;
+use QUI\Interfaces\Users\User;
 use QUI\Memberships\Handler as MembershipsHandler;
 use QUI\Memberships\Users\Handler as MembershipUsersHandler;
 use QUI\Memberships\Utils;
@@ -74,11 +78,17 @@ class Handler extends Factory
     const PERMISSION_EDIT_USERS = 'quiqqer.memberships.edit_users';
 
     /**
-     * @inheritdoc
-     * @param QUI\Users\User $PermissionUser (optional)
+     * @param array $data
+     * @param User|null $PermissionUser
+     * @return Child
+     *
+     * @throws QUI\Database\Exception
+     * @throws QUI\Exception
+     * @throws ExceptionStack
      * @throws QUI\Memberships\Exception
+     * @throws QUI\Permissions\Exception
      */
-    public function createChild($data = [], $PermissionUser = null): QUI\CRUD\Child
+    public function createChild(array $data = [], QUI\Interfaces\Users\User $PermissionUser = null): QUI\CRUD\Child
     {
         if (is_null($PermissionUser)) {
             $PermissionUser = QUI::getUserBySession();
@@ -152,7 +162,7 @@ class Handler extends Factory
      * @param bool $includeArchived (optional) - include archived MembershipUsers
      * @return int[]
      */
-    public function getIdsByMembershipId($membershipId, $includeArchived = false)
+    public function getIdsByMembershipId(int $membershipId, bool $includeArchived = false): array
     {
         $where = [
             'membershipId' => $membershipId,
@@ -163,13 +173,18 @@ class Handler extends Factory
             unset($where['archived']);
         }
 
-        $result = QUI::getDataBase()->fetch([
-            'select' => [
-                'id'
-            ],
-            'from' => MembershipUsersHandler::getDataBaseTableName(),
-            'where' => $where
-        ]);
+        try {
+            $result = QUI::getDataBase()->fetch([
+                'select' => [
+                    'id'
+                ],
+                'from' => MembershipUsersHandler::getDataBaseTableName(),
+                'where' => $where
+            ]);
+        } catch (QUI\Exception $e) {
+            QUI\System\Log::addError($e->getMessage());
+            return [];
+        }
 
         $membershipUserIds = [];
 
@@ -183,12 +198,19 @@ class Handler extends Factory
     /**
      * Get all MembershipUser objects by userId
      *
-     * @param int $userId - QUIQQER User ID
+     * @param int|string $userId - QUIQQER User ID
      * @param bool $includeArchived (optional) - include archived MembershipUsers
      * @return MembershipUser[]
      */
-    public function getMembershipUsersByUserId($userId, $includeArchived = false)
+    public function getMembershipUsersByUserId(int|string $userId, bool $includeArchived = false): array
     {
+        if (is_int($userId)) {
+            try {
+                $userId = QUI::getUsers()->get($userId)->getUUID();
+            } catch (QUI\Exception) {
+            }
+        }
+
         $where = [
             'userId' => $userId,
             'archived' => 0
@@ -198,18 +220,26 @@ class Handler extends Factory
             unset($where['archived']);
         }
 
-        $result = QUI::getDataBase()->fetch([
-            'select' => [
-                'id'
-            ],
-            'from' => self::getDataBaseTableName(),
-            'where' => $where
-        ]);
+        try {
+            $result = QUI::getDataBase()->fetch([
+                'select' => [
+                    'id'
+                ],
+                'from' => self::getDataBaseTableName(),
+                'where' => $where
+            ]);
+        } catch (QUI\Exception $e) {
+            QUI\System\Log::addError($e->getMessage());
+            return [];
+        }
 
         $membershipUsers = [];
 
         foreach ($result as $row) {
-            $membershipUsers[] = self::getChild($row['id']);
+            try {
+                $membershipUsers[] = self::getChild($row['id']);
+            } catch (QUI\Exception) {
+            }
         }
 
         return $membershipUsers;
@@ -221,7 +251,7 @@ class Handler extends Factory
      * @param int $contractId
      * @return MembershipUser|false
      */
-    public function getMembershipUserByContractId(int $contractId)
+    public function getMembershipUserByContractId(int $contractId): bool|MembershipUser
     {
         try {
             $result = QUI::getDataBase()->fetch([
@@ -233,7 +263,7 @@ class Handler extends Factory
                     'contractId' => $contractId
                 ]
             ]);
-        } catch (\Exception $Exception) {
+        } catch (Exception $Exception) {
             QUI\System\Log::writeException($Exception);
             return false;
         }
@@ -246,7 +276,7 @@ class Handler extends Factory
             /** @var MembershipUser $MembershipUser */
             $MembershipUser = self::getChild($result[0]['id']);
             return $MembershipUser;
-        } catch (\Exception $Exception) {
+        } catch (Exception $Exception) {
             QUI\System\Log::writeException($Exception);
             return false;
         }
@@ -291,7 +321,6 @@ class Handler extends Factory
 //    }
 
     /**
-     * @inheritdoc
      * @return string
      */
     public function getDataBaseTableName(): string
@@ -300,7 +329,6 @@ class Handler extends Factory
     }
 
     /**
-     * @inheritdoc
      * @return string
      */
     public function getChildClass(): string
@@ -309,7 +337,6 @@ class Handler extends Factory
     }
 
     /**
-     * @inheritdoc
      * @return array
      */
     public function getChildAttributes(): array
@@ -342,7 +369,7 @@ class Handler extends Factory
      *
      * @throws QUI\Exception
      */
-    public static function getSetting($key)
+    public static function getSetting(string $key): array|string
     {
         $Config = QUI::getPackage('quiqqer/memberships')->getConfig();
         return $Config->get('membershipusers', $key);
@@ -359,7 +386,7 @@ class Handler extends Factory
     {
         try {
             return self::getSetting('extendMode');
-        } catch (\Exception $Exception) {
+        } catch (Exception $Exception) {
             QUI\System\Log::writeException($Exception);
             return self::EXTEND_MODE_PROLONG;
         }
@@ -376,7 +403,7 @@ class Handler extends Factory
     {
         try {
             return QUI\Memberships\Handler::getSetting('durationMode');
-        } catch (\Exception $Exception) {
+        } catch (Exception $Exception) {
             QUI\System\Log::writeException($Exception);
             return self::DURATION_MODE_DAY;
         }
