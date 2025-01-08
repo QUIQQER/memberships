@@ -1,6 +1,6 @@
 <?php
 
-namespace quiqqer\memberships\src\QUI\Memberships\Users;
+namespace QUI\Memberships\Users;
 
 use QUI\Memberships\Users\Handler as MembershipUsersHandler;
 use QUI\Memberships\Users\MembershipUser;
