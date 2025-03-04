@@ -2,8 +2,8 @@
 
 namespace QUI\Memberships\Users;
 
+use QUI\Exception;
 use QUI\Memberships\Users\Handler as MembershipUsersHandler;
-use QUI\Memberships\Users\MembershipUser;
 use QUI\Verification\AbstractLinkVerificationHandler;
 use QUI\Verification\Entity\LinkVerification;
 use QUI\Verification\Enum\VerificationErrorReason;
@@ -21,7 +21,7 @@ abstract class AbstractMembershipUserLinkVerificationHandler extends AbstractLin
      * @param LinkVerification $verification
      * @return MembershipUser
      *
-     * @throws \QUI\Exception
+     * @throws Exception
      */
     protected function getMembershipUser(LinkVerification $verification): MembershipUser
     {

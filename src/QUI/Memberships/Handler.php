@@ -417,7 +417,7 @@ class Handler extends Factory
      *
      * @return bool
      */
-    public static function isLinkedToContracts()
+    public static function isLinkedToContracts(): bool
     {
         try {
             $Conf = QUI::getPackage('quiqqer/memberships')->getConfig();

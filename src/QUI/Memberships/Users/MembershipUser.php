@@ -1144,7 +1144,7 @@ class MembershipUser extends Child
      */
     protected function getCancelVerification(): CancelVerification
     {
-        return new CancelVerification($this->id);
+        return new CancelVerification();
     }
 
     /**
@@ -1154,7 +1154,7 @@ class MembershipUser extends Child
      */
     protected function getAbortCancelVerification(): AbortCancelVerification
     {
-        return new AbortCancelVerification($this->id);
+        return new AbortCancelVerification();
     }
 
     /**
