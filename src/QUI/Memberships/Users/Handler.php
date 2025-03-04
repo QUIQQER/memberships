@@ -224,7 +224,7 @@ class Handler extends Factory
     {
         if (is_int($userId)) {
             try {
-                $userId = QUI::getUsers()->get($userId)->getUUID();
+                $userId = QUI::getUsers()->get($userId)->getId();
             } catch (QUI\Exception) {
             }
         }
