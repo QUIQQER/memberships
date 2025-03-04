@@ -8,10 +8,12 @@ use QUI\ERP\Plans\Handler as ErpPlansHandler;
 use QUI\ERP\Products\Handler\Fields as ProductFields;
 use QUI\ERP\Products\Handler\Products as ProductsHandler;
 use QUI\ERP\Products\Search\BackendSearch;
+use QUI\ExceptionStack;
 use QUI\Interfaces\Users\User as QUIUserInterface;
 use QUI\Locale;
 use QUI\Lock\Locker;
 use QUI\Memberships\Users\Handler as MembershipUsersHandler;
+use QUI\Permissions\Exception;
 use QUI\Permissions\Permission;
 use QUI\Utils\Security\Orthos;
 
@@ -20,16 +22,16 @@ class Membership extends Child
     /**
      * User that is editing this Membership in this runtime
      *
-     * @var QUIUserInterface
+     * @var ?QUIUserInterface
      */
-    protected $EditUser = null;
+    protected ?QUIUserInterface $EditUser = null;
 
     /**
      * Set User that is editing this Membership in this runtime
      *
      * @param QUIUserInterface $EditUser
      */
-    public function setEditUser(QUIUserInterface $EditUser)
+    public function setEditUser(QUIUserInterface $EditUser): void
     {
         $this->EditUser = $EditUser;
     }
@@ -39,7 +41,7 @@ class Membership extends Child
      *
      * @return int[]
      */
-    public function getGroupIds()
+    public function getGroupIds(): array
     {
         $groupIds = $this->getAttribute('groupIds');
         return explode(",", trim($groupIds, ","));
@@ -48,10 +50,10 @@ class Membership extends Child
     /**
      * Get membership title
      *
-     * @param Locale $Locale (optional)
+     * @param Locale|null $Locale (optional)
      * @return string - localized title
      */
-    public function getTitle($Locale = null)
+    public function getTitle(Locale $Locale = null): string
     {
         if (is_null($Locale)) {
             $Locale = QUI::getLocale();
@@ -69,10 +71,10 @@ class Membership extends Child
     /**
      * Get membership description
      *
-     * @param Locale $Locale (optional)
+     * @param Locale|null $Locale (optional)
      * @return string - localized description
      */
-    public function getDescription($Locale = null)
+    public function getDescription(null | Locale $Locale = null): string
     {
         if (is_null($Locale)) {
             $Locale = QUI::getLocale();
@@ -90,10 +92,10 @@ class Membership extends Child
     /**
      * Get membership content
      *
-     * @param Locale $Locale (optional)
+     * @param Locale|null $Locale (optional)
      * @return string - localized content
      */
-    public function getContent($Locale = null)
+    public function getContent(Locale $Locale = null): string
     {
         if (is_null($Locale)) {
             $Locale = QUI::getLocale();
@@ -115,12 +117,14 @@ class Membership extends Child
      */
     public function isAutoExtend(): bool
     {
-        return $this->getAttribute('autoExtend') ? true : false;
+        return (bool)$this->getAttribute('autoExtend');
     }
 
     /**
-     * @inheritdoc
-     * @throws QUI\Memberships\Exception
+     * @throws Exception
+     * @throws QUI\Exception
+     * @throws ExceptionStack
+     * @throws Exception
      */
     public function update(): void
     {
@@ -177,9 +181,9 @@ class Membership extends Child
      * Only possible if membership has no users in it!
      *
      * @return void
-     * @throws \QUI\Memberships\Exception
-     * @throws \QUI\Permissions\Exception
-     * @throws \QUI\Exception
+     * @throws QUI\Memberships\Exception
+     * @throws QUI\Permissions\Exception
+     * @throws QUI\Exception
      */
     public function delete(): void
     {
@@ -580,7 +584,7 @@ class Membership extends Child
      * of previous calls!
      *
      * @return QUI\ERP\Products\Product\Product|false
-     * @throws \QUI\Exception
+     * @throws QUI\Exception
      */
     public function createProduct()
     {
@@ -656,7 +660,7 @@ class Membership extends Child
      *
      * @return void
      * @throws \QUI\Lock\Exception
-     * @throws \QUI\Exception
+     * @throws QUI\Exception
      */
     public function lock()
     {
@@ -669,9 +673,9 @@ class Membership extends Child
      * @return void
      * @throws \QUI\Permissions\Exception
      * @throws \QUI\Lock\Exception
-     * @throws \QUI\Exception
+     * @throws QUI\Exception
      */
-    public function unlock()
+    public function unlock(): void
     {
         Locker::unlockWithPermissions(
             QUI::getPackage('quiqqer/memberships'),
@@ -684,9 +688,9 @@ class Membership extends Child
      * Check if this membership is currently locked
      *
      * @return bool
-     * @throws \QUI\Exception
+     * @throws QUI\Exception
      */
-    public function isLocked()
+    public function isLocked(): bool
     {
         return Locker::isLocked(QUI::getPackage('quiqqer/memberships'), $this->getLockKey());
     }
@@ -747,7 +751,7 @@ class Membership extends Child
      *
      * @param QUI\Users\User $User
      * @return QUI\Memberships\Users\MembershipUser
-     * @throws \QUI\Exception
+     * @throws QUI\Exception
      */
     public function addUser(QUI\Users\User $User)
     {

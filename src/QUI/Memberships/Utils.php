@@ -2,8 +2,15 @@
 
 namespace QUI\Memberships;
 
+use DateInterval;
+use DateTime;
 use QUI;
 use QUI\Utils\Security\Orthos;
+
+use function explode;
+use function is_numeric;
+use function is_string;
+use function strtotime;
 
 class Utils
 {
@@ -13,15 +20,13 @@ class Utils
      * @param string $str - JSON string
      * @return string - cleared JSON string
      */
-    public static function clearJSONString($str)
+    public static function clearJSONString(string $str): string
     {
         $str = Orthos::removeHTML($str);
         $str = Orthos::clearPath($str);
 //        $str = Orthos::clearFormRequest($str);
 
-        $str = htmlspecialchars($str, ENT_NOQUOTES);
-
-        return $str;
+        return htmlspecialchars($str, ENT_NOQUOTES);
     }
 
     /**
@@ -30,12 +35,8 @@ class Utils
      * @param array $array
      * @return array - cleared array
      */
-    public static function clearArrayWithJSON(array $array)
+    public static function clearArrayWithJSON(array $array): array
     {
-        if (!is_array($array)) {
-            return [];
-        }
-
         foreach ($array as $k => $v) {
             if (is_array($v)) {
                 $array[$k] = self::clearArrayWithJSON($v);
@@ -54,7 +55,7 @@ class Utils
      * @param array $localeData
      * @return string
      */
-    public static function getLocaleFromArray($localeData)
+    public static function getLocaleFromArray(array $localeData): string
     {
         return QUI::getLocale()->get($localeData['group'], $localeData['var']);
     }
@@ -62,21 +63,21 @@ class Utils
     /**
      * Get formatted timestamp for a given UNIX timestamp
      *
-     * @param int|\DateTime $time (optional) - Timestamp or \DateTime object [default: now]
+     * @param string|DateTime|int|null $time (optional) - Timestamp or \DateTime object [default: now]
      * @return string
      */
-    public static function getFormattedTimestamp($time = null)
+    public static function getFormattedTimestamp(null | string | DateTime | int $time = null): string
     {
         if (is_null($time)) {
             $time = time();
         }
 
-        if ($time instanceof \DateTime) {
+        if ($time instanceof DateTime) {
             return $time->format('Y-m-d H:i:s');
         }
 
-        if (\is_string($time) && !\is_numeric($time)) {
-            $time = \strtotime($time);
+        if (is_string($time) && !is_numeric($time)) {
+            $time = strtotime($time);
         }
 
         return date('Y-m-d H:i:s', $time);
@@ -88,7 +89,7 @@ class Utils
      *
      * @return array
      */
-    public static function getInstalledMembershipPackages()
+    public static function getInstalledMembershipPackages(): array
     {
         $packages = [];
         $relevantPackages = [
@@ -101,7 +102,7 @@ class Utils
             try {
                 QUI::getPackage($package);
                 $packages[] = $package;
-            } catch (\Exception $Exception) {
+            } catch (\Exception) {
                 // ignore (package is probably not installed)
             }
         }
@@ -113,38 +114,26 @@ class Utils
      * Parse a DateInterval from a contract duration setting
      *
      * @param string $duration
-     * @return \DateInterval|false
+     * @return DateInterval|false
      * @throws \Exception
      */
-    public static function parseIntervalFromDuration($duration)
+    public static function parseIntervalFromDuration(string $duration): DateInterval | bool
     {
         if (empty($duration)) {
             return false;
         }
 
-        $duration = \explode('-', $duration);
+        $duration = explode('-', $duration);
         $intervalNumber = $duration[0];
 
-        switch ($duration[1]) {
-            case 'week':
-                $intervalPeriod = 'W';
-                break;
+        $intervalPeriod = match ($duration[1]) {
+            'week' => 'W',
+            'month' => 'M',
+            'year' => 'Y',
+            default => 'D',
+        };
 
-            case 'month':
-                $intervalPeriod = 'M';
-                break;
-
-            case 'year':
-                $intervalPeriod = 'Y';
-                break;
-
-            case 'day':
-            default:
-                $intervalPeriod = 'D';
-                break;
-        }
-
-        return new \DateInterval('P' . $intervalNumber . $intervalPeriod);
+        return new DateInterval('P' . $intervalNumber . $intervalPeriod);
     }
 
     /**
@@ -152,7 +141,7 @@ class Utils
      *
      * @return bool
      */
-    public static function isQuiqqerProductsInstalled()
+    public static function isQuiqqerProductsInstalled(): bool
     {
         return QUI::getPackageManager()->isInstalled('quiqqer/products');
     }
@@ -162,7 +151,7 @@ class Utils
      *
      * @return bool
      */
-    public static function isQuiqqerErpPlansInstalled()
+    public static function isQuiqqerErpPlansInstalled(): bool
     {
         return QUI::getPackageManager()->isInstalled('quiqqer/erp-plans');
     }
@@ -172,7 +161,7 @@ class Utils
      *
      * @return bool
      */
-    public static function isQuiqqerContractsInstalled()
+    public static function isQuiqqerContractsInstalled(): bool
     {
         return QUI::getPackageManager()->isInstalled('quiqqer/contracts');
     }

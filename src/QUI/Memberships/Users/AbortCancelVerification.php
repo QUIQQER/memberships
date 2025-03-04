@@ -6,7 +6,6 @@ use QUI;
 use QUI\Verification\Entity\AbstractVerification;
 use QUI\Verification\Entity\LinkVerification;
 use QUI\Verification\Enum\VerificationErrorReason;
-use quiqqer\memberships\src\QUI\Memberships\Users\AbstractMembershipUserLinkVerificationHandler;
 
 /**
  * Class CancelVerification
