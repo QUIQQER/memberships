@@ -1,5 +1,5 @@
 {
-    "name": "quiqqer\/memberships",
+    "name": "quiqqer/memberships",
     "type": "quiqqer-module",
     "description": "Create and manage memberships for your users. With memberships you can grant your users permissions for set periods of time in your system. In conjunction with the QUIQQER ERP system, this module also enables automated linking of memberships with products, so that you can offer memberships for sale.",
     "license": [
@@ -10,21 +10,22 @@
         {
             "name": "Patrick M\u00fcller",
             "email": "info@pcsg.de",
-            "homepage": "https:\/\/www.pcsg.de",
+            "homepage": "https://www.pcsg.de",
             "role": "Developer"
         }
     ],
     "support": {
         "email": "support@pcsg.de",
-        "url": "http:\/\/www.pcsg.de"
+        "url": "https://www.pcsg.de"
     },
     "require": {
-        "quiqqer\/core": "^2",
-        "quiqqer\/verification": "^3"
+        "quiqqer/core": "^2",
+        "quiqqer/erp": "^3",
+        "quiqqer/verification": "^3"
     },
     "autoload": {
         "psr-4": {
-            "QUI\\Memberships\\": "src\/QUI\/Memberships"
+            "QUI\\Memberships\\": "src/QUI/Memberships"
         }
     }
 }

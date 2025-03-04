@@ -2,9 +2,12 @@
 
 namespace QUI\Memberships;
 
+use DateInterval;
 use QUI;
 use QUI\Memberships\Users\Handler as MembershipUsersHandler;
 use QUI\Memberships\Users\MembershipUser;
+
+use function date_create;
 
 /**
  * Class Cron
@@ -13,7 +16,7 @@ use QUI\Memberships\Users\MembershipUser;
  */
 class Cron
 {
-    public static function checkMembershipUsers()
+    public static function checkMembershipUsers(): void
     {
         $MembershipUsers = MembershipUsersHandler::getInstance();
 
@@ -57,10 +60,10 @@ class Cron
                         'cancelStatus'
                     ) === MembershipUsersHandler::CANCEL_STATUS_CANCEL_CONFIRM_PENDING
                 ) {
-                    $CancelDate = \date_create($MembershipUser->getAttribute('cancelDate'));
+                    $CancelDate = date_create($MembershipUser->getAttribute('cancelDate'));
 
                     if ($CancelDate) {
-                        $RemindDate = $CancelDate->add(new \DateInterval('P' . $cancelConfirmReminderAfterDays . 'D'));
+                        $RemindDate = $CancelDate->add(new DateInterval('P' . $cancelConfirmReminderAfterDays . 'D'));
                         $User = $MembershipUser->getUser();
 
                         if (

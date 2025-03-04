@@ -17,7 +17,13 @@ QUI::$Ajax->registerFunction(
         $Membership = $Memberships->getChild((int)$membershipId);
         $productData = [];
 
-        /** @var \QUI\ERP\Products\Product\Product $Product */
+        if (
+            !class_exists('QUI\ERP\Products\Product\Product')
+            || !class_exists('QUI\ERP\Products\Handler\Fields')
+        ) {
+            return $productData;
+        }
+
         foreach ($Membership->getProducts() as $Product) {
             $productData[] = [
                 'id' => $Product->getId(),

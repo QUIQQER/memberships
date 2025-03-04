@@ -7,6 +7,7 @@
 namespace QUI\Memberships\Products;
 
 use QUI\ERP\Products;
+use QUI\ERP\Products\Field\Exception;
 use QUI\Memberships\Handler as MembershipsHandler;
 
 /**
@@ -41,7 +42,7 @@ class MembershipField extends Products\Field\Field
      * @param mixed $value
      * @return int
      */
-    public function cleanup($value): mixed
+    public function cleanup(mixed $value): int
     {
         return (int)$value;
     }
@@ -51,9 +52,9 @@ class MembershipField extends Products\Field\Field
      * is the value valid for the field type?
      *
      * @param mixed $value
-     * @throws \QUI\ERP\Products\Field\Exception
+     * @throws Exception
      */
-    public function validate($value): void
+    public function validate(mixed $value): void
     {
         if (empty($value)) {
             return;
@@ -63,8 +64,8 @@ class MembershipField extends Products\Field\Field
 
         try {
             MembershipsHandler::getInstance()->getChild($value);
-        } catch (\Exception $Exception) {
-            throw new Products\Field\Exception([
+        } catch (\Exception) {
+            throw new Exception([
                 'quiqqer/products',
                 'exception.field.invalid',
                 [
