@@ -17,28 +17,29 @@ QUI::$Ajax->registerFunction(
     function ($id) {
         try {
             $Memberships = MembershipsHandler::getInstance();
-            /** @var \QUI\Memberships\Membership $Membership */
             $Membership = $Memberships->getChild((int)$id);
 
             if ($Membership->isLocked()) {
                 $Membership->unlock();
 
-                Watcher::addString(
-                    QUI::getLocale()->get(
-                        'quiqqer/memberships',
-                        'watcher.location.force.edit',
-                        [
-                            'id' => $Membership->getId()
-                        ]
-                    ),
-                    'package_quiqqer_memberships_ajax_memberships_lock'
-                );
+                if (class_exists('QUI\Watcher')) {
+                    Watcher::addString(
+                        QUI::getLocale()->get(
+                            'quiqqer/memberships',
+                            'watcher.location.force.edit',
+                            [
+                                'id' => $Membership->getId()
+                            ]
+                        ),
+                        'package_quiqqer_memberships_ajax_memberships_lock'
+                    );
+                }
             } else {
                 $Membership->unlock();
             }
-        } catch (\QUI\Permissions\Exception $Exception) {
+        } catch (\QUI\Permissions\Exception) {
             return true;
-        } catch (\Exception $Exception) {
+        } catch (Exception $Exception) {
             QUI\System\Log::addError(
                 'AJAX :: package_quiqqer_memberships_ajax_memberships_lock -> ' . $Exception->getMessage()
             );
