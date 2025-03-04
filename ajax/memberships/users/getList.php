@@ -10,7 +10,6 @@
 
 use QUI\Memberships\Handler as MembershipsHandler;
 use QUI\Memberships\Users\Handler as MembershipUsersHandler;
-use QUI\Memberships\Users\MembershipUser;
 use QUI\Utils\Grid;
 use QUI\Utils\Security\Orthos;
 
@@ -24,7 +23,6 @@ QUI::$Ajax->registerFunction(
         $membershipUsers = [];
 
         foreach ($Membership->searchUsers($searchParams) as $membershipUserId) {
-            /** @var MembershipUser $MembershipUser */
             $MembershipUser = $MembershipUsers->getChild($membershipUserId);
             $membershipUsers[] = $MembershipUser->getBackendViewData();
         }

@@ -211,7 +211,6 @@ class Membership extends Child
 
         // remove from products
         if (Utils::isQuiqqerProductsInstalled()) {
-            /** @var QUI\ERP\Products\Product\Product $Product */
             foreach ($this->getProducts() as $Product) {
                 $MembershipField = $Product->getField(
                     Handler::getProductMembershipField()->getId()
@@ -266,11 +265,7 @@ class Membership extends Child
             ], 404);
         }
 
-        /* @var $Membership QUI\Memberships\Users\MembershipUser */
-        $Membership = MembershipUsersHandler::getInstance()->getChild($result[0]['id']);
-
-        // @phpstan-ignore-next-line
-        return $Membership;
+        return MembershipUsersHandler::getInstance()->getChild($result[0]['id']);
     }
 
     /**
@@ -279,7 +274,7 @@ class Membership extends Child
      * @param bool $includeArchived (optional) - Include archived MembershipUsers
      * @return int[]
      */
-    public function getMembershipUserIds($includeArchived = false)
+    public function getMembershipUserIds(bool $includeArchived = false): array
     {
         $membershipUserIds = [];
 
@@ -314,8 +309,9 @@ class Membership extends Child
      * Get IDs of all QUIQQER Groups that are UNIQUE to this membership
      *
      * @return int[]
+     * @throws QUI\Exception
      */
-    public function getUniqueGroupIds()
+    public function getUniqueGroupIds(): array
     {
         $Memberships = Handler::getInstance();
         $groupIds = $this->getGroupIds();

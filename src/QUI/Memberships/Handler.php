@@ -4,6 +4,7 @@ namespace QUI\Memberships;
 
 use PDO;
 use QUI;
+use QUI\CRUD\Child;
 use QUI\CRUD\Factory;
 use QUI\ERP\Products\Handler\Categories as ProductCategories;
 use QUI\ERP\Products\Handler\Fields as ProductFields;
@@ -22,6 +23,15 @@ class Handler extends Factory
     const PERMISSION_EDIT = 'quiqqer.memberships.edit';
     const PERMISSION_DELETE = 'quiqqer.memberships.delete';
     const PERMISSION_FORCE_EDIT = 'quiqqer.memberships.force_edit';
+
+    public function getChild(int | string $id): Membership
+    {
+        /* @var $Membership Membership */
+        $Membership = parent::getChild($id);
+
+        // @phpstan-ignore-next-line
+        return $Membership;
+    }
 
     /**
      * @inheritdoc
@@ -179,14 +189,11 @@ class Handler extends Factory
                 $whereOr[] = '`' . $searchColumn . '` LIKE :search';
             }
 
-            if (!empty($whereOr)) {
-                $where[] = '(' . implode(' OR ', $whereOr) . ')';
-
-                $binds['search'] = [
-                    'value' => '%' . $searchParams['search'] . '%',
-                    'type' => PDO::PARAM_STR
-                ];
-            }
+            $where[] = '(' . implode(' OR ', $whereOr) . ')';
+            $binds['search'] = [
+                'value' => '%' . $searchParams['search'] . '%',
+                'type' => PDO::PARAM_STR
+            ];
         }
 
         // build WHERE query string
@@ -400,6 +407,7 @@ class Handler extends Factory
      * Get the default membership
      *
      * @return Membership|false - Membership or false if none set
+     * @throws Exception
      */
     public static function getDefaultMembership(): Membership | bool
     {
@@ -409,10 +417,7 @@ class Handler extends Factory
             return false;
         }
 
-        /* @var $Membership Membership */
-        $Membership = self::getInstance()->getChild((int)$membershipId);
-
-        return $Membership;
+        return self::getInstance()->getChild((int)$membershipId);
     }
 
     /**

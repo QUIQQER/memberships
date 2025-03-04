@@ -787,12 +787,10 @@ class MembershipUser extends Child
             return $this->Membership;
         }
 
-        // @phpstan-ignore-next-line
         $this->Membership = MembershipsHandler::getInstance()->getChild(
             $this->getAttribute('membershipId')
         );
 
-        // @phpstan-ignore-next-line
         return $this->Membership;
     }
 

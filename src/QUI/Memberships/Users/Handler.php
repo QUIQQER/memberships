@@ -77,6 +77,15 @@ class Handler extends Factory
      */
     const PERMISSION_EDIT_USERS = 'quiqqer.memberships.edit_users';
 
+    public function getChild(int | string $id): MembershipUser
+    {
+        /* @var $MembershipUser MembershipUser */
+        $MembershipUser = parent::getChild($id);
+
+        // @phpstan-ignore-next-line
+        return $MembershipUser;
+    }
+
     /**
      * @param array $data
      * @param User|null $PermissionUser
@@ -251,7 +260,6 @@ class Handler extends Factory
             }
         }
 
-        // @phpstan-ignore-next-line
         return $membershipUsers;
     }
 
