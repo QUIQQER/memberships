@@ -23,7 +23,6 @@ class Memberships extends AbstractProfileControl
      * Can be overwritten
      *
      * @return string
-     * @throws \QUI\Exception
      */
     public function getBody(): string
     {
@@ -34,7 +33,7 @@ class Memberships extends AbstractProfileControl
     /**
      * Method is called, when on save is triggered
      *
-     * @return mixed|void
+     * @return void
      */
     public function onSave(): void
     {
@@ -43,8 +42,7 @@ class Memberships extends AbstractProfileControl
     /**
      * Validate the send data
      *
-     * @return mixed|void
-     * @throws \Exception
+     * @return void
      */
     public function validate(): void
     {

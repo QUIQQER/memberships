@@ -2,10 +2,12 @@
 
 namespace QUI\Memberships;
 
+use PDO;
 use QUI;
 use QUI\CRUD\Factory;
 use QUI\ERP\Products\Handler\Categories as ProductCategories;
 use QUI\ERP\Products\Handler\Fields as ProductFields;
+use QUI\Exception;
 use QUI\Memberships\Users\Handler as MembershipUsersHandler;
 use QUI\Permissions\Permission;
 use QUI\Utils\Grid;
@@ -84,7 +86,6 @@ class Handler extends Factory
     }
 
     /**
-     * @inheritdoc
      * @return string
      */
     public function getDataBaseTableName(): string
@@ -93,7 +94,6 @@ class Handler extends Factory
     }
 
     /**
-     * @inheritdoc
      * @return string
      */
     public function getChildClass(): string
@@ -102,7 +102,6 @@ class Handler extends Factory
     }
 
     /**
-     * @inheritdoc
      * @return array
      */
     public function getChildAttributes(): array
@@ -131,9 +130,10 @@ class Handler extends Factory
      *
      * @param array $searchParams
      * @param bool $countOnly (optional) - get count for search result only [default: false]
-     * @return array - membership IDs
+     * @return array|int - membership IDs
+     * @throws Exception
      */
-    public function search($searchParams, $countOnly = false)
+    public function search(array $searchParams, bool $countOnly = false): array | int
     {
         $memberships = [];
         $Grid = new Grid($searchParams);
@@ -157,7 +157,6 @@ class Handler extends Factory
 
             $membershipIds = [];
 
-            /** @var QUI\Memberships\Users\MembershipUser $MembershipUser */
             foreach ($memberhsipUsers as $MembershipUser) {
                 $membershipIds[] = $MembershipUser->getMembership()->getId();
             }
@@ -185,7 +184,7 @@ class Handler extends Factory
 
                 $binds['search'] = [
                     'value' => '%' . $searchParams['search'] . '%',
-                    'type' => \PDO::PARAM_STR
+                    'type' => PDO::PARAM_STR
                 ];
             }
         }
@@ -214,7 +213,7 @@ class Handler extends Factory
             $sql .= " LIMIT " . $gridParams['limit'];
         } else {
             if (!$countOnly) {
-                $sql .= " LIMIT " . (int)20;
+                $sql .= " LIMIT " . 20;
             }
         }
 
@@ -227,7 +226,7 @@ class Handler extends Factory
 
         try {
             $Stmt->execute();
-            $result = $Stmt->fetchAll(\PDO::FETCH_ASSOC);
+            $result = $Stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (\Exception $Exception) {
             QUI\System\Log::addError(
                 self::class . ' :: searchUsers() -> ' . $Exception->getMessage()
@@ -253,7 +252,7 @@ class Handler extends Factory
      * @param array $groupIds
      * @return int[]
      */
-    public function getMembershipIdsByGroupIds($groupIds)
+    public function getMembershipIdsByGroupIds(array $groupIds): array
     {
         $ids = [];
 
@@ -272,7 +271,7 @@ class Handler extends Factory
             $whereOr[] = '`groupIds` LIKE :' . $bindParam;
             $binds[$bindParam] = [
                 'value' => '%,' . $groupId . ',%',
-                'type' => \PDO::PARAM_STR
+                'type' => PDO::PARAM_STR
             ];
         }
 
@@ -288,7 +287,7 @@ class Handler extends Factory
 
         try {
             $Stmt->execute();
-            $result = $Stmt->fetchAll(\PDO::FETCH_ASSOC);
+            $result = $Stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
             return [];
@@ -307,7 +306,7 @@ class Handler extends Factory
      * @param string $key
      * @return mixed
      */
-    public static function getSetting($key)
+    public static function getSetting(string $key): mixed
     {
         $Config = QUI::getPackage('quiqqer/memberships')->getConfig();
         return $Config->get('memberships', $key);
@@ -320,7 +319,7 @@ class Handler extends Factory
      *
      * @return QUI\ERP\Products\Interfaces\CategoryInterface|false
      */
-    public static function getProductCategory()
+    public static function getProductCategory(): bool | QUI\ERP\Products\Interfaces\CategoryInterface
     {
         $Conf = QUI::getPackage('quiqqer/memberships')->getConfig();
         $categoryId = $Conf->get('products', 'categoryId');
@@ -348,7 +347,7 @@ class Handler extends Factory
      *
      * @return QUI\ERP\Products\Field\Field|false
      */
-    public static function getProductMembershipField()
+    public static function getProductMembershipField(): bool | QUI\ERP\Products\Field\Field
     {
         if (!Utils::isQuiqqerProductsInstalled()) {
             return false;
@@ -376,7 +375,7 @@ class Handler extends Factory
      *
      * @return QUI\ERP\Products\Field\Field|false
      */
-    public static function getProductMembershipFlagField()
+    public static function getProductMembershipFlagField(): bool | QUI\ERP\Products\Field\Field
     {
         if (!Utils::isQuiqqerProductsInstalled()) {
             return false;
@@ -402,7 +401,7 @@ class Handler extends Factory
      *
      * @return Membership|false - Membership or false if none set
      */
-    public static function getDefaultMembership()
+    public static function getDefaultMembership(): Membership | bool
     {
         $membershipId = self::getSetting('defaultMembershipId');
 

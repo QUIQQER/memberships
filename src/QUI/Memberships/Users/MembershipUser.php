@@ -2,10 +2,14 @@
 
 namespace QUI\Memberships\Users;
 
+use DateInterval;
+use DateTime;
 use QUI;
 use QUI\CRUD\Child;
 use QUI\ERP\Accounting\Contracts\Handler as ContractsHandler;
 use QUI\ERP\Products\Handler\Products as ProductsHandler;
+use QUI\Exception;
+use QUI\ExceptionStack;
 use QUI\Interfaces\Users\User as QUIUserInterface;
 use QUI\Mail\Mailer;
 use QUI\Memberships\Handler as MembershipsHandler;
@@ -13,6 +17,9 @@ use QUI\Memberships\Users\Handler as MembershipUsersHandler;
 use QUI\Memberships\Utils;
 use QUI\Permissions\Permission;
 use QUI\Verification\Verifier;
+
+use function date_create;
+use function date_interval_create_from_date_string;
 
 /**
  * Class MembershipUser
@@ -26,23 +33,23 @@ class MembershipUser extends Child
     /**
      * The Membership this MembershipUser is assigned to
      *
-     * @var QUI\Memberships\Membership
+     * @var ?QUI\Memberships\Membership
      */
-    protected $Membership = null;
+    protected ?QUI\Memberships\Membership $Membership = null;
 
     /**
      * User that is editing this MembershipUser in the current runtime
      *
-     * @var QUIUserInterface
+     * @var ?QUIUserInterface
      */
-    protected $EditUser = null;
+    protected ?QUIUserInterface $EditUser = null;
 
     /**
      * Set User that is editing this MembershipUser in the current runtime
      *
      * @param QUIUserInterface $EditUser
      */
-    public function setEditUser(QUIUserInterface $EditUser)
+    public function setEditUser(QUIUserInterface $EditUser): void
     {
         $this->EditUser = $EditUser;
     }
@@ -113,13 +120,17 @@ class MembershipUser extends Child
      *
      * @param bool $auto (optional) - Used if the membership is automatically extended.
      * If set to false, the setting membershipusers.extendMode is used [default: true]
-     * @param \DateTime $NextBeginDate (optional) - New cycle begin date
-     * @param \DateTime $NextEndDate (optional) - New cycle end date
+     * @param DateTime|null $NextBeginDate (optional) - New cycle begin date
+     * @param DateTime|null $NextEndDate (optional) - New cycle end date
      * @return void
-     * @throws QUI\Exception
+     * @throws Exception
+     * @throws ExceptionStack
      */
-    public function extend($auto = true, \DateTime $NextBeginDate = null, \DateTime $NextEndDate = null)
-    {
+    public function extend(
+        bool $auto = true,
+        null | DateTime $NextBeginDate = null,
+        null | DateTime $NextEndDate = null
+    ): void {
         // Calculate new start and/or end time
         if (empty($NextBeginDate)) {
             if (MembershipUsersHandler::getExtendMode() === MembershipUsersHandler::EXTEND_MODE_PROLONG) {
@@ -167,17 +178,18 @@ class MembershipUser extends Child
     /**
      * Calculate the end date of the current cycle based on a start date
      *
-     * @param \DateTime $Start (optional) - Calculate based on this start date [default: now]
-     * @return \DateTime
+     * @param DateTime|null $Start (optional) - Calculate based on this start date [default: now]
+     * @return DateTime
+     * @throws Exception
      */
-    public function calcEndDate($Start = null)
+    public function calcEndDate(null | DateTime $Start = null): DateTime
     {
         if (empty($Start)) {
-            $Start = \date_create();
+            $Start = date_create();
         }
 
         $contractId = $this->getContractId();
-        $NewEndDate = \date_create($this->getMembership()->calcEndDate($Start->getTimestamp()));
+        $NewEndDate = date_create($this->getMembership()->calcEndDate($Start->getTimestamp()));
 
         if (empty($contractId)) {
             return $NewEndDate;
@@ -197,11 +209,9 @@ class MembershipUser extends Child
 
         $NewEndDate = $Start->add($ContractExtensionInterval);
 
-        switch (MembershipUsersHandler::getDurationMode()) {
-            case MembershipUsersHandler::DURATION_MODE_DAY:
-                $NewEndDate->add(new \DateInterval('P1D'));
-                $NewEndDate->setTime(23, 59, 59);
-                break;
+        if (MembershipUsersHandler::getDurationMode() == MembershipUsersHandler::DURATION_MODE_DAY) {
+            $NewEndDate->add(new DateInterval('P1D'));
+            $NewEndDate->setTime(23, 59, 59);
         }
 
         return $NewEndDate;
@@ -211,8 +221,9 @@ class MembershipUser extends Child
      * Send mail to the user if the membership is extended automatically
      *
      * @return void
+     * @throws Exception
      */
-    protected function sendAutoExtendMail()
+    protected function sendAutoExtendMail(): void
     {
         $sendMail = MembershipUsersHandler::getSetting('sendAutoExtendMail');
 
@@ -235,12 +246,13 @@ class MembershipUser extends Child
     /**
      * Send mail to the user if the membership is extended manually
      *
-     * Manually = Either by admin edit or if the user is re-added to the membership
+     * Manually = Either by admin edit or if the user is re-added to the membership,
      * although he already is a member
      *
      * @return void
+     * @throws Exception
      */
-    public function sendManualExtendMail()
+    public function sendManualExtendMail(): void
     {
         $sendMail = MembershipUsersHandler::getSetting('sendManualExtendMail');
 
@@ -264,9 +276,9 @@ class MembershipUser extends Child
      * Expires this memberships user
      *
      * @return void
-     * @throws \QUI\Exception
+     * @throws Exception
      */
-    public function expire()
+    public function expire(): void
     {
         $this->addHistoryEntry(MembershipUsersHandler::HISTORY_TYPE_EXPIRED);
         $this->archive(MembershipUsersHandler::ARCHIVE_REASON_EXPIRED);
@@ -287,9 +299,9 @@ class MembershipUser extends Child
      *
      * @throws QUI\Memberships\Exception
      * @throws QUI\Verification\Exception
-     * @throws QUI\Exception
+     * @throws Exception
      */
-    public function startManualCancel()
+    public function startManualCancel(): void
     {
         // check cancel permission
         if ((int)QUI::getUserBySession()->getId() !== (int)$this->getUserId()) {
@@ -365,7 +377,7 @@ class MembershipUser extends Child
      * @return void
      * @throws \Exception
      */
-    public function autoCancel()
+    public function autoCancel(): void
     {
         if ($this->isCancelled()) {
             return;
@@ -410,9 +422,9 @@ class MembershipUser extends Child
      * @return void
      * @throws QUI\Memberships\Exception
      * @throws QUI\Verification\Exception
-     * @throws QUI\Exception
+     * @throws Exception
      */
-    public function startAbortCancel()
+    public function startAbortCancel(): void
     {
         // check cancel permission
         if ((int)QUI::getUserBySession()->getId() !== (int)$this->getUserId()) {
@@ -473,7 +485,7 @@ class MembershipUser extends Child
      *
      * @return void
      */
-    public function confirmAbortCancel()
+    public function confirmAbortCancel(): void
     {
         $this->setAttributes([
             'cancelDate' => null,
@@ -504,9 +516,9 @@ class MembershipUser extends Child
      *
      * @return void
      * @throws QUI\Memberships\Exception
-     * @throws QUI\ExceptionStack|QUI\Exception
+     * @throws QUI\ExceptionStack|Exception
      */
-    public function confirmManualCancel()
+    public function confirmManualCancel(): void
     {
         if ($this->isCancelled()) {
             return;
@@ -532,7 +544,7 @@ class MembershipUser extends Child
      *
      * @return void
      */
-    public function sendConfirmCancelMail()
+    public function sendConfirmCancelMail(): void
     {
         try {
             $subject = $this->getUser()->getLocale()->get(
@@ -551,7 +563,7 @@ class MembershipUser extends Child
      *
      * @return bool - success
      */
-    public function sendConfirmCancelReminderMail()
+    public function sendConfirmCancelReminderMail(): bool
     {
         try {
             $subject = $this->getUser()->getLocale()->get(
@@ -568,7 +580,7 @@ class MembershipUser extends Child
             );
 
             $this->addHistoryEntry(
-                \QUI\Memberships\Users\Handler::HISTORY_TYPE_MISC,
+                Handler::HISTORY_TYPE_MISC,
                 QUI::getLocale()->get(
                     'quiqqer/memberships',
                     'history.MembershipUser.cancel_confirm_reminder_sent'
@@ -589,9 +601,9 @@ class MembershipUser extends Child
      * Cancel membership
      *
      * @return void
-     * @throws \QUI\Exception
+     * @throws Exception
      */
-    public function cancel()
+    public function cancel(): void
     {
         $this->archive(MembershipUsersHandler::ARCHIVE_REASON_CANCELLED);
 
@@ -605,9 +617,9 @@ class MembershipUser extends Child
     /**
      * Check if this user has cancelled his membership
      *
-     * @return mixed
+     * @return bool
      */
-    public function isCancelled()
+    public function isCancelled(): bool
     {
         return boolval($this->getAttribute('cancelled'));
     }
@@ -618,6 +630,7 @@ class MembershipUser extends Child
      * A deleted membership user is not removed from the database but set to "archived".
      *
      * @return void
+     * @throws QUI\Permissions\Exception|ExceptionStack|Exception
      */
     public function delete(): void
     {
@@ -635,8 +648,9 @@ class MembershipUser extends Child
      * Set User to all membership QUIQQER groups
      *
      * @return void
+     * @throws Exception
      */
-    public function addToGroups()
+    public function addToGroups(): void
     {
         $groupIds = $this->getMembership()->getGroupIds();
         $User = $this->getUser();
@@ -653,9 +667,9 @@ class MembershipUser extends Child
      * his membership)
      *
      * @return void
-     * @throws QUI\Exception
+     * @throws Exception
      */
-    protected function removeFromGroups()
+    protected function removeFromGroups(): void
     {
         /**
          * Check if the user exists first. If he does NOT, then he does not need to be removed
@@ -708,8 +722,9 @@ class MembershipUser extends Child
      *
      * @param string $reason - The reason why this user is archived
      * @return void
+     * @throws Exception
      */
-    public function archive($reason)
+    public function archive(string $reason): void
     {
         $this->removeFromGroups();
         $this->addHistoryEntry(MembershipUsersHandler::HISTORY_TYPE_ARCHIVED, [
@@ -728,7 +743,7 @@ class MembershipUser extends Child
      *
      * @retun bool
      */
-    public function isArchived()
+    public function isArchived(): bool
     {
         return boolval($this->getAttribute('archived'));
     }
@@ -737,6 +752,7 @@ class MembershipUser extends Child
      * Get the Membership this membership user is assigned to
      *
      * @return QUI\Memberships\Membership|null
+     * @throws Exception
      */
     public function getMembership(): ?QUI\Memberships\Membership
     {
@@ -744,6 +760,7 @@ class MembershipUser extends Child
             return $this->Membership;
         }
 
+        // @phpstan-ignore-next-line
         $this->Membership = MembershipsHandler::getInstance()->getChild(
             $this->getAttribute('membershipId')
         );
@@ -756,7 +773,7 @@ class MembershipUser extends Child
      *
      * @return int|string
      */
-    public function getUserId(): int|string
+    public function getUserId(): int | string
     {
         return $this->getAttribute('userId');
     }
@@ -782,7 +799,7 @@ class MembershipUser extends Child
      *
      * @return int|false
      */
-    public function getContractId(): false|int
+    public function getContractId(): false | int
     {
         $contractId = $this->getAttribute('contractId');
 
@@ -798,7 +815,7 @@ class MembershipUser extends Child
      *
      * @return false|QUI\ERP\Accounting\Contracts\Contract
      */
-    public function getContract()
+    public function getContract(): QUI\ERP\Accounting\Contracts\Contract | bool
     {
         $contractId = $this->getContractId();
 
@@ -821,9 +838,9 @@ class MembershipUser extends Child
      *
      * @param int $contractId
      * @return void
-     * @throws QUI\Exception
+     * @throws Exception
      */
-    public function linkToContract($contractId)
+    public function linkToContract(int $contractId): void
     {
         try {
             $Contract = ContractsHandler::getInstance()->getContract($contractId);
@@ -848,7 +865,7 @@ class MembershipUser extends Child
      * @param string $type - History entry type (see \QUI\Memberships\Users\Handler)
      * @param string $msg (optional) - additional custom message
      */
-    public function addHistoryEntry($type, $msg = "")
+    public function addHistoryEntry(string $type, string $msg = ""): void
     {
         $history = $this->getHistory();
 
@@ -877,7 +894,7 @@ class MembershipUser extends Child
      *
      * @return array
      */
-    public function getHistory()
+    public function getHistory(): array
     {
         $history = $this->getAttribute('history');
 
@@ -893,15 +910,15 @@ class MembershipUser extends Child
     /**
      * Format date based on User Locale and duration mode
      *
-     * @param string|\DateTime $date - Formatted date YYYY-MM-DD HH:MM:SS or \DateTime object
+     * @param DateTime|string $date - Formatted date YYYY-MM-DD HH:MM:SS or \DateTime object
      * @return string|false - formatted date or false on error
-     * @throws \QUI\Exception
+     * @throws Exception
      */
-    protected function formatDate($date)
+    protected function formatDate(DateTime | string $date): bool | string
     {
         if (empty($date) || $date === '0000-00-00 00:00:00') {
             return false;
-        } elseif ($date instanceof \DateTime) {
+        } elseif ($date instanceof DateTime) {
             $date = $date->format('Y-m-d H:i:s');
         }
 
@@ -931,14 +948,10 @@ class MembershipUser extends Child
                     if (QUI::getPackageManager()->isInstalled('quiqqer/erp')) {
                         $dateFormat = QUI\ERP\Defaults::getTimestampFormat($lang);
                     } else {
-                        switch ($lang) {
-                            case 'de':
-                                $dateFormat = 'dd.MM.yyyy HH:mm:ss';
-                                break;
-
-                            default:
-                                $dateFormat = 'MMM dd, yyyy, HH:mm:ss';
-                        }
+                        $dateFormat = match ($lang) {
+                            'de' => 'dd.MM.yyyy HH:mm:ss',
+                            default => 'MMM dd, yyyy, HH:mm:ss',
+                        };
                     }
                 }
         }
@@ -950,8 +963,9 @@ class MembershipUser extends Child
      * Get membership data for frontend view/edit purposes with correctly formatted dates
      *
      * @return array
+     * @throws Exception
      */
-    public function getFrontendViewData()
+    public function getFrontendViewData(): array
     {
         $QuiqqerUser = $this->getUser();
         $Membership = $this->getMembership();
@@ -989,8 +1003,8 @@ class MembershipUser extends Child
 
                 $PeriodOfNoticeInterval = $Contract->getPeriodOfNoticeInterval();
                 $EndBaseDate = clone $CurrentCancelEndDate;
-                $EndBaseDate->setTime(0, 0, 0);
-                $EndBaseDate->sub(\date_interval_create_from_date_string('1 second'));
+                $EndBaseDate->setTime(0, 0);
+                $EndBaseDate->sub(date_interval_create_from_date_string('1 second'));
 
                 $CancelUntilDate = clone $EndBaseDate;
 
@@ -1094,8 +1108,9 @@ class MembershipUser extends Child
      * Get membership data for backend view/edit purposes
      *
      * @return array
+     * @throws Exception
      */
-    public function getBackendViewData()
+    public function getBackendViewData(): array
     {
         $QuiqqerUser = $this->getUser();
         $Membership = $this->getMembership();
@@ -1127,7 +1142,7 @@ class MembershipUser extends Child
      *
      * @return CancelVerification
      */
-    protected function getCancelVerification()
+    protected function getCancelVerification(): CancelVerification
     {
         return new CancelVerification($this->id);
     }
@@ -1137,22 +1152,22 @@ class MembershipUser extends Child
      *
      * @return AbortCancelVerification
      */
-    protected function getAbortCancelVerification()
+    protected function getAbortCancelVerification(): AbortCancelVerification
     {
         return new AbortCancelVerification($this->id);
     }
 
     /**
-     * Send an email to the membership user
+     * Email the membership user
      *
      * @param string $subject - mail subject
      * @param string $templateFile
      * @param array $templateVars (optional) - additional template variables (besides $this)
      * @return void
      *
-     * @throws \QUI\Exception
+     * @throws Exception
      */
-    public function sendMail($subject, $templateFile, $templateVars = [])
+    public function sendMail(string $subject, string $templateFile, array $templateVars = []): void
     {
         $User = $this->getUser();
         $email = $User->getAttribute('email');
@@ -1186,7 +1201,12 @@ class MembershipUser extends Child
         $Mailer->addRecipient($email, $User->getName());
         $Mailer->setSubject($subject);
         $Mailer->setBody($template);
-        $Mailer->send();
+
+        try {
+            $Mailer->send();
+        } catch (\PHPMailer\PHPMailer\Exception $e) {
+            QUI\System\Log::addError($e->getMessage());
+        }
     }
 
     /**
@@ -1197,7 +1217,7 @@ class MembershipUser extends Child
      * @param string $key
      * @param string $value
      */
-    public function setExtraData($key, $value)
+    public function setExtraData(string $key, string $value): void
     {
         $extraData = $this->getExtraData();
 
@@ -1222,10 +1242,10 @@ class MembershipUser extends Child
     /**
      * Get extra data of this MembershipUser
      *
-     * @param string $key (optional) - If omitted return all extra data
+     * @param string|null $key (optional) - If omitted return all extra data
      * @return array|string|false
      */
-    public function getExtraData($key = null)
+    public function getExtraData(null | string $key = null): bool | array | string
     {
         $extraData = $this->getAttribute('extraData');
 
@@ -1249,19 +1269,20 @@ class MembershipUser extends Child
     /**
      * Get begin Date of the current cycle
      *
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getCycleBeginDate()
+    public function getCycleBeginDate(): DateTime
     {
-        return \date_create($this->getAttribute('beginDate'));
+        return date_create($this->getAttribute('beginDate'));
     }
 
     /**
      * Get end Date of the current cycle
      *
-     * @return \DateTime|false - DateTime of the cycle end or false if Membership has no cycle end (i.e. is infinite)
+     * @return DateTime|false - DateTime of the cycle end or false if Membership has no cycle end (i.e. is infinite)
+     * @throws Exception
      */
-    public function getCycleEndDate()
+    public function getCycleEndDate(): DateTime | bool
     {
         $Contract = $this->getContract();
 
@@ -1273,23 +1294,24 @@ class MembershipUser extends Child
             return false;
         }
 
-        return \date_create($this->getAttribute('endDate'));
+        return date_create($this->getAttribute('endDate'));
     }
 
     /**
      * Get begin date of the (hypothetical) next cycle
      *
-     * @return \DateTime|false - DateTime of the cycle end or false if Membership has no next cycle (i.e. is infinite)
+     * @return DateTime|false - DateTime of the cycle end or false if Membership has no next cycle (i.e. is infinite)
+     * @throws Exception
      */
-    public function getNextCycleBeginDate()
+    public function getNextCycleBeginDate(): DateTime | bool
     {
         $Contract = $this->getContract();
 
         if ($Contract) {
             $EndDate = $Contract->getCycleEndDate();
             $NextBeginDate = clone $EndDate;
-            $NextBeginDate->add(\date_interval_create_from_date_string('1 day'));
-            $NextBeginDate->setTime(0, 0, 0);
+            $NextBeginDate->add(date_interval_create_from_date_string('1 day'));
+            $NextBeginDate->setTime(0, 0);
 
             return $NextBeginDate;
         }
@@ -1308,12 +1330,12 @@ class MembershipUser extends Child
 
         switch (MembershipUsersHandler::getDurationMode()) {
             case MembershipUsersHandler::DURATION_MODE_EXACT:
-                $NextBeginDate->add(\date_interval_create_from_date_string('1 second'));
+                $NextBeginDate->add(date_interval_create_from_date_string('1 second'));
                 break;
 
             default:
-                $NextBeginDate->add(\date_interval_create_from_date_string('1 day'));
-                $NextBeginDate->setTime(0, 0, 0);
+                $NextBeginDate->add(date_interval_create_from_date_string('1 day'));
+                $NextBeginDate->setTime(0, 0);
         }
 
         return $NextBeginDate;
@@ -1322,9 +1344,10 @@ class MembershipUser extends Child
     /**
      * Get the end Date of the (hypothetical) next cycle
      *
-     * @return \DateTime|false - DateTime of the next cycle end or false if Membership has no next cycle end (i.e. is infinite)
+     * @return DateTime|false - DateTime of the next cycle end or false if Membership has no next cycle end (i.e. is infinite)
+     * @throws Exception
      */
-    public function getNextCycleEndDate()
+    public function getNextCycleEndDate(): DateTime | bool
     {
         $Contract = $this->getContract();
 
@@ -1360,16 +1383,17 @@ class MembershipUser extends Child
                 $end = strtotime($start . ' +' . $durationCount . ' ' . $durationScope);
         }
 
-        return \date_create('@' . $end);
+        return date_create('@' . $end);
     }
 
     /**
      * Calculates the date the membership for this user would end
      * if it was cancelled NOW
      *
-     * @return \DateTime
+     * @return DateTime|bool
+     * @throws Exception
      */
-    public function getCurrentCancelEndDate()
+    public function getCurrentCancelEndDate(): DateTime | bool
     {
         /**
          * If a contract is connected to this MembershipUser
