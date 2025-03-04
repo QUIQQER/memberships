@@ -2,6 +2,7 @@
 
 namespace QUI\Memberships;
 
+use PDO;
 use QUI;
 use QUI\CRUD\Child;
 use QUI\ERP\Plans\Handler as ErpPlansHandler;
@@ -13,6 +14,7 @@ use QUI\Interfaces\Users\User as QUIUserInterface;
 use QUI\Locale;
 use QUI\Lock\Locker;
 use QUI\Memberships\Users\Handler as MembershipUsersHandler;
+use QUI\Memberships\Users\MembershipUser;
 use QUI\Permissions\Exception;
 use QUI\Permissions\Permission;
 use QUI\Utils\Security\Orthos;
@@ -39,12 +41,15 @@ class Membership extends Child
     /**
      * Get IDs of all QUIQQER Groups
      *
-     * @return int[]
+     * @return int[]|string[]
      */
     public function getGroupIds(): array
     {
         $groupIds = $this->getAttribute('groupIds');
-        return explode(",", trim($groupIds, ","));
+        $groupIds = trim($groupIds, ",");
+        $groupIds = explode(",", $groupIds);
+
+        return $groupIds;
     }
 
     /**
@@ -53,7 +58,7 @@ class Membership extends Child
      * @param Locale|null $Locale (optional)
      * @return string - localized title
      */
-    public function getTitle(Locale $Locale = null): string
+    public function getTitle(null | Locale $Locale = null): string
     {
         if (is_null($Locale)) {
             $Locale = QUI::getLocale();
@@ -95,7 +100,7 @@ class Membership extends Child
      * @param Locale|null $Locale (optional)
      * @return string - localized content
      */
-    public function getContent(Locale $Locale = null): string
+    public function getContent(null | Locale $Locale = null): string
     {
         if (is_null($Locale)) {
             $Locale = QUI::getLocale();
@@ -167,7 +172,7 @@ class Membership extends Child
         if (empty($attributes['autoExtend'])) {
             $attributes['autoExtend'] = 0;
         } else {
-            $attributes['autoExtend'] = $attributes['autoExtend'] ? 1 : 0;
+            $attributes['autoExtend'] = 1;
         }
 
         $this->setAttributes($attributes);
@@ -230,11 +235,14 @@ class Membership extends Child
     /**
      * Get a user of this membership (non-archived)
      *
-     * @param int $userId - QUIQQER User ID
-     * @return QUI\Memberships\Users\MembershipUser
-     * @throws QUI\Memberships\Exception
+     * @param int|string $userId - QUIQQER User ID
+     * @return MembershipUser
+     *
+     * @throws Exception
+     * @throws QUI\Database\Exception
+     * @throws QUI\Exception
      */
-    public function getMembershipUser($userId)
+    public function getMembershipUser(int | string $userId): Users\MembershipUser
     {
         $result = QUI::getDataBase()->fetch([
             'select' => [
@@ -258,7 +266,11 @@ class Membership extends Child
             ], 404);
         }
 
-        return MembershipUsersHandler::getInstance()->getChild($result[0]['id']);
+        /* @var $Membership QUI\Memberships\Users\MembershipUser */
+        $Membership = MembershipUsersHandler::getInstance()->getChild($result[0]['id']);
+
+        // @phpstan-ignore-next-line
+        return $Membership;
     }
 
     /**
@@ -316,6 +328,10 @@ class Membership extends Child
 
             $Membership = $Memberships->getChild($membershipId);
 
+            if (!method_exists($Membership, 'getGroupIds')) {
+                continue;
+            }
+
             foreach ($Membership->getGroupIds() as $groupId) {
                 if (in_array($groupId, $groupIds)) {
                     $k = array_search($groupId, $uniqueGroupIds);
@@ -333,10 +349,11 @@ class Membership extends Child
     /**
      * Checks if this membership has an (active, non-archived) user assigned
      *
-     * @param int $userId
+     * @param int|string $userId
      * @return bool
+     * @throws QUI\Database\Exception
      */
-    public function hasMembershipUserId($userId)
+    public function hasMembershipUserId(int | string $userId): bool
     {
         $result = QUI::getDataBase()->fetch([
             'count' => 1,
@@ -361,8 +378,9 @@ class Membership extends Child
      * @param bool $archivedOnly (optional) - search archived users only [default: false]
      * @param bool $countOnly (optional) - get count for search result only [default: false]
      * @return int[]|int - membership user IDs or count
+     * @throws QUI\Exception
      */
-    public function searchUsers($searchParams, $archivedOnly = false, $countOnly = false)
+    public function searchUsers(array $searchParams, bool $archivedOnly = false, bool $countOnly = false): array | int
     {
         $membershipUserIds = [];
         $Grid = new QUI\Utils\Grid($searchParams);
@@ -403,7 +421,7 @@ class Membership extends Child
                 $whereOR[] = $column . ' LIKE :search';
                 $binds['search'] = [
                     'value' => '%' . $searchParams['search'] . '%',
-                    'type' => \PDO::PARAM_STR
+                    'type' => PDO::PARAM_STR
                 ];
             }
 
@@ -414,14 +432,12 @@ class Membership extends Child
             $where[] = '`musers`.productId = :productId';
             $binds['productId'] = [
                 'value' => (int)$searchParams['productId'],
-                'type' => \PDO::PARAM_INT
+                'type' => PDO::PARAM_INT
             ];
         }
 
         // build WHERE query string
-        if (!empty($where)) {
-            $sql .= " WHERE " . implode(" AND ", $where);
-        }
+        $sql .= " WHERE " . implode(" AND ", $where);
 
         // ORDER
         if (!empty($searchParams['sortOn'])) {
@@ -473,7 +489,7 @@ class Membership extends Child
 
         try {
             $Stmt->execute();
-            $result = $Stmt->fetchAll(\PDO::FETCH_ASSOC);
+            $result = $Stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (\Exception $Exception) {
             QUI\System\Log::addError(
                 self::class . ' :: searchUsers() -> ' . $Exception->getMessage()
@@ -496,10 +512,10 @@ class Membership extends Child
     /**
      * Calculate the end date for this membership based on a given time
      *
-     * @param int $start (optional) - UNIX timestamp; if omitted use time()
+     * @param int|null $start (optional) - UNIX timestamp; if omitted use time()
      * @return string|null - formatted timestamp
      */
-    public function calcEndDate($start = null)
+    public function calcEndDate(null | int $start = null): ?string
     {
         if ($this->isInfinite()) {
             return null;
@@ -538,7 +554,7 @@ class Membership extends Child
      *
      * @return QUI\ERP\Products\Product\Product[]
      */
-    public function getProducts()
+    public function getProducts(): array
     {
         if (!Utils::isQuiqqerProductsInstalled()) {
             return [];
@@ -586,7 +602,7 @@ class Membership extends Child
      * @return QUI\ERP\Products\Product\Product|false
      * @throws QUI\Exception
      */
-    public function createProduct()
+    public function createProduct(): QUI\ERP\Products\Product\Product | bool
     {
         if (!Utils::isQuiqqerProductsInstalled()) {
             return false;
@@ -659,10 +675,10 @@ class Membership extends Child
      * Locks editing of this membership for the current session user
      *
      * @return void
-     * @throws \QUI\Lock\Exception
+     * @throws QUI\Lock\Exception
      * @throws QUI\Exception
      */
-    public function lock()
+    public function lock(): void
     {
         Locker::lock(QUI::getPackage('quiqqer/memberships'), $this->getLockKey());
     }
@@ -671,8 +687,8 @@ class Membership extends Child
      * Unlock membership (requires permission!)
      *
      * @return void
-     * @throws \QUI\Permissions\Exception
-     * @throws \QUI\Lock\Exception
+     * @throws QUI\Permissions\Exception
+     * @throws QUI\Lock\Exception
      * @throws QUI\Exception
      */
     public function unlock(): void
@@ -700,7 +716,7 @@ class Membership extends Child
      *
      * @return string
      */
-    protected function getLockKey()
+    protected function getLockKey(): string
     {
         return 'membership_' . $this->id;
     }
@@ -710,7 +726,7 @@ class Membership extends Child
      *
      * @return array
      */
-    public function getBackendViewData()
+    public function getBackendViewData(): array
     {
         return [
             'id' => $this->getId(),
@@ -725,7 +741,7 @@ class Membership extends Child
      *
      * @return bool
      */
-    public function isInfinite()
+    public function isInfinite(): bool
     {
         return $this->getAttribute('duration') === 'infinite';
     }
@@ -735,7 +751,7 @@ class Membership extends Child
      *
      * @return bool
      */
-    public function isDefault()
+    public function isDefault(): bool
     {
         $DefaultMembership = Handler::getDefaultMembership();
 
@@ -753,11 +769,15 @@ class Membership extends Child
      * @return QUI\Memberships\Users\MembershipUser
      * @throws QUI\Exception
      */
-    public function addUser(QUI\Users\User $User)
+    public function addUser(QUI\Users\User $User): QUI\Memberships\Users\MembershipUser
     {
-        return MembershipUsersHandler::getInstance()->createChild([
+        $MembershipUser = MembershipUsersHandler::getInstance()->createChild([
             'userId' => $User->getId(),
             'membershipId' => $this->id
         ], $this->EditUser);
+
+        /* @var $MembershipUser QUI\Memberships\Users\MembershipUser */
+        // @phpstan-ignore-next-line
+        return $MembershipUser;
     }
 }

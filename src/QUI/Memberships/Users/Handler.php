@@ -88,8 +88,10 @@ class Handler extends Factory
      * @throws QUI\Memberships\Exception
      * @throws QUI\Permissions\Exception
      */
-    public function createChild(array $data = [], QUI\Interfaces\Users\User $PermissionUser = null): QUI\CRUD\Child
-    {
+    public function createChild(
+        array $data = [],
+        null | QUI\Interfaces\Users\User $PermissionUser = null
+    ): QUI\CRUD\Child {
         if (is_null($PermissionUser)) {
             $PermissionUser = QUI::getUserBySession();
         }
@@ -116,6 +118,13 @@ class Handler extends Factory
 
         $Membership = MembershipsHandler::getInstance()->getChild($data['membershipId']);
         $User = QUI::getUsers()->get($data['userId']);
+
+        if (!($Membership instanceof QUI\Memberships\Membership)) {
+            throw new QUI\Memberships\Exception([
+                'quiqqer/memberships',
+                'exception.users.handler.no.membership'
+            ]);
+        }
 
         // if the user is already in the membership -> extend runtime
         if ($Membership->hasMembershipUserId($User->getId())) {
@@ -202,7 +211,7 @@ class Handler extends Factory
      * @param bool $includeArchived (optional) - include archived MembershipUsers
      * @return MembershipUser[]
      */
-    public function getMembershipUsersByUserId(int|string $userId, bool $includeArchived = false): array
+    public function getMembershipUsersByUserId(int | string $userId, bool $includeArchived = false): array
     {
         if (is_int($userId)) {
             try {
@@ -242,6 +251,7 @@ class Handler extends Factory
             }
         }
 
+        // @phpstan-ignore-next-line
         return $membershipUsers;
     }
 
@@ -251,7 +261,7 @@ class Handler extends Factory
      * @param int $contractId
      * @return MembershipUser|false
      */
-    public function getMembershipUserByContractId(int $contractId): bool|MembershipUser
+    public function getMembershipUserByContractId(int $contractId): bool | MembershipUser
     {
         try {
             $result = QUI::getDataBase()->fetch([
@@ -369,7 +379,7 @@ class Handler extends Factory
      *
      * @throws QUI\Exception
      */
-    public static function getSetting(string $key): array|string
+    public static function getSetting(string $key): array | string
     {
         $Config = QUI::getPackage('quiqqer/memberships')->getConfig();
         return $Config->get('membershipusers', $key);

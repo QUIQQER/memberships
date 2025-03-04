@@ -409,7 +409,10 @@ class Handler extends Factory
             return false;
         }
 
-        return self::getInstance()->getChild((int)$membershipId);
+        /* @var $Membership Membership */
+        $Membership = self::getInstance()->getChild((int)$membershipId);
+
+        return $Membership;
     }
 
     /**
