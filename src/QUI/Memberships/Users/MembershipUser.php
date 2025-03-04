@@ -54,10 +54,6 @@ class MembershipUser extends Child
         $this->EditUser = $EditUser;
     }
 
-    /**
-     * @inheritdoc
-     * @param bool $withPermission - check permissions on update [default: true]
-     */
     public function update(): void
     {
         Permission::checkPermission(MembershipUsersHandler::PERMISSION_EDIT_USERS, $this->EditUser);
@@ -693,7 +689,9 @@ class MembershipUser extends Child
 
         // remove user from unique group ids
         foreach ($Membership->getUniqueGroupIds() as $groupId) {
-            $Groups->get($groupId)->removeUser($User);
+            if ($User instanceof QUI\Users\User) {
+                $Groups->get($groupId)->removeUser($User);
+            }
 
             $k = array_search($groupId, $membershipGroupIds);
 
@@ -708,7 +706,10 @@ class MembershipUser extends Child
             foreach ($Memberships->getMembershipIdsByGroupIds([$groupId]) as $membershipId) {
                 $OtherMembership = $Memberships->getChild($membershipId);
 
-                if (!$OtherMembership->hasMembershipUserId($User->getId())) {
+                if (
+                    method_exists($OtherMembership, 'hasMembershipUserId')
+                    && !$OtherMembership->hasMembershipUserId($User->getId())
+                ) {
                     $User->removeGroup($groupId);
                 }
             }
@@ -727,9 +728,7 @@ class MembershipUser extends Child
     public function archive(string $reason): void
     {
         $this->removeFromGroups();
-        $this->addHistoryEntry(MembershipUsersHandler::HISTORY_TYPE_ARCHIVED, [
-            'reason' => $reason
-        ]);
+        $this->addHistoryEntry(MembershipUsersHandler::HISTORY_TYPE_ARCHIVED, $reason);
         $this->setAttributes([
             'archived' => 1,
             'archiveDate' => Utils::getFormattedTimestamp(),
@@ -765,6 +764,7 @@ class MembershipUser extends Child
             $this->getAttribute('membershipId')
         );
 
+        // @phpstan-ignore-next-line
         return $this->Membership;
     }
 
@@ -868,16 +868,11 @@ class MembershipUser extends Child
     public function addHistoryEntry(string $type, string $msg = ""): void
     {
         $history = $this->getHistory();
+        $User = QUI::getUserBySession();
 
         if (empty($msg)) {
             $msg = "";
         }
-
-        if (is_array($msg)) {
-            $msg = json_encode($msg);
-        }
-
-        $User = QUI::getUserBySession();
 
         $history[] = [
             'type' => $type,
