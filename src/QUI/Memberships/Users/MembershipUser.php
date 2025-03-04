@@ -951,11 +951,11 @@ class MembershipUser extends Child
     /**
      * Format date based on User Locale and duration mode
      *
-     * @param DateTime|string $date - Formatted date YYYY-MM-DD HH:MM:SS or \DateTime object
+     * @param DateTime|string|null $date - Formatted date YYYY-MM-DD HH:MM:SS or \DateTime object
      * @return string|false - formatted date or false on error
      * @throws Exception
      */
-    protected function formatDate(DateTime | string $date): bool | string
+    protected function formatDate(DateTime | string | null $date): bool | string
     {
         if (empty($date) || $date === '0000-00-00 00:00:00') {
             return false;
