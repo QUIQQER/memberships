@@ -1496,6 +1496,10 @@ class MembershipUser extends Child
      */
     public function getCurrentCancelEndDate(): DateTime | bool
     {
+        if (!class_exists('QUI\ERP\Accounting\Contracts\Contract')) {
+            return $this->getCycleEndDate();
+        }
+
         /**
          * If a contract is connected to this MembershipUser
          * the contract cancel termination date has priority!
