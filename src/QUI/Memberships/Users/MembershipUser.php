@@ -1165,8 +1165,8 @@ class MembershipUser extends Child
      */
     protected function getCancelVerification(): ?LinkVerification
     {
-        $verification =  $this->verificationRepository->findByIdentifier(
-            'quiqqer-memberships-users-cancel-'.$this->id,
+        $verification = $this->verificationRepository->findByIdentifier(
+            'quiqqer-memberships-users-cancel-' . $this->id,
         );
 
         return $verification instanceof LinkVerification ? $verification : null;
@@ -1180,7 +1180,7 @@ class MembershipUser extends Child
     protected function createCancelVerification(): LinkVerification
     {
         return $this->verificationFactory->createLinkVerification(
-            'quiqqer-memberships-users-cancel-'.$this->id,
+            'quiqqer-memberships-users-cancel-' . $this->id,
             new CancelVerification(),
             [
                 'membershipUserId' => $this->id
@@ -1197,7 +1197,7 @@ class MembershipUser extends Child
     protected function createAbortCancelVerification(): LinkVerification
     {
         return $this->verificationFactory->createLinkVerification(
-            'quiqqer-memberships-users-cancel-abort-'.$this->id,
+            'quiqqer-memberships-users-cancel-abort-' . $this->id,
             new CancelVerification(),
             [
                 'membershipUserId' => $this->id
@@ -1213,8 +1213,8 @@ class MembershipUser extends Child
      */
     protected function getAbortCancelVerification(): ?LinkVerification
     {
-        $verification =  $this->verificationRepository->findByIdentifier(
-            'quiqqer-memberships-users-cancel-abort-'.$this->id,
+        $verification = $this->verificationRepository->findByIdentifier(
+            'quiqqer-memberships-users-cancel-abort-' . $this->id,
         );
 
         return $verification instanceof LinkVerification ? $verification : null;
