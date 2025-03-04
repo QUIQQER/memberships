@@ -6,6 +6,7 @@ use DateInterval;
 use DateTime;
 use QUI;
 use QUI\CRUD\Child;
+use QUI\CRUD\Factory;
 use QUI\ERP\Accounting\Contracts\Handler as ContractsHandler;
 use QUI\ERP\Products\Handler\Products as ProductsHandler;
 use QUI\Exception;
@@ -16,10 +17,16 @@ use QUI\Memberships\Handler as MembershipsHandler;
 use QUI\Memberships\Users\Handler as MembershipUsersHandler;
 use QUI\Memberships\Utils;
 use QUI\Permissions\Permission;
+use QUI\Verification\Interface\VerificationFactoryInterface;
+use QUI\Verification\VerificationFactory;
 use QUI\Verification\Verifier;
+use QUI\Verification\Entity\LinkVerification;
+use QUI\Verification\Interface\VerificationRepositoryInterface;
+use QUI\Verification\VerificationRepository;
 
 use function date_create;
 use function date_interval_create_from_date_string;
+use function is_null;
 
 /**
  * Class MembershipUser
@@ -43,6 +50,23 @@ class MembershipUser extends Child
      * @var ?QUIUserInterface
      */
     protected ?QUIUserInterface $EditUser = null;
+
+    public function __construct(
+        int | string $id,
+        Factory $Factory,
+        private ?VerificationFactoryInterface $verificationFactory = null,
+        private ?VerificationRepositoryInterface $verificationRepository = null
+    ) {
+        parent::__construct($id, $Factory);
+
+        if (is_null($this->verificationFactory)) {
+            $this->verificationFactory = new VerificationFactory();
+        }
+
+        if (is_null($this->verificationRepository)) {
+            $this->verificationRepository = new VerificationRepository();
+        }
+    }
 
     /**
      * Set User that is editing this MembershipUser in the current runtime
@@ -332,7 +356,8 @@ class MembershipUser extends Child
             ]);
         }
 
-        $cancelUrl = Verifier::startVerification($this->getCancelVerification(), true);
+        $cancelVerification = $this->createCancelVerification();
+        $cancelUrl = $cancelVerification->getVerificationUrl();
         $cancelDate = Utils::getFormattedTimestamp();
         $CancelEndDate = $this->getCurrentCancelEndDate();
 
@@ -491,7 +516,8 @@ class MembershipUser extends Child
         ]);
 
         try {
-            Verifier::removeVerification($this->getAbortCancelVerification());
+            $verification = $this->getAbortCancelVerification();
+            $this->verificationRepository->delete($verification);
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }
@@ -567,11 +593,13 @@ class MembershipUser extends Child
                 'templates.mail.confirmcancel_reminder.subject'
             );
 
+            $cancelVerification = $this->getCancelVerification();
+
             $this->sendMail(
                 $subject,
                 dirname(__FILE__, 5) . '/templates/mail_confirmcancel_reminder.html',
                 [
-                    'cancelUrl' => Verifier::getVerificationUrl($this->getCancelVerification())
+                    'cancelUrl' => $cancelVerification->getVerificationUrl()
                 ]
             );
 
@@ -1135,21 +1163,63 @@ class MembershipUser extends Child
     /**
      * Get Verification object for MembershipUser cancellation
      *
-     * @return CancelVerification
+     * @return LinkVerification|null
      */
-    protected function getCancelVerification(): CancelVerification
+    protected function getCancelVerification(): ?LinkVerification
     {
-        return new CancelVerification();
+        $verification =  $this->verificationRepository->findByIdentifier(
+            'quiqqer-memberships-users-cancel-'.$this->id,
+        );
+
+        return $verification instanceof LinkVerification ? $verification : null;
+    }
+
+    /**
+     * Get Verification object for MembershipUser cancellation
+     *
+     * @return LinkVerification
+     */
+    protected function createCancelVerification(): LinkVerification
+    {
+        return $this->verificationFactory->createLinkVerification(
+            'quiqqer-memberships-users-cancel-'.$this->id,
+            new CancelVerification(),
+            [
+                'membershipUserId' => $this->id
+            ],
+            true
+        );
     }
 
     /**
      * Get Verification object for MembershipUser cancel abort
      *
-     * @return AbortCancelVerification
+     * @return LinkVerification
      */
-    protected function getAbortCancelVerification(): AbortCancelVerification
+    protected function createAbortCancelVerification(): LinkVerification
     {
-        return new AbortCancelVerification();
+        return $this->verificationFactory->createLinkVerification(
+            'quiqqer-memberships-users-cancel-abort-'.$this->id,
+            new CancelVerification(),
+            [
+                'membershipUserId' => $this->id
+            ],
+            true
+        );
+    }
+
+    /**
+     * Get Verification object for MembershipUser cancel abort
+     *
+     * @return LinkVerification|null
+     */
+    protected function getAbortCancelVerification(): ?LinkVerification
+    {
+        $verification =  $this->verificationRepository->findByIdentifier(
+            'quiqqer-memberships-users-cancel-abort-'.$this->id,
+        );
+
+        return $verification instanceof LinkVerification ? $verification : null;
     }
 
     /**
