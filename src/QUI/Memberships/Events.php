@@ -2,18 +2,25 @@
 
 namespace QUI\Memberships;
 
+use DateTime;
 use QUI;
+use QUI\Database\Exception;
 use QUI\ERP\Accounting\Contracts\Contract;
+use QUI\ERP\Order\AbstractOrder;
 use QUI\ERP\Products\Field\Field as ProductField;
 use QUI\ERP\Products\Handler\Categories as ProductCategories;
 use QUI\ERP\Products\Handler\Fields as ProductFields;
 use QUI\ERP\Products\Handler\Products as ProductsHandler;
 use QUI\ERP\Products\Handler\Search as ProductSearchHandler;
 use QUI\ERP\Products\Product\Product;
+use QUI\ExceptionStack;
 use QUI\Memberships\Handler as MembershipsHandler;
 use QUI\Memberships\Products\MembershipField;
 use QUI\Memberships\Users\Handler as MembershipUsersHandler;
 use QUI\Package\Package;
+use QUI\Users\User;
+
+use function date_interval_create_from_date_string;
 
 /**
  * Class Events
@@ -28,7 +35,7 @@ class Events
      * @param Package $Package
      * @return void
      */
-    public static function onPackageSetup(Package $Package)
+    public static function onPackageSetup(Package $Package): void
     {
         if ($Package->getName() !== 'quiqqer/memberships') {
             return;
@@ -59,8 +66,9 @@ class Events
      *
      * @param Product $Product
      * @return void
+     * @throws Exception
      */
-    public static function onQuiqqerProductsProductDelete(Product $Product)
+    public static function onQuiqqerProductsProductDelete(Product $Product): void
     {
         $membershipFieldId = Handler::getProductMembershipField()->getId();
 
@@ -102,8 +110,9 @@ class Events
      *
      * @param QUI\Users\User $User
      * @return void
+     * @throws QUI\Exception
      */
-    public static function onUserSave(QUI\Users\User $User)
+    public static function onUserSave(QUI\Users\User $User): void
     {
         $DefaultMembership = MembershipsHandler::getDefaultMembership();
 
@@ -127,8 +136,11 @@ class Events
      *
      * Delete user from alle memberships
      *
-     * @param QUI\Users\User $User
+     * @param User $User
      * @return void
+     * @throws QUI\Exception
+     * @throws ExceptionStack
+     * @throws QUI\Permissions\Exception
      */
     public static function onUserDelete(QUI\Users\User $User): void
     {
@@ -145,9 +157,9 @@ class Events
      * Create necessary membership product fields and save their IDs to the config
      *
      * @return void
-     * @throws \QUI\Exception
+     * @throws QUI\Exception
      */
-    protected static function createProductFields()
+    protected static function createProductFields(): void
     {
         $L = new QUI\Locale();
         $Conf = QUI::getPackage('quiqqer/memberships')->getConfig();
@@ -242,10 +254,10 @@ class Events
      *
      * Add user to a membership if he ordered a product that contains one
      *
-     * @param QUI\ERP\Order\Order|QUI\ERP\Order\OrderInProcess $Order
+     * @param AbstractOrder $Order
      * @return void
      */
-    public static function onQuiqqerOrderSuccessful($Order)
+    public static function onQuiqqerOrderSuccessful(AbstractOrder $Order): void
     {
         $MembershipField = Handler::getProductMembershipField();
 
@@ -286,7 +298,6 @@ class Events
 
         $SystemUser = QUI::getUsers()->getSystemUser();
 
-        /** @var QUI\ERP\Accounting\Article $Article */
         foreach ($Order->getArticles()->getArticles() as $Article) {
             try {
                 $Product = ProductsHandler::getProduct($Article->getId());
@@ -309,7 +320,7 @@ class Events
                 );
 
                 $MembershipUser->update();
-            } catch (\QUI\ERP\Products\Product\Exception $Exception) {
+            } catch (QUI\ERP\Products\Product\Exception $Exception) {
                 // nothing, this can happen if the $Product does not have a membership field assigned
                 QUI\System\Log::writeDebugException($Exception);
             } catch (\Exception $Exception) {
@@ -324,10 +335,10 @@ class Events
      * Automatically extend all MembershipUsers associated with the contract that is extended
      *
      * @param Contract $Contract
-     * @param \DateTime $EndDate
-     * @param \DateTime $NewEndDate
+     * @param DateTime $EndDate
+     * @param DateTime $NewEndDate
      */
-    public static function onQuiqqerContractsExtend(Contract $Contract, \DateTime $EndDate, \DateTime $NewEndDate)
+    public static function onQuiqqerContractsExtend(Contract $Contract, DateTime $EndDate, DateTime $NewEndDate): void
     {
         try {
             $Conf = QUI::getPackage('quiqqer/memberships')->getConfig();
@@ -362,7 +373,7 @@ class Events
 
                 // Calculate new cylce begin date
                 $NextBeginDate = clone $EndDate;
-                $NextBeginDate->add(\date_interval_create_from_date_string('1 day'));
+                $NextBeginDate->add(date_interval_create_from_date_string('1 day'));
                 $NextBeginDate->setTime(0, 0, 0);
 
                 $MembershipUser->extend(true, $NextBeginDate, $NewEndDate);
@@ -378,10 +389,10 @@ class Events
      * If a contract is created from an order, check if the Order also contains a Membership product
      *
      * @param Contract $Contract
-     * @param QUI\ERP\Order\OrderInProcess $Order
+     * @param AbstractOrder $Order
      * @return void
      */
-    public static function onQuiqqerContractsCreateFromOrder(Contract $Contract, $Order)
+    public static function onQuiqqerContractsCreateFromOrder(Contract $Contract, AbstractOrder $Order): void
     {
         try {
             $Conf = QUI::getPackage('quiqqer/memberships')->getConfig();
@@ -423,7 +434,7 @@ class Events
 
                 $MembershipUser->linkToContract($Contract->getCleanId());
                 break;
-            } catch (\QUI\ERP\Products\Product\Exception $Exception) {
+            } catch (QUI\ERP\Products\Product\Exception $Exception) {
                 QUI\System\Log::writeDebugException($Exception);
                 // nothing, this can happen if the $Product does not have a membership field assigned
             } catch (\Exception $Exception) {
@@ -478,7 +489,7 @@ class Events
      * @param Contract $Contract
      * @throws QUI\Database\Exception
      */
-    public static function onQuiqqerContractsDelete(Contract $Contract)
+    public static function onQuiqqerContractsDelete(Contract $Contract): void
     {
         $MembershipUsers = MembershipUsersHandler::getInstance();
 
@@ -509,9 +520,8 @@ class Events
      * Cancel MembershipUser of associated contract
      *
      * @param Contract $Contract
-     * @throws QUI\Database\Exception
      */
-    public static function onQuiqqerContractsCancel(Contract $Contract)
+    public static function onQuiqqerContractsCancel(Contract $Contract): void
     {
         try {
             $Conf = QUI::getPackage('quiqqer/memberships')->getConfig();
@@ -543,7 +553,7 @@ class Events
      * @param ProductField $Field
      * @throws Exception
      */
-    public static function onQuiqqerProductsFieldDeleteBefore(ProductField $Field)
+    public static function onQuiqqerProductsFieldDeleteBefore(ProductField $Field): void
     {
         $MembershipField = Handler::getProductMembershipField();
 
@@ -572,10 +582,9 @@ class Events
      * @param int $membershipUserId
      * @return void
      */
-    public static function onQuiqqerVerificationDeleteUnverified($membershipUserId)
+    public static function onQuiqqerVerificationDeleteUnverified(int $membershipUserId): void
     {
         try {
-            /** @var QUI\Memberships\Users\MembershipUser $MembershipUser */
             $MembershipUser = MembershipUsersHandler::getInstance()->getChild($membershipUserId);
         } catch (\Exception $Exception) {
             QUI\System\Log::writeDebugException($Exception);
@@ -602,8 +611,10 @@ class Events
      * Create a product category for memberships
      *
      * @return void
+     * @throws Exception
+     * @throws QUI\Exception
      */
-    protected static function createProductCategory()
+    protected static function createProductCategory(): void
     {
         $Category = MembershipsHandler::getProductCategory();
 
