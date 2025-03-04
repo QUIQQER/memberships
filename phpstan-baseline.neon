@@ -1,0 +1,5 @@
+parameters:
+    ignoreErrors:
+        -
+            message: "#^Method QUI\\\\Memberships\\\\Users\\\\MembershipUser::getContract\\(\\) has invalid return type QUI\\\\ERP\\\\Accounting\\\\Contracts\\\\Contract\\.$#"
+            path: src/QUI/Memberships/Users/MembershipUser.php
