@@ -215,6 +215,10 @@ class MembershipUser extends Child
             return $NewEndDate;
         }
 
+        if (!class_exists('QUI\ERP\Accounting\Contracts\Handler')) {
+            return $NewEndDate;
+        }
+
         try {
             $Contract = ContractsHandler::getInstance()->getContract($contractId);
             $ContractExtensionInterval = $Contract->getExtensionInterval();
@@ -857,6 +861,10 @@ class MembershipUser extends Child
             return false;
         }
 
+        if (!class_exists('QUI\ERP\Accounting\Contracts\Handler')) {
+            return false;
+        }
+
         try {
             return QUI\ERP\Accounting\Contracts\Handler::getInstance()->get($contractId);
         } catch (\Exception $Exception) {
@@ -876,6 +884,11 @@ class MembershipUser extends Child
      */
     public function linkToContract(int $contractId): void
     {
+        if (!class_exists('QUI\ERP\Accounting\Contracts\Handler')) {
+            QUI\System\Log::addError('quiqqer/contracts is not installed');
+            return;
+        }
+
         try {
             $Contract = ContractsHandler::getInstance()->getContract($contractId);
             $ContractCycleEndDate = $Contract->getCycleEndDate();
@@ -1008,6 +1021,7 @@ class MembershipUser extends Child
             $viewDataMode === 'product'
             && !empty($productId)
             && Utils::isQuiqqerProductsInstalled()
+            && class_exists('QUI\ERP\Products\Handler\Products')
         ) {
             $Product = ProductsHandler::getProduct($productId);
             $title = $Product->getTitle($Locale);
@@ -1024,7 +1038,11 @@ class MembershipUser extends Child
         $cancelAllowed = !$this->isCancelled();
         $Contract = $this->getContract();
 
-        if (!$this->isCancelled() && $Contract) {
+        if (
+            class_exists('QUI\ERP\Accounting\Contracts\Contract')
+            && !$this->isCancelled()
+            && $Contract
+        ) {
             try {
                 if (!$Contract->isInPeriodOfNotice()) {
                     $cancelAllowed = false;
@@ -1053,7 +1071,7 @@ class MembershipUser extends Child
         $nextCycleEndDate = $NextCycleEndDate ? $this->formatDate($NextCycleEndDate) : '-';
 
         // Determine cancel info text
-        if ($Contract) {
+        if (class_exists('QUI\ERP\Accounting\Contracts\Contract') && $Contract) {
             if ($Contract->getPeriodOfNoticeInterval()) {
                 if ($Contract->isInPeriodOfNotice()) {
                     $cancelInfoText = QUI::getLocale()->get(
@@ -1355,6 +1373,10 @@ class MembershipUser extends Child
      */
     public function getCycleEndDate(): DateTime | bool
     {
+        if (!class_exists('QUI\ERP\Accounting\Contracts\Contract')) {
+            return false;
+        }
+
         $Contract = $this->getContract();
 
         if ($Contract) {
@@ -1376,6 +1398,10 @@ class MembershipUser extends Child
      */
     public function getNextCycleBeginDate(): DateTime | bool
     {
+        if (!class_exists('QUI\ERP\Accounting\Contracts\Contract')) {
+            return false;
+        }
+
         $Contract = $this->getContract();
 
         if ($Contract) {
@@ -1420,6 +1446,10 @@ class MembershipUser extends Child
      */
     public function getNextCycleEndDate(): DateTime | bool
     {
+        if (!class_exists('QUI\ERP\Accounting\Contracts\Contract')) {
+            return false;
+        }
+
         $Contract = $this->getContract();
 
         if ($Contract) {

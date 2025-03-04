@@ -210,7 +210,7 @@ class Membership extends Child
         }
 
         // remove from products
-        if (Utils::isQuiqqerProductsInstalled()) {
+        if (Utils::isQuiqqerProductsInstalled() && class_exists('QUI\ERP\Products\Handler\Products')) {
             foreach ($this->getProducts() as $Product) {
                 $MembershipField = $Product->getField(
                     Handler::getProductMembershipField()->getId()
@@ -559,6 +559,7 @@ class Membership extends Child
         if (
             !class_exists('QUI\ERP\Products\Search\BackendSearch')
             || !class_exists('QUI\ERP\Products\Handler\Products')
+            || !class_exists('QUI\ERP\Products\Field\Field')
         ) {
             return [];
         }
@@ -614,6 +615,7 @@ class Membership extends Child
         if (
             !class_exists('QUI\ERP\Products\Handler\Products')
             || !class_exists('QUI\ERP\Products\Handler\Fields')
+            || !class_exists('QUI\ERP\Products\Field\Field')
         ) {
             return false;
         }
