@@ -19,7 +19,6 @@ use QUI\Memberships\Utils;
 use QUI\Permissions\Permission;
 use QUI\Verification\Interface\VerificationFactoryInterface;
 use QUI\Verification\VerificationFactory;
-use QUI\Verification\Verifier;
 use QUI\Verification\Entity\LinkVerification;
 use QUI\Verification\Interface\VerificationRepositoryInterface;
 use QUI\Verification\VerificationRepository;
