@@ -481,7 +481,8 @@ class MembershipUser extends Child
             ]);
         }
 
-        $abortCancelUrl = Verifier::startVerification($this->getAbortCancelVerification(), true);
+        $verification = $this->createAbortCancelVerification();
+        $abortCancelUrl = $verification->getVerificationUrl();
 
         $this->setAttributes([
             'cancelStatus' => MembershipUsersHandler::CANCEL_STATUS_ABORT_CANCEL_CONFIRM_PENDING,
@@ -517,7 +518,10 @@ class MembershipUser extends Child
 
         try {
             $verification = $this->getAbortCancelVerification();
-            $this->verificationRepository->delete($verification);
+
+            if ($verification) {
+                $this->verificationRepository->delete($verification);
+            }
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }
@@ -594,6 +598,10 @@ class MembershipUser extends Child
             );
 
             $cancelVerification = $this->getCancelVerification();
+
+            if (!$cancelVerification) {
+                return false;
+            }
 
             $this->sendMail(
                 $subject,
