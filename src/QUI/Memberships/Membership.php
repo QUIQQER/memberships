@@ -556,6 +556,13 @@ class Membership extends Child
             return [];
         }
 
+        if (
+            !class_exists('QUI\ERP\Products\Search\BackendSearch')
+            || !class_exists('QUI\ERP\Products\Handler\Products')
+        ) {
+            return [];
+        }
+
         try {
             $Search = new BackendSearch();
             $MembershipField = Handler::getProductMembershipField();
@@ -604,6 +611,13 @@ class Membership extends Child
             return false;
         }
 
+        if (
+            !class_exists('QUI\ERP\Products\Handler\Products')
+            || !class_exists('QUI\ERP\Products\Handler\Fields')
+        ) {
+            return false;
+        }
+
         $categories = [];
         $fields = [];
 
@@ -645,7 +659,12 @@ class Membership extends Child
             $fields[] = $DescField;
         }
 
-        if ($this->isAutoExtend() && Utils::isQuiqqerErpPlansInstalled()) {
+        if (
+            $this->isAutoExtend()
+            && Utils::isQuiqqerErpPlansInstalled()
+            && class_exists('QUI\ERP\Plans\Handler')
+            && class_exists('QUI\ERP\Plans\PlanProduct')
+        ) {
             $Product = ProductsHandler::createProduct($categories, $fields, QUI\ERP\Plans\PlanProduct::class);
 
             $Product->getField(ErpPlansHandler::FIELD_DURATION)->setValue($this->getAttribute('duration'));

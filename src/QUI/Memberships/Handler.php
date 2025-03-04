@@ -4,7 +4,6 @@ namespace QUI\Memberships;
 
 use PDO;
 use QUI;
-use QUI\CRUD\Child;
 use QUI\CRUD\Factory;
 use QUI\ERP\Products\Handler\Categories as ProductCategories;
 use QUI\ERP\Products\Handler\Fields as ProductFields;
@@ -325,6 +324,7 @@ class Handler extends Factory
      * Get Memberships product category
      *
      * @return QUI\ERP\Products\Interfaces\CategoryInterface|false
+     * @throws Exception
      */
     public static function getProductCategory(): bool | QUI\ERP\Products\Interfaces\CategoryInterface
     {
@@ -332,6 +332,10 @@ class Handler extends Factory
         $categoryId = $Conf->get('products', 'categoryId');
 
         if (empty($categoryId)) {
+            return false;
+        }
+
+        if (!class_exists('QUI\ERP\Products\Handler\Categories')) {
             return false;
         }
 
@@ -360,6 +364,10 @@ class Handler extends Factory
             return false;
         }
 
+        if (!class_exists('QUI\ERP\Products\Handler\Fields')) {
+            return false;
+        }
+
         try {
             $Conf = QUI::getPackage('quiqqer/memberships')->getConfig();
             $fieldId = $Conf->get('products', 'membershipFieldId');
@@ -385,6 +393,10 @@ class Handler extends Factory
     public static function getProductMembershipFlagField(): bool | QUI\ERP\Products\Field\Field
     {
         if (!Utils::isQuiqqerProductsInstalled()) {
+            return false;
+        }
+
+        if (!class_exists('QUI\ERP\Products\Handler\Fields')) {
             return false;
         }
 
