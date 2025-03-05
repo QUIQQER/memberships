@@ -1223,7 +1223,7 @@ class MembershipUser extends Child
     {
         return $this->verificationFactory->createLinkVerification(
             'quiqqer-memberships-users-cancel-abort-' . $this->id,
-            new CancelVerification(),
+            new AbortCancelVerification(),
             [
                 'membershipUserId' => $this->id
             ],

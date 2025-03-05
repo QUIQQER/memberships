@@ -228,7 +228,7 @@ define('package/quiqqer/memberships/bin/controls/profile/UserProfile', [
             }
 
             // if autoextend and not cancelled -> hide endDate
-            if (Membership.cancelStatus == 0) {
+            if (!Membership.cancelled && Membership.cancelStatus == 0) {
                 var CancelContainer = MembershipElm.getElement('.quiqqer-memberships-profile-userprofile-btn');
 
                 // cancel btn
