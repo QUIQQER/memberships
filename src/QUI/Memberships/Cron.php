@@ -34,6 +34,7 @@ class Cron
         $cancelConfirmReminderAfterDays = (int)MembershipUsersHandler::getSetting('cancelReminderDays');
         $Now = date_create();
         $isLinkedToContracts = Handler::isLinkedToContracts();
+        $users = QUI::getUsers();
 
         foreach ($result as $row) {
             try {
@@ -42,7 +43,7 @@ class Cron
                 $Membership = $MembershipUser->getMembership();
 
                 try {
-                    $MembershipUser->getUser();
+                    $users->get($MembershipUser->getUserId());
                 } catch (QUI\Users\Exception $Exception) {
                     // archive MembershipUser if QUIQQER User cannot be found
                     if ($Exception->getCode() === 404) {
