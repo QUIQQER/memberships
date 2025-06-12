@@ -140,6 +140,7 @@ class Handler extends Factory
         // if the user is already in the membership -> extend runtime
         if ($Membership->hasMembershipUserId($User->getId())) {
             $MembershipUser = $Membership->getMembershipUser($User->getId());
+            $MembershipUser->setEditUser($PermissionUser);
             $MembershipUser->extend(false);
 
             return $MembershipUser;
