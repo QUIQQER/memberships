@@ -1,5 +1,5 @@
 {
-    "name": "quiqqer\/memberships",
+    "name": "quiqqer/memberships",
     "type": "quiqqer-module",
     "description": "Create and manage memberships for your users. With memberships you can grant your users permissions for set periods of time in your system. In conjunction with the QUIQQER ERP system, this module also enables automated linking of memberships with products, so that you can offer memberships for sale.",
     "license": [
@@ -8,22 +8,64 @@
     ],
     "authors": [
         {
-            "name": "Patrick M\u00fcller",
+            "name": "Patrick Müller",
             "email": "info@pcsg.de",
-            "homepage": "https:\/\/www.pcsg.de",
+            "homepage": "https://www.pcsg.de",
             "role": "Developer"
         }
     ],
     "support": {
         "email": "support@pcsg.de",
-        "url": "http:\/\/www.pcsg.de"
+        "url": "http://www.pcsg.de"
     },
     "require": {
-        "quiqqer\/verification": "^1.3|*@dev"
+        "quiqqer/verification": "^1.3|*@dev"
     },
     "autoload": {
         "psr-4": {
-            "QUI\\Memberships\\": "src\/QUI\/Memberships"
+            "QUI\\Memberships\\": "src/QUI/Memberships"
         }
+    },
+    "scripts": {
+        "test": [
+            "@dev:lint",
+            "@dev:phpunit"
+        ],
+        "dev:phpunit": "./tools/phpunit",
+        "dev:lint": [
+            "@dev:lint:phpstan",
+            "@dev:lint:style"
+        ],
+        "dev:lint:phpstan": "./tools/phpstan",
+        "dev:lint:style": "./tools/phpcs",
+        "dev:lint:style:fix": "./tools/phpcbf",
+        "dev:init": [
+            "@dev:init:check-requirements",
+            "@dev:init:tools",
+            "@dev:init:git-hooks"
+        ],
+        "dev:init:check-requirements": [
+            "which composer > /dev/null || (echo 'Error: composer has to be globally installed'; exit 1)",
+            "which phive > /dev/null || (echo 'Error: PHIVE has to be globally installed'; exit 1)"
+        ],
+        "dev:init:tools": "phive install --temporary",
+        "dev:init:git-hooks": "./tools/captainhook install --only-enabled --force"
+    },
+    "scripts-aliases": {
+        "test": [
+            "dev:test"
+        ]
+    },
+    "scripts-descriptions": {
+        "test": "Runs linting, static analysis, and unit tests.",
+        "dev:phpunit": "Run PHPUnit test suites",
+        "dev:lint": "Run PHPStan and code style check",
+        "dev:lint:phpstan": "Run PHPStan",
+        "dev:lint:style": "Run code style check (PHP_CodeSniffer)",
+        "dev:lint:style:fix": "Try to fix code style errors automatically",
+        "dev:init": "Initialize the developer tooling (tools and git hooks)",
+        "dev:init:check-requirements": "Check if the necessary requirements are met",
+        "dev:init:tools": "Install all developer tools (requires PHIVE)",
+        "dev:init:git-hooks": "Install all git hooks (may require tools to be installed)"
     }
 }

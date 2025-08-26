@@ -1,0 +1,15 @@
+includes:
+	- phpstan-baseline.neon
+
+parameters:
+    level: 5
+    paths:
+        - src
+        - ajax
+    excludePaths:
+        - src/QUI/Memberships/Events.php
+        - src/QUI/Memberships/Controls/Profile/Memberships.php
+        - src/QUI/Memberships/Products/MembershipField.php
+    bootstrapFiles:
+        - tests/phpstan-bootstrap.php
+    tipsOfTheDay: false
