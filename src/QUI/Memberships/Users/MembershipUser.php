@@ -2,6 +2,7 @@
 
 namespace QUI\Memberships\Users;
 
+use DateTimeInterface;
 use QUI;
 use QUI\CRUD\Child;
 use QUI\ERP\Accounting\Contracts\Handler as ContractsHandler;
@@ -221,6 +222,10 @@ class MembershipUser extends Child
         }
 
         try {
+            if (!$this->getUser()) {
+                return;
+            }
+
             $subject = $this->getUser()->getLocale()->get(
                 'quiqqer/memberships',
                 'templates.mail.autoextend.subject'
@@ -362,10 +367,11 @@ class MembershipUser extends Child
      *
      * A user CANNOT revoke a cancellation executed this way!
      *
+     * @param DateTimeInterface|null $endDate - Explicit date when the membership should end
      * @return void
      * @throws \Exception
      */
-    public function autoCancel()
+    public function autoCancel(?DateTimeInterface $endDate = null): void
     {
         if ($this->isCancelled()) {
             return;
@@ -395,6 +401,10 @@ class MembershipUser extends Child
 
         // save cancel hash and date to database
         $this->setEditUser(QUI::getUsers()->getSystemUser());
+
+        if ($endDate) {
+            $this->setAttribute('endDate', $endDate->format('Y-m-d H:i:s'));
+        }
 
         try {
             $this->update();

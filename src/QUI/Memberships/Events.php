@@ -15,6 +15,8 @@ use QUI\Memberships\Products\MembershipField;
 use QUI\Memberships\Users\Handler as MembershipUsersHandler;
 use QUI\Package\Package;
 
+use function date_create;
+
 /**
  * Class Events
  *
@@ -526,7 +528,7 @@ class Events
         }
 
         try {
-            $MembershipUser->autoCancel();
+            $MembershipUser->autoCancel($Contract->getTerminationDate());
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }
