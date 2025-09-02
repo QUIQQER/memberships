@@ -541,7 +541,7 @@ class Events
         }
 
         try {
-            $MembershipUser->autoCancel();
+            $MembershipUser->autoCancel($Contract->getTerminationDate());
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }
