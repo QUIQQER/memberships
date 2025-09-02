@@ -13,7 +13,7 @@ use QUI\Memberships\Users\Handler as MembershipUsersHandler;
 use QUI\Memberships\Utils;
 use QUI\Permissions\Permission;
 
-use function is_string;
+use function is_numeric;
 
 class Handler extends Factory
 {
@@ -225,11 +225,8 @@ class Handler extends Factory
      */
     public function getMembershipUsersByUserId(int | string $userId, bool $includeArchived = false): array
     {
-        if (is_string($userId)) {
-            try {
-                $userId = QUI::getUsers()->get($userId)->getId();
-            } catch (QUI\Exception) {
-            }
+        if (is_numeric($userId)) {
+            $userId = (int)$userId;
         }
 
         $where = [
