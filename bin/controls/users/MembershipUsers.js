@@ -289,6 +289,7 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
 
             MembershipUsersHandler.getList(this.$Membership.id, SearchParams).then(function (ResultData) {
                 self.Loader.hide();
+                self.$Grid.hideLoader();
                 self.$setGridData(ResultData);
             });
         },
@@ -433,6 +434,7 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
             var deleteData = [];
             var deleteIds  = [];
             var rows       = this.$Grid.getSelectedData();
+            var Popup;
 
             if (!rows.length) {
                 return;
@@ -446,40 +448,39 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
                 deleteIds.push(rows[i].id);
             }
 
-            // open popup
-            var Popup = new QUIConfirm({
-                'maxHeight': 300,
-                'autoclose': true,
-
-                'information': QUILocale.get(
+            Popup = new QUIConfirm({
+                maxHeight  : 320,
+                maxWidth   : 640,
+                autoclose  : true,
+                text       : QUILocale.get(lg, 'controls.membershipusers.delete.popup.text'),
+                information: QUILocale.get(
                     lg,
                     'controls.membershipusers.delete.popup.info', {
                         users: deleteData.join('<br/>')
                     }
                 ),
-                'title'      : QUILocale.get(lg, 'controls.membershipusers.delete.popup.title'),
-                'texticon'   : 'fa fa-trash',
-                'icon'       : 'fa fa-trash',
-
+                title      : QUILocale.get(lg, 'controls.membershipusers.delete.popup.title'),
+                texticon   : 'fa fa-trash',
+                icon       : 'fa fa-trash',
                 cancel_button: {
-                    text     : false,
-                    textimage: 'icon-remove fa fa-remove'
+                    text     : QUILocale.get(lg, 'controls.membershipusers.delete.popup.cancel.btn'),
+                    textimage: 'fa fa-times'
                 },
                 ok_button    : {
-                    text     : false,
-                    textimage: 'icon-ok fa fa-check'
+                    text     : QUILocale.get(lg, 'controls.membershipusers.delete.popup.remove.btn'),
+                    textimage: 'fa fa-trash'
                 },
                 events       : {
                     onSubmit: function () {
-                        Popup.Loader.show();
+                        Popup.close();
+                        self.$Grid.showLoader();
 
                         MembershipUsersHandler.deleteMembershipUsers(deleteIds).then(function (success) {
                             if (!success) {
-                                Popup.Loader.hide();
+                                self.$Grid.hideLoader();
                                 return;
                             }
 
-                            Popup.close();
                             self.refresh();
                         });
                     }
