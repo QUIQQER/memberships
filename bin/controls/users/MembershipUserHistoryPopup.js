@@ -5,18 +5,18 @@
  */
 define('package/quiqqer/memberships/bin/controls/users/MembershipUserHistoryPopup', [
 
-    'qui/controls/windows/Popup',
+    'qui/controls/windows/SimpleWindow',
     'package/quiqqer/memberships/bin/controls/users/MembershipUserHistory',
     'Locale'
 
-], function (QUIPopup, MembershipUserHistory, QUILocale) {
+], function (QUISimpleWindow, MembershipUserHistory, QUILocale) {
     "use strict";
 
     const lg = 'quiqqer/memberships';
 
     return new Class({
 
-        Extends: QUIPopup,
+        Extends: QUISimpleWindow,
         Type: 'package/quiqqer/memberships/bin/controls/users/MembershipUserHistoryPopup',
 
         Binds: [
@@ -25,14 +25,13 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserHistoryPopu
 
         options: {
             membershipUserId: false, // ID of MembershipUser (this is NOT the QUIQQER User ID!)
-            maxWidth: 550,
-            maxHeight: 500,
+            maxWidth: 760,
+            maxHeight: 620,
+            contentPadding: true,
             icon: 'fa fa-history',
             title: QUILocale.get(lg, 'controls.users.membershipuserhistorypopup.title'),
             'class': 'quiqqer-memberships-membershipuserhistorypopup',
-
-            // buttons
-            closeButtonText: QUILocale.get('quiqqer/translator', 'edit.btn.close')
+            mobileMode: 'popup'
         },
 
         initialize: function (options) {

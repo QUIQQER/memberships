@@ -87,12 +87,35 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserHistory', [
         $load: function () {
             const lgPrefix = 'controls.users.membershipuserhistory.template.';
             let username = this.$MembershipUser.fullName;
+            const getEntryTone = (type) => {
+                switch (type) {
+                    case 'created':
+                    case 'extended':
+                    case 'uncancel_by_edit':
+                    case 'cancel_abort_confirm':
+                        return 'success';
+
+                    case 'cancel_start':
+                    case 'cancel_system':
+                    case 'cancel_confirm':
+                    case 'cancelled':
+                    case 'cancel_by_edit':
+                    case 'cancel_abort_start':
+                        return 'warning';
+
+                    case 'deleted':
+                    case 'archived':
+                    case 'expired':
+                        return 'danger';
+
+                    default:
+                        return 'info';
+                }
+            };
 
             if (this.$MembershipUser.username !== this.$MembershipUser.fullName) {
                 username += ' (' + this.$MembershipUser.username + ')';
             }
-
-            username += ' [' + this.$MembershipUser.userId + ']';
 
             this.$Elm.innerHTML = Mustache.render(template, {
                 userLabel: QUILocale.get(lg, lgPrefix + 'userLabel'),
@@ -110,22 +133,36 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserHistory', [
 
             this.$history.forEach((Entry) => {
                 const EntryElm = document.createElement('div');
-                EntryElm.className = 'quiqqer-memberships-membershipuserhistory-history-entry';
+                EntryElm.className = 'quiqqer-memberships-membershipuserhistory-history-entry ' +
+                    'quiqqer-memberships-membershipuserhistory-history-entry--' + getEntryTone(Entry.type);
                 HistoryElm.appendChild(EntryElm);
 
-                // header
                 const HeaderElm = document.createElement('div');
                 HeaderElm.className = 'quiqqer-memberships-membershipuserhistory-history-entry-header';
-                HeaderElm.innerHTML = '<span class="quiqqer-memberships-membershipuserhistory-history-entry-header-action">' +
-                    ' #' + i-- + ' ' +
-                    QUILocale.get(lg, 'controls.users.membershipuserhistory.entry.type.' + Entry.type) +
-                    '</span>' +
-                    '<span class="quiqqer-memberships-membershipuserhistory-history-entry-header-date">' +
-                    Entry.time + '<br>' + Entry.user +
-                    '</span>';
                 EntryElm.appendChild(HeaderElm);
 
-                // body
+                const HeaderMain = document.createElement('div');
+                HeaderMain.className = 'quiqqer-memberships-membershipuserhistory-history-entry-header-main';
+                HeaderElm.appendChild(HeaderMain);
+
+                const IndexElm = document.createElement('span');
+                IndexElm.className = 'quiqqer-memberships-membershipuserhistory-history-entry-number';
+                IndexElm.textContent = 'Eintrag #' + i--;
+                HeaderMain.appendChild(IndexElm);
+
+                const TypeElm = document.createElement('span');
+                TypeElm.className = 'quiqqer-memberships-membershipuserhistory-history-entry-type';
+                TypeElm.textContent = QUILocale.get(
+                    lg,
+                    'controls.users.membershipuserhistory.entry.type.' + Entry.type
+                );
+                HeaderMain.appendChild(TypeElm);
+
+                const MetaElm = document.createElement('div');
+                MetaElm.className = 'quiqqer-memberships-membershipuserhistory-history-entry-meta';
+                MetaElm.textContent = Entry.time + ' | ' + Entry.user.replace(/\s*\(\d+\)\s*$/, '');
+                HeaderElm.appendChild(MetaElm);
+
                 if (Entry.msg !== '') {
                     let msg = Entry.msg;
 
@@ -138,7 +175,9 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserHistory', [
 
                     const BodyElm = document.createElement('div');
                     BodyElm.className = 'quiqqer-memberships-membershipuserhistory-history-entry-body';
-                    BodyElm.innerHTML = '<pre>' + msg + '</pre>';
+                    const PreElm = document.createElement('pre');
+                    PreElm.textContent = msg;
+                    BodyElm.appendChild(PreElm);
                     EntryElm.appendChild(BodyElm);
                 }
             });
