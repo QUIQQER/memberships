@@ -2,24 +2,6 @@
  * MembershipUsersArchive JavaScript Control
  *
  * View data from archived membership users
- *
- * @module package/quiqqer/memberships/bin/controls/users/MembershipUsersArchive
- * @author www.pcsg.de (Patrick Müller)
- *
- * @require qui/controls/Control
- * @require qui/controls/loader/Loader
- * @require qui/controls/windows/Popup
- * @require qui/controls/windows/Confirm
- * @require qui/controls/buttons/Button
- * @require utils/Controls
- * @require controls/grid/Grid
- * @require package/quiqqer/memberships/bin/Licenses
- * @require package/quiqqer/memberships/bin/controls/LicenseBundles
- * @require Locale
- * @require Ajax
- * @require Mustache
- * @require text!package/quiqqer/memberships/bin/controls/users/MembershipUsersArchive.html
- * @require css!package/quiqqer/memberships/bin/controls/users/MembershipUsersArchive.css
  */
 define('package/quiqqer/memberships/bin/controls/users/MembershipUsersArchive', [
 
@@ -50,12 +32,12 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsersArchive', 
              MembershipUserHistory, QUILocale, QUIAjax, Mustache, template) {
     "use strict";
 
-    var lg = 'quiqqer/memberships';
+    const lg = 'quiqqer/memberships';
 
     return new Class({
 
         Extends: QUIControl,
-        Type   : 'package/quiqqer/memberships/bin/controls/users/MembershipUsersArchive',
+        Type: 'package/quiqqer/memberships/bin/controls/users/MembershipUsersArchive',
 
         Binds: [
             '$onInject',
@@ -73,9 +55,9 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsersArchive', 
         initialize: function (options) {
             this.parent(options);
 
-            this.Loader      = new QUILoader();
-            this.$User       = null;
-            this.$Grid       = null;
+            this.Loader = new QUILoader();
+            this.$User = null;
+            this.$Grid = null;
             this.$GridParent = null;
             this.$FormParent = null;
             this.$Membership = null;
@@ -90,8 +72,6 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsersArchive', 
          * Event: onImport
          */
         $onInject: function () {
-            var self = this;
-
             this.$Elm.addClass('quiqqer-memberships-membershipusersarchive');
 
             this.Loader.inject(this.$Elm);
@@ -100,16 +80,16 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsersArchive', 
             // if control is injected in a panel, register onResize event
             QUIControlUtils.getControlByElement(
                 this.$Elm.getParent('.qui-panel')
-            ).then(function (Panel) {
-                Panel.addEvent('onResize', self.$onResize);
+            ).then((Panel) => {
+                Panel.addEvent('onResize', this.$onResize);
             }, function () {
                 // do nothing if no panel found
             });
 
-            Memberships.getMembership(this.getAttribute('membershipId')).then(function (Membership) {
-                self.Loader.hide();
-                self.$Membership = Membership;
-                self.$load();
+            Memberships.getMembership(this.getAttribute('membershipId')).then((Membership) => {
+                this.Loader.hide();
+                this.$Membership = Membership;
+                this.$load();
             });
         },
 
@@ -118,7 +98,7 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsersArchive', 
          */
         $onResize: function () {
             if (this.$Grid && this.$GridParent) {
-                this.$Grid.setHeight(this.$GridParent.getSize().y);
+                this.$Grid.setHeight(this.$GridParent.clientHeight);
                 this.$Grid.resize();
             }
         },
@@ -127,75 +107,73 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsersArchive', 
          * Create elements
          */
         $load: function () {
-            var self = this;
+            this.$Elm.innerHTML = Mustache.render(template);
 
-            this.$Elm.set('html', Mustache.render(template));
-
-            this.$GridParent = this.$Elm.getElement(
+            this.$GridParent = this.$Elm.querySelector(
                 '.quiqqer-memberships-membershipusersarchive-table'
             );
 
             this.$Grid = new Grid(this.$GridParent, {
-                buttons          : [{
-                    name     : 'history',
-                    text     : QUILocale.get(lg, 'controls.users.membershipusersarchive.tbl.btn.history'),
+                buttons: [{
+                    name: 'history',
+                    text: QUILocale.get(lg, 'controls.users.membershipusersarchive.tbl.btn.history'),
                     textimage: 'fa fa-history',
-                    events   : {
+                    events: {
                         onClick: this.$showHistory
                     }
                 }],
-                columnModel      : [{
-                    header   : QUILocale.get('quiqqer/system', 'id'),
+                columnModel: [{
+                    header: QUILocale.get('quiqqer/system', 'id'),
                     dataIndex: 'id',
-                    dataType : 'number',
-                    width    : 100
+                    dataType: 'number',
+                    width: 100
                 }, {
-                    header   : QUILocale.get(lg, 'controls.membershipusers.tbl.header.userId'),
+                    header: QUILocale.get(lg, 'controls.membershipusers.tbl.header.userId'),
                     dataIndex: 'userId',
-                    dataType : 'number',
-                    width    : 100
+                    dataType: 'number',
+                    width: 100
                 }, {
-                    header   : QUILocale.get(lg, 'controls.membershipusers.tbl.header.username'),
+                    header: QUILocale.get(lg, 'controls.membershipusers.tbl.header.username'),
                     dataIndex: 'username',
-                    dataType : 'string',
-                    width    : 150
+                    dataType: 'string',
+                    width: 150
                 }, {
-                    header   : QUILocale.get(lg, 'controls.membershipusers.tbl.header.userFirstname'),
+                    header: QUILocale.get(lg, 'controls.membershipusers.tbl.header.userFirstname'),
                     dataIndex: 'firstname',
-                    dataType : 'string',
-                    width    : 100
+                    dataType: 'string',
+                    width: 100
                 }, {
-                    header   : QUILocale.get(lg, 'controls.membershipusers.tbl.header.userLastname'),
+                    header: QUILocale.get(lg, 'controls.membershipusers.tbl.header.userLastname'),
                     dataIndex: 'lastname',
-                    dataType : 'string',
-                    width    : 100
+                    dataType: 'string',
+                    width: 100
                 }, {
-                    header   : QUILocale.get(lg, 'controls.membershipusers.tbl.header.addedDate'),
+                    header: QUILocale.get(lg, 'controls.membershipusers.tbl.header.addedDate'),
                     dataIndex: 'addedDate',
-                    dataType : 'string',
-                    width    : 150
+                    dataType: 'string',
+                    width: 150
                 }, {
-                    header   : QUILocale.get(lg, 'controls.users.membershipusersarchive.tbl.header.archiveDate'),
+                    header: QUILocale.get(lg, 'controls.users.membershipusersarchive.tbl.header.archiveDate'),
                     dataIndex: 'archiveDate',
-                    dataType : 'string',
-                    width    : 150
+                    dataType: 'string',
+                    width: 150
                 }, {
-                    header   : QUILocale.get(lg, 'controls.users.membershipusersarchive.tbl.header.archiveReason'),
+                    header: QUILocale.get(lg, 'controls.users.membershipusersarchive.tbl.header.archiveReason'),
                     dataIndex: 'archiveReason',
-                    dataType : 'string',
-                    width    : 200
+                    dataType: 'string',
+                    width: 200
                 }],
-                pagination       : true,
-                serverSort       : true,
-                selectable       : true,
+                pagination: true,
+                serverSort: true,
+                selectable: true,
                 multipleSelection: false
             });
 
             this.$Grid.addEvents({
-                onDblClick: self.$showHistory,
-                onClick   : function () {
-                    var TableButtons = self.$Grid.getAttribute('buttons');
-                    var selected     = self.$Grid.getSelectedData().length;
+                onDblClick: this.$showHistory,
+                onClick: () => {
+                    const TableButtons = this.$Grid.getAttribute('buttons');
+                    const selected = this.$Grid.getSelectedData().length;
 
                     if (selected === 1) {
                         TableButtons.history.enable();
@@ -203,7 +181,7 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsersArchive', 
                         TableButtons.history.disable();
                     }
                 },
-                onRefresh : this.$listRefresh
+                onRefresh: this.$listRefresh
             });
 
             this.resize();
@@ -227,16 +205,15 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsersArchive', 
                 return;
             }
 
-            var self         = this;
-            var TableButtons = this.$Grid.getAttribute('buttons');
+            const TableButtons = this.$Grid.getAttribute('buttons');
 
             TableButtons.history.disable();
 
-            var SearchParams = {
-                sortOn : Grid.getAttribute('sortOn'),
-                sortBy : Grid.getAttribute('sortBy'),
+            const SearchParams = {
+                sortOn: Grid.getAttribute('sortOn'),
+                sortBy: Grid.getAttribute('sortBy'),
                 perPage: Grid.getAttribute('perPage'),
-                page   : Grid.getAttribute('page')
+                page: Grid.getAttribute('page')
             };
 
             if (this.$search) {
@@ -245,9 +222,9 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsersArchive', 
 
             this.Loader.show();
 
-            MembershipUsersHandler.getArchiveList(this.$Membership.id, SearchParams).then(function (ResultData) {
-                self.Loader.hide();
-                self.$setGridData(ResultData);
+            MembershipUsersHandler.getArchiveList(this.$Membership.id, SearchParams).then((ResultData) => {
+                this.Loader.hide();
+                this.$setGridData(ResultData);
             });
         },
 
@@ -257,8 +234,8 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsersArchive', 
          * @param {Object} GridData
          */
         $setGridData: function (GridData) {
-            for (var i = 0, len = GridData.data.length; i < len; i++) {
-                var Row = GridData.data[i];
+            for (let i = 0, len = GridData.data.length; i < len; i++) {
+                const Row = GridData.data[i];
 
                 Row.archiveReason = QUILocale.get(lg,
                     'controls.users.membershipusersarchive.tbl.archiveReason.' + Row.archiveReason
@@ -272,7 +249,7 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsersArchive', 
          * Show history
          */
         $showHistory: function () {
-            var membershipUserId = this.$Grid.getSelectedData()[0].id;
+            const membershipUserId = this.$Grid.getSelectedData()[0].id;
 
             require([
                 'package/quiqqer/memberships/bin/controls/users/MembershipUserHistoryPopup'
@@ -288,7 +265,7 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsersArchive', 
          *
          * @param {String} search
          */
-        setSearchTerm: function(search) {
+        setSearchTerm: function (search) {
             if (!search || search === '') {
                 this.$search = false;
                 return;

@@ -620,6 +620,18 @@
             <de><![CDATA[Benutzer aus Mitgliedschaft entfernen]]></de>
             <en><![CDATA[Remove user(s) from membership]]></en>
         </locale>
+        <locale name="controls.membershipusers.delete.popup.text">
+            <de><![CDATA[Benutzer wirklich aus der Mitgliedschaft entfernen?]]></de>
+            <en><![CDATA[Really remove user(s) from the membership?]]></en>
+        </locale>
+        <locale name="controls.membershipusers.delete.popup.remove.btn">
+            <de><![CDATA[Entfernen]]></de>
+            <en><![CDATA[Remove]]></en>
+        </locale>
+        <locale name="controls.membershipusers.delete.popup.cancel.btn">
+            <de><![CDATA[Abbrechen]]></de>
+            <en><![CDATA[Cancel]]></en>
+        </locale>
         <locale name="controls.membershipusers.edit.popup.title">
             <de><![CDATA[Mitgliedschafts-Benutzer bearbeiten]]></de>
             <en><![CDATA[Edit membership user]]></en>
@@ -763,6 +775,10 @@
         <locale name="controls.users.membershipuseredit.template.header">
             <de><![CDATA[Mitgliedschafts-Benutzer [name] (#[id])]]></de>
             <en><![CDATA[Membership user [name] (#[id])]]></en>
+        </locale>
+        <locale name="controls.users.membershipuseredit.template.info">
+            <de><![CDATA[Sie koennen hier den aktuellen Mitgliedschaftszeitraum anpassen oder den Benutzer als gekuendigt markieren.]]></de>
+            <en><![CDATA[Here you can adjust the current membership period or mark the user as cancelled.]]></en>
         </locale>
         <locale name="controls.users.membershipuseredit.btn.save">
             <de><![CDATA[Benutzerdaten speichern]]></de>

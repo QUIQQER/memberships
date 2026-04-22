@@ -1,52 +1,163 @@
 .quiqqer-memberships-membershipuserhistory {
-    float: left;
-    height: 100%;
-    width: 100%
-}
-
-.quiqqer-memberships-membershipuserhistory-history {
-    float: left;
-    margin-top: 20px;
+    display: inline-block;
     width: 100%;
 }
 
-.quiqqer-memberships-membershipuserhistory-user {
-    float: left;
+.quiqqer-memberships-membershipuserhistorypopup .qui-window-popup-content {
+    padding: 24px;
+}
+
+.quiqqer-memberships-membershipuserhistory-summary {
+    align-items: flex-start;
+    background: linear-gradient(180deg, #fbfcfd 0%, #f3f6f8 100%);
+    border: 1px solid #d9e1e7;
+    border-radius: 8px;
+    display: flex;
+    gap: 16px;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding: 16px 18px;
+}
+
+.quiqqer-memberships-membershipuserhistory-summary-data {
+    flex: 1 1 auto;
+    min-width: 0;
 }
 
 .quiqqer-memberships-membershipuserhistory-extrabtn {
-    float: right;
+    flex: 0 0 auto;
+}
+
+.quiqqer-memberships-membershipuserhistory-summary-row:not(:last-child) {
+    margin-bottom: 8px;
+}
+
+.quiqqer-memberships-membershipuserhistory-summary-label {
+    color: #4f6b7d;
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    margin-right: 8px;
+    text-transform: uppercase;
+}
+
+.quiqqer-memberships-membershipuserhistory-summary-value {
+    color: #2f3740;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.quiqqer-memberships-membershipuserhistory-history {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
 }
 
 .quiqqer-memberships-membershipuserhistory-history-entry {
-    float: left;
-    width: 100%;
+    background: #fff;
+    border: 1px solid #dce4ea;
+    border-left: 4px solid #4f7c8f;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(34, 51, 68, 0.06);
+    overflow: hidden;
 }
 
-.quiqqer-memberships-membershipuserhistory-history-entry:not(:last-of-type) {
-    margin-bottom: 10px;
+.quiqqer-memberships-membershipuserhistory-history-entry--success {
+    border-left-color: #3d8b5a;
 }
 
-.quiqqer-memberships-membershipuserhistory-history-entry-header-action {
-    float: left;
-    font-weight: 900;
+.quiqqer-memberships-membershipuserhistory-history-entry--warning {
+    border-left-color: #b7831f;
 }
 
-.quiqqer-memberships-membershipuserhistory-history-entry-header-date {
-    float: right;
-    font-size: 10px;
+.quiqqer-memberships-membershipuserhistory-history-entry--danger {
+    border-left-color: #b55252;
 }
 
 .quiqqer-memberships-membershipuserhistory-history-entry-header {
-    background-color: #dedede;
-    float: left;
-    padding: 2px 5px;
-    width: 100%;
+    align-items: flex-start;
+    background: #f7f9fb;
+    border-bottom: 1px solid #e4ebf0;
+    display: flex;
+    gap: 14px;
+    justify-content: space-between;
+    padding: 12px 14px;
+}
+
+.quiqqer-memberships-membershipuserhistory-history-entry-header-main {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-width: 0;
+}
+
+.quiqqer-memberships-membershipuserhistory-history-entry-number {
+    color: #6a7782;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.quiqqer-memberships-membershipuserhistory-history-entry-type {
+    background: #dbe8ef;
+    border-radius: 999px;
+    color: #24485c;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.2;
+    padding: 5px 10px;
+}
+
+.quiqqer-memberships-membershipuserhistory-history-entry--success .quiqqer-memberships-membershipuserhistory-history-entry-type {
+    background: #dcefe3;
+    color: #24543a;
+}
+
+.quiqqer-memberships-membershipuserhistory-history-entry--warning .quiqqer-memberships-membershipuserhistory-history-entry-type {
+    background: #f7ecd1;
+    color: #775819;
+}
+
+.quiqqer-memberships-membershipuserhistory-history-entry--danger .quiqqer-memberships-membershipuserhistory-history-entry-type {
+    background: #f7dfdf;
+    color: #7d3636;
+}
+
+.quiqqer-memberships-membershipuserhistory-history-entry-meta {
+    color: #6a7782;
+    flex: 0 0 auto;
+    font-size: 12px;
+    line-height: 1.45;
+    text-align: right;
 }
 
 .quiqqer-memberships-membershipuserhistory-history-entry-body {
-    background-color: #ededed;
-    float: left;
-    padding: 10px;
-    width: 100%;
+    color: #2f3740;
+    padding: 14px;
+}
+
+.quiqqer-memberships-membershipuserhistory-history-entry-body pre {
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 13px;
+    margin: 0;
+    overflow: auto;
+    padding: 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+@media (max-width: 767px) {
+    .quiqqer-memberships-membershipuserhistory-summary,
+    .quiqqer-memberships-membershipuserhistory-history-entry-header {
+        flex-direction: column;
+    }
+
+    .quiqqer-memberships-membershipuserhistory-history-entry-meta {
+        text-align: left;
+    }
 }
