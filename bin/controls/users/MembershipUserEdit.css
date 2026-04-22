@@ -1,8 +1,126 @@
-.quiqqer-memberships-membershipuseredit {
-    float: left;
+.quiqqer-memberships-membershipuseredit form {
+    margin: 0;
+}
+
+.quiqqer-memberships-membershipuseredit-field {
+    margin-bottom: 18px;
+}
+
+.quiqqer-memberships-membershipuseredit-field:first-child {
+    margin-top: 10px;
+}
+
+.quiqqer-memberships-membershipuseredit-label {
+    color: #666;
+    display: block;
+    font-size: 14px;
+    line-height: 1.4;
+    margin: 0;
+    padding: 0 0 8px;
+}
+
+.quiqqer-memberships-membershipuseredit-input {
+    border: 1px solid #d9d9d9;
+    box-sizing: border-box;
+    display: block;
+    margin: 0;
+    min-width: 0;
+    padding: 10px 12px;
     width: 100%;
 }
 
+.quiqqer-memberships-membershipuseredit-field-checkbox {
+    margin-bottom: 0;
+    padding-top: 4px;
+}
+
+.quiqqer-memberships-membershipuseredit-checkbox-wrap {
+    align-items: center;
+    display: flex;
+    gap: 10px;
+    margin: 0;
+    min-height: 40px;
+}
+
+.quiqqer-memberships-membershipuseredit-checkbox {
+    height: 20px;
+    margin: 0;
+    width: 20px;
+}
+
+.quiqqer-memberships-membershipuseredit-checkbox-label {
+    color: #666;
+    line-height: 1.4;
+}
+
 .quiqqer-memberships-membershipuseredit-submit {
-    float: right;
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 16px;
+}
+
+.quiqqer-memberships-membershipuseredit-submit:empty {
+    display: none;
+}
+
+.quiqqer-memberships-membershipuseredit-confirm .qui-window-popup-content {
+    padding: 20px 24px 24px;
+}
+
+.quiqqer-memberships-membershipuseredit-confirm .submit-body {
+    display: flex;
+    float: none;
+    gap: 18px;
+    margin-bottom: 18px;
+    width: 100%;
+}
+
+.quiqqer-memberships-membershipuseredit-confirm .submit-body .texticon {
+    color: #2f3740;
+    float: none;
+    flex: 0 0 auto;
+    font-size: 48px;
+    line-height: 1;
+    margin: 2px 0 0;
+    width: auto;
+}
+
+.quiqqer-memberships-membershipuseredit-confirm .submit-body .textbody {
+    float: none;
+    flex: 1 1 auto;
+    min-width: 0;
+    width: auto;
+}
+
+.quiqqer-memberships-membershipuseredit-confirm .submit-body .text {
+    color: #444;
+    font-size: 22px;
+    line-height: 1.35;
+    margin: 0 0 10px;
+}
+
+.quiqqer-memberships-membershipuseredit-confirm .submit-body .information {
+    color: #666;
+    line-height: 1.5;
+    margin-top: 0;
+}
+
+.quiqqer-memberships-membershipuseredit-confirm .submit-body {
+    align-items: flex-start;
+    display: flex;
+    gap: 18px;
+    margin-bottom: 18px;
+}
+
+.quiqqer-memberships-membershipuseredit-confirm .submit-body .texticon {
+    color: #2f3740;
+    flex: 0 0 auto;
+    font-size: 48px;
+    line-height: 1;
+    margin-top: 2px;
+}
+
+.quiqqer-memberships-membershipuseredit-confirm .submit-body .textbody {
+    flex: 1 1 auto;
+    min-width: 0;
 }

@@ -414,16 +414,30 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
 
             const membershipUserId = data[0].id;
 
-            // open popup
-            const Popup = new QUIPopup({
-                'maxHeight': 335,
-                maxWidth: 500,
+            const Popup = new QUIConfirm({
+                'class': 'quiqqer-memberships-membershipuseredit-confirm',
+                'maxHeight': 600,
+                maxWidth: 460,
                 'autoclose': false,
                 'title': QUILocale.get(lg, 'controls.membershipusers.edit.popup.title'),
-                'texticon': 'fa fa-edit',
+                'text': QUILocale.get(lg, 'controls.users.membershipuseredit.template.header', {
+                    id: data[0].id,
+                    name: data[0].username
+                }),
+                'information': QUILocale.get(
+                    lg,
+                    'controls.users.membershipuseredit.template.info'
+                ),
+                'texticon': false,
                 'icon': 'fa fa-edit',
-
-                buttons: true,
+                cancel_button: {
+                    text: QUILocale.get(lg, 'controls.membershipusers.delete.popup.cancel.btn'),
+                    textimage: 'fa fa-times'
+                },
+                ok_button: {
+                    text: QUILocale.get(lg, 'controls.users.membershipuseredit.btn.save'),
+                    textimage: 'fa fa-save'
+                },
                 events: {
                     onOpen: () => {
                         EditControl = new MembershipUserEdit({
@@ -438,24 +452,18 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
                         }).inject(
                             Popup.getContent()
                         );
+                    },
+                    onSubmit: () => {
+                        if (!EditControl) {
+                            return;
+                        }
+
+                        EditControl.submit();
                     }
                 }
             });
 
             Popup.open();
-
-            Popup.addButton(new QUIButton({
-                text: QUILocale.get(lg, 'controls.membershipusers.edit.popup.save.btn'),
-                textimage: 'fa fa-save',
-                events: {
-                    onClick: () => {
-                        Popup.Loader.show();
-                        EditControl.submit().then(() => {
-                            Popup.close();
-                        });
-                    }
-                }
-            }));
         },
 
         /**

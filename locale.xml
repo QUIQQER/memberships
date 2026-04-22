@@ -776,6 +776,10 @@
             <de><![CDATA[Mitgliedschafts-Benutzer [name] (#[id])]]></de>
             <en><![CDATA[Membership user [name] (#[id])]]></en>
         </locale>
+        <locale name="controls.users.membershipuseredit.template.info">
+            <de><![CDATA[Sie koennen hier den aktuellen Mitgliedschaftszeitraum anpassen oder den Benutzer als gekuendigt markieren.]]></de>
+            <en><![CDATA[Here you can adjust the current membership period or mark the user as cancelled.]]></en>
+        </locale>
         <locale name="controls.users.membershipuseredit.btn.save">
             <de><![CDATA[Benutzerdaten speichern]]></de>
             <en><![CDATA[Save user data]]></en>

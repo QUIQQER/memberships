@@ -62,12 +62,19 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserEdit', [
          */
         $onCreate: function () {
             this.$Elm.addClass('quiqqer-memberships-membershipuseredit');
+            this.$Elm.setStyles({
+                display: 'inline-block',
+                width: '100%'
+            });
         },
 
         /**
          * Event: onImport
          */
         $onInject: function () {
+            this.$Elm.style.display = 'inline-block';
+            this.$Elm.style.width = '100%';
+
             this.Loader.inject(this.$Elm);
             this.refresh();
         },
@@ -94,10 +101,6 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserEdit', [
             const lgPrefix = 'controls.users.membershipuseredit.template.';
 
             this.$Elm.innerHTML = Mustache.render(template, {
-                header: QUILocale.get(lg, lgPrefix + 'header', {
-                    id: this.$MembershipUser.id,
-                    name: this.$MembershipUser.fullName
-                }),
                 labelBeginDate: QUILocale.get(lg, 'controls.membershipusers.tbl.header.beginDate'),
                 labelEndDate: QUILocale.get(lg, 'controls.membershipusers.tbl.header.endDate'),
                 labelCancelled: QUILocale.get(lg, lgPrefix + 'cancelled')
