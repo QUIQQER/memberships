@@ -12,7 +12,7 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserHistoryPopu
 ], function (QUIPopup, MembershipUserHistory, QUILocale) {
     "use strict";
 
-    var lg = 'quiqqer/memberships';
+    const lg = 'quiqqer/memberships';
 
     return new Class({
 

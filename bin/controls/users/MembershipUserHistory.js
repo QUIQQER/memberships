@@ -23,7 +23,7 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserHistory', [
              QUILocale, QUIAjax, Mustache, template) {
     "use strict";
 
-    var lg = 'quiqqer/memberships';
+    const lg = 'quiqqer/memberships';
 
     return new Class({
 
@@ -65,21 +65,19 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserHistory', [
          * Event: onImport
          */
         $onInject: function () {
-            var self = this;
-
             this.Loader.inject(this.$Elm);
             this.Loader.show();
 
-            var mUid = this.getAttribute('membershipUserId');
+            const mUid = this.getAttribute('membershipUserId');
 
             Promise.all([
                 MembershipUsersHandler.get(mUid),
                 MembershipUsersHandler.getHistory(mUid)
-            ]).then(function (result) {
-                self.Loader.hide();
-                self.$MembershipUser = result[0];
-                self.$history = result[1];
-                self.$load();
+            ]).then((result) => {
+                this.Loader.hide();
+                this.$MembershipUser = result[0];
+                this.$history = result[1];
+                this.$load();
             });
         },
 
@@ -87,8 +85,8 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserHistory', [
          * Create elements
          */
         $load: function () {
-            var lgPrefix = 'controls.users.membershipuserhistory.template.';
-            var username = this.$MembershipUser.fullName;
+            const lgPrefix = 'controls.users.membershipuserhistory.template.';
+            let username = this.$MembershipUser.fullName;
 
             if (this.$MembershipUser.username !== this.$MembershipUser.fullName) {
                 username += ' (' + this.$MembershipUser.username + ')';
@@ -96,52 +94,52 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserHistory', [
 
             username += ' [' + this.$MembershipUser.userId + ']';
 
-            this.$Elm.set('html', Mustache.render(template, {
+            this.$Elm.innerHTML = Mustache.render(template, {
                 userLabel: QUILocale.get(lg, lgPrefix + 'userLabel'),
                 membershipLabel: QUILocale.get(lg, lgPrefix + 'membershipLabel'),
                 user: username,
                 membership: this.$MembershipUser.membershipTitle
                     + ' [' + this.$MembershipUser.membershipId + ']'
-            }));
+            });
 
-            var HistoryElm = this.$Elm.getElement(
+            const HistoryElm = this.$Elm.querySelector(
                 '.quiqqer-memberships-membershipuserhistory-history'
             );
 
-            var i = this.$history.length;
+            let i = this.$history.length;
 
-            this.$history.forEach(function (Entry) {
-                var EntryElm = new Element('div', {
-                    'class': 'quiqqer-memberships-membershipuserhistory-history-entry'
-                }).inject(HistoryElm);
+            this.$history.forEach((Entry) => {
+                const EntryElm = document.createElement('div');
+                EntryElm.className = 'quiqqer-memberships-membershipuserhistory-history-entry';
+                HistoryElm.appendChild(EntryElm);
 
                 // header
-                new Element('div', {
-                    'class': 'quiqqer-memberships-membershipuserhistory-history-entry-header',
-                    html: '<span class="quiqqer-memberships-membershipuserhistory-history-entry-header-action">' +
-                        ' #' + i-- + ' ' +
-                        QUILocale.get(lg, 'controls.users.membershipuserhistory.entry.type.' + Entry.type) +
-                        '</span>' +
-                        '<span class="quiqqer-memberships-membershipuserhistory-history-entry-header-date">' +
-                        Entry.time + '<br>' + Entry.user +
-                        '</span>'
-                }).inject(EntryElm);
+                const HeaderElm = document.createElement('div');
+                HeaderElm.className = 'quiqqer-memberships-membershipuserhistory-history-entry-header';
+                HeaderElm.innerHTML = '<span class="quiqqer-memberships-membershipuserhistory-history-entry-header-action">' +
+                    ' #' + i-- + ' ' +
+                    QUILocale.get(lg, 'controls.users.membershipuserhistory.entry.type.' + Entry.type) +
+                    '</span>' +
+                    '<span class="quiqqer-memberships-membershipuserhistory-history-entry-header-date">' +
+                    Entry.time + '<br>' + Entry.user +
+                    '</span>';
+                EntryElm.appendChild(HeaderElm);
 
                 // body
                 if (Entry.msg !== '') {
-                    var msg = Entry.msg;
+                    let msg = Entry.msg;
 
                     try {
-                        var Message = JSON.decode(Entry.msg);
+                        const Message = JSON.parse(Entry.msg);
                         msg = JSON.stringify(Message, null, 2);
                     } catch (e) {
                         // nothing, msg is not JSON formatted
                     }
 
-                    new Element('div', {
-                        'class': 'quiqqer-memberships-membershipuserhistory-history-entry-body',
-                        html: '<pre>' + msg + '</pre>'
-                    }).inject(EntryElm);
+                    const BodyElm = document.createElement('div');
+                    BodyElm.className = 'quiqqer-memberships-membershipuserhistory-history-entry-body';
+                    BodyElm.innerHTML = '<pre>' + msg + '</pre>';
+                    EntryElm.appendChild(BodyElm);
                 }
             });
 
@@ -157,14 +155,14 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserHistory', [
                     onClick: this.$showExtraData
                 }
             }).inject(
-                this.$Elm.getElement(
+                this.$Elm.querySelector(
                     '.quiqqer-memberships-membershipuserhistory-extrabtn'
                 )
             );
         },
 
         $showExtraData: function () {
-            var extraData = JSON.stringify(this.$MembershipUser.extraData, null, 2);
+            const extraData = JSON.stringify(this.$MembershipUser.extraData, null, 2);
 
             new QUIConfirm({
                 maxHeight: 600,

@@ -24,7 +24,7 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserEdit', [
              QUILocale, QUIAjax, Mustache, template) {
     "use strict";
 
-    var lg = 'quiqqer/memberships';
+    const lg = 'quiqqer/memberships';
 
     return new Class({
 
@@ -76,15 +76,14 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserEdit', [
          * Refresh data
          */
         refresh: function () {
-            var self = this;
             this.Loader.show();
 
-            var mUid = this.getAttribute('membershipUserId');
+            const mUid = this.getAttribute('membershipUserId');
 
-            MembershipUsersHandler.get(mUid).then(function (MembershipUser) {
-                self.Loader.hide();
-                self.$MembershipUser = MembershipUser;
-                self.$load();
+            MembershipUsersHandler.get(mUid).then((MembershipUser) => {
+                this.Loader.hide();
+                this.$MembershipUser = MembershipUser;
+                this.$load();
             });
         },
 
@@ -92,10 +91,9 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserEdit', [
          * Create elements
          */
         $load: function () {
-            var self = this;
-            var lgPrefix = 'controls.users.membershipuseredit.template.';
+            const lgPrefix = 'controls.users.membershipuseredit.template.';
 
-            this.$Elm.set('html', Mustache.render(template, {
+            this.$Elm.innerHTML = Mustache.render(template, {
                 header: QUILocale.get(lg, lgPrefix + 'header', {
                     id: this.$MembershipUser.id,
                     name: this.$MembershipUser.fullName
@@ -103,7 +101,7 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserEdit', [
                 labelBeginDate: QUILocale.get(lg, 'controls.membershipusers.tbl.header.beginDate'),
                 labelEndDate: QUILocale.get(lg, 'controls.membershipusers.tbl.header.endDate'),
                 labelCancelled: QUILocale.get(lg, lgPrefix + 'cancelled')
-            }));
+            });
 
             if (this.getAttribute('showButtons')) {
                 new QUIButton({
@@ -113,11 +111,11 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserEdit', [
                         onClick: this.submit
                     }
                 }).inject(
-                    this.$Elm.getElement('.quiqqer-memberships-membershipuseredit-submit')
+                    this.$Elm.querySelector('.quiqqer-memberships-membershipuseredit-submit')
                 );
             }
 
-            var Form = this.$Elm.getElement('form');
+            const Form = this.$Elm.querySelector('form');
 
             QUIFormUtils.setDataToForm(this.$MembershipUser, Form);
 
@@ -126,9 +124,9 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserEdit', [
             //}
 
             // special cancel trigger
-            Form.getElement('input[name="cancelled"]').addEvent('change', function (event) {
-                if (!self.$MembershipUser.cancelled) {
-                    self.$cancelled = event.target.checked;
+            Form.querySelector('input[name="cancelled"]').addEventListener('change', (event) => {
+                if (!this.$MembershipUser.cancelled) {
+                    this.$cancelled = event.currentTarget.checked;
                 }
             });
         },
@@ -139,27 +137,26 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserEdit', [
          * @return {Promise}
          */
         submit: function () {
-            var self = this;
-            var Form = this.$Elm.getElement('form');
+            const Form = this.$Elm.querySelector('form');
 
             this.Loader.show();
 
             return MembershipUsersHandler.update(
                 this.$MembershipUser.id,
                 QUIFormUtils.getFormData(Form)
-            ).then(function (success) {
+            ).then((success) => {
                 if (success) {
-                    if (self.$cancelled) {
-                        self.$confirmCancelMailDialog().then(function () {
-                            self.fireEvent('submit', [self]);
+                    if (this.$cancelled) {
+                        this.$confirmCancelMailDialog().then(() => {
+                            this.fireEvent('submit', [this]);
                         });
                     } else {
-                        self.fireEvent('submit', [self]);
+                        this.fireEvent('submit', [this]);
                     }
                 }
 
-                self.Loader.hide();
-                self.refresh();
+                this.Loader.hide();
+                this.refresh();
             });
         },
 
@@ -169,10 +166,8 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserEdit', [
          * @return {Promise}
          */
         $confirmCancelMailDialog: function () {
-            var self = this;
-
-            return new Promise(function (resolve, reject) {
-                var Popup = new QUIConfirm({
+            return new Promise((resolve, reject) => {
+                const Popup = new QUIConfirm({
                     'maxHeight': 300,
                     'autoclose': true,
 
@@ -192,7 +187,7 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserEdit', [
                         textimage: 'icon-ok fa fa-check'
                     },
                     events: {
-                        onSubmit: function () {
+                        onSubmit: () => {
                             Popup.Loader.show();
 
                             QUIAjax.post(
@@ -202,12 +197,12 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserEdit', [
                                 },
                                 {
                                     'package': 'quiqqer/memberships',
-                                    membershipUserId: self.$MembershipUser.id,
+                                    membershipUserId: this.$MembershipUser.id,
                                     onError: reject
                                 }
                             );
                         },
-                        onClose: function () {
+                        onClose: () => {
                             resolve();
                         }
                     }
