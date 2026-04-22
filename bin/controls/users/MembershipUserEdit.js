@@ -2,21 +2,6 @@
  * MembershipUserEdit JavaScript Control
  *
  * Edit a MembershipUser
- *
- * @module package/quiqqer/memberships/bin/controls/users/MembershipUserEdit
- * @author www.pcsg.de (Patrick Müller)
- *
- * @require qui/controls/Control
- * @require qui/controls/loader/Loader
- * @require qui/controls/buttons/Button
- * @require qui/controls/windows/Confirm
- * @require qui/utils/Form
- * @require package/quiqqer/memberships/bin/MembershipUsers
- * @require Locale
- * @require Ajax
- * @require Mustache
- * @require text!package/quiqqer/memberships/bin/controls/users/MembershipUserEdit.html
- * @require css!package/quiqqer/memberships/bin/controls/users/MembershipUserEdit.css
  */
 define('package/quiqqer/memberships/bin/controls/users/MembershipUserEdit', [
 
@@ -44,7 +29,7 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserEdit', [
     return new Class({
 
         Extends: QUIControl,
-        Type   : 'package/quiqqer/memberships/bin/controls/users/MembershipUserEdit',
+        Type: 'package/quiqqer/memberships/bin/controls/users/MembershipUserEdit',
 
         Binds: [
             '$onInject',
@@ -56,15 +41,15 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserEdit', [
 
         options: {
             membershipUserId: false, // ID of MembershipUser (this is NOT the QUIQQER User ID!)
-            showButtons     : true
+            showButtons: true
         },
 
         initialize: function (options) {
             this.parent(options);
 
-            this.Loader          = new QUILoader();
+            this.Loader = new QUILoader();
             this.$MembershipUser = null;
-            this.$cancelled      = false;
+            this.$cancelled = false;
 
             this.addEvents({
                 onCreate: this.$onCreate,
@@ -107,24 +92,24 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserEdit', [
          * Create elements
          */
         $load: function () {
-            var self     = this;
+            var self = this;
             var lgPrefix = 'controls.users.membershipuseredit.template.';
 
             this.$Elm.set('html', Mustache.render(template, {
-                header        : QUILocale.get(lg, lgPrefix + 'header', {
-                    id  : this.$MembershipUser.id,
+                header: QUILocale.get(lg, lgPrefix + 'header', {
+                    id: this.$MembershipUser.id,
                     name: this.$MembershipUser.fullName
                 }),
                 labelBeginDate: QUILocale.get(lg, 'controls.membershipusers.tbl.header.beginDate'),
-                labelEndDate  : QUILocale.get(lg, 'controls.membershipusers.tbl.header.endDate'),
+                labelEndDate: QUILocale.get(lg, 'controls.membershipusers.tbl.header.endDate'),
                 labelCancelled: QUILocale.get(lg, lgPrefix + 'cancelled')
             }));
 
             if (this.getAttribute('showButtons')) {
                 new QUIButton({
                     textimage: 'fa fa-save',
-                    text     : QUILocale.get(lg, 'controls.users.membershipuseredit.btn.save'),
-                    events   : {
+                    text: QUILocale.get(lg, 'controls.users.membershipuseredit.btn.save'),
+                    events: {
                         onClick: this.submit
                     }
                 }).inject(
@@ -194,19 +179,19 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserEdit', [
                     'information': QUILocale.get(lg,
                         'controls.users.membershipuseredit.cancelmail.popup.info'
                     ),
-                    'title'      : QUILocale.get(lg, 'controls.users.membershipuseredit.cancelmail.popup.title'),
-                    'texticon'   : 'fa fa-mail',
-                    'icon'       : 'fa fa-mail',
+                    'title': QUILocale.get(lg, 'controls.users.membershipuseredit.cancelmail.popup.title'),
+                    'texticon': 'fa fa-mail',
+                    'icon': 'fa fa-mail',
 
                     cancel_button: {
-                        text     : false,
+                        text: false,
                         textimage: 'icon-remove fa fa-remove'
                     },
-                    ok_button    : {
-                        text     : false,
+                    ok_button: {
+                        text: false,
                         textimage: 'icon-ok fa fa-check'
                     },
-                    events       : {
+                    events: {
                         onSubmit: function () {
                             Popup.Loader.show();
 
@@ -216,13 +201,13 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserEdit', [
                                     Popup.close();
                                 },
                                 {
-                                    'package'       : 'quiqqer/memberships',
+                                    'package': 'quiqqer/memberships',
                                     membershipUserId: self.$MembershipUser.id,
-                                    onError         : reject
+                                    onError: reject
                                 }
                             );
                         },
-                        onClose : function () {
+                        onClose: function () {
                             resolve();
                         }
                     }

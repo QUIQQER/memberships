@@ -2,9 +2,6 @@
  * MembershipUsers JavaScript Control
  *
  * Manages QUIQQER licenses for a single user (customer)
- *
- * @module package/quiqqer/memberships/bin/controls/users/MembershipUsers
- * @author www.pcsg.de (Patrick Müller)
  */
 define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
 
@@ -40,7 +37,7 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
     return new Class({
 
         Extends: QUIControl,
-        Type   : 'package/quiqqer/memberships/bin/controls/users/MembershipUsers',
+        Type: 'package/quiqqer/memberships/bin/controls/users/MembershipUsers',
 
         Binds: [
             '$onInject',
@@ -63,12 +60,12 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
         initialize: function (options) {
             this.parent(options);
 
-            this.Loader      = new QUILoader();
-            this.$User       = null;
-            this.$Grid       = null;
+            this.Loader = new QUILoader();
+            this.$User = null;
+            this.$Grid = null;
             this.$GridParent = null;
             this.$Membership = null;
-            this.$search     = false;
+            this.$search = false;
 
             this.addEvents({
                 onInject: this.$onInject,
@@ -126,112 +123,112 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
             );
 
             var ActionBtn = new QUIButton({
-                text  : QUILocale.get(lg, 'controls.membershipusers.tbl.btn.actions'),
-                name  : 'actions',
+                text: QUILocale.get(lg, 'controls.membershipusers.tbl.btn.actions'),
+                name: 'actions',
                 styles: {
                     float: 'right'
                 }
             });
 
             ActionBtn.appendChild({
-                name  : 'adduser',
-                text  : QUILocale.get(lg, 'controls.membershipusers.tbl.btn.adduser'),
-                icon  : 'fa fa-plus',
+                name: 'adduser',
+                text: QUILocale.get(lg, 'controls.membershipusers.tbl.btn.adduser'),
+                icon: 'fa fa-plus',
                 events: {
                     onClick: this.$addUser
                 }
             }).appendChild({
-                name  : 'edit',
-                text  : QUILocale.get(lg, 'controls.membershipusers.tbl.btn.edit'),
-                icon  : 'fa fa-edit',
+                name: 'edit',
+                text: QUILocale.get(lg, 'controls.membershipusers.tbl.btn.edit'),
+                icon: 'fa fa-edit',
                 events: {
                     onClick: this.$editUser
                 }
             }).appendChild({
-                name  : 'removeuser',
-                text  : QUILocale.get(lg, 'controls.membershipusers.tbl.btn.removeuser'),
-                icon  : 'fa fa-trash',
+                name: 'removeuser',
+                text: QUILocale.get(lg, 'controls.membershipusers.tbl.btn.removeuser'),
+                icon: 'fa fa-trash',
                 events: {
                     onClick: this.$removeUsers
                 }
             });
 
             this.$Grid = new Grid(this.$GridParent, {
-                buttons          : [{
-                    name     : 'history',
-                    text     : QUILocale.get(lg, 'controls.users.membershipusersarchive.tbl.btn.history'),
+                buttons: [{
+                    name: 'history',
+                    text: QUILocale.get(lg, 'controls.users.membershipusersarchive.tbl.btn.history'),
                     textimage: 'fa fa-history',
-                    events   : {
+                    events: {
                         onClick: this.$showHistory
                     }
                 }, ActionBtn],
-                columnModel      : [{
-                    header   : QUILocale.get('quiqqer/system', 'id'),
+                columnModel: [{
+                    header: QUILocale.get('quiqqer/system', 'id'),
                     dataIndex: 'id',
-                    dataType : 'number',
-                    width    : 100
+                    dataType: 'number',
+                    width: 100
                 }, {
-                    header   : QUILocale.get(lg, 'controls.membershipusers.tbl.header.userId'),
+                    header: QUILocale.get(lg, 'controls.membershipusers.tbl.header.userId'),
                     dataIndex: 'userId',
-                    dataType : 'number',
-                    width    : 100
+                    dataType: 'number',
+                    width: 100
                 }, {
-                    header   : QUILocale.get(lg, 'controls.membershipusers.tbl.header.contractId'),
+                    header: QUILocale.get(lg, 'controls.membershipusers.tbl.header.contractId'),
                     dataIndex: 'contractId',
-                    dataType : 'string',
-                    width    : 100
+                    dataType: 'string',
+                    width: 100
                 }, {
-                    header   : QUILocale.get(lg, 'controls.membershipusers.tbl.header.username'),
+                    header: QUILocale.get(lg, 'controls.membershipusers.tbl.header.username'),
                     dataIndex: 'username',
-                    dataType : 'string',
-                    width    : 150
+                    dataType: 'string',
+                    width: 150
                 }, {
-                    header   : QUILocale.get(lg, 'controls.membershipusers.tbl.header.userFirstname'),
+                    header: QUILocale.get(lg, 'controls.membershipusers.tbl.header.userFirstname'),
                     dataIndex: 'firstname',
-                    dataType : 'string',
-                    width    : 100
+                    dataType: 'string',
+                    width: 100
                 }, {
-                    header   : QUILocale.get(lg, 'controls.membershipusers.tbl.header.userLastname'),
+                    header: QUILocale.get(lg, 'controls.membershipusers.tbl.header.userLastname'),
                     dataIndex: 'lastname',
-                    dataType : 'string',
-                    width    : 100
+                    dataType: 'string',
+                    width: 100
                 }, {
-                    header   : QUILocale.get(lg, 'controls.membershipusers.tbl.header.addedDate'),
+                    header: QUILocale.get(lg, 'controls.membershipusers.tbl.header.addedDate'),
                     dataIndex: 'addedDate',
-                    dataType : 'string',
-                    width    : 150
+                    dataType: 'string',
+                    width: 150
                 }, {
-                    header   : QUILocale.get(lg, 'controls.membershipusers.tbl.header.beginDate'),
+                    header: QUILocale.get(lg, 'controls.membershipusers.tbl.header.beginDate'),
                     dataIndex: 'beginDate',
-                    dataType : 'string',
-                    width    : 150
+                    dataType: 'string',
+                    width: 150
                 }, {
-                    header   : QUILocale.get(lg, 'controls.membershipusers.tbl.header.endDate'),
+                    header: QUILocale.get(lg, 'controls.membershipusers.tbl.header.endDate'),
                     dataIndex: 'endDate',
-                    dataType : 'string',
-                    width    : 150
+                    dataType: 'string',
+                    width: 150
                 }, {
-                    header   : QUILocale.get(lg, 'controls.membershipusers.tbl.header.status'),
+                    header: QUILocale.get(lg, 'controls.membershipusers.tbl.header.status'),
                     dataIndex: 'status',
-                    dataType : 'node',
-                    width    : 75
+                    dataType: 'node',
+                    width: 75
                 }, {
-                    header   : QUILocale.get(lg, 'controls.membershipusers.tbl.header.extendCounter'),
+                    header: QUILocale.get(lg, 'controls.membershipusers.tbl.header.extendCounter'),
                     dataIndex: 'extendCounter',
-                    dataType : 'number',
-                    width    : 120
+                    dataType: 'number',
+                    width: 120
                 }],
-                pagination       : true,
-                serverSort       : true,
-                selectable       : true,
+                pagination: true,
+                serverSort: true,
+                selectable: true,
                 multipleSelection: true
             });
 
             this.$Grid.addEvents({
                 onDblClick: self.$editUser,
-                onClick   : function () {
+                onClick: function () {
                     var TableButtons = self.$Grid.getAttribute('buttons');
-                    var selected     = self.$Grid.getSelectedData().length;
+                    var selected = self.$Grid.getSelectedData().length;
 
                     if (selected === 1) {
                         TableButtons.history.enable();
@@ -239,7 +236,7 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
                         TableButtons.history.disable();
                     }
                 },
-                onRefresh : this.$listRefresh
+                onRefresh: this.$listRefresh
             });
 
             this.resize();
@@ -263,16 +260,16 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
                 return;
             }
 
-            var self         = this;
+            var self = this;
             var TableButtons = this.$Grid.getAttribute('buttons');
 
             TableButtons.history.disable();
 
             var SearchParams = {
-                sortOn : Grid.getAttribute('sortOn'),
-                sortBy : Grid.getAttribute('sortBy'),
+                sortOn: Grid.getAttribute('sortOn'),
+                sortBy: Grid.getAttribute('sortBy'),
                 perPage: Grid.getAttribute('perPage'),
-                page   : Grid.getAttribute('page')
+                page: Grid.getAttribute('page')
             };
 
             switch (SearchParams.sortOn) {
@@ -310,14 +307,14 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
                 if (Row.cancelled) {
                     Row.status = new Element('span', {
                         'class': 'quiqqer-memberships-membershipusers-table-status' +
-                        ' quiqqer-memberships-membershipusers-table-status-warning',
-                        html   : QUILocale.get(lg, 'controls.membershipusers.tbl.status.cancelled')
+                            ' quiqqer-memberships-membershipusers-table-status-warning',
+                        html: QUILocale.get(lg, 'controls.membershipusers.tbl.status.cancelled')
                     });
                 } else {
                     Row.status = new Element('span', {
                         'class': 'quiqqer-memberships-membershipusers-table-status' +
-                        ' quiqqer-memberships-membershipusers-table-status-ok',
-                        html   : QUILocale.get(lg, 'controls.membershipusers.tbl.status.active')
+                            ' quiqqer-memberships-membershipusers-table-status-ok',
+                        html: QUILocale.get(lg, 'controls.membershipusers.tbl.status.active')
                     });
                 }
             }
@@ -332,13 +329,13 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
             var self = this;
 
             var AddUsersWindow = new UserSearchWindow({
-                search        : true,
+                search: true,
                 searchSettings: {
                     filter: {
                         filter_groups_exclude: self.$Membership.uniqueGroupIds
                     }
                 },
-                events        : {
+                events: {
                     onSubmit: function (Control, users) {
                         var userIds = [];
 
@@ -385,19 +382,19 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
             // open popup
             var Popup = new QUIPopup({
                 'maxHeight': 335,
-                maxWidth   : 500,
+                maxWidth: 500,
                 'autoclose': false,
-                'title'    : QUILocale.get(lg, 'controls.membershipusers.edit.popup.title'),
-                'texticon' : 'fa fa-edit',
-                'icon'     : 'fa fa-edit',
+                'title': QUILocale.get(lg, 'controls.membershipusers.edit.popup.title'),
+                'texticon': 'fa fa-edit',
+                'icon': 'fa fa-edit',
 
                 buttons: true,
-                events : {
+                events: {
                     onOpen: function () {
                         EditControl = new MembershipUserEdit({
-                            showButtons     : false,
+                            showButtons: false,
                             membershipUserId: membershipUserId,
-                            events          : {
+                            events: {
                                 onSubmit: function () {
                                     Popup.close();
                                     self.refresh();
@@ -413,12 +410,12 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
             Popup.open();
 
             Popup.addButton(new QUIButton({
-                text     : QUILocale.get(lg, 'controls.membershipusers.edit.popup.save.btn'),
+                text: QUILocale.get(lg, 'controls.membershipusers.edit.popup.save.btn'),
                 textimage: 'fa fa-save',
                 events: {
-                    onClick: function() {
+                    onClick: function () {
                         Popup.Loader.show();
-                        EditControl.submit().then(function() {
+                        EditControl.submit().then(function () {
                             Popup.close();
                         });
                     }
@@ -430,10 +427,10 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
          * Remove all selected licenses
          */
         $removeUsers: function () {
-            var self       = this;
+            var self = this;
             var deleteData = [];
-            var deleteIds  = [];
-            var rows       = this.$Grid.getSelectedData();
+            var deleteIds = [];
+            var rows = this.$Grid.getSelectedData();
             var Popup;
 
             if (!rows.length) {
@@ -449,28 +446,28 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
             }
 
             Popup = new QUIConfirm({
-                maxHeight  : 320,
-                maxWidth   : 640,
-                autoclose  : true,
-                text       : QUILocale.get(lg, 'controls.membershipusers.delete.popup.text'),
+                maxHeight: 320,
+                maxWidth: 640,
+                autoclose: true,
+                text: QUILocale.get(lg, 'controls.membershipusers.delete.popup.text'),
                 information: QUILocale.get(
                     lg,
                     'controls.membershipusers.delete.popup.info', {
                         users: deleteData.join('<br/>')
                     }
                 ),
-                title      : QUILocale.get(lg, 'controls.membershipusers.delete.popup.title'),
-                texticon   : 'fa fa-trash',
-                icon       : 'fa fa-trash',
+                title: QUILocale.get(lg, 'controls.membershipusers.delete.popup.title'),
+                texticon: 'fa fa-trash',
+                icon: 'fa fa-trash',
                 cancel_button: {
-                    text     : QUILocale.get(lg, 'controls.membershipusers.delete.popup.cancel.btn'),
+                    text: QUILocale.get(lg, 'controls.membershipusers.delete.popup.cancel.btn'),
                     textimage: 'fa fa-times'
                 },
-                ok_button    : {
-                    text     : QUILocale.get(lg, 'controls.membershipusers.delete.popup.remove.btn'),
+                ok_button: {
+                    text: QUILocale.get(lg, 'controls.membershipusers.delete.popup.remove.btn'),
                     textimage: 'fa fa-trash'
                 },
-                events       : {
+                events: {
                     onSubmit: function () {
                         Popup.close();
                         self.$Grid.showLoader();

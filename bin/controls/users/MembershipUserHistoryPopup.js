@@ -2,12 +2,6 @@
  * MembershipUserHistoryPopup JavaScript Control
  *
  * Popup vor viewing the history log of a specific MembershipUser
- *
- * @module package/quiqqer/memberships/bin/controls/users/MembershipUserHistoryPopup
- * @author www.pcsg.de (Patrick Müller)
- *
- * @require qui/controls/windows/Popup
- * @require Locale
  */
 define('package/quiqqer/memberships/bin/controls/users/MembershipUserHistoryPopup', [
 
@@ -23,7 +17,7 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserHistoryPopu
     return new Class({
 
         Extends: QUIPopup,
-        Type   : 'package/quiqqer/memberships/bin/controls/users/MembershipUserHistoryPopup',
+        Type: 'package/quiqqer/memberships/bin/controls/users/MembershipUserHistoryPopup',
 
         Binds: [
             '$onOpen'
@@ -31,11 +25,11 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserHistoryPopu
 
         options: {
             membershipUserId: false, // ID of MembershipUser (this is NOT the QUIQQER User ID!)
-            maxWidth        : 550,
-            maxHeight       : 500,
-            icon            : 'fa fa-history',
-            title           : QUILocale.get(lg, 'controls.users.membershipuserhistorypopup.title'),
-            'class'         : 'quiqqer-memberships-membershipuserhistorypopup',
+            maxWidth: 550,
+            maxHeight: 500,
+            icon: 'fa fa-history',
+            title: QUILocale.get(lg, 'controls.users.membershipuserhistorypopup.title'),
+            'class': 'quiqqer-memberships-membershipuserhistorypopup',
 
             // buttons
             closeButtonText: QUILocale.get('quiqqer/translator', 'edit.btn.close')
