@@ -4,6 +4,7 @@ namespace QUI\Memberships\Users;
 
 use DateInterval;
 use DateTime;
+use DateTimeInterface;
 use QUI;
 use QUI\CRUD\Child;
 use QUI\CRUD\Factory;
@@ -19,7 +20,6 @@ use QUI\Memberships\Utils;
 use QUI\Permissions\Permission;
 use QUI\Verification\Interface\VerificationFactoryInterface;
 use QUI\Verification\VerificationFactory;
-use QUI\Verification\Verifier;
 use QUI\Verification\Entity\LinkVerification;
 use QUI\Verification\Interface\VerificationRepositoryInterface;
 use QUI\Verification\VerificationRepository;
@@ -255,6 +255,10 @@ class MembershipUser extends Child
             return;
         }
 
+        if (!$this->getUser()) {
+            return;
+        }
+
         try {
             $subject = $this->getUser()->getLocale()->get(
                 'quiqqer/memberships',
@@ -399,10 +403,11 @@ class MembershipUser extends Child
      *
      * A user CANNOT revoke a cancellation executed this way!
      *
+     * @param DateTimeInterface|null $endDate - Explicit date when the membership should end
      * @return void
      * @throws \Exception
      */
-    public function autoCancel(): void
+    public function autoCancel(?DateTimeInterface $endDate = null): void
     {
         if ($this->isCancelled()) {
             return;
@@ -432,6 +437,10 @@ class MembershipUser extends Child
 
         // save cancel hash and date to database
         $this->setEditUser(QUI::getUsers()->getSystemUser());
+
+        if ($endDate) {
+            $this->setAttribute('endDate', $endDate->format('Y-m-d H:i:s'));
+        }
 
         try {
             $this->update();
@@ -952,11 +961,11 @@ class MembershipUser extends Child
     /**
      * Format date based on User Locale and duration mode
      *
-     * @param DateTime|string $date - Formatted date YYYY-MM-DD HH:MM:SS or \DateTime object
+     * @param DateTime|string|null $date - Formatted date YYYY-MM-DD HH:MM:SS or \DateTime object
      * @return string|false - formatted date or false on error
      * @throws Exception
      */
-    protected function formatDate(DateTime | string $date): bool | string
+    protected function formatDate(DateTime | string | null $date): bool | string
     {
         if (empty($date) || $date === '0000-00-00 00:00:00') {
             return false;
@@ -1224,7 +1233,7 @@ class MembershipUser extends Child
     {
         return $this->verificationFactory->createLinkVerification(
             'quiqqer-memberships-users-cancel-abort-' . $this->id,
-            new CancelVerification(),
+            new AbortCancelVerification(),
             [
                 'membershipUserId' => $this->id
             ],

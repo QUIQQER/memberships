@@ -2,21 +2,6 @@
  * MembershipUserEdit JavaScript Control
  *
  * Edit a MembershipUser
- *
- * @module package/quiqqer/memberships/bin/controls/users/MembershipUserEdit
- * @author www.pcsg.de (Patrick Müller)
- *
- * @require qui/controls/Control
- * @require qui/controls/loader/Loader
- * @require qui/controls/buttons/Button
- * @require qui/controls/windows/Confirm
- * @require qui/utils/Form
- * @require package/quiqqer/memberships/bin/MembershipUsers
- * @require Locale
- * @require Ajax
- * @require Mustache
- * @require text!package/quiqqer/memberships/bin/controls/users/MembershipUserEdit.html
- * @require css!package/quiqqer/memberships/bin/controls/users/MembershipUserEdit.css
  */
 define('package/quiqqer/memberships/bin/controls/users/MembershipUserEdit', [
 
@@ -39,12 +24,12 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserEdit', [
              QUILocale, QUIAjax, Mustache, template) {
     "use strict";
 
-    var lg = 'quiqqer/memberships';
+    const lg = 'quiqqer/memberships';
 
     return new Class({
 
         Extends: QUIControl,
-        Type   : 'package/quiqqer/memberships/bin/controls/users/MembershipUserEdit',
+        Type: 'package/quiqqer/memberships/bin/controls/users/MembershipUserEdit',
 
         Binds: [
             '$onInject',
@@ -56,15 +41,15 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserEdit', [
 
         options: {
             membershipUserId: false, // ID of MembershipUser (this is NOT the QUIQQER User ID!)
-            showButtons     : true
+            showButtons: true
         },
 
         initialize: function (options) {
             this.parent(options);
 
-            this.Loader          = new QUILoader();
+            this.Loader = new QUILoader();
             this.$MembershipUser = null;
-            this.$cancelled      = false;
+            this.$cancelled = false;
 
             this.addEvents({
                 onCreate: this.$onCreate,
@@ -77,12 +62,19 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserEdit', [
          */
         $onCreate: function () {
             this.$Elm.addClass('quiqqer-memberships-membershipuseredit');
+            this.$Elm.setStyles({
+                display: 'inline-block',
+                width: '100%'
+            });
         },
 
         /**
          * Event: onImport
          */
         $onInject: function () {
+            this.$Elm.style.display = 'inline-block';
+            this.$Elm.style.width = '100%';
+
             this.Loader.inject(this.$Elm);
             this.refresh();
         },
@@ -91,15 +83,14 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserEdit', [
          * Refresh data
          */
         refresh: function () {
-            var self = this;
             this.Loader.show();
 
-            var mUid = this.getAttribute('membershipUserId');
+            const mUid = this.getAttribute('membershipUserId');
 
-            MembershipUsersHandler.get(mUid).then(function (MembershipUser) {
-                self.Loader.hide();
-                self.$MembershipUser = MembershipUser;
-                self.$load();
+            MembershipUsersHandler.get(mUid).then((MembershipUser) => {
+                this.Loader.hide();
+                this.$MembershipUser = MembershipUser;
+                this.$load();
             });
         },
 
@@ -107,32 +98,27 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserEdit', [
          * Create elements
          */
         $load: function () {
-            var self     = this;
-            var lgPrefix = 'controls.users.membershipuseredit.template.';
+            const lgPrefix = 'controls.users.membershipuseredit.template.';
 
-            this.$Elm.set('html', Mustache.render(template, {
-                header        : QUILocale.get(lg, lgPrefix + 'header', {
-                    id  : this.$MembershipUser.id,
-                    name: this.$MembershipUser.fullName
-                }),
+            this.$Elm.innerHTML = Mustache.render(template, {
                 labelBeginDate: QUILocale.get(lg, 'controls.membershipusers.tbl.header.beginDate'),
-                labelEndDate  : QUILocale.get(lg, 'controls.membershipusers.tbl.header.endDate'),
+                labelEndDate: QUILocale.get(lg, 'controls.membershipusers.tbl.header.endDate'),
                 labelCancelled: QUILocale.get(lg, lgPrefix + 'cancelled')
-            }));
+            });
 
             if (this.getAttribute('showButtons')) {
                 new QUIButton({
                     textimage: 'fa fa-save',
-                    text     : QUILocale.get(lg, 'controls.users.membershipuseredit.btn.save'),
-                    events   : {
+                    text: QUILocale.get(lg, 'controls.users.membershipuseredit.btn.save'),
+                    events: {
                         onClick: this.submit
                     }
                 }).inject(
-                    this.$Elm.getElement('.quiqqer-memberships-membershipuseredit-submit')
+                    this.$Elm.querySelector('.quiqqer-memberships-membershipuseredit-submit')
                 );
             }
 
-            var Form = this.$Elm.getElement('form');
+            const Form = this.$Elm.querySelector('form');
 
             QUIFormUtils.setDataToForm(this.$MembershipUser, Form);
 
@@ -141,9 +127,9 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserEdit', [
             //}
 
             // special cancel trigger
-            Form.getElement('input[name="cancelled"]').addEvent('change', function (event) {
-                if (!self.$MembershipUser.cancelled) {
-                    self.$cancelled = event.target.checked;
+            Form.querySelector('input[name="cancelled"]').addEventListener('change', (event) => {
+                if (!this.$MembershipUser.cancelled) {
+                    this.$cancelled = event.currentTarget.checked;
                 }
             });
         },
@@ -154,27 +140,26 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserEdit', [
          * @return {Promise}
          */
         submit: function () {
-            var self = this;
-            var Form = this.$Elm.getElement('form');
+            const Form = this.$Elm.querySelector('form');
 
             this.Loader.show();
 
             return MembershipUsersHandler.update(
                 this.$MembershipUser.id,
                 QUIFormUtils.getFormData(Form)
-            ).then(function (success) {
+            ).then((success) => {
                 if (success) {
-                    if (self.$cancelled) {
-                        self.$confirmCancelMailDialog().then(function () {
-                            self.fireEvent('submit', [self]);
+                    if (this.$cancelled) {
+                        this.$confirmCancelMailDialog().then(() => {
+                            this.fireEvent('submit', [this]);
                         });
                     } else {
-                        self.fireEvent('submit', [self]);
+                        this.fireEvent('submit', [this]);
                     }
                 }
 
-                self.Loader.hide();
-                self.refresh();
+                this.Loader.hide();
+                this.refresh();
             });
         },
 
@@ -184,30 +169,28 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserEdit', [
          * @return {Promise}
          */
         $confirmCancelMailDialog: function () {
-            var self = this;
-
-            return new Promise(function (resolve, reject) {
-                var Popup = new QUIConfirm({
+            return new Promise((resolve, reject) => {
+                const Popup = new QUIConfirm({
                     'maxHeight': 300,
                     'autoclose': true,
 
                     'information': QUILocale.get(lg,
                         'controls.users.membershipuseredit.cancelmail.popup.info'
                     ),
-                    'title'      : QUILocale.get(lg, 'controls.users.membershipuseredit.cancelmail.popup.title'),
-                    'texticon'   : 'fa fa-mail',
-                    'icon'       : 'fa fa-mail',
+                    'title': QUILocale.get(lg, 'controls.users.membershipuseredit.cancelmail.popup.title'),
+                    'texticon': 'fa fa-mail',
+                    'icon': 'fa fa-mail',
 
                     cancel_button: {
-                        text     : false,
+                        text: false,
                         textimage: 'icon-remove fa fa-remove'
                     },
-                    ok_button    : {
-                        text     : false,
+                    ok_button: {
+                        text: false,
                         textimage: 'icon-ok fa fa-check'
                     },
-                    events       : {
-                        onSubmit: function () {
+                    events: {
+                        onSubmit: () => {
                             Popup.Loader.show();
 
                             QUIAjax.post(
@@ -216,13 +199,13 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUserEdit', [
                                     Popup.close();
                                 },
                                 {
-                                    'package'       : 'quiqqer/memberships',
-                                    membershipUserId: self.$MembershipUser.id,
-                                    onError         : reject
+                                    'package': 'quiqqer/memberships',
+                                    membershipUserId: this.$MembershipUser.id,
+                                    onError: reject
                                 }
                             );
                         },
-                        onClose : function () {
+                        onClose: () => {
                             resolve();
                         }
                     }
