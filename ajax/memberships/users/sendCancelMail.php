@@ -53,7 +53,7 @@ QUI::getAjax()->registerFunction(
                 'message.ajax.memberships.users.sendCancelMail.success',
                 [
                     'membershipUserId' => $MembershipUser->getId(),
-                    'membershipUserName' => $MembershipUser->getUser()->getName()
+                    'membershipUserName' => $MembershipUser->getUserOrThrow()->getName()
                 ]
             )
         );

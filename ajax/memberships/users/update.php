@@ -134,7 +134,7 @@ QUI::getAjax()->registerFunction(
                 'message.ajax.memberships.users.update.success',
                 [
                     'membershipUserId' => $MembershipUser->getId(),
-                    'membershipUserName' => $MembershipUser->getUser()->getName()
+                    'membershipUserName' => $MembershipUser->getUserOrThrow()->getName()
                 ]
             )
         );

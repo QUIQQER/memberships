@@ -254,12 +254,14 @@ class MembershipUser extends Child
             return;
         }
 
-        if (!$this->getUser()) {
+        $User = $this->getUser();
+
+        if ($User === null) {
             return;
         }
 
         try {
-            $subject = $this->getUser()->getLocale()->get(
+            $subject = $User->getLocale()->get(
                 'quiqqer/memberships',
                 'templates.mail.autoextend.subject'
             );
@@ -288,7 +290,7 @@ class MembershipUser extends Child
         }
 
         try {
-            $subject = $this->getUser()->getLocale()->get(
+            $subject = $this->getUserOrThrow()->getLocale()->get(
                 'quiqqer/memberships',
                 'templates.mail.manualextend.subject'
             );
@@ -311,7 +313,7 @@ class MembershipUser extends Child
         $this->archive(MembershipUsersHandler::ARCHIVE_REASON_EXPIRED);
 
         // send expire mail
-        $subject = $this->getUser()->getLocale()->get('quiqqer/memberships', 'templates.mail.expired.subject');
+        $subject = $this->getUserOrThrow()->getLocale()->get('quiqqer/memberships', 'templates.mail.expired.subject');
         $this->sendMail($subject, dirname(__FILE__, 5) . '/templates/mail_expired.html');
 
         QUI::getEvents()->fireEvent('quiqqerMembershipsExpired', [$this]);
@@ -354,7 +356,7 @@ class MembershipUser extends Child
             return;
         }
 
-        $userEmail = $this->getUser()->getAttribute('email');
+        $userEmail = $this->getUserOrThrow()->getAttribute('email');
 
         if (empty($userEmail)) {
             throw new QUI\Memberships\Exception([
@@ -381,7 +383,7 @@ class MembershipUser extends Child
         $this->update();
 
         // send cancellation mail
-        $User = $this->getUser();
+        $User = $this->getUserOrThrow();
 
         $this->sendMail(
             QUI::getLocale()->get('quiqqer/memberships', 'templates.mail.startcancel.subject'),
@@ -484,7 +486,7 @@ class MembershipUser extends Child
             return;
         }
 
-        $userEmail = $this->getUser()->getAttribute('email');
+        $userEmail = $this->getUserOrThrow()->getAttribute('email');
 
         if (empty($userEmail)) {
             throw new QUI\Memberships\Exception([
@@ -585,7 +587,7 @@ class MembershipUser extends Child
     public function sendConfirmCancelMail(): void
     {
         try {
-            $subject = $this->getUser()->getLocale()->get(
+            $subject = $this->getUserOrThrow()->getLocale()->get(
                 'quiqqer/memberships',
                 'templates.mail.confirmcancel.subject'
             );
@@ -604,7 +606,7 @@ class MembershipUser extends Child
     public function sendConfirmCancelReminderMail(): bool
     {
         try {
-            $subject = $this->getUser()->getLocale()->get(
+            $subject = $this->getUserOrThrow()->getLocale()->get(
                 'quiqqer/memberships',
                 'templates.mail.confirmcancel_reminder.subject'
             );
@@ -652,7 +654,7 @@ class MembershipUser extends Child
         $this->archive(MembershipUsersHandler::ARCHIVE_REASON_CANCELLED);
 
         // send expired mail
-        $subject = $this->getUser()->getLocale()->get('quiqqer/memberships', 'templates.mail.expired.subject');
+        $subject = $this->getUserOrThrow()->getLocale()->get('quiqqer/memberships', 'templates.mail.expired.subject');
         $this->sendMail($subject, dirname(__FILE__, 5) . '/templates/mail_cancelled.html');
 
         QUI::getEvents()->fireEvent('quiqqerMembershipsCancelled', [$this]);
@@ -697,7 +699,7 @@ class MembershipUser extends Child
     public function addToGroups(): void
     {
         $groupIds = $this->getMembership()->getGroupIds();
-        $User = $this->getUser();
+        $User = $this->getUserOrThrow();
 
         foreach ($groupIds as $groupId) {
             $User->addToGroup($groupId);
@@ -837,6 +839,22 @@ class MembershipUser extends Child
     }
 
     /**
+     * @throws QUI\Memberships\Exception
+     */
+    public function getUserOrThrow(): QUIUserInterface
+    {
+        $User = $this->getUser();
+
+        if ($User === null) {
+            throw new QUI\Memberships\Exception(
+                'QUIQQER user #' . $this->getUserId() . ' for membership user #' . $this->getId() . ' not found.'
+            );
+        }
+
+        return $User;
+    }
+
+    /**
      * Get ID of the Contract if this MembershipUser was created due to a
      * contract.
      *
@@ -969,7 +987,7 @@ class MembershipUser extends Child
             $date = $date->format('Y-m-d H:i:s');
         }
 
-        $Locale = $this->getUser()->getLocale();
+        $Locale = $this->getUserOrThrow()->getLocale();
         $lang = $Locale->getCurrent();
         $Conf = MembershipsHandler::getConfig();
 
@@ -1014,7 +1032,7 @@ class MembershipUser extends Child
      */
     public function getFrontendViewData(): array
     {
-        $QuiqqerUser = $this->getUser();
+        $QuiqqerUser = $this->getUserOrThrow();
         $Membership = $this->getMembership();
         $Locale = QUI::getLocale();
 
@@ -1263,7 +1281,7 @@ class MembershipUser extends Child
      */
     public function sendMail(string $subject, string $templateFile, array $templateVars = []): void
     {
-        $User = $this->getUser();
+        $User = $this->getUserOrThrow();
         $email = $User->getAttribute('email');
 
         if (empty($email)) {
@@ -1281,7 +1299,7 @@ class MembershipUser extends Child
             array_merge(
                 [
                     'MembershipUser' => $this,
-                    'Locale' => $this->getUser()->getLocale(),
+                    'Locale' => $this->getUserOrThrow()->getLocale(),
                     'data' => $this->getFrontendViewData()
                 ],
                 $templateVars

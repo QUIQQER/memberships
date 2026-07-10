@@ -13,10 +13,15 @@ QUI::getAjax()->registerFunction(
     'package_quiqqer_memberships_ajax_memberships_users_getProfileData',
     function () {
         $SessionUser = QUI::getUserBySession();
+        $userId = $SessionUser->getId();
+
+        if ($userId === false) {
+            return [];
+        }
 
         try {
             $membershipUsers = MembershipUsersHandler::getInstance()
-                ->getMembershipUsersByUserId($SessionUser->getId());
+                ->getMembershipUsersByUserId($userId);
 
             $data = [];
 

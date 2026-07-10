@@ -67,6 +67,10 @@ class Cron
                         $RemindDate = $CancelDate->add(new DateInterval('P' . $cancelConfirmReminderAfterDays . 'D'));
                         $User = $MembershipUser->getUser();
 
+                        if ($User === null) {
+                            continue;
+                        }
+
                         if (
                             !$User->getAttribute(MembershipUsersHandler::USER_ATTR_CANCEL_REMINDER_SENT)
                             && $Now > $RemindDate
