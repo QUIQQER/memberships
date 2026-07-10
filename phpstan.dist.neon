@@ -8,4 +8,7 @@ parameters:
         - ajax
     bootstrapFiles:
         - tests/phpstan-bootstrap.php
+    scanFiles:
+        - tests/phpstan-shims/QUI/ERP/Accounting/Contracts/Contract.php
+        - tests/phpstan-shims/QUI/ERP/Order/AbstractOrder.php
     tipsOfTheDay: false
