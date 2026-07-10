@@ -24,8 +24,6 @@ use QUI\Verification\Entity\LinkVerification;
 use QUI\Verification\Interface\VerificationRepositoryInterface;
 use QUI\Verification\VerificationRepository;
 
-use function date_create;
-use function date_interval_create_from_date_string;
 use function is_null;
 
 /**
@@ -163,6 +161,10 @@ class MembershipUser extends Child
             $NextEndDate = $this->getNextCycleEndDate();
         }
 
+        if (!($NextBeginDate instanceof DateTime) || !($NextEndDate instanceof DateTime)) {
+            throw new QUI\Memberships\Exception('Could not calculate membership extension dates.');
+        }
+
         if ($auto) {
             $extendCounter = $this->getAttribute('extendCounter');
 
@@ -183,7 +185,13 @@ class MembershipUser extends Child
             'auto' => $auto ? '1' : '0'
         ];
 
-        $this->addHistoryEntry(MembershipUsersHandler::HISTORY_TYPE_EXTENDED, json_encode($historyData));
+        $historyMessage = json_encode($historyData);
+
+        if ($historyMessage === false) {
+            throw new QUI\Memberships\Exception('Could not encode membership extension history.');
+        }
+
+        $this->addHistoryEntry(MembershipUsersHandler::HISTORY_TYPE_EXTENDED, $historyMessage);
         $this->update();
 
         // send mail
@@ -203,12 +211,16 @@ class MembershipUser extends Child
      */
     public function calcEndDate(null | DateTime $Start = null): DateTime
     {
-        if (empty($Start)) {
-            $Start = date_create();
-        }
+        $Start ??= new DateTime();
 
         $contractId = $this->getContractId();
-        $NewEndDate = date_create($this->getMembership()->calcEndDate($Start->getTimestamp()));
+        $calculatedEndDate = $this->getMembership()->calcEndDate($Start->getTimestamp());
+
+        if ($calculatedEndDate === null) {
+            throw new QUI\Memberships\Exception('Could not calculate membership end date.');
+        }
+
+        $NewEndDate = new DateTime($calculatedEndDate);
 
         if (empty($contractId)) {
             return $NewEndDate;
@@ -369,6 +381,10 @@ class MembershipUser extends Child
         $cancelUrl = $cancelVerification->getVerificationUrl();
         $cancelDate = Utils::getFormattedTimestamp();
         $CancelEndDate = $this->getCurrentCancelEndDate();
+
+        if (!($CancelEndDate instanceof DateTime)) {
+            throw new QUI\Memberships\Exception('Could not calculate membership cancellation date.');
+        }
 
         $this->setAttributes([
             'cancelStatus' => MembershipUsersHandler::CANCEL_STATUS_CANCEL_CONFIRM_PENDING,
@@ -564,10 +580,16 @@ class MembershipUser extends Child
             return;
         }
 
+        $CancelEndDate = $this->getCurrentCancelEndDate();
+
+        if (!($CancelEndDate instanceof DateTime)) {
+            throw new QUI\Memberships\Exception('Could not calculate membership cancellation date.');
+        }
+
         $this->setAttributes([
             'cancelled' => true,
             'cancelStatus' => MembershipUsersHandler::CANCEL_STATUS_CANCELLED,
-            'cancelEndDate' => $this->getCurrentCancelEndDate()->format('Y-m-d H:i:s')
+            'cancelEndDate' => $CancelEndDate->format('Y-m-d H:i:s')
         ]);
 
         $this->addHistoryEntry(MembershipUsersHandler::HISTORY_TYPE_CANCEL_CONFIRM);
@@ -755,8 +777,9 @@ class MembershipUser extends Child
         foreach ($membershipGroupIds as $groupId) {
             foreach ($Memberships->getMembershipIdsByGroupIds([$groupId]) as $membershipId) {
                 $OtherMembership = $Memberships->getChild($membershipId);
+                $userId = $User->getId();
 
-                if (!$OtherMembership->hasMembershipUserId($User->getId())) {
+                if ($userId !== false && !$OtherMembership->hasMembershipUserId($userId)) {
                     $User->removeGroup($groupId);
                 }
             }
@@ -1021,7 +1044,13 @@ class MembershipUser extends Child
                 }
         }
 
-        return $Locale->formatDate(strtotime($date), $dateFormat);
+        $timestamp = strtotime($date);
+
+        if ($timestamp === false) {
+            return false;
+        }
+
+        return $Locale->formatDate($timestamp, $dateFormat);
     }
 
     /**
@@ -1065,6 +1094,7 @@ class MembershipUser extends Child
             class_exists('QUI\ERP\Accounting\Contracts\Contract')
             && !$this->isCancelled()
             && $Contract
+            && $CurrentCancelEndDate instanceof DateTime
         ) {
             try {
                 if (!$Contract->isInPeriodOfNotice()) {
@@ -1074,7 +1104,7 @@ class MembershipUser extends Child
                 $PeriodOfNoticeInterval = $Contract->getPeriodOfNoticeInterval();
                 $EndBaseDate = clone $CurrentCancelEndDate;
                 $EndBaseDate->setTime(0, 0);
-                $EndBaseDate->sub(date_interval_create_from_date_string('1 second'));
+                $EndBaseDate->sub(new DateInterval('PT1S'));
 
                 $CancelUntilDate = clone $EndBaseDate;
 
@@ -1102,7 +1132,9 @@ class MembershipUser extends Child
                         'MembershipUser.cancel.info_text.cancel_until_date',
                         [
                             'addedDate' => $addedDate,
-                            'cancelUntilDate' => $this->formatDate($CancelUntilDate),
+                            'cancelUntilDate' => $CancelUntilDate instanceof DateTime
+                                ? $this->formatDate($CancelUntilDate)
+                                : false,
                             'cycleEndDate' => $cycleEndDate,
                             'nextCycleEndDate' => $nextCycleEndDate
                         ]
@@ -1113,7 +1145,9 @@ class MembershipUser extends Child
                         'MembershipUser.cancel.info_text.period_of_notice_expired',
                         [
                             'addedDate' => $addedDate,
-                            'cancelUntilDate' => $this->formatDate($CancelUntilDate),
+                            'cancelUntilDate' => $CancelUntilDate instanceof DateTime
+                                ? $this->formatDate($CancelUntilDate)
+                                : false,
                             'cycleBeginDate' => $cycleBeginDate,
                             'cycleEndDate' => $cycleEndDate,
                             'nextCycleEndDate' => $nextCycleEndDate
@@ -1160,7 +1194,9 @@ class MembershipUser extends Child
             'addedDate' => $addedDate,
             'beginDate' => $cycleBeginDate,
             'endDate' => $cycleEndDate,
-            'cancelEndDate' => $this->formatDate($CurrentCancelEndDate),
+            'cancelEndDate' => $CurrentCancelEndDate instanceof DateTime
+                ? $this->formatDate($CurrentCancelEndDate)
+                : false,
             'cancelDate' => $this->formatDate($this->getAttribute('cancelDate')),
 //            'cancelUntilDate'   => $CancelUntilDate ? $this->formatDate($CancelUntilDate) : false,
             'cancelStatus' => $this->getAttribute('cancelStatus'),
@@ -1354,8 +1390,9 @@ class MembershipUser extends Child
     /**
      * Get extra data of this MembershipUser
      *
-     * @param string|null $key (optional) - If omitted return all extra data
-     * @return array<string, array{value: string, add: string, edit: string}>|string|false
+     * @template T of string|null
+     * @param T $key (optional) - If omitted return all extra data
+     * @return (T is null ? array<string, array{value: string, add: string, edit: string}> : string|false)
      */
     public function getExtraData(null | string $key = null): bool | array | string
     {
@@ -1385,7 +1422,7 @@ class MembershipUser extends Child
      */
     public function getCycleBeginDate(): DateTime
     {
-        return date_create($this->getAttribute('beginDate'));
+        return new DateTime((string)$this->getAttribute('beginDate'));
     }
 
     /**
@@ -1396,21 +1433,31 @@ class MembershipUser extends Child
      */
     public function getCycleEndDate(): DateTime | bool
     {
-        if (!class_exists('QUI\ERP\Accounting\Contracts\Contract')) {
-            return false;
-        }
-
-        $Contract = $this->getContract();
+        $Contract = class_exists('QUI\ERP\Accounting\Contracts\Contract') ? $this->getContract() : false;
 
         if ($Contract) {
-            return $Contract->getCycleEndDate();
+            $EndDate = $Contract->getCycleEndDate();
+
+            if ($EndDate instanceof DateTime) {
+                return $EndDate;
+            }
         }
 
         if ($this->getMembership()->isInfinite()) {
             return false;
         }
 
-        return date_create($this->getAttribute('endDate'));
+        $endDate = $this->getAttribute('endDate');
+
+        if (!is_string($endDate)) {
+            return false;
+        }
+
+        try {
+            return new DateTime($endDate);
+        } catch (\Exception) {
+            return false;
+        }
     }
 
     /**
@@ -1421,19 +1468,18 @@ class MembershipUser extends Child
      */
     public function getNextCycleBeginDate(): DateTime | bool
     {
-        if (!class_exists('QUI\ERP\Accounting\Contracts\Contract')) {
-            return false;
-        }
-
-        $Contract = $this->getContract();
+        $Contract = class_exists('QUI\ERP\Accounting\Contracts\Contract') ? $this->getContract() : false;
 
         if ($Contract) {
             $EndDate = $Contract->getCycleEndDate();
-            $NextBeginDate = clone $EndDate;
-            $NextBeginDate->add(date_interval_create_from_date_string('1 day'));
-            $NextBeginDate->setTime(0, 0);
 
-            return $NextBeginDate;
+            if ($EndDate instanceof DateTime) {
+                $NextBeginDate = clone $EndDate;
+                $NextBeginDate->add(new DateInterval('P1D'));
+                $NextBeginDate->setTime(0, 0);
+
+                return $NextBeginDate;
+            }
         }
 
         if ($this->getMembership()->isInfinite()) {
@@ -1450,11 +1496,11 @@ class MembershipUser extends Child
 
         switch (MembershipUsersHandler::getDurationMode()) {
             case MembershipUsersHandler::DURATION_MODE_EXACT:
-                $NextBeginDate->add(date_interval_create_from_date_string('1 second'));
+                $NextBeginDate->add(new DateInterval('PT1S'));
                 break;
 
             default:
-                $NextBeginDate->add(date_interval_create_from_date_string('1 day'));
+                $NextBeginDate->add(new DateInterval('P1D'));
                 $NextBeginDate->setTime(0, 0);
         }
 
@@ -1469,11 +1515,7 @@ class MembershipUser extends Child
      */
     public function getNextCycleEndDate(): DateTime | bool
     {
-        if (!class_exists('QUI\ERP\Accounting\Contracts\Contract')) {
-            return false;
-        }
-
-        $Contract = $this->getContract();
+        $Contract = class_exists('QUI\ERP\Accounting\Contracts\Contract') ? $this->getContract() : false;
 
         if ($Contract) {
             return $Contract->getNextCycleEndDate();
@@ -1499,15 +1541,24 @@ class MembershipUser extends Child
         switch (MembershipUsersHandler::getDurationMode()) {
             case MembershipUsersHandler::DURATION_MODE_DAY:
                 $endTime = strtotime($start . ' +' . $durationCount . ' ' . $durationScope);
+
+                if ($endTime === false) {
+                    return false;
+                }
+
                 $beginOfDay = strtotime("midnight", $endTime);
                 $end = strtotime("tomorrow", $beginOfDay) - 1;
                 break;
 
             default:
                 $end = strtotime($start . ' +' . $durationCount . ' ' . $durationScope);
+
+                if ($end === false) {
+                    return false;
+                }
         }
 
-        return date_create('@' . $end);
+        return new DateTime('@' . $end);
     }
 
     /**

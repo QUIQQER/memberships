@@ -78,11 +78,15 @@ class Utils
             return $time->format('Y-m-d H:i:s');
         }
 
-        if (is_string($time) && !is_numeric($time)) {
-            $time = strtotime($time);
+        if (is_string($time)) {
+            if (is_numeric($time)) {
+                $time = (int)$time;
+            } else {
+                $time = strtotime($time);
 
-            if ($time === false) {
-                throw new \InvalidArgumentException('Invalid date string.');
+                if ($time === false) {
+                    throw new \InvalidArgumentException('Invalid date string.');
+                }
             }
         }
 

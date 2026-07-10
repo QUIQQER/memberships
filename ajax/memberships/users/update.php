@@ -26,7 +26,13 @@ QUI::getAjax()->registerFunction(
                 switch ($k) {
                     case 'beginDate':
                     case 'endDate':
-                        $v = Utils::getFormattedTimestamp(strtotime($v));
+                        $timestamp = strtotime($v);
+
+                        if ($timestamp === false) {
+                            throw new QUI\Memberships\Exception('Invalid membership date.');
+                        }
+
+                        $v = Utils::getFormattedTimestamp($timestamp);
                         $oldVal = $MembershipUser->getAttribute($k);
 
                         $updated[$k] = $oldVal . ' => ' . $v;
@@ -88,9 +94,15 @@ QUI::getAjax()->registerFunction(
             }
 
             if (!empty($updated)) {
+                $historyMessage = json_encode($updated);
+
+                if ($historyMessage === false) {
+                    throw new QUI\Memberships\Exception('Could not encode membership history.');
+                }
+
                 $MembershipUser->addHistoryEntry(
                     MembershipUsersHandler::HISTORY_TYPE_UPDATED,
-                    json_encode($updated)
+                    $historyMessage
                 );
             }
 

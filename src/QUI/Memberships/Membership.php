@@ -535,12 +535,21 @@ class Membership extends Child
         switch ($durationMode) {
             case MembershipUsersHandler::DURATION_MODE_DAY:
                 $endTime = strtotime($start . ' +' . $durationCount . ' ' . $durationScope);
+
+                if ($endTime === false) {
+                    throw new \UnexpectedValueException('Could not calculate membership end date.');
+                }
+
                 $beginOfDay = strtotime("midnight", $endTime);
                 $end = strtotime("tomorrow", $beginOfDay) - 1;
                 break;
 
             default:
                 $end = strtotime($start . ' +' . $durationCount . ' ' . $durationScope);
+
+                if ($end === false) {
+                    throw new \UnexpectedValueException('Could not calculate membership end date.');
+                }
         }
 
         return Utils::getFormattedTimestamp($end);
