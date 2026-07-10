@@ -10,7 +10,7 @@ class Memberships extends AbstractProfileControl
     /**
      * Constructor
      *
-     * @param array $attributes
+     * @param array<string, mixed> $attributes
      */
     public function __construct(array $attributes = [])
     {

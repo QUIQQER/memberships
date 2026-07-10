@@ -798,11 +798,11 @@ class Membership extends Child
     /**
      * Add user to the membership
      *
-     * @param QUI\Users\User $User
+     * @param QUIUserInterface $User
      * @return QUI\Memberships\Users\MembershipUser
      * @throws QUI\Exception
      */
-    public function addUser(QUI\Users\User $User): QUI\Memberships\Users\MembershipUser
+    public function addUser(QUIUserInterface $User): QUI\Memberships\Users\MembershipUser
     {
         $MembershipUser = MembershipUsersHandler::getInstance()->createChild([
             'userId' => $User->getId(),
