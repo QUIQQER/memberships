@@ -103,6 +103,20 @@ class Handler extends Factory
     }
 
     /**
+     * @throws QUI\Exception
+     */
+    public static function getConfig(): QUI\Config
+    {
+        $Config = QUI::getPackage('quiqqer/memberships')->getConfig();
+
+        if ($Config === null) {
+            throw new QUI\Exception('Memberships configuration is not available.');
+        }
+
+        return $Config;
+    }
+
+    /**
      * @return string
      */
     public function getChildClass(): string
@@ -274,7 +288,7 @@ class Handler extends Factory
         $binds = [];
 
         foreach ($groupIds as $groupId) {
-            $bindParam = md5($groupId);
+            $bindParam = md5((string)$groupId);
             $whereOr[] = '`groupIds` LIKE :' . $bindParam;
             $binds[$bindParam] = [
                 'value' => '%,' . $groupId . ',%',
@@ -284,7 +298,7 @@ class Handler extends Factory
 
         $sql .= implode(" OR ", $whereOr);
 
-        $PDO = QUI::getDataBase()->getPDO();
+        $PDO = QUI::getPDO();
         $Stmt = $PDO->prepare($sql);
 
         // bind search values
@@ -315,8 +329,7 @@ class Handler extends Factory
      */
     public static function getSetting(string $key): mixed
     {
-        $Config = QUI::getPackage('quiqqer/memberships')->getConfig();
-        return $Config->get('memberships', $key);
+        return self::getConfig()->get('memberships', $key);
     }
 
     /**
@@ -329,8 +342,7 @@ class Handler extends Factory
      */
     public static function getProductCategory(): bool | QUI\ERP\Products\Interfaces\CategoryInterface
     {
-        $Conf = QUI::getPackage('quiqqer/memberships')->getConfig();
-        $categoryId = $Conf->get('products', 'categoryId');
+        $categoryId = self::getConfig()->get('products', 'categoryId');
 
         if (empty($categoryId)) {
             return false;
@@ -370,8 +382,7 @@ class Handler extends Factory
         }
 
         try {
-            $Conf = QUI::getPackage('quiqqer/memberships')->getConfig();
-            $fieldId = $Conf->get('products', 'membershipFieldId');
+            $fieldId = self::getConfig()->get('products', 'membershipFieldId');
 
             if (empty($fieldId)) {
                 return false;
@@ -402,8 +413,7 @@ class Handler extends Factory
         }
 
         try {
-            $Conf = QUI::getPackage('quiqqer/memberships')->getConfig();
-            $fieldId = $Conf->get('products', 'membershipFlagFieldId');
+            $fieldId = self::getConfig()->get('products', 'membershipFlagFieldId');
 
             if (empty($fieldId)) {
                 return false;
@@ -441,9 +451,7 @@ class Handler extends Factory
     public static function isLinkedToContracts(): bool
     {
         try {
-            $Conf = QUI::getPackage('quiqqer/memberships')->getConfig();
-
-            if ((int)$Conf->get('membershipusers', 'linkWithContracts')) {
+            if ((int)self::getConfig()->get('membershipusers', 'linkWithContracts')) {
                 return true;
             }
         } catch (\Exception $Exception) {

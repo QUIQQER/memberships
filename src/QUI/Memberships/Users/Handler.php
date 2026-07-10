@@ -390,8 +390,7 @@ class Handler extends Factory
      */
     public static function getSetting(string $key): mixed
     {
-        $Config = QUI::getPackage('quiqqer/memberships')->getConfig();
-        return $Config->get('membershipusers', $key);
+        return MembershipsHandler::getConfig()->get('membershipusers', $key);
     }
 
     /**

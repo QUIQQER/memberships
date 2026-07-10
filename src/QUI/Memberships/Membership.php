@@ -196,7 +196,7 @@ class Membership extends Child
 
         $MembershipUsers = MembershipUsersHandler::getInstance();
 
-        if (count($MembershipUsers->getIdsByMembershipId($this->id))) {
+        if (count($MembershipUsers->getIdsByMembershipId((int)$this->id))) {
             throw new Exception([
                 'quiqqer/memberships',
                 'exception.membership.cannot.delete.with.users.left'
@@ -204,16 +204,22 @@ class Membership extends Child
         }
 
         if ($this->isDefault()) {
-            $Conf = QUI::getPackage('quiqqer/memberships')->getConfig();
+            $Conf = Handler::getConfig();
             $Conf->set('memberships', 'defaultMembershipId', '0');
             $Conf->save();
         }
 
         // remove from products
         if (Utils::isQuiqqerProductsInstalled() && class_exists('QUI\ERP\Products\Handler\Products')) {
+            $MembershipFieldDefinition = Handler::getProductMembershipField();
+
+            if ($MembershipFieldDefinition === false) {
+                throw new QUI\Exception('Membership product field is not available.');
+            }
+
             foreach ($this->getProducts() as $Product) {
                 $MembershipField = $Product->getField(
-                    Handler::getProductMembershipField()->getId()
+                    $MembershipFieldDefinition->getId()
                 );
                 $MembershipField->setValue(null);
 
@@ -581,9 +587,13 @@ class Membership extends Child
 
         $products = [];
 
+        if (!is_array($result)) {
+            return [];
+        }
+
         foreach ($result as $id) {
             try {
-                $products[] = ProductsHandler::getProduct($id);
+                $products[] = ProductsHandler::getProduct((int)$id);
             } catch (\Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
             }

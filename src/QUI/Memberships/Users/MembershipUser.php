@@ -971,7 +971,7 @@ class MembershipUser extends Child
 
         $Locale = $this->getUser()->getLocale();
         $lang = $Locale->getCurrent();
-        $Conf = QUI::getPackage('quiqqer/memberships')->getConfig();
+        $Conf = MembershipsHandler::getConfig();
 
         switch (MembershipUsersHandler::getDurationMode()) {
             case MembershipUsersHandler::DURATION_MODE_DAY:
