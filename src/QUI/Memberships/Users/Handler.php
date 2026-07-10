@@ -186,24 +186,22 @@ class Handler extends Factory
      */
     public function getIdsByMembershipId(int $membershipId, bool $includeArchived = false): array
     {
-        $where = [
-            'membershipId' => $membershipId,
-            'archived' => 0
-        ];
-
-        if ($includeArchived === true) {
-            unset($where['archived']);
-        }
-
         try {
-            $result = QUI::getDataBase()->fetch([
-                'select' => [
-                    'id'
-                ],
-                'from' => MembershipUsersHandler::getDataBaseTableName(),
-                'where' => $where
-            ]);
-        } catch (QUI\Exception $e) {
+            $QueryBuilder = QUI::getQueryBuilder();
+            $QueryBuilder
+                ->select('id')
+                ->from(QUI\Utils\Doctrine::quoteIdentifier(self::getDataBaseTableName()))
+                ->where($QueryBuilder->expr()->eq('membershipId', ':membershipId'))
+                ->setParameter('membershipId', $membershipId);
+
+            if (!$includeArchived) {
+                $QueryBuilder
+                    ->andWhere($QueryBuilder->expr()->eq('archived', ':archived'))
+                    ->setParameter('archived', 0);
+            }
+
+            $result = $QueryBuilder->executeQuery()->fetchAllAssociative();
+        } catch (\Exception $e) {
             QUI\System\Log::addError($e->getMessage());
             return [];
         }
@@ -230,24 +228,22 @@ class Handler extends Factory
             $userId = (int)$userId;
         }
 
-        $where = [
-            'userId' => $userId,
-            'archived' => 0
-        ];
-
-        if ($includeArchived === true) {
-            unset($where['archived']);
-        }
-
         try {
-            $result = QUI::getDataBase()->fetch([
-                'select' => [
-                    'id'
-                ],
-                'from' => self::getDataBaseTableName(),
-                'where' => $where
-            ]);
-        } catch (QUI\Exception $e) {
+            $QueryBuilder = QUI::getQueryBuilder();
+            $QueryBuilder
+                ->select('id')
+                ->from(QUI\Utils\Doctrine::quoteIdentifier(self::getDataBaseTableName()))
+                ->where($QueryBuilder->expr()->eq('userId', ':userId'))
+                ->setParameter('userId', $userId);
+
+            if (!$includeArchived) {
+                $QueryBuilder
+                    ->andWhere($QueryBuilder->expr()->eq('archived', ':archived'))
+                    ->setParameter('archived', 0);
+            }
+
+            $result = $QueryBuilder->executeQuery()->fetchAllAssociative();
+        } catch (\Exception $e) {
             QUI\System\Log::addError($e->getMessage());
             return [];
         }
@@ -273,71 +269,33 @@ class Handler extends Factory
     public function getMembershipUserByContractId(int $contractId): bool | MembershipUser
     {
         try {
-            $result = QUI::getDataBase()->fetch([
-                'select' => [
-                    'id'
-                ],
-                'from' => self::getDataBaseTableName(),
-                'where' => [
-                    'contractId' => $contractId
-                ]
-            ]);
+            $QueryBuilder = QUI::getQueryBuilder();
+            $membershipUserId = $QueryBuilder
+                ->select('id')
+                ->from(QUI\Utils\Doctrine::quoteIdentifier(self::getDataBaseTableName()))
+                ->where($QueryBuilder->expr()->eq('contractId', ':contractId'))
+                ->setParameter('contractId', $contractId)
+                ->setMaxResults(1)
+                ->executeQuery()
+                ->fetchOne();
         } catch (Exception $Exception) {
             QUI\System\Log::writeException($Exception);
             return false;
         }
 
-        if (empty($result)) {
+        if ($membershipUserId === false) {
             return false;
         }
 
         try {
             /** @var MembershipUser $MembershipUser */
-            $MembershipUser = self::getChild($result[0]['id']);
+            $MembershipUser = self::getChild($membershipUserId);
             return $MembershipUser;
         } catch (Exception $Exception) {
             QUI\System\Log::writeException($Exception);
             return false;
         }
     }
-
-//    /**
-//     * Get membership
-//     *
-//     * @param int $id
-//     * @return MembershipUser
-//     * @throws QUI\Exception
-//     */
-//    public function getChild($id)
-//    {
-//        $childClass = $this->getChildClass();
-//
-//        $result = QUI::getDataBase()->fetch(array(
-//            'from'  => $this->getDataBaseTableName(),
-//            'where' => array(
-//                'id'       => $id,
-//                'archived' => 0
-//            )
-//        ));
-//
-//        if (!isset($result[0])) {
-//            throw new QUI\Exception(
-//                array(
-//                    'quiqqer/system',
-//                    'crud.child.not.found'
-//                ),
-//                404
-//            );
-//        }
-//
-//        $Child = new $childClass($result[0]['id'], $this);
-//
-//        if ($Child instanceof QUI\CRUD\Child) {
-//            $Child->setAttributes($result[0]);
-//        }
-//
-//        return $Child;
-//    }
 
     /**
      * @return string

@@ -389,13 +389,14 @@ class Events
         $MembershipUsers = MembershipUsersHandler::getInstance();
 
         try {
-            $result = QUI::getDataBase()->fetch([
-                'select' => ['id'],
-                'from' => $MembershipUsers->getDataBaseTableName(),
-                'where' => [
-                    'contractId' => $Contract->getCleanId()
-                ]
-            ]);
+            $QueryBuilder = QUI::getQueryBuilder();
+            $result = $QueryBuilder
+                ->select('id')
+                ->from(QUI\Utils\Doctrine::quoteIdentifier($MembershipUsers->getDataBaseTableName()))
+                ->where($QueryBuilder->expr()->eq('contractId', ':contractId'))
+                ->setParameter('contractId', $Contract->getCleanId())
+                ->executeQuery()
+                ->fetchAllAssociative();
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
             return;
@@ -488,44 +489,6 @@ class Events
         }
     }
 
-//    /**
-//     * quiqqer/contracts: onQuiqqerContractsCancel
-//     *
-//     * Cancel a membership if a contract is cancelled
-//     *
-//     * @param Contract $Contract
-//     * @return void
-//     * @throws \QUI\Exception
-//     * @throws \Exception
-//     */
-//    public static function onQuiqqerContractsCancel(Contract $Contract)
-//    {
-//        $MembershipUsers = MembershipUsersHandler::getInstance();
-//
-//        $result = QUI::getDataBase()->fetch([
-//            'select' => ['id'],
-//            'from'   => $MembershipUsers->getDataBaseTableName(),
-//            'where'  => [
-//                'contractId' => $Contract->getCleanId()
-//            ]
-//        ]);
-//
-//        if (empty($result)) {
-//            return;
-//        }
-//
-//        /** @var QUI\Memberships\Users\MembershipUser $MembershipUser */
-//        $MembershipUser = $MembershipUsers->getChild($result[0]['id']);
-//
-//        $MembershipUser->setAttributes([
-//            'cancelStatus'  => MembershipUsersHandler::CANCEL_STATUS_CANCELLED,
-//            'cancelEndDate' => $Contract->getTerminationDate()->format('Y-m-d 23:59:59')
-//        ]);
-//
-//
-//        $MembershipUser->sendConfirmCancelMail();
-//    }
-
     /**
      * quiqqer/contracts: onQuiqqerContractsDelete
      *
@@ -538,25 +501,11 @@ class Events
     {
         $MembershipUsers = MembershipUsersHandler::getInstance();
 
-        $result = QUI::getDataBase()->fetch([
-            'select' => ['id'],
-            'from' => $MembershipUsers->getDataBaseTableName(),
-            'where' => [
-                'contractId' => $Contract->getCleanId()
-            ]
-        ]);
-
-        foreach ($result as $row) {
-            QUI::getDataBase()->update(
-                $MembershipUsers->getDataBaseTableName(),
-                [
-                    'contractId' => null
-                ],
-                [
-                    'id' => $row['id']
-                ]
-            );
-        }
+        QUI::getDataBaseConnection()->update(
+            QUI\Utils\Doctrine::quoteIdentifier($MembershipUsers->getDataBaseTableName()),
+            ['contractId' => null],
+            ['contractId' => $Contract->getCleanId()]
+        );
     }
 
     /**

@@ -2,7 +2,6 @@
 
 namespace QUI\Memberships;
 
-use PDO;
 use QUI;
 use QUI\CRUD\Child;
 use QUI\ERP\Plans\Handler as ErpPlansHandler;
@@ -17,7 +16,6 @@ use QUI\Memberships\Users\Handler as MembershipUsersHandler;
 use QUI\Memberships\Users\MembershipUser;
 use QUI\Permissions\Exception;
 use QUI\Permissions\Permission;
-use QUI\Utils\Security\Orthos;
 
 class Membership extends Child
 {
@@ -249,19 +247,21 @@ class Membership extends Child
      */
     public function getMembershipUser(int | string $userId): Users\MembershipUser
     {
-        $result = QUI::getDataBase()->fetch([
-            'select' => [
-                'id'
-            ],
-            'from' => MembershipUsersHandler::getInstance()->getDataBaseTableName(),
-            'where' => [
-                'membershipId' => $this->id,
-                'userId' => $userId,
-                'archived' => 0
-            ]
-        ]);
+        $QueryBuilder = QUI::getQueryBuilder();
+        $membershipUserId = $QueryBuilder
+            ->select('id')
+            ->from(QUI\Utils\Doctrine::quoteIdentifier(MembershipUsersHandler::getInstance()->getDataBaseTableName()))
+            ->where($QueryBuilder->expr()->eq('membershipId', ':membershipId'))
+            ->andWhere($QueryBuilder->expr()->eq('userId', ':userId'))
+            ->andWhere($QueryBuilder->expr()->eq('archived', ':archived'))
+            ->setParameter('membershipId', $this->id)
+            ->setParameter('userId', $userId)
+            ->setParameter('archived', 0)
+            ->setMaxResults(1)
+            ->executeQuery()
+            ->fetchOne();
 
-        if (empty($result)) {
+        if ($membershipUserId === false) {
             throw new Exception([
                 'quiqqer/memberships',
                 'exception.membership.user.not.found',
@@ -271,7 +271,7 @@ class Membership extends Child
             ], 404);
         }
 
-        return MembershipUsersHandler::getInstance()->getChild($result[0]['id']);
+        return MembershipUsersHandler::getInstance()->getChild($membershipUserId);
     }
 
     /**
@@ -284,21 +284,21 @@ class Membership extends Child
     {
         $membershipUserIds = [];
 
-        $where = [
-            'membershipId' => $this->id,
-            'archived' => 0
-        ];
-
-        if ($includeArchived) {
-            unset($where['archived']);
-        }
-
         try {
-            $result = QUI::getDataBase()->fetch([
-                'select' => 'id',
-                'from' => QUI\Memberships\Users\Handler::getInstance()->getDataBaseTableName(),
-                'where' => $where
-            ]);
+            $QueryBuilder = QUI::getQueryBuilder();
+            $QueryBuilder
+                ->select('id')
+                ->from(QUI\Utils\Doctrine::quoteIdentifier(MembershipUsersHandler::getInstance()->getDataBaseTableName()))
+                ->where($QueryBuilder->expr()->eq('membershipId', ':membershipId'))
+                ->setParameter('membershipId', $this->id);
+
+            if (!$includeArchived) {
+                $QueryBuilder
+                    ->andWhere($QueryBuilder->expr()->eq('archived', ':archived'))
+                    ->setParameter('archived', 0);
+            }
+
+            $result = $QueryBuilder->executeQuery()->fetchAllAssociative();
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
             return $membershipUserIds;
@@ -353,20 +353,20 @@ class Membership extends Child
      */
     public function hasMembershipUserId(int | string $userId): bool
     {
-        $result = QUI::getDataBase()->fetch([
-            'count' => 1,
-            'select' => [
-                'id'
-            ],
-            'from' => MembershipUsersHandler::getInstance()->getDataBaseTableName(),
-            'where' => [
-                'membershipId' => $this->id,
-                'userId' => $userId,
-                'archived' => 0
-            ]
-        ]);
+        $QueryBuilder = QUI::getQueryBuilder();
+        $count = $QueryBuilder
+            ->select('COUNT(id)')
+            ->from(QUI\Utils\Doctrine::quoteIdentifier(MembershipUsersHandler::getInstance()->getDataBaseTableName()))
+            ->where($QueryBuilder->expr()->eq('membershipId', ':membershipId'))
+            ->andWhere($QueryBuilder->expr()->eq('userId', ':userId'))
+            ->andWhere($QueryBuilder->expr()->eq('archived', ':archived'))
+            ->setParameter('membershipId', $this->id)
+            ->setParameter('userId', $userId)
+            ->setParameter('archived', 0)
+            ->executeQuery()
+            ->fetchOne();
 
-        return current(current($result)) > 0;
+        return (int)$count > 0;
     }
 
     /**
@@ -381,131 +381,104 @@ class Membership extends Child
      */
     public function searchUsers(array $searchParams, bool $archivedOnly = false, bool $countOnly = false): array | int
     {
-        $membershipUserIds = [];
         $Grid = new QUI\Utils\Grid($searchParams);
         $gridParams = $Grid->parseDBParams($searchParams);
         $tbl = MembershipUsersHandler::getInstance()->getDataBaseTableName();
         $usersTbl = QUI::getDBTableName('users');
-        $binds = [];
-        $where = [];
+        $QueryBuilder = QUI::getQueryBuilder();
+        $QueryBuilder
+            ->select($countOnly ? 'COUNT(musers.id)' : 'musers.id')
+            ->from(QUI\Utils\Doctrine::quoteIdentifier($tbl), 'musers')
+            ->leftJoin(
+                'musers',
+                QUI\Utils\Doctrine::quoteIdentifier($usersTbl),
+                'users',
+                'musers.userId = users.id'
+            )
+            ->where($QueryBuilder->expr()->eq('musers.membershipId', ':membershipId'))
+            ->andWhere($QueryBuilder->expr()->eq('musers.archived', ':archived'))
+            ->setParameter('membershipId', $this->id)
+            ->setParameter('archived', $archivedOnly ? 1 : 0);
 
-        if ($countOnly) {
-            $sql = "SELECT COUNT(*)";
-        } else {
-            $sql = "SELECT `musers`.id";
-        }
-
-        $sql .= " FROM `" . $tbl . "` musers LEFT JOIN `" . $usersTbl . "` users";
-        $sql .= ' ON `musers`.userId = `users`.id';
-
-//        $where[] = '`musers`.userId = `users`.id';
-        $where[] = '`musers`.membershipId = ' . $this->id;
-
-        if ($archivedOnly === false) {
-            $where[] = '`musers`.archived = 0';
-        } else {
-            $where[] = '`musers`.archived = 1';
-        }
-
-        if (!empty($searchParams['search'])) {
-            $whereOR = [];
-
+        if (!empty($searchParams['search']) && is_string($searchParams['search'])) {
             $searchColumns = [
-                '`users`.username',
-                '`users`.firstname',
-                '`users`.lastname'
+                'users.username',
+                'users.firstname',
+                'users.lastname'
             ];
+            $searchExpressions = [];
 
-            foreach ($searchColumns as $tbl => $column) {
-                $whereOR[] = $column . ' LIKE :search';
-                $binds['search'] = [
-                    'value' => '%' . $searchParams['search'] . '%',
-                    'type' => PDO::PARAM_STR
-                ];
+            foreach ($searchColumns as $column) {
+                $searchExpressions[] = $QueryBuilder->expr()->like($column, ':search');
             }
 
-            $where[] = '(' . implode(' OR ', $whereOR) . ')';
+            $QueryBuilder
+                ->andWhere($QueryBuilder->expr()->or(...$searchExpressions))
+                ->setParameter('search', '%' . $searchParams['search'] . '%');
         }
 
         if (!empty($searchParams['productId'])) {
-            $where[] = '`musers`.productId = :productId';
-            $binds['productId'] = [
-                'value' => (int)$searchParams['productId'],
-                'type' => PDO::PARAM_INT
-            ];
+            $QueryBuilder
+                ->andWhere($QueryBuilder->expr()->eq('musers.productId', ':productId'))
+                ->setParameter('productId', (int)$searchParams['productId']);
         }
 
-        // build WHERE query string
-        $sql .= " WHERE " . implode(" AND ", $where);
+        if (!$countOnly && !empty($searchParams['sortOn']) && is_string($searchParams['sortOn'])) {
+            $sortOn = $searchParams['sortOn'];
+            $userColumns = ['username', 'firstname', 'lastname'];
+            $membershipUserColumns = array_merge(
+                ['id'],
+                MembershipUsersHandler::getInstance()->getChildAttributes()
+            );
 
-        // ORDER
-        if (!empty($searchParams['sortOn'])) {
-            $sortOn = Orthos::clear($searchParams['sortOn']);
+            if (in_array($sortOn, $userColumns, true) || in_array($sortOn, $membershipUserColumns, true)) {
+                $sortDirection = !empty($searchParams['sortBy']) && is_string($searchParams['sortBy'])
+                    ? strtoupper($searchParams['sortBy'])
+                    : 'ASC';
 
-            switch ($sortOn) {
-                case 'username':
-                case 'firstname':
-                case 'lastname':
-                    $sortOn = '`users`.' . $sortOn;
-                    break;
+                if (!in_array($sortDirection, ['ASC', 'DESC'], true)) {
+                    $sortDirection = 'ASC';
+                }
 
-                default:
-                    $sortOn = '`musers`.' . $sortOn;
+                $Platform = QUI::getDataBaseConnection()->getDatabasePlatform();
+                $sortAlias = in_array($sortOn, $userColumns, true) ? 'users' : 'musers';
+                $QueryBuilder->orderBy(
+                    $sortAlias . '.' . $Platform->quoteSingleIdentifier($sortOn),
+                    $sortDirection
+                );
             }
+        }
 
-            $order = "ORDER BY " . $sortOn;
+        if (!$countOnly) {
+            if (!empty($gridParams['limit'])) {
+                $limit = explode(',', (string)$gridParams['limit'], 2);
 
-            if (
-                isset($searchParams['sortBy']) &&
-                !empty($searchParams['sortBy'])
-            ) {
-                $order .= " " . Orthos::clear($searchParams['sortBy']);
+                if (isset($limit[1])) {
+                    $QueryBuilder->setFirstResult((int)$limit[0]);
+                    $QueryBuilder->setMaxResults((int)$limit[1]);
+                } else {
+                    $QueryBuilder->setMaxResults((int)$limit[0]);
+                }
             } else {
-                $order .= " ASC";
+                $QueryBuilder->setMaxResults(20);
             }
-
-            $sql .= " " . $order;
-        }
-
-        // LIMIT
-        if (
-            !empty($gridParams['limit'])
-            && !$countOnly
-        ) {
-            $sql .= " LIMIT " . $gridParams['limit'];
-        } else {
-            if (!$countOnly) {
-                $sql .= " LIMIT " . (int)20;
-            }
-        }
-
-        $Stmt = QUI::getPDO()->prepare($sql);
-
-        // bind search values
-        foreach ($binds as $var => $bind) {
-            $Stmt->bindValue(':' . $var, $bind['value'], $bind['type']);
         }
 
         try {
-            $Stmt->execute();
-            $result = $Stmt->fetchAll(PDO::FETCH_ASSOC);
+            $Result = $QueryBuilder->executeQuery();
         } catch (\Exception $Exception) {
             QUI\System\Log::addError(
                 self::class . ' :: searchUsers() -> ' . $Exception->getMessage()
             );
 
-            return [];
+            return $countOnly ? 0 : [];
         }
 
         if ($countOnly) {
-            return (int)current(current($result));
+            return (int)$Result->fetchOne();
         }
 
-        foreach ($result as $row) {
-            $membershipUserIds[] = (int)$row['id'];
-        }
-
-        return $membershipUserIds;
+        return array_map('intval', $Result->fetchFirstColumn());
     }
 
     /**

@@ -20,15 +20,14 @@ class Cron
     {
         $MembershipUsers = MembershipUsersHandler::getInstance();
 
-        $result = QUI::getDataBase()->fetch([
-            'select' => [
-                'id'
-            ],
-            'from' => $MembershipUsers->getDataBaseTableName(),
-            'where' => [
-                'archived' => 0
-            ]
-        ]);
+        $QueryBuilder = QUI::getQueryBuilder();
+        $result = $QueryBuilder
+            ->select('id')
+            ->from(QUI\Utils\Doctrine::quoteIdentifier($MembershipUsers->getDataBaseTableName()))
+            ->where($QueryBuilder->expr()->eq('archived', ':archived'))
+            ->setParameter('archived', 0)
+            ->executeQuery()
+            ->fetchAllAssociative();
 
         $now = time();
         $cancelConfirmReminderAfterDays = (int)MembershipUsersHandler::getSetting('cancelReminderDays');
