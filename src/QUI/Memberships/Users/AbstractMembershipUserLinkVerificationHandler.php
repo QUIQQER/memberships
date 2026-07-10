@@ -10,11 +10,11 @@ use QUI\Verification\Enum\VerificationErrorReason;
 
 abstract class AbstractMembershipUserLinkVerificationHandler extends AbstractLinkVerificationHandler
 {
-    public function __construct(protected ?MembershipUsersHandler $membershipUsersHandler = null)
+    protected MembershipUsersHandler $membershipUsersHandler;
+
+    public function __construct(?MembershipUsersHandler $membershipUsersHandler = null)
     {
-        if (is_null($this->membershipUsersHandler)) {
-            $this->membershipUsersHandler = MembershipUsersHandler::getInstance();
-        }
+        $this->membershipUsersHandler = $membershipUsersHandler ?? MembershipUsersHandler::getInstance();
     }
 
     /**

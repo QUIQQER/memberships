@@ -11,7 +11,7 @@ use QUI\Memberships\Membership;
 use QUI\Utils\Grid;
 use QUI\Utils\Security\Orthos;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'package_quiqqer_memberships_ajax_memberships_getList',
     function ($searchParams) {
         $searchParams = Orthos::clearArray(json_decode($searchParams, true));

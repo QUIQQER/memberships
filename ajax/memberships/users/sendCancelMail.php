@@ -9,7 +9,7 @@
 
 use QUI\Memberships\Users\Handler as MembershipUsersHandler;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'package_quiqqer_memberships_ajax_memberships_users_sendCancelMail',
     function ($membershipUserId) {
         try {
@@ -53,7 +53,7 @@ QUI::$Ajax->registerFunction(
                 'message.ajax.memberships.users.sendCancelMail.success',
                 [
                     'membershipUserId' => $MembershipUser->getId(),
-                    'membershipUserName' => $MembershipUser->getUser()->getName()
+                    'membershipUserName' => $MembershipUser->getUserOrThrow()->getName()
                 ]
             )
         );

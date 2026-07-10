@@ -11,7 +11,7 @@
 use QUI\Memberships\Users\Handler as MembershipUsersHandler;
 use QUI\Memberships\Utils;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'package_quiqqer_memberships_ajax_memberships_users_update',
     function ($membershipUserId, $attributes) {
         try {
@@ -26,7 +26,13 @@ QUI::$Ajax->registerFunction(
                 switch ($k) {
                     case 'beginDate':
                     case 'endDate':
-                        $v = Utils::getFormattedTimestamp(strtotime($v));
+                        $timestamp = strtotime($v);
+
+                        if ($timestamp === false) {
+                            throw new QUI\Memberships\Exception('Invalid membership date.');
+                        }
+
+                        $v = Utils::getFormattedTimestamp($timestamp);
                         $oldVal = $MembershipUser->getAttribute($k);
 
                         $updated[$k] = $oldVal . ' => ' . $v;
@@ -88,9 +94,15 @@ QUI::$Ajax->registerFunction(
             }
 
             if (!empty($updated)) {
+                $historyMessage = json_encode($updated);
+
+                if ($historyMessage === false) {
+                    throw new QUI\Memberships\Exception('Could not encode membership history.');
+                }
+
                 $MembershipUser->addHistoryEntry(
                     MembershipUsersHandler::HISTORY_TYPE_UPDATED,
-                    json_encode($updated)
+                    $historyMessage
                 );
             }
 
@@ -134,7 +146,7 @@ QUI::$Ajax->registerFunction(
                 'message.ajax.memberships.users.update.success',
                 [
                     'membershipUserId' => $MembershipUser->getId(),
-                    'membershipUserName' => $MembershipUser->getUser()->getName()
+                    'membershipUserName' => $MembershipUser->getUserOrThrow()->getName()
                 ]
             )
         );

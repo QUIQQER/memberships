@@ -10,7 +10,7 @@
 use QUI\ERP\Products\Handler\Fields as ProductFields;
 use QUI\Memberships\Handler as MembershipsHandler;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'package_quiqqer_memberships_ajax_memberships_products_getMembershipProducts',
     function ($membershipId) {
         $Memberships = MembershipsHandler::getInstance();
