@@ -8,7 +8,7 @@
 
 use QUI\Memberships\Handler as MembershipsHandler;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'package_quiqqer_memberships_ajax_memberships_get',
     function ($id) {
         $Memberships = MembershipsHandler::getInstance();

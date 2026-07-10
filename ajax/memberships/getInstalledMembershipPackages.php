@@ -8,7 +8,7 @@
 
 use QUI\Memberships\Utils;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'package_quiqqer_memberships_ajax_memberships_getInstalledMembershipPackages',
     function () {
         return Utils::getInstalledMembershipPackages();

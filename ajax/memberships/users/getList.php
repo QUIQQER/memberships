@@ -13,7 +13,7 @@ use QUI\Memberships\Users\Handler as MembershipUsersHandler;
 use QUI\Utils\Grid;
 use QUI\Utils\Security\Orthos;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'package_quiqqer_memberships_ajax_memberships_users_getList',
     function ($membershipId, $searchParams) {
         $searchParams = Orthos::clearArray(json_decode($searchParams, true));
