@@ -9,14 +9,19 @@
 use QUI\Memberships\Handler as MembershipsHandler;
 use QUI\Memberships\Users\Handler as MembershipUsersHandler;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'package_quiqqer_memberships_ajax_memberships_users_getProfileData',
     function () {
         $SessionUser = QUI::getUserBySession();
+        $userId = $SessionUser->getId();
+
+        if ($userId === false) {
+            return [];
+        }
 
         try {
             $membershipUsers = MembershipUsersHandler::getInstance()
-                ->getMembershipUsersByUserId($SessionUser->getId());
+                ->getMembershipUsersByUserId($userId);
 
             $data = [];
 

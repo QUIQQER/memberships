@@ -11,7 +11,7 @@
 use QUI\Memberships\Handler as MembershipsHandler;
 use QUI\Memberships\Users\Handler as MembershipUsersHandler;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'package_quiqqer_memberships_ajax_memberships_users_create',
     function ($membershipId, $userIds) {
         try {

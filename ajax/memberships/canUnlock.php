@@ -9,7 +9,7 @@
 use QUI\Memberships\Handler as MembershipsHandler;
 use QUI\Permissions\Permission;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'package_quiqqer_memberships_ajax_memberships_canUnlock',
     function () {
         return Permission::hasPermission(

@@ -4,46 +4,51 @@
     <global>
         <table name="quiqqer_memberships">
             <!-- basic fields -->
-            <field type="BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY">id</field>
-            <field type="MEDIUMTEXT NOT NULL">title</field>
-            <field type="MEDIUMTEXT NULL">description</field>
-            <field type="MEDIUMTEXT NULL">content</field>
-            <field type="VARCHAR(255) NOT NULL">duration</field>
-            <field type="MEDIUMTEXT NULL">groupIds</field>
-            <field type="DATETIME NOT NULL">createDate</field>
-            <field type="VARCHAR(50) NOT NULL">createUser</field>
-            <field type="DATETIME NULL DEFAULT NULL">editDate</field>
-            <field type="VARCHAR(50) NULL">editUser</field>
-            <field type="TINYINT(1) NOT NULL DEFAULT 0">autoExtend</field>
+            <field type="bigint" autoincrement="true" primary="true">id</field>
+            <field type="text">title</field>
+            <field type="text" nullable="true">description</field>
+            <field type="text" nullable="true">content</field>
+            <field type="string" length="255">duration</field>
+            <field type="text" nullable="true">groupIds</field>
+            <field type="datetime">createDate</field>
+            <field type="string" length="50">createUser</field>
+            <field type="datetime" nullable="true" default="null">editDate</field>
+            <field type="string" length="50" nullable="true">editUser</field>
+            <field type="boolean" default="0">autoExtend</field>
 
             <!-- quiqqer/order fields -->
-            <field type="VARCHAR(255) NULL">paymentInterval</field>
+            <field type="string" length="255" nullable="true">paymentInterval</field>
         </table>
 
         <table name="quiqqer_memberships_users">
             <!-- basic fields -->
-            <field type="BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY">id</field>
-            <field type="BIGINT(20) NOT NULL">membershipId</field>
-            <field type="VARCHAR(50) NOT NULL">userId</field>
-            <field type="DATETIME NOT NULL">addedDate</field>
-            <field type="DATETIME NULL DEFAULT NULL">beginDate</field>
-            <field type="DATETIME NULL DEFAULT NULL">endDate</field>
-            <field type="SMALLINT UNSIGNED NOT NULL DEFAULT 0">extendCounter</field>
-            <field type="DATETIME NULL DEFAULT NULL">cancelDate</field>
-            <field type="DATETIME NULL DEFAULT NULL">cancelEndDate</field>
-            <field type="TINYINT(1) NOT NULL DEFAULT 0">cancelled</field>
-            <field type="VARCHAR(255) NOT NULL DEFAULT 0">cancelStatus</field>
-            <field type="TINYINT(1) NOT NULL DEFAULT 0">archived</field>
-            <field type="DATETIME NULL DEFAULT NULL">archiveDate</field>
-            <field type="VARCHAR(255) NULL">archiveReason</field>
-            <field type="MEDIUMTEXT NULL">history</field>
-            <field type="MEDIUMTEXT NULL">extraData</field>
+            <field type="bigint" autoincrement="true" primary="true">id</field>
+            <field type="bigint">membershipId</field>
+            <field type="string" length="50">userId</field>
+            <field type="datetime">addedDate</field>
+            <field type="datetime" nullable="true" default="null">beginDate</field>
+            <field type="datetime" nullable="true" default="null">endDate</field>
+            <field type="smallint" default="0">extendCounter</field>
+            <field type="datetime" nullable="true" default="null">cancelDate</field>
+            <field type="datetime" nullable="true" default="null">cancelEndDate</field>
+            <field type="boolean" default="0">cancelled</field>
+            <field type="string" length="255" default="0">cancelStatus</field>
+            <field type="boolean" default="0">archived</field>
+            <field type="datetime" nullable="true" default="null">archiveDate</field>
+            <field type="string" length="255" nullable="true">archiveReason</field>
+            <field type="text" nullable="true">history</field>
+            <field type="text" nullable="true">extraData</field>
 
             <!-- quiqqer/products fields -->
-            <field type="BIGINT(20) NULL">productId</field>
+            <field type="bigint" nullable="true">productId</field>
 
             <!-- quiqqer/contracts fields -->
-            <field type="BIGINT(20) NULL">contractId</field>
+            <field type="bigint" nullable="true">contractId</field>
+
+            <index>membershipId,userId,archived</index>
+            <index>userId,archived</index>
+            <index>membershipId,archived,productId</index>
+            <index>contractId</index>
         </table>
     </global>
 

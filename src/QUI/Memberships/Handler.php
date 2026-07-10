@@ -2,7 +2,6 @@
 
 namespace QUI\Memberships;
 
-use PDO;
 use QUI;
 use QUI\CRUD\Factory;
 use QUI\ERP\Products\Handler\Categories as ProductCategories;
@@ -11,7 +10,6 @@ use QUI\Exception;
 use QUI\Memberships\Users\Handler as MembershipUsersHandler;
 use QUI\Permissions\Permission;
 use QUI\Utils\Grid;
-use QUI\Utils\Security\Orthos;
 
 class Handler extends Factory
 {
@@ -103,6 +101,20 @@ class Handler extends Factory
     }
 
     /**
+     * @throws QUI\Exception
+     */
+    public static function getConfig(): QUI\Config
+    {
+        $Config = QUI::getPackage('quiqqer/memberships')->getConfig();
+
+        if ($Config === null) {
+            throw new QUI\Exception('Memberships configuration is not available.');
+        }
+
+        return $Config;
+    }
+
+    /**
      * @return string
      */
     public function getChildClass(): string
@@ -111,7 +123,7 @@ class Handler extends Factory
     }
 
     /**
-     * @return array
+     * @return array<int, string>
      */
     public function getChildAttributes(): array
     {
@@ -137,173 +149,147 @@ class Handler extends Factory
     /**
      * Search memberships
      *
-     * @param array $searchParams
-     * @param bool $countOnly (optional) - get count for search result only [default: false]
-     * @return array|int - membership IDs
+     * @template T of bool
+     * @param array<string, mixed> $searchParams
+     * @param T $countOnly (optional) - get count for search result only [default: false]
+     * @return (T is true ? int : array<int, int>) - membership IDs
      * @throws Exception
      */
     public function search(array $searchParams, bool $countOnly = false): array | int
     {
-        $memberships = [];
         $Grid = new Grid($searchParams);
         $gridParams = $Grid->parseDBParams($searchParams);
-
-        $binds = [];
-        $where = [];
-
-        if ($countOnly) {
-            $sql = "SELECT COUNT(*)";
-        } else {
-            $sql = "SELECT id";
-        }
-
-        $sql .= " FROM `" . $this->getDataBaseTableName() . "`";
+        $QueryBuilder = QUI::getQueryBuilder();
+        $QueryBuilder
+            ->select($countOnly ? 'COUNT(id)' : 'id')
+            ->from(QUI\Utils\Doctrine::quoteIdentifier($this->getDataBaseTableName()));
 
         if (!empty($searchParams['userId'])) {
-            $memberhsipUsers = MembershipUsersHandler::getInstance()->getMembershipUsersByUserId(
+            $membershipUsers = MembershipUsersHandler::getInstance()->getMembershipUsersByUserId(
                 $searchParams['userId']
             );
-
             $membershipIds = [];
 
-            foreach ($memberhsipUsers as $MembershipUser) {
+            foreach ($membershipUsers as $MembershipUser) {
                 $membershipIds[] = $MembershipUser->getMembership()->getId();
             }
 
-            if (!empty($membershipIds)) {
-                $where[] = '`id` IN (' . implode(',', $membershipIds) . ')';
+            if (empty($membershipIds)) {
+                return $countOnly ? 0 : [];
             }
+
+            $membershipPlaceholders = [];
+
+            foreach ($membershipIds as $index => $membershipId) {
+                $parameter = 'membershipId' . $index;
+                $membershipPlaceholders[] = ':' . $parameter;
+                $QueryBuilder->setParameter($parameter, $membershipId);
+            }
+
+            $QueryBuilder->andWhere($QueryBuilder->expr()->in('id', $membershipPlaceholders));
         }
 
-        if (!empty($searchParams['search'])) {
+        if (!empty($searchParams['search']) && is_string($searchParams['search'])) {
             $searchColumns = [
                 'title',
                 'description',
                 'content'
             ];
-
-            $whereOr = [];
+            $searchExpressions = [];
 
             foreach ($searchColumns as $searchColumn) {
-                $whereOr[] = '`' . $searchColumn . '` LIKE :search';
+                $searchExpressions[] = $QueryBuilder->expr()->like($searchColumn, ':search');
             }
 
-            $where[] = '(' . implode(' OR ', $whereOr) . ')';
-            $binds['search'] = [
-                'value' => '%' . $searchParams['search'] . '%',
-                'type' => PDO::PARAM_STR
-            ];
+            $QueryBuilder
+                ->andWhere($QueryBuilder->expr()->or(...$searchExpressions))
+                ->setParameter('search', '%' . $searchParams['search'] . '%');
         }
 
-        // build WHERE query string
-        if (!empty($where)) {
-            $sql .= " WHERE " . implode(" AND ", $where);
+        if (!$countOnly && !empty($searchParams['sortOn']) && is_string($searchParams['sortOn'])) {
+            $sortOn = $searchParams['sortOn'];
+            $sortableColumns = array_merge(['id'], $this->getChildAttributes());
+
+            if (in_array($sortOn, $sortableColumns, true)) {
+                $sortDirection = !empty($searchParams['sortBy']) && is_string($searchParams['sortBy'])
+                    ? strtoupper($searchParams['sortBy'])
+                    : 'ASC';
+
+                if (!in_array($sortDirection, ['ASC', 'DESC'], true)) {
+                    $sortDirection = 'ASC';
+                }
+
+                $Platform = QUI::getDataBaseConnection()->getDatabasePlatform();
+                $QueryBuilder->orderBy($Platform->quoteSingleIdentifier($sortOn), $sortDirection);
+            }
         }
 
-        // ORDER
-        if (!empty($searchParams['sortOn'])) {
-            $sortOn = Orthos::clear($searchParams['sortOn']);
-            $order = "ORDER BY " . $sortOn;
+        if (!$countOnly) {
+            if (!empty($gridParams['limit'])) {
+                $limit = explode(',', (string)$gridParams['limit'], 2);
 
-            if (!empty($searchParams['sortBy'])) {
-                $order .= " " . Orthos::clear($searchParams['sortBy']);
+                if (isset($limit[1])) {
+                    $QueryBuilder->setFirstResult((int)$limit[0]);
+                    $QueryBuilder->setMaxResults((int)$limit[1]);
+                } else {
+                    $QueryBuilder->setMaxResults((int)$limit[0]);
+                }
             } else {
-                $order .= " ASC";
+                $QueryBuilder->setMaxResults(20);
             }
-
-            $sql .= " " . $order;
-        }
-
-        // LIMIT
-        if (!empty($gridParams['limit']) && !$countOnly) {
-            $sql .= " LIMIT " . $gridParams['limit'];
-        } else {
-            if (!$countOnly) {
-                $sql .= " LIMIT " . 20;
-            }
-        }
-
-        $Stmt = QUI::getPDO()->prepare($sql);
-
-        // bind search values
-        foreach ($binds as $var => $bind) {
-            $Stmt->bindValue(':' . $var, $bind['value'], $bind['type']);
         }
 
         try {
-            $Stmt->execute();
-            $result = $Stmt->fetchAll(PDO::FETCH_ASSOC);
+            $Result = $QueryBuilder->executeQuery();
         } catch (\Exception $Exception) {
             QUI\System\Log::addError(
-                self::class . ' :: searchUsers() -> ' . $Exception->getMessage()
+                self::class . ' :: search() -> ' . $Exception->getMessage()
             );
 
-            return [];
+            return $countOnly ? 0 : [];
         }
 
         if ($countOnly) {
-            return (int)current(current($result));
+            return (int)$Result->fetchOne();
         }
 
-        foreach ($result as $row) {
-            $memberships[] = $row['id'];
-        }
-
-        return $memberships;
+        return array_map('intval', $Result->fetchFirstColumn());
     }
 
     /**
      * Get IDs of all memberships that have specific groups assigned (OR)
      *
-     * @param array $groupIds
+     * @param array<int, int|string> $groupIds
      * @return int[]
      */
     public function getMembershipIdsByGroupIds(array $groupIds): array
     {
-        $ids = [];
-
         if (empty($groupIds)) {
-            return $ids;
+            return [];
         }
 
-        $sql = 'SELECT `id` FROM ' . self::getDataBaseTableName();
-        $sql .= ' WHERE ';
+        $QueryBuilder = QUI::getQueryBuilder();
+        $QueryBuilder
+            ->select('id')
+            ->from(QUI\Utils\Doctrine::quoteIdentifier(self::getDataBaseTableName()));
+        $groupExpressions = [];
 
-        $whereOr = [];
-        $binds = [];
-
-        foreach ($groupIds as $groupId) {
-            $bindParam = md5($groupId);
-            $whereOr[] = '`groupIds` LIKE :' . $bindParam;
-            $binds[$bindParam] = [
-                'value' => '%,' . $groupId . ',%',
-                'type' => PDO::PARAM_STR
-            ];
+        foreach ($groupIds as $index => $groupId) {
+            $parameter = 'groupId' . $index;
+            $groupExpressions[] = $QueryBuilder->expr()->like('groupIds', ':' . $parameter);
+            $QueryBuilder->setParameter($parameter, '%,' . $groupId . ',%');
         }
 
-        $sql .= implode(" OR ", $whereOr);
-
-        $PDO = QUI::getDataBase()->getPDO();
-        $Stmt = $PDO->prepare($sql);
-
-        // bind search values
-        foreach ($binds as $var => $bind) {
-            $Stmt->bindValue(':' . $var, $bind['value'], $bind['type']);
-        }
+        $QueryBuilder->where($QueryBuilder->expr()->or(...$groupExpressions));
 
         try {
-            $Stmt->execute();
-            $result = $Stmt->fetchAll(PDO::FETCH_ASSOC);
+            $ids = $QueryBuilder->executeQuery()->fetchFirstColumn();
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
             return [];
         }
 
-        foreach ($result as $row) {
-            $ids[] = $row['id'];
-        }
-
-        return $ids;
+        return array_map('intval', $ids);
     }
 
     /**
@@ -314,8 +300,7 @@ class Handler extends Factory
      */
     public static function getSetting(string $key): mixed
     {
-        $Config = QUI::getPackage('quiqqer/memberships')->getConfig();
-        return $Config->get('memberships', $key);
+        return self::getConfig()->get('memberships', $key);
     }
 
     /**
@@ -328,8 +313,7 @@ class Handler extends Factory
      */
     public static function getProductCategory(): bool | QUI\ERP\Products\Interfaces\CategoryInterface
     {
-        $Conf = QUI::getPackage('quiqqer/memberships')->getConfig();
-        $categoryId = $Conf->get('products', 'categoryId');
+        $categoryId = self::getConfig()->get('products', 'categoryId');
 
         if (empty($categoryId)) {
             return false;
@@ -369,8 +353,7 @@ class Handler extends Factory
         }
 
         try {
-            $Conf = QUI::getPackage('quiqqer/memberships')->getConfig();
-            $fieldId = $Conf->get('products', 'membershipFieldId');
+            $fieldId = self::getConfig()->get('products', 'membershipFieldId');
 
             if (empty($fieldId)) {
                 return false;
@@ -401,8 +384,7 @@ class Handler extends Factory
         }
 
         try {
-            $Conf = QUI::getPackage('quiqqer/memberships')->getConfig();
-            $fieldId = $Conf->get('products', 'membershipFlagFieldId');
+            $fieldId = self::getConfig()->get('products', 'membershipFlagFieldId');
 
             if (empty($fieldId)) {
                 return false;
@@ -440,9 +422,7 @@ class Handler extends Factory
     public static function isLinkedToContracts(): bool
     {
         try {
-            $Conf = QUI::getPackage('quiqqer/memberships')->getConfig();
-
-            if ((int)$Conf->get('membershipusers', 'linkWithContracts')) {
+            if ((int)self::getConfig()->get('membershipusers', 'linkWithContracts')) {
                 return true;
             }
         } catch (\Exception $Exception) {

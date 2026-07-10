@@ -11,7 +11,7 @@
 use QUI\Memberships\Handler as MembershipsHandler;
 use QUI\Utils\Security\Orthos;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'package_quiqqer_memberships_ajax_memberships_create',
     function ($title, $groupIds) {
         try {

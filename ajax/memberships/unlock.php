@@ -12,7 +12,7 @@
 use QUI\Memberships\Handler as MembershipsHandler;
 use QUI\Watcher;
 
-QUI::$Ajax->registerFunction(
+QUI::getAjax()->registerFunction(
     'package_quiqqer_memberships_ajax_memberships_unlock',
     function ($id) {
         try {
