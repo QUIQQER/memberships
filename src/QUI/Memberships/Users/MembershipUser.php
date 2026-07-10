@@ -51,21 +51,20 @@ class MembershipUser extends Child
      */
     protected ?QUIUserInterface $EditUser = null;
 
+    private VerificationFactoryInterface $verificationFactory;
+
+    private VerificationRepositoryInterface $verificationRepository;
+
     public function __construct(
         int | string $id,
         Factory $Factory,
-        private ?VerificationFactoryInterface $verificationFactory = null,
-        private ?VerificationRepositoryInterface $verificationRepository = null
+        ?VerificationFactoryInterface $verificationFactory = null,
+        ?VerificationRepositoryInterface $verificationRepository = null
     ) {
         parent::__construct($id, $Factory);
 
-        if (is_null($this->verificationFactory)) {
-            $this->verificationFactory = new VerificationFactory();
-        }
-
-        if (is_null($this->verificationRepository)) {
-            $this->verificationRepository = new VerificationRepository();
-        }
+        $this->verificationFactory = $verificationFactory ?? new VerificationFactory();
+        $this->verificationRepository = $verificationRepository ?? new VerificationRepository();
     }
 
     /**
@@ -796,10 +795,10 @@ class MembershipUser extends Child
     /**
      * Get the Membership this membership user is assigned to
      *
-     * @return QUI\Memberships\Membership|null
+     * @return QUI\Memberships\Membership
      * @throws Exception
      */
-    public function getMembership(): ?QUI\Memberships\Membership
+    public function getMembership(): QUI\Memberships\Membership
     {
         if ($this->Membership) {
             return $this->Membership;
