@@ -11,19 +11,19 @@ class Contract
     {
     }
 
-    public function getTerminationDate(): DateTime | bool
+    public function getTerminationDate(): DateTime | false
     {
     }
 
-    public function getExtensionInterval(): DateInterval | bool
+    public function getExtensionInterval(): DateInterval | false
     {
     }
 
-    public function getCycleEndDate(): DateTime | bool
+    public function getCycleEndDate(): DateTime | false
     {
     }
 
-    public function getNextCycleEndDate(): DateTime | bool
+    public function getNextCycleEndDate(): DateTime | false
     {
     }
 
@@ -31,11 +31,11 @@ class Contract
     {
     }
 
-    public function getPeriodOfNoticeInterval(): DateInterval | bool
+    public function getPeriodOfNoticeInterval(): DateInterval | false
     {
     }
 
-    public function getCurrentCancelTerminationDate(): DateTime | bool
+    public function getCurrentCancelTerminationDate(): DateTime | false
     {
     }
 }
