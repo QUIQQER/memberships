@@ -939,7 +939,7 @@ class MembershipUser extends Child
     /**
      * Get history data of this MembershipUser
      *
-     * @return array
+     * @return array<int, array<string, mixed>>
      */
     public function getHistory(): array
     {
@@ -1009,7 +1009,7 @@ class MembershipUser extends Child
     /**
      * Get membership data for frontend view/edit purposes with correctly formatted dates
      *
-     * @return array
+     * @return array<string, mixed>
      * @throws Exception
      */
     public function getFrontendViewData(): array
@@ -1159,7 +1159,7 @@ class MembershipUser extends Child
     /**
      * Get membership data for backend view/edit purposes
      *
-     * @return array
+     * @return array<string, mixed>
      * @throws Exception
      */
     public function getBackendViewData(): array
@@ -1256,7 +1256,7 @@ class MembershipUser extends Child
      *
      * @param string $subject - mail subject
      * @param string $templateFile
-     * @param array $templateVars (optional) - additional template variables (besides $this)
+     * @param array<string, mixed> $templateVars (optional) - additional template variables (besides $this)
      * @return void
      *
      * @throws Exception
@@ -1337,7 +1337,7 @@ class MembershipUser extends Child
      * Get extra data of this MembershipUser
      *
      * @param string|null $key (optional) - If omitted return all extra data
-     * @return array|string|false
+     * @return array<string, array{value: string, add: string, edit: string}>|string|false
      */
     public function getExtraData(null | string $key = null): bool | array | string
     {

@@ -26,14 +26,14 @@ class Utils
         $str = Orthos::clearPath($str);
 //        $str = Orthos::clearFormRequest($str);
 
-        return htmlspecialchars($str, ENT_NOQUOTES);
+        return htmlspecialchars(is_string($str) ? $str : '', ENT_NOQUOTES);
     }
 
     /**
      * Clear an array that contains JSON-strings
      *
-     * @param array $array
-     * @return array - cleared array
+     * @param array<array-key, mixed> $array
+     * @return array<array-key, mixed> - cleared array
      */
     public static function clearArrayWithJSON(array $array): array
     {
@@ -43,7 +43,9 @@ class Utils
                 continue;
             }
 
-            $array[$k] = self::clearJSONString($v);
+            if (is_string($v)) {
+                $array[$k] = self::clearJSONString($v);
+            }
         }
 
         return $array;
@@ -52,7 +54,7 @@ class Utils
     /**
      * Get translation from locale data array
      *
-     * @param array $localeData
+     * @param array{group: string, var: string} $localeData
      * @return string
      */
     public static function getLocaleFromArray(array $localeData): string
@@ -78,6 +80,10 @@ class Utils
 
         if (is_string($time) && !is_numeric($time)) {
             $time = strtotime($time);
+
+            if ($time === false) {
+                throw new \InvalidArgumentException('Invalid date string.');
+            }
         }
 
         return date('Y-m-d H:i:s', $time);
@@ -87,7 +93,7 @@ class Utils
      * Get list of all packages that are relevant for quiqqer/memberships
      * and that are currently installed
      *
-     * @return array
+     * @return string[]
      */
     public static function getInstalledMembershipPackages(): array
     {

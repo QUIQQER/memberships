@@ -89,7 +89,7 @@ class Handler extends Factory
     }
 
     /**
-     * @param array $data
+     * @param array<string, mixed> $data
      * @param User|null $PermissionUser
      * @return Child
      *
@@ -129,10 +129,18 @@ class Handler extends Factory
 
         $Membership = MembershipsHandler::getInstance()->getChild($data['membershipId']);
         $User = QUI::getUsers()->get($data['userId']);
+        $userId = $User->getId();
+
+        if ($userId === false) {
+            throw new QUI\Memberships\Exception([
+                'quiqqer/memberships',
+                'exception.users.handler.no.user'
+            ]);
+        }
 
         // if the user is already in the membership -> extend runtime
-        if ($Membership->hasMembershipUserId($User->getId())) {
-            $MembershipUser = $Membership->getMembershipUser($User->getId());
+        if ($Membership->hasMembershipUserId($userId)) {
+            $MembershipUser = $Membership->getMembershipUser($userId);
             $MembershipUser->setEditUser($PermissionUser);
             $MembershipUser->extend(false);
 
@@ -203,7 +211,7 @@ class Handler extends Factory
         $membershipUserIds = [];
 
         foreach ($result as $row) {
-            $membershipUserIds[] = $row['id'];
+            $membershipUserIds[] = (int)$row['id'];
         }
 
         return $membershipUserIds;
@@ -348,7 +356,7 @@ class Handler extends Factory
     }
 
     /**
-     * @return array
+     * @return array<int, string>
      */
     public function getChildAttributes(): array
     {
@@ -376,11 +384,11 @@ class Handler extends Factory
      * Get config entry for a membershipusers config
      *
      * @param string $key
-     * @return array|string
+     * @return mixed
      *
      * @throws QUI\Exception
      */
-    public static function getSetting(string $key): array | string
+    public static function getSetting(string $key): mixed
     {
         $Config = QUI::getPackage('quiqqer/memberships')->getConfig();
         return $Config->get('membershipusers', $key);
@@ -396,7 +404,9 @@ class Handler extends Factory
     public static function getExtendMode(): string
     {
         try {
-            return self::getSetting('extendMode');
+            $extendMode = self::getSetting('extendMode');
+
+            return is_string($extendMode) ? $extendMode : self::EXTEND_MODE_PROLONG;
         } catch (Exception $Exception) {
             QUI\System\Log::writeException($Exception);
             return self::EXTEND_MODE_PROLONG;

@@ -111,7 +111,7 @@ class Handler extends Factory
     }
 
     /**
-     * @return array
+     * @return array<int, string>
      */
     public function getChildAttributes(): array
     {
@@ -137,9 +137,10 @@ class Handler extends Factory
     /**
      * Search memberships
      *
-     * @param array $searchParams
-     * @param bool $countOnly (optional) - get count for search result only [default: false]
-     * @return array|int - membership IDs
+     * @template T of bool
+     * @param array<string, mixed> $searchParams
+     * @param T $countOnly (optional) - get count for search result only [default: false]
+     * @return (T is true ? int : array<int, int>) - membership IDs
      * @throws Exception
      */
     public function search(array $searchParams, bool $countOnly = false): array | int
@@ -246,7 +247,7 @@ class Handler extends Factory
         }
 
         foreach ($result as $row) {
-            $memberships[] = $row['id'];
+            $memberships[] = (int)$row['id'];
         }
 
         return $memberships;
@@ -255,7 +256,7 @@ class Handler extends Factory
     /**
      * Get IDs of all memberships that have specific groups assigned (OR)
      *
-     * @param array $groupIds
+     * @param array<int, int|string> $groupIds
      * @return int[]
      */
     public function getMembershipIdsByGroupIds(array $groupIds): array
@@ -300,7 +301,7 @@ class Handler extends Factory
         }
 
         foreach ($result as $row) {
-            $ids[] = $row['id'];
+            $ids[] = (int)$row['id'];
         }
 
         return $ids;

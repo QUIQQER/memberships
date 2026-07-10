@@ -41,7 +41,7 @@ class Membership extends Child
     /**
      * Get IDs of all QUIQQER Groups
      *
-     * @return int[]|string[]
+     * @return int[]
      */
     public function getGroupIds(): array
     {
@@ -49,7 +49,7 @@ class Membership extends Child
         $groupIds = trim($groupIds, ",");
         $groupIds = explode(",", $groupIds);
 
-        return $groupIds;
+        return array_map('intval', $groupIds);
     }
 
     /**
@@ -366,10 +366,11 @@ class Membership extends Child
     /**
      * Search membership users
      *
-     * @param array $searchParams
+     * @template T of bool
+     * @param array<string, mixed> $searchParams
      * @param bool $archivedOnly (optional) - search archived users only [default: false]
-     * @param bool $countOnly (optional) - get count for search result only [default: false]
-     * @return int[]|int - membership user IDs or count
+     * @param T $countOnly (optional) - get count for search result only [default: false]
+     * @return (T is true ? int : array<int, int>) - membership user IDs or count
      * @throws QUI\Exception
      */
     public function searchUsers(array $searchParams, bool $archivedOnly = false, bool $countOnly = false): array | int
@@ -737,7 +738,7 @@ class Membership extends Child
     /**
      * Get membership data for backend view/edit purposes
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function getBackendViewData(): array
     {
