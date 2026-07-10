@@ -130,13 +130,6 @@ class Handler extends Factory
         $Membership = MembershipsHandler::getInstance()->getChild($data['membershipId']);
         $User = QUI::getUsers()->get($data['userId']);
 
-        if (!($Membership instanceof QUI\Memberships\Membership)) {
-            throw new QUI\Memberships\Exception([
-                'quiqqer/memberships',
-                'exception.users.handler.no.membership'
-            ]);
-        }
-
         // if the user is already in the membership -> extend runtime
         if ($Membership->hasMembershipUserId($User->getId())) {
             $MembershipUser = $Membership->getMembershipUser($User->getId());

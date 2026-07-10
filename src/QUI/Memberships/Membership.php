@@ -324,10 +324,6 @@ class Membership extends Child
 
             $Membership = $Memberships->getChild($membershipId);
 
-            if (!method_exists($Membership, 'getGroupIds')) {
-                continue;
-            }
-
             foreach ($Membership->getGroupIds() as $groupId) {
                 if (in_array($groupId, $groupIds)) {
                     $k = array_search($groupId, $uniqueGroupIds);

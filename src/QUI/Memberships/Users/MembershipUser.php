@@ -755,10 +755,7 @@ class MembershipUser extends Child
             foreach ($Memberships->getMembershipIdsByGroupIds([$groupId]) as $membershipId) {
                 $OtherMembership = $Memberships->getChild($membershipId);
 
-                if (
-                    method_exists($OtherMembership, 'hasMembershipUserId')
-                    && !$OtherMembership->hasMembershipUserId($User->getId())
-                ) {
+                if (!$OtherMembership->hasMembershipUserId($User->getId())) {
                     $User->removeGroup($groupId);
                 }
             }
