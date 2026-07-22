@@ -20,7 +20,7 @@
     },
     "require": {
         "quiqqer/core": "^2",
-        "quiqqer/erp": "^3",
+        "quiqqer/erp": "^4",
         "quiqqer/verification": "^3"
     },
     "autoload": {
