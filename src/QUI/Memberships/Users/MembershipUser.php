@@ -1558,7 +1558,7 @@ class MembershipUser extends Child
                 }
         }
 
-        return new DateTime('@' . $end);
+        return (new DateTime())->setTimestamp($end);
     }
 
     /**
