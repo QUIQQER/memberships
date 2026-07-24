@@ -2,6 +2,7 @@
 
 namespace QUI\Memberships;
 
+use Doctrine\DBAL\ArrayParameterType;
 use QUI;
 use QUI\CRUD\Child;
 use QUI\ERP\Plans\Handler as ErpPlansHandler;
@@ -248,15 +249,17 @@ class Membership extends Child
      */
     public function getMembershipUser(int | string $userId): Users\MembershipUser
     {
+        $MembershipUsers = MembershipUsersHandler::getInstance();
+        $userIdentifiers = $MembershipUsers->getUserIdentifiers($userId);
         $QueryBuilder = QUI::getQueryBuilder();
         $membershipUserId = $QueryBuilder
             ->select('id')
-            ->from(QUI\Utils\Doctrine::quoteIdentifier(MembershipUsersHandler::getInstance()->getDataBaseTableName()))
+            ->from(QUI\Utils\Doctrine::quoteIdentifier($MembershipUsers->getDataBaseTableName()))
             ->where($QueryBuilder->expr()->eq('membershipId', ':membershipId'))
-            ->andWhere($QueryBuilder->expr()->eq('userId', ':userId'))
+            ->andWhere($QueryBuilder->expr()->in('userId', ':userIdentifiers'))
             ->andWhere($QueryBuilder->expr()->eq('archived', ':archived'))
             ->setParameter('membershipId', $this->id)
-            ->setParameter('userId', $userId)
+            ->setParameter('userIdentifiers', $userIdentifiers, ArrayParameterType::STRING)
             ->setParameter('archived', 0)
             ->setMaxResults(1)
             ->executeQuery()
@@ -354,15 +357,17 @@ class Membership extends Child
      */
     public function hasMembershipUserId(int | string $userId): bool
     {
+        $MembershipUsers = MembershipUsersHandler::getInstance();
+        $userIdentifiers = $MembershipUsers->getUserIdentifiers($userId);
         $QueryBuilder = QUI::getQueryBuilder();
         $count = $QueryBuilder
             ->select('COUNT(id)')
-            ->from(QUI\Utils\Doctrine::quoteIdentifier(MembershipUsersHandler::getInstance()->getDataBaseTableName()))
+            ->from(QUI\Utils\Doctrine::quoteIdentifier($MembershipUsers->getDataBaseTableName()))
             ->where($QueryBuilder->expr()->eq('membershipId', ':membershipId'))
-            ->andWhere($QueryBuilder->expr()->eq('userId', ':userId'))
+            ->andWhere($QueryBuilder->expr()->in('userId', ':userIdentifiers'))
             ->andWhere($QueryBuilder->expr()->eq('archived', ':archived'))
             ->setParameter('membershipId', $this->id)
-            ->setParameter('userId', $userId)
+            ->setParameter('userIdentifiers', $userIdentifiers, ArrayParameterType::STRING)
             ->setParameter('archived', 0)
             ->executeQuery()
             ->fetchOne();
@@ -394,7 +399,7 @@ class Membership extends Child
                 'musers',
                 QUI\Utils\Doctrine::quoteIdentifier($usersTbl),
                 'users',
-                'musers.userId = users.id'
+                'musers.userId = users.uuid'
             )
             ->where($QueryBuilder->expr()->eq('musers.membershipId', ':membershipId'))
             ->andWhere($QueryBuilder->expr()->eq('musers.archived', ':archived'))
@@ -779,7 +784,7 @@ class Membership extends Child
     public function addUser(QUIUserInterface $User): QUI\Memberships\Users\MembershipUser
     {
         $MembershipUser = MembershipUsersHandler::getInstance()->createChild([
-            'userId' => $User->getId(),
+            'userId' => $User->getUUID(),
             'membershipId' => $this->id
         ], $this->EditUser);
 

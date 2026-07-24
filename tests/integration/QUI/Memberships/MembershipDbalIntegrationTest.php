@@ -86,6 +86,12 @@ class MembershipDbalIntegrationTest extends TestCase
             $this->fail('The test user has no database ID.');
         }
 
+        $userUuid = (string)$User->getUUID();
+
+        if ($userUuid === '') {
+            $this->fail('The test user has no UUID.');
+        }
+
         $CreatedMembershipUser = MembershipUsersHandler::getInstance()->createChild([
             'membershipId' => $Membership->getId(),
             'userId' => $userId
@@ -96,11 +102,17 @@ class MembershipDbalIntegrationTest extends TestCase
         }
 
         $MembershipUser = $CreatedMembershipUser;
+        $this->assertSame($userUuid, (string)$MembershipUser->getUserId());
         $this->assertTrue($User->isInGroup($Group->getUUID()));
         $this->assertTrue($Membership->hasMembershipUserId($userId));
+        $this->assertTrue($Membership->hasMembershipUserId($userUuid));
         $this->assertSame(
             (int)$MembershipUser->getId(),
             (int)$Membership->getMembershipUser($userId)->getId()
+        );
+        $this->assertSame(
+            (int)$MembershipUser->getId(),
+            (int)$Membership->getMembershipUser($userUuid)->getId()
         );
 
         $MembershipUsers = MembershipUsersHandler::getInstance();
@@ -116,8 +128,30 @@ class MembershipDbalIntegrationTest extends TestCase
             )
         );
         $this->assertSame(
+            [(int)$MembershipUser->getId()],
+            array_map(
+                static fn (MembershipUser $Item): int => (int)$Item->getId(),
+                $MembershipUsers->getMembershipUsersByUserId($userUuid)
+            )
+        );
+        $this->assertSame(
             [(int)$Membership->getId()],
             Handler::getInstance()->search(['userId' => $userId])
+        );
+        $this->assertSame(
+            [(int)$Membership->getId()],
+            Handler::getInstance()->search(['userId' => $userUuid])
+        );
+
+        $ExistingMembershipUser = $MembershipUsers->createChild([
+            'membershipId' => $Membership->getId(),
+            'userId' => $userUuid
+        ], $SystemUser);
+
+        $this->assertSame((int)$MembershipUser->getId(), (int)$ExistingMembershipUser->getId());
+        $this->assertSame(
+            [(int)$MembershipUser->getId()],
+            $MembershipUsers->getIdsByMembershipId((int)$Membership->getId())
         );
 
         $contractId = 900000000 + (int)$MembershipUser->getId();
@@ -169,6 +203,68 @@ class MembershipDbalIntegrationTest extends TestCase
         $Membership->delete();
 
         $this->assertFalse($this->membershipRowExists((int)$Membership->getId()));
+    }
+
+    public function testLegacyNumericUserIdsAreReadAndMigratedToUuids(): void
+    {
+        $SystemUser = QUI::getUsers()->getSystemUser();
+        $Group = $this->createTestGroup();
+        $User = $this->createTestUser();
+        $Membership = $this->createMembership(
+            self::TEST_PREFIX . 'migration-' . uniqid(),
+            $Group->getId()
+        );
+        $userId = $User->getId();
+        $userUuid = (string)$User->getUUID();
+
+        if ($userId === false || $userUuid === '') {
+            $this->fail('The test user does not provide both database ID and UUID.');
+        }
+
+        $CreatedMembershipUser = MembershipUsersHandler::getInstance()->createChild([
+            'membershipId' => $Membership->getId(),
+            'userId' => $userUuid
+        ], $SystemUser);
+
+        if (!$CreatedMembershipUser instanceof MembershipUser) {
+            $this->fail('The membership user factory returned an unexpected object.');
+        }
+
+        $Connection = self::getConnection();
+        $Connection->beginTransaction();
+
+        try {
+            $Connection->update(
+                QUI\Utils\Doctrine::quoteIdentifier(
+                    MembershipUsersHandler::getInstance()->getDataBaseTableName()
+                ),
+                ['userId' => $userId],
+                ['id' => $CreatedMembershipUser->getId()]
+            );
+
+            $this->assertSame(
+                (int)$CreatedMembershipUser->getId(),
+                (int)$Membership->getMembershipUser($userUuid)->getId()
+            );
+            $this->assertTrue($Membership->hasMembershipUserId($userId));
+            $this->assertTrue($Membership->hasMembershipUserId($userUuid));
+            $this->assertSame(
+                [(int)$CreatedMembershipUser->getId()],
+                array_map(
+                    static fn (MembershipUser $Item): int => (int)$Item->getId(),
+                    MembershipUsersHandler::getInstance()->getMembershipUsersByUserId($userUuid)
+                )
+            );
+
+            Events::migrateMembershipUserIdsToUuids();
+
+            $this->assertSame(
+                $userUuid,
+                $this->getStoredMembershipUserIdentifier((int)$CreatedMembershipUser->getId())
+            );
+        } finally {
+            $Connection->rollBack();
+        }
     }
 
     private function createTestGroup(): QUI\Groups\Group
@@ -228,6 +324,24 @@ class MembershipDbalIntegrationTest extends TestCase
             ->fetchOne();
 
         return $row !== false;
+    }
+
+    private function getStoredMembershipUserIdentifier(int $membershipUserId): string
+    {
+        $userId = self::getConnection()->createQueryBuilder()
+            ->select('userId')
+            ->from(
+                QUI\Utils\Doctrine::quoteIdentifier(
+                    MembershipUsersHandler::getInstance()->getDataBaseTableName()
+                )
+            )
+            ->where('id = :id')
+            ->setParameter('id', $membershipUserId)
+            ->setMaxResults(1)
+            ->executeQuery()
+            ->fetchOne();
+
+        return (string)$userId;
     }
 
     private static function skipIfDatabaseIsUnavailable(): void
@@ -297,12 +411,15 @@ class MembershipDbalIntegrationTest extends TestCase
             ->fetchAllAssociative();
 
         foreach ($users as $user) {
-            $Connection->delete(
-                QUI\Utils\Doctrine::quoteIdentifier(
-                    MembershipUsersHandler::getInstance()->getDataBaseTableName()
-                ),
-                ['userId' => $user['id']]
-            );
+            foreach ([$user['id'], $user['uuid']] as $userIdentifier) {
+                $Connection->delete(
+                    QUI\Utils\Doctrine::quoteIdentifier(
+                        MembershipUsersHandler::getInstance()->getDataBaseTableName()
+                    ),
+                    ['userId' => $userIdentifier]
+                );
+            }
+
             $Connection->delete(
                 QUI\Utils\Doctrine::quoteIdentifier(QUI\Users\Manager::tableAddress()),
                 ['userUuid' => $user['uuid']]

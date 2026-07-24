@@ -20,6 +20,7 @@ use QUI\Memberships\Products\MembershipField;
 use QUI\Memberships\Users\Handler as MembershipUsersHandler;
 use QUI\Package\Package;
 use QUI\Users\User;
+use QUI\Utils\MigrationV1ToV2;
 
 /**
  * Class Events
@@ -40,6 +41,12 @@ class Events
             return;
         }
 
+        try {
+            self::migrateMembershipUserIdsToUuids();
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
+
         $packages = Utils::getInstalledMembershipPackages();
 
         try {
@@ -58,6 +65,19 @@ class Events
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }
+    }
+
+    /**
+     * Convert resolvable legacy numeric membership user IDs to UUIDs.
+     *
+     * @throws QUI\Database\Exception
+     */
+    public static function migrateMembershipUserIdsToUuids(): void
+    {
+        MigrationV1ToV2::migrateUsers(
+            MembershipUsersHandler::getInstance()->getDataBaseTableName(),
+            ['userId']
+        );
     }
 
     /**
@@ -123,9 +143,9 @@ class Events
      */
     public static function onUserSave(QUI\Users\User $User): void
     {
-        $userId = $User->getId();
+        $userId = (string)$User->getUUID();
 
-        if ($userId === false) {
+        if ($userId === '') {
             return;
         }
 
@@ -159,9 +179,9 @@ class Events
      */
     public static function onUserDelete(QUI\Users\User $User): void
     {
-        $userId = $User->getId();
+        $userId = (string)$User->getUUID();
 
-        if ($userId === false) {
+        if ($userId === '') {
             return;
         }
 
@@ -296,14 +316,6 @@ class Events
         $Memberships = Handler::getInstance();
         $Users = QUI::getUsers();
         $Customer = $Order->getCustomer();
-
-        if ($Customer === null) {
-            QUI\System\Log::addError(
-                self::class . ' :: onQuiqqerOrderSuccessful -> Order has no valid customer.'
-            );
-            return;
-        }
-
         $customerId = $Customer->getId();
 
         if ($customerId === false) {
@@ -456,11 +468,6 @@ class Events
         $membershipFieldId = $MembershipField->getId();
         $Memberships = Handler::getInstance();
         $Customer = $Order->getCustomer();
-
-        if ($Customer === null) {
-            return;
-        }
-
         $customerId = $Customer->getId();
 
         if ($customerId === false) {

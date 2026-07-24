@@ -2,6 +2,7 @@
 
 namespace QUI\Memberships\Users;
 
+use Doctrine\DBAL\ArrayParameterType;
 use Exception;
 use QUI;
 use QUI\CRUD\Child;
@@ -13,7 +14,8 @@ use QUI\Memberships\Users\Handler as MembershipUsersHandler;
 use QUI\Memberships\Utils;
 use QUI\Permissions\Permission;
 
-use function is_numeric;
+use function array_unique;
+use function array_values;
 
 class Handler extends Factory
 {
@@ -129,18 +131,20 @@ class Handler extends Factory
 
         $Membership = MembershipsHandler::getInstance()->getChild($data['membershipId']);
         $User = QUI::getUsers()->get($data['userId']);
-        $userId = $User->getId();
+        $userUuid = (string)$User->getUUID();
 
-        if ($userId === false) {
+        if ($userUuid === '') {
             throw new QUI\Memberships\Exception([
                 'quiqqer/memberships',
                 'exception.users.handler.no.user'
             ]);
         }
 
+        $data['userId'] = $userUuid;
+
         // if the user is already in the membership -> extend runtime
-        if ($Membership->hasMembershipUserId($userId)) {
-            $MembershipUser = $Membership->getMembershipUser($userId);
+        if ($Membership->hasMembershipUserId($userUuid)) {
+            $MembershipUser = $Membership->getMembershipUser($userUuid);
             $MembershipUser->setEditUser($PermissionUser);
             $MembershipUser->extend(false);
 
@@ -224,17 +228,14 @@ class Handler extends Factory
      */
     public function getMembershipUsersByUserId(int | string $userId, bool $includeArchived = false): array
     {
-        if (is_numeric($userId)) {
-            $userId = (int)$userId;
-        }
-
         try {
+            $userIdentifiers = $this->getUserIdentifiers($userId);
             $QueryBuilder = QUI::getQueryBuilder();
             $QueryBuilder
                 ->select('id')
                 ->from(QUI\Utils\Doctrine::quoteIdentifier(self::getDataBaseTableName()))
-                ->where($QueryBuilder->expr()->eq('userId', ':userId'))
-                ->setParameter('userId', $userId);
+                ->where($QueryBuilder->expr()->in('userId', ':userIdentifiers'))
+                ->setParameter('userIdentifiers', $userIdentifiers, ArrayParameterType::STRING);
 
             if (!$includeArchived) {
                 $QueryBuilder
@@ -258,6 +259,41 @@ class Handler extends Factory
         }
 
         return $membershipUsers;
+    }
+
+    /**
+     * Return the UUID and legacy numeric ID for a QUIQQER user identifier.
+     *
+     * Unknown identifiers are returned unchanged so orphaned membership rows
+     * remain accessible during the UUID migration period.
+     *
+     * @return non-empty-list<string>
+     */
+    public function getUserIdentifiers(int | string $userId): array
+    {
+        try {
+            $User = QUI::getUsers()->get($userId);
+        } catch (QUI\Exception) {
+            return [(string)$userId];
+        }
+
+        $identifiers = [];
+        $userUuid = (string)$User->getUUID();
+        $legacyUserId = $User->getId();
+
+        if ($userUuid !== '') {
+            $identifiers[] = $userUuid;
+        }
+
+        if ($legacyUserId !== false) {
+            $identifiers[] = (string)$legacyUserId;
+        }
+
+        if ($identifiers === []) {
+            $identifiers[] = (string)$userId;
+        }
+
+        return array_values(array_unique($identifiers));
     }
 
     /**
