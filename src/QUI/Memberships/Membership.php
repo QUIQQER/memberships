@@ -225,6 +225,8 @@ class Membership extends Child
 
                 $Product->deactivate();
                 $Product->save();
+
+                $this->refreshProductIfSupported($Product);
             }
         }
 
@@ -677,10 +679,20 @@ class Membership extends Child
         }
 
         $Product->save(QUI::getUsers()->getSystemUser());
+        $productId = (int)$Product->getId();
+        ProductsHandler::cleanProductInstanceMemCache($productId);
+        $Product = ProductsHandler::getProduct($productId);
 
         QUI::getEvents()->fireEvent('quiqqerMembershipsCreateProduct', [$this, $Product]);
 
         return $Product;
+    }
+
+    private function refreshProductIfSupported(object $Product): void
+    {
+        if (method_exists($Product, 'refresh')) {
+            $Product->refresh();
+        }
     }
 
     /**
@@ -705,9 +717,27 @@ class Membership extends Child
      */
     public function unlock(): void
     {
+        $Package = QUI::getPackage('quiqqer/memberships');
+        $lockKey = $this->getLockKey();
+        $User = QUI::getUserBySession();
+        $lockedBy = Locker::isLocked($Package, $lockKey, $User, false);
+        $userUuid = (string)$User->getUUID();
+
+        if (
+            $lockedBy === $userUuid
+            || (
+                is_array($lockedBy)
+                && isset($lockedBy['id'])
+                && (string)$lockedBy['id'] === $userUuid
+            )
+        ) {
+            Locker::unlock($Package, $lockKey);
+            return;
+        }
+
         Locker::unlockWithPermissions(
-            QUI::getPackage('quiqqer/memberships'),
-            $this->getLockKey(),
+            $Package,
+            $lockKey,
             Handler::PERMISSION_FORCE_EDIT
         );
     }

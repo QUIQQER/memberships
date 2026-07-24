@@ -360,6 +360,7 @@ class Handler extends Factory
             'addedDate',
             'beginDate',
             'endDate',
+            'extendCounter',
             'archived',
             'history',
             'cancelDate',
