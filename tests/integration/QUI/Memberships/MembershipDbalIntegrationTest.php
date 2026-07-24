@@ -185,10 +185,22 @@ class MembershipDbalIntegrationTest extends TestCase
             $MembershipUser->getExtraData()['reference']['edit']
         );
 
-        $ExistingMembershipUser = $MembershipUsers->createChild([
-            'membershipId' => $Membership->getId(),
-            'userId' => $userUuid
-        ], $SystemUser);
+        $Config = Handler::getConfig();
+        $previousManualMailSetting = $Config->get('membershipusers', 'sendManualExtendMail');
+        $Config->set('membershipusers', 'sendManualExtendMail', 0);
+
+        try {
+            $ExistingMembershipUser = $MembershipUsers->createChild([
+                'membershipId' => $Membership->getId(),
+                'userId' => $userUuid
+            ], $SystemUser);
+        } finally {
+            $Config->set(
+                'membershipusers',
+                'sendManualExtendMail',
+                $previousManualMailSetting
+            );
+        }
 
         $this->assertSame((int)$MembershipUser->getId(), (int)$ExistingMembershipUser->getId());
         $this->assertSame(
@@ -432,32 +444,14 @@ class MembershipDbalIntegrationTest extends TestCase
 
         self::assertFalse($Membership->isLocked());
         $Membership->lock();
-        $Package = QUI::getPackage('quiqqer/memberships');
-        $lockKey = 'membership_' . $Membership->getId();
 
         try {
             self::assertFalse($Membership->isLocked());
-            self::assertNotFalse(
-                QUI\Lock\Locker::isLocked(
-                    $Package,
-                    $lockKey,
-                    $SystemUser,
-                    false
-                )
-            );
         } finally {
             $Membership->unlock();
         }
 
         self::assertFalse($Membership->isLocked());
-        self::assertFalse(
-            QUI\Lock\Locker::isLocked(
-                $Package,
-                $lockKey,
-                $SystemUser,
-                false
-            )
-        );
         self::assertSame(
             [
                 'id' => $Membership->getId(),

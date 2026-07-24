@@ -3,6 +3,7 @@
 namespace QUI\Memberships;
 
 use Doctrine\DBAL\ArrayParameterType;
+use Doctrine\DBAL\Platforms\AbstractMySQLPlatform;
 use QUI;
 use QUI\CRUD\Child;
 use QUI\ERP\Plans\Handler as ErpPlansHandler;
@@ -393,31 +394,47 @@ class Membership extends Child
         $gridParams = $Grid->parseDBParams($searchParams);
         $tbl = MembershipUsersHandler::getInstance()->getDataBaseTableName();
         $usersTbl = QUI::getDBTableName('users');
+        $userColumns = ['username', 'firstname', 'lastname'];
+        $sortOn = !empty($searchParams['sortOn']) && is_string($searchParams['sortOn'])
+            ? $searchParams['sortOn']
+            : '';
+        $needsUserJoin = (
+            !empty($searchParams['search'])
+            && is_string($searchParams['search'])
+        ) || (
+            !$countOnly
+            && in_array($sortOn, $userColumns, true)
+        );
         $QueryBuilder = QUI::getQueryBuilder();
         $QueryBuilder
             ->select($countOnly ? 'COUNT(musers.id)' : 'musers.id')
             ->from(QUI\Utils\Doctrine::quoteIdentifier($tbl), 'musers')
-            ->leftJoin(
-                'musers',
-                QUI\Utils\Doctrine::quoteIdentifier($usersTbl),
-                'users',
-                'musers.userId = users.uuid'
-            )
             ->where($QueryBuilder->expr()->eq('musers.membershipId', ':membershipId'))
             ->andWhere($QueryBuilder->expr()->eq('musers.archived', ':archived'))
             ->setParameter('membershipId', $this->id)
             ->setParameter('archived', $archivedOnly ? 1 : 0);
 
+        if ($needsUserJoin) {
+            $Platform = QUI::getDataBaseConnection()->getDatabasePlatform();
+            $userJoinCondition = 'musers.userId = users.uuid';
+
+            if ($Platform instanceof AbstractMySQLPlatform) {
+                $userJoinCondition = 'CAST(musers.userId AS BINARY) = CAST(users.uuid AS BINARY)';
+            }
+
+            $QueryBuilder->leftJoin(
+                'musers',
+                QUI\Utils\Doctrine::quoteIdentifier($usersTbl),
+                'users',
+                $userJoinCondition
+            );
+        }
+
         if (!empty($searchParams['search']) && is_string($searchParams['search'])) {
-            $searchColumns = [
-                'users.username',
-                'users.firstname',
-                'users.lastname'
-            ];
             $searchExpressions = [];
 
-            foreach ($searchColumns as $column) {
-                $searchExpressions[] = $QueryBuilder->expr()->like($column, ':search');
+            foreach ($userColumns as $column) {
+                $searchExpressions[] = $QueryBuilder->expr()->like('users.' . $column, ':search');
             }
 
             $QueryBuilder
@@ -432,8 +449,6 @@ class Membership extends Child
         }
 
         if (!$countOnly && !empty($searchParams['sortOn']) && is_string($searchParams['sortOn'])) {
-            $sortOn = $searchParams['sortOn'];
-            $userColumns = ['username', 'firstname', 'lastname'];
             $membershipUserColumns = array_merge(
                 ['id'],
                 MembershipUsersHandler::getInstance()->getChildAttributes()
