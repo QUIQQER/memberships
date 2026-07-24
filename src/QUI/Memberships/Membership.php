@@ -2,6 +2,8 @@
 
 namespace QUI\Memberships;
 
+use Doctrine\DBAL\ArrayParameterType;
+use Doctrine\DBAL\Platforms\AbstractMySQLPlatform;
 use QUI;
 use QUI\CRUD\Child;
 use QUI\ERP\Plans\Handler as ErpPlansHandler;
@@ -224,6 +226,8 @@ class Membership extends Child
 
                 $Product->deactivate();
                 $Product->save();
+
+                $this->refreshProductIfSupported($Product);
             }
         }
 
@@ -248,15 +252,17 @@ class Membership extends Child
      */
     public function getMembershipUser(int | string $userId): Users\MembershipUser
     {
+        $MembershipUsers = MembershipUsersHandler::getInstance();
+        $userIdentifiers = $MembershipUsers->getUserIdentifiers($userId);
         $QueryBuilder = QUI::getQueryBuilder();
         $membershipUserId = $QueryBuilder
             ->select('id')
-            ->from(QUI\Utils\Doctrine::quoteIdentifier(MembershipUsersHandler::getInstance()->getDataBaseTableName()))
+            ->from(QUI\Utils\Doctrine::quoteIdentifier($MembershipUsers->getDataBaseTableName()))
             ->where($QueryBuilder->expr()->eq('membershipId', ':membershipId'))
-            ->andWhere($QueryBuilder->expr()->eq('userId', ':userId'))
+            ->andWhere($QueryBuilder->expr()->in('userId', ':userIdentifiers'))
             ->andWhere($QueryBuilder->expr()->eq('archived', ':archived'))
             ->setParameter('membershipId', $this->id)
-            ->setParameter('userId', $userId)
+            ->setParameter('userIdentifiers', $userIdentifiers, ArrayParameterType::STRING)
             ->setParameter('archived', 0)
             ->setMaxResults(1)
             ->executeQuery()
@@ -354,15 +360,17 @@ class Membership extends Child
      */
     public function hasMembershipUserId(int | string $userId): bool
     {
+        $MembershipUsers = MembershipUsersHandler::getInstance();
+        $userIdentifiers = $MembershipUsers->getUserIdentifiers($userId);
         $QueryBuilder = QUI::getQueryBuilder();
         $count = $QueryBuilder
             ->select('COUNT(id)')
-            ->from(QUI\Utils\Doctrine::quoteIdentifier(MembershipUsersHandler::getInstance()->getDataBaseTableName()))
+            ->from(QUI\Utils\Doctrine::quoteIdentifier($MembershipUsers->getDataBaseTableName()))
             ->where($QueryBuilder->expr()->eq('membershipId', ':membershipId'))
-            ->andWhere($QueryBuilder->expr()->eq('userId', ':userId'))
+            ->andWhere($QueryBuilder->expr()->in('userId', ':userIdentifiers'))
             ->andWhere($QueryBuilder->expr()->eq('archived', ':archived'))
             ->setParameter('membershipId', $this->id)
-            ->setParameter('userId', $userId)
+            ->setParameter('userIdentifiers', $userIdentifiers, ArrayParameterType::STRING)
             ->setParameter('archived', 0)
             ->executeQuery()
             ->fetchOne();
@@ -386,31 +394,47 @@ class Membership extends Child
         $gridParams = $Grid->parseDBParams($searchParams);
         $tbl = MembershipUsersHandler::getInstance()->getDataBaseTableName();
         $usersTbl = QUI::getDBTableName('users');
+        $userColumns = ['username', 'firstname', 'lastname'];
+        $sortOn = !empty($searchParams['sortOn']) && is_string($searchParams['sortOn'])
+            ? $searchParams['sortOn']
+            : '';
+        $needsUserJoin = (
+            !empty($searchParams['search'])
+            && is_string($searchParams['search'])
+        ) || (
+            !$countOnly
+            && in_array($sortOn, $userColumns, true)
+        );
         $QueryBuilder = QUI::getQueryBuilder();
         $QueryBuilder
             ->select($countOnly ? 'COUNT(musers.id)' : 'musers.id')
             ->from(QUI\Utils\Doctrine::quoteIdentifier($tbl), 'musers')
-            ->leftJoin(
-                'musers',
-                QUI\Utils\Doctrine::quoteIdentifier($usersTbl),
-                'users',
-                'musers.userId = users.id'
-            )
             ->where($QueryBuilder->expr()->eq('musers.membershipId', ':membershipId'))
             ->andWhere($QueryBuilder->expr()->eq('musers.archived', ':archived'))
             ->setParameter('membershipId', $this->id)
             ->setParameter('archived', $archivedOnly ? 1 : 0);
 
+        if ($needsUserJoin) {
+            $Platform = QUI::getDataBaseConnection()->getDatabasePlatform();
+            $userJoinCondition = 'musers.userId = users.uuid';
+
+            if ($Platform instanceof AbstractMySQLPlatform) {
+                $userJoinCondition = 'CAST(musers.userId AS BINARY) = CAST(users.uuid AS BINARY)';
+            }
+
+            $QueryBuilder->leftJoin(
+                'musers',
+                QUI\Utils\Doctrine::quoteIdentifier($usersTbl),
+                'users',
+                $userJoinCondition
+            );
+        }
+
         if (!empty($searchParams['search']) && is_string($searchParams['search'])) {
-            $searchColumns = [
-                'users.username',
-                'users.firstname',
-                'users.lastname'
-            ];
             $searchExpressions = [];
 
-            foreach ($searchColumns as $column) {
-                $searchExpressions[] = $QueryBuilder->expr()->like($column, ':search');
+            foreach ($userColumns as $column) {
+                $searchExpressions[] = $QueryBuilder->expr()->like('users.' . $column, ':search');
             }
 
             $QueryBuilder
@@ -425,8 +449,6 @@ class Membership extends Child
         }
 
         if (!$countOnly && !empty($searchParams['sortOn']) && is_string($searchParams['sortOn'])) {
-            $sortOn = $searchParams['sortOn'];
-            $userColumns = ['username', 'firstname', 'lastname'];
             $membershipUserColumns = array_merge(
                 ['id'],
                 MembershipUsersHandler::getInstance()->getChildAttributes()
@@ -672,10 +694,20 @@ class Membership extends Child
         }
 
         $Product->save(QUI::getUsers()->getSystemUser());
+        $productId = (int)$Product->getId();
+        ProductsHandler::cleanProductInstanceMemCache($productId);
+        $Product = ProductsHandler::getProduct($productId);
 
         QUI::getEvents()->fireEvent('quiqqerMembershipsCreateProduct', [$this, $Product]);
 
         return $Product;
+    }
+
+    private function refreshProductIfSupported(object $Product): void
+    {
+        if (method_exists($Product, 'refresh')) {
+            $Product->refresh();
+        }
     }
 
     /**
@@ -700,9 +732,27 @@ class Membership extends Child
      */
     public function unlock(): void
     {
+        $Package = QUI::getPackage('quiqqer/memberships');
+        $lockKey = $this->getLockKey();
+        $User = QUI::getUserBySession();
+        $lockedBy = Locker::isLocked($Package, $lockKey, $User, false);
+        $userUuid = (string)$User->getUUID();
+
+        if (
+            $lockedBy === $userUuid
+            || (
+                is_array($lockedBy)
+                && isset($lockedBy['id'])
+                && (string)$lockedBy['id'] === $userUuid
+            )
+        ) {
+            Locker::unlock($Package, $lockKey);
+            return;
+        }
+
         Locker::unlockWithPermissions(
-            QUI::getPackage('quiqqer/memberships'),
-            $this->getLockKey(),
+            $Package,
+            $lockKey,
             Handler::PERMISSION_FORCE_EDIT
         );
     }
@@ -779,7 +829,7 @@ class Membership extends Child
     public function addUser(QUIUserInterface $User): QUI\Memberships\Users\MembershipUser
     {
         $MembershipUser = MembershipUsersHandler::getInstance()->createChild([
-            'userId' => $User->getId(),
+            'userId' => $User->getUUID(),
             'membershipId' => $this->id
         ], $this->EditUser);
 

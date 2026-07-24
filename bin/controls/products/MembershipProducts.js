@@ -5,17 +5,18 @@
  *
  * @module package/quiqqer/memberships/bin/controls/products/MembershipProducts
  * @author www.pcsg.de (Patrick Müller)
+ *
+ * @event onRefreshBegin [this]
+ * @event onRefreshEnd [this]
  */
 define('package/quiqqer/memberships/bin/controls/products/MembershipProducts', [
 
     'qui/controls/Control',
-    'qui/controls/loader/Loader',
     'qui/controls/windows/Popup',
     'qui/controls/windows/Confirm',
     'qui/controls/buttons/Button',
 
     'qui/utils/Form',
-    'utils/Controls',
     'controls/grid/Grid',
 
     'package/quiqqer/memberships/bin/Memberships',
@@ -27,8 +28,8 @@ define('package/quiqqer/memberships/bin/controls/products/MembershipProducts', [
     'text!package/quiqqer/memberships/bin/controls/products/MembershipProducts.html',
     'css!package/quiqqer/memberships/bin/controls/products/MembershipProducts.css'
 
-], function (QUIControl, QUILoader, QUIPopup, QUIConfirm, QUIButton, QUIFormUtils,
-             QUIControlUtils, Grid, Memberships, QUILocale, QUIAjax, Mustache, template) {
+], function (QUIControl, QUIPopup, QUIConfirm, QUIButton, QUIFormUtils,
+             Grid, Memberships, QUILocale, QUIAjax, Mustache, template) {
     "use strict";
 
     var lg = 'quiqqer/memberships';
@@ -55,11 +56,11 @@ define('package/quiqqer/memberships/bin/controls/products/MembershipProducts', [
         initialize: function (options) {
             this.parent(options);
 
-            this.Loader      = new QUILoader();
             this.$User       = null;
             this.$Grid       = null;
             this.$GridParent = null;
             this.$Membership = null;
+            this.$loading    = 0;
             this.$search     = false;
 
             this.addEvents({
@@ -75,24 +76,39 @@ define('package/quiqqer/memberships/bin/controls/products/MembershipProducts', [
             var self = this;
 
             this.$Elm.addClass('quiqqer-memberships-products-membershipproducts');
+            this.$startLoading();
 
-            this.Loader.inject(this.$Elm);
-            this.Loader.show();
-
-            // if control is injected in a panel, register onResize event
-            QUIControlUtils.getControlByElement(
-                this.$Elm.getParent('.qui-panel')
-            ).then(function (Panel) {
-                Panel.addEvent('onResize', self.$onResize);
-            }, function () {
-                // do nothing if no panel found
-            });
-
-            Memberships.getMembershipView(this.getAttribute('membershipId')).then(function (Membership) {
-                self.Loader.hide();
+            Memberships.getMembershipView(
+                this.getAttribute('membershipId')
+            ).then(function (Membership) {
                 self.$Membership = Membership;
                 self.$load();
+                self.$finishLoading();
+            }, function () {
+                self.$finishLoading();
             });
+        },
+
+        /**
+         * Signal the beginning of a loading operation
+         */
+        $startLoading: function () {
+            this.$loading++;
+
+            if (this.$loading === 1) {
+                this.fireEvent('refreshBegin', [this]);
+            }
+        },
+
+        /**
+         * Signal the end of a loading operation
+         */
+        $finishLoading: function () {
+            this.$loading = Math.max(0, this.$loading - 1);
+
+            if (this.$loading === 0) {
+                this.fireEvent('refreshEnd', [this]);
+            }
         },
 
         /**
@@ -150,6 +166,7 @@ define('package/quiqqer/memberships/bin/controls/products/MembershipProducts', [
                     width    : 350
                 }],
                 pagination       : false,
+                'button-reload'  : true,
                 serverSort       : false,
                 selectable       : true,
                 multipleSelection: false
@@ -196,11 +213,13 @@ define('package/quiqqer/memberships/bin/controls/products/MembershipProducts', [
 
             var self = this;
 
-            this.Loader.show();
+            this.$startLoading();
 
             Memberships.getProducts(this.getAttribute('membershipId')).then(function (products) {
-                self.Loader.hide();
                 self.$setGridData(products);
+                self.$finishLoading();
+            }, function () {
+                self.$finishLoading();
             });
         },
 

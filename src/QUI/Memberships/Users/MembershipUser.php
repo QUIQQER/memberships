@@ -345,7 +345,7 @@ class MembershipUser extends Child
     public function startManualCancel(): void
     {
         // check cancel permission
-        if ((int)QUI::getUserBySession()->getId() !== (int)$this->getUserId()) {
+        if ((string)QUI::getUserBySession()->getUUID() !== (string)$this->getUserOrThrow()->getUUID()) {
             throw new QUI\Memberships\Exception([
                 'quiqqer/memberships',
                 'exception.users.membershipuser.manualcancel.no.permission'
@@ -478,7 +478,7 @@ class MembershipUser extends Child
     public function startAbortCancel(): void
     {
         // check cancel permission
-        if ((int)QUI::getUserBySession()->getId() !== (int)$this->getUserId()) {
+        if ((string)QUI::getUserBySession()->getUUID() !== (string)$this->getUserOrThrow()->getUUID()) {
             throw new QUI\Memberships\Exception([
                 'quiqqer/memberships',
                 'exception.users.membershipuser.manualcancel.no.permission'
@@ -777,9 +777,9 @@ class MembershipUser extends Child
         foreach ($membershipGroupIds as $groupId) {
             foreach ($Memberships->getMembershipIdsByGroupIds([$groupId]) as $membershipId) {
                 $OtherMembership = $Memberships->getChild($membershipId);
-                $userId = $User->getId();
+                $userId = $User->getUUID();
 
-                if ($userId !== false && !$OtherMembership->hasMembershipUserId($userId)) {
+                if (!$OtherMembership->hasMembershipUserId($userId)) {
                     $User->removeGroup($groupId);
                 }
             }
@@ -1184,7 +1184,7 @@ class MembershipUser extends Child
 
         return [
             'id' => $this->getId(),
-            'userId' => $QuiqqerUser->getId(),
+            'userId' => $QuiqqerUser->getUUID(),
             'membershipId' => $Membership->getId(),
             'membershipTitle' => $title,
             'membershipShort' => $description,
@@ -1558,7 +1558,7 @@ class MembershipUser extends Child
                 }
         }
 
-        return new DateTime('@' . $end);
+        return (new DateTime())->setTimestamp($end);
     }
 
     /**

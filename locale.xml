@@ -576,6 +576,14 @@
             <de><![CDATA[Aktionen]]></de>
             <en><![CDATA[Actions]]></en>
         </locale>
+        <locale name="controls.membershipusers.tbl.btn.openContract">
+            <de><![CDATA[Vertrag öffnen]]></de>
+            <en><![CDATA[Open contract]]></en>
+        </locale>
+        <locale name="controls.membershipusers.tbl.btn.openUser">
+            <de><![CDATA[Benutzer öffnen]]></de>
+            <en><![CDATA[Open user]]></en>
+        </locale>
         <locale name="controls.membershipusers.tbl.header.userId">
             <de><![CDATA[User ID]]></de>
             <en><![CDATA[User ID]]></en>
