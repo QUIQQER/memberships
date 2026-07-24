@@ -131,7 +131,8 @@ class Membership extends Child
      */
     public function update(): void
     {
-        Permission::checkPermission(Handler::PERMISSION_EDIT, $this->EditUser);
+        $EditUser = $this->EditUser ?? QUI::getUserBySession();
+        Permission::checkPermission(Handler::PERMISSION_EDIT, $EditUser);
 
         $attributes = $this->getAttributes();
 
@@ -163,7 +164,7 @@ class Membership extends Child
         }
 
         // edit user and timestamp
-        $attributes['editUser'] = QUI::getUserBySession()->getId();
+        $attributes['editUser'] = $EditUser->getId();
         $attributes['editDate'] = Utils::getFormattedTimestamp();
 
         // autoExtend

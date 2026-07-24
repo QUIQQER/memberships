@@ -24,6 +24,10 @@
             <de><![CDATA[Mitgliedschaften]]></de>
             <en><![CDATA[Memberships]]></en>
         </locale>
+        <locale name="permission.quiqqer.memberships.mcp">
+            <de><![CDATA[Darf Mitgliedschaften per MCP verwenden]]></de>
+            <en><![CDATA[Can use memberships via MCP]]></en>
+        </locale>
         <locale name="permission.quiqqer.memberships.create">
             <de><![CDATA[Darf neue Mitgliedschaften anlegen]]></de>
             <en><![CDATA[Can create new memberships]]></en>
