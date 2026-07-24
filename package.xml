@@ -36,5 +36,9 @@
             <language>en</language>
         </languages>
 
+        <provider>
+            <mcp src="\QUI\Memberships\MCP\Provider"/>
+        </provider>
+
     </package>
 </quiqqer>
