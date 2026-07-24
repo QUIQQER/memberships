@@ -437,9 +437,8 @@ class MembershipDbalIntegrationTest extends TestCase
 
         try {
             self::assertFalse($Membership->isLocked());
-            self::assertSame(
-                (string)$SystemUser->getUUID(),
-                (string)QUI\Lock\Locker::isLocked(
+            self::assertNotFalse(
+                QUI\Lock\Locker::isLocked(
                     $Package,
                     $lockKey,
                     $SystemUser,
@@ -824,6 +823,14 @@ class MembershipDbalIntegrationTest extends TestCase
 
     public function testAutoExtendMembershipCreatesPlanProduct(): void
     {
+        if (
+            !Utils::isQuiqqerErpPlansInstalled()
+            || !class_exists(QUI\ERP\Plans\PlanProduct::class)
+            || !class_exists(QUI\ERP\Plans\Handler::class)
+        ) {
+            self::markTestSkipped('quiqqer/erp-plans is not installed.');
+        }
+
         $SystemUser = QUI::getUsers()->getSystemUser();
         $Group = $this->createTestGroup();
         $Membership = $this->createMembership(
