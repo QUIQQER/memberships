@@ -9,7 +9,6 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
     'qui/controls/loader/Loader',
     'qui/controls/windows/Popup',
     'qui/controls/windows/Confirm',
-    'qui/controls/buttons/Button',
 
     'qui/utils/Form',
     'utils/Controls',
@@ -27,7 +26,7 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
     'text!package/quiqqer/memberships/bin/controls/users/MembershipUsers.html',
     'css!package/quiqqer/memberships/bin/controls/users/MembershipUsers.css'
 
-], function (QUIControl, QUILoader, QUIPopup, QUIConfirm, QUIButton, QUIFormUtils,
+], function (QUIControl, QUILoader, QUIPopup, QUIConfirm, QUIFormUtils,
              QUIControlUtils, Grid, UserSearchWindow, Memberships, MembershipUsersHandler,
              MembershipUserEdit, QUILocale, QUIAjax, Mustache, template) {
     "use strict";
@@ -47,14 +46,18 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
             '$addUser',
             '$extend',
             '$removeUser',
+            '$onDblClick',
             'refresh',
             '$removeUsers',
             '$showHistory',
-            '$editUser'
+            '$editUser',
+            '$openUser',
+            '$openContract'
         ],
 
         options: {
-            membershipId: false
+            membershipId      : false,
+            contractsInstalled: false
         },
 
         initialize: function (options) {
@@ -120,69 +123,40 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
                 '.quiqqer-memberships-membershipusers-table'
             );
 
-            const ActionBtn = new QUIButton({
-                text: QUILocale.get(lg, 'controls.membershipusers.tbl.btn.actions'),
-                name: 'actions',
-                styles: {
-                    float: 'right'
-                }
-            });
-
-            ActionBtn.appendChild({
-                name: 'adduser',
-                text: QUILocale.get(lg, 'controls.membershipusers.tbl.btn.adduser'),
-                icon: 'fa fa-plus',
-                events: {
-                    onClick: this.$addUser
-                }
-            }).appendChild({
-                name: 'edit',
-                text: QUILocale.get(lg, 'controls.membershipusers.tbl.btn.edit'),
-                icon: 'fa fa-edit',
-                events: {
-                    onClick: this.$editUser
-                }
-            }).appendChild({
-                name: 'removeuser',
-                text: QUILocale.get(lg, 'controls.membershipusers.tbl.btn.removeuser'),
-                icon: 'fa fa-trash',
-                events: {
-                    onClick: this.$removeUsers
-                }
-            });
-
-            const getActionItem = (name) => {
-                const ActionItems = ActionBtn.getChildren();
-
-                for (let i = 0, len = ActionItems.length; i < len; i++) {
-                    if (ActionItems[i].getAttribute('name') === name) {
-                        return ActionItems[i];
-                    }
-                }
-
-                return null;
-            };
-
-            this.$EditActionItem = getActionItem('edit');
-            this.$RemoveActionItem = getActionItem('removeuser');
-
-            if (this.$EditActionItem) {
-                this.$EditActionItem.disable();
-            }
-
-            if (this.$RemoveActionItem) {
-                this.$RemoveActionItem.disable();
-            }
-
             this.$Grid = new Grid(this.$GridParent, {
                 buttons: [{
+                    name: 'adduser',
+                    text: QUILocale.get(lg, 'controls.membershipusers.tbl.btn.adduser'),
+                    textimage: 'fa fa-plus',
+                    events: {
+                        onClick: this.$addUser
+                    }
+                }, {
+                    name: 'edit',
+                    text: QUILocale.get(lg, 'controls.membershipusers.tbl.btn.edit'),
+                    textimage: 'fa fa-edit',
+                    disabled: true,
+                    events: {
+                        onClick: this.$editUser
+                    }
+                }, {
+                    name: 'removeuser',
+                    text: QUILocale.get(lg, 'controls.membershipusers.tbl.btn.removeuser'),
+                    textimage: 'fa fa-trash',
+                    disabled: true,
+                    events: {
+                        onClick: this.$removeUsers
+                    }
+                }, {
                     name: 'history',
                     text: QUILocale.get(lg, 'controls.users.membershipusersarchive.tbl.btn.history'),
                     textimage: 'fa fa-history',
+                    disabled: true,
+                    position: 'right',
                     events: {
                         onClick: this.$showHistory
                     }
-                }, ActionBtn],
+                }],
                 columnModel: [{
                     header: QUILocale.get('quiqqer/system', 'id'),
                     dataIndex: 'id',
@@ -192,17 +166,20 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
                     header: QUILocale.get(lg, 'controls.membershipusers.tbl.header.userId'),
                     dataIndex: 'userId',
                     dataType: 'number',
-                    width: 100
+                    width: 100,
+                    className: 'clickable'
                 }, {
                     header: QUILocale.get(lg, 'controls.membershipusers.tbl.header.contractId'),
                     dataIndex: 'contractId',
                     dataType: 'string',
-                    width: 100
+                    width: 100,
+                    className: 'clickable'
                 }, {
                     header: QUILocale.get(lg, 'controls.membershipusers.tbl.header.username'),
                     dataIndex: 'username',
                     dataType: 'string',
-                    width: 150
+                    width: 150,
+                    className: 'clickable'
                 }, {
                     header: QUILocale.get(lg, 'controls.membershipusers.tbl.header.userFirstname'),
                     dataIndex: 'firstname',
@@ -245,8 +222,11 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
                 multipleSelection: true
             });
 
+            this.$EditActionItem = this.$Grid.getButton('edit');
+            this.$RemoveActionItem = this.$Grid.getButton('removeuser');
+
             this.$Grid.addEvents({
-                onDblClick: this.$editUser,
+                onDblClick: this.$onDblClick,
                 onClick: () => {
                     const TableButtons = this.$Grid.getAttribute('buttons');
                     const selected = this.$Grid.getSelectedData().length;
@@ -358,6 +338,114 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
             }
 
             this.$Grid.setData(GridData);
+        },
+
+        /**
+         * Handle a double click on a grid cell
+         *
+         * @param {Object} data
+         * @return {Promise|void}
+         */
+        $onDblClick: function (data) {
+            if (typeof data === 'undefined' ||
+                typeof data.cell === 'undefined') {
+                this.$editUser();
+                return;
+            }
+
+            const rowData = this.$Grid.getDataByRow(data.row);
+            const dataIndex = data.cell.get('data-index');
+            const items = [{
+                icon: 'fa fa-edit',
+                text: QUILocale.get(lg, 'controls.membershipusers.tbl.btn.edit'),
+                events: {
+                    onClick: () => {
+                        this.$editUser();
+                    }
+                }
+            }];
+            let title;
+
+            switch (dataIndex) {
+                case 'userId':
+                case 'username':
+                    if (!rowData.userId) {
+                        this.$editUser();
+                        return;
+                    }
+
+                    title = rowData.userId;
+                    items.push({
+                        icon: 'fa fa-user-o',
+                        text: QUILocale.get(
+                            lg,
+                            'controls.membershipusers.tbl.btn.openUser'
+                        ),
+                        events: {
+                            onClick: () => {
+                                this.$openUser(rowData.userId);
+                            }
+                        }
+                    });
+                    break;
+
+                case 'contractId':
+                    if (!this.getAttribute('contractsInstalled') ||
+                        !rowData.contractId ||
+                        rowData.contractId === '---') {
+                        this.$editUser();
+                        return;
+                    }
+
+                    title = rowData.contractId;
+                    items.push({
+                        icon: 'fa fa-file-text',
+                        text: QUILocale.get(
+                            lg,
+                            'controls.membershipusers.tbl.btn.openContract'
+                        ),
+                        events: {
+                            onClick: () => {
+                                this.$openContract(rowData.contractId);
+                            }
+                        }
+                    });
+                    break;
+
+                default:
+                    this.$editUser();
+                    return;
+            }
+
+            const position = data.cell.getPosition();
+
+            return new Promise(function (resolve) {
+                require([
+                    'qui/controls/contextmenu/Menu',
+                    'qui/controls/contextmenu/Item'
+                ], function (QUIMenu, QUIMenuItem) {
+                    const Menu = new QUIMenu({
+                        events: {
+                            onBlur: function () {
+                                Menu.hide();
+                                Menu.destroy();
+                            }
+                        }
+                    });
+
+                    for (let i = 0, len = items.length; i < len; i++) {
+                        Menu.appendChild(new QUIMenuItem(items[i]));
+                    }
+
+                    Menu.inject(document.body);
+                    Menu.setPosition(position.x, position.y + data.cell.getSize().y);
+                    Menu.setTitle(title);
+                    Menu.show();
+                    Menu.focus();
+
+                    resolve();
+                });
+            });
         },
 
         /**
@@ -547,6 +635,46 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
                 new MembershipUserHistoryPopup({
                     membershipUserId: membershipUserId
                 }).open();
+            });
+        },
+
+        /**
+         * Open the linked user
+         *
+         * @param {Number|String} userId
+         */
+        $openUser: function (userId) {
+            if (!userId) {
+                return;
+            }
+
+            require([
+                'package/quiqqer/customer/bin/backend/Handler'
+            ], function (CustomerHandler) {
+                CustomerHandler.openCustomer(userId);
+            });
+        },
+
+        /**
+         * Open the linked contract
+         *
+         * @param {Number|String} contractId
+         */
+        $openContract: function (contractId) {
+            if (!contractId) {
+                return;
+            }
+
+            require([
+                'package/quiqqer/contracts/bin/backend/controls/panels/Contract',
+                'utils/Panels'
+            ], function (Contract, PanelUtils) {
+                const Panel = new Contract({
+                    contractId: contractId,
+                    '#id': contractId
+                });
+
+                PanelUtils.openPanelInTasks(Panel);
             });
         },
 

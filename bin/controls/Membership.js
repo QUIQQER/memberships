@@ -81,6 +81,7 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
             this.$Search          = null;
             this.$CurrentUserList = null;
             this.$MembershipProducts = null;
+            this.$installedMembershipPackages = [];
             this.$searchUsed      = false;
 
             this.addEvents({
@@ -218,6 +219,8 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
             this.Loader.show();
 
             Memberships.getInstalledMembershipPackages().then(function (installedPackages) {
+                self.$installedMembershipPackages = installedPackages;
+
                 if (installedPackages.contains('quiqqer/products')) {
                     self.addCategory(new QUIButton({
                         icon  : 'fa fa-money',
@@ -356,7 +359,10 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
             self.$showUserSearch();
 
             this.$CurrentUserList = new MembershipUsers({
-                membershipId: this.$Membership.id
+                membershipId      : this.$Membership.id,
+                contractsInstalled: this.$installedMembershipPackages.contains(
+                    'quiqqer/contracts'
+                )
             }).inject(PanelContent);
         },
 
