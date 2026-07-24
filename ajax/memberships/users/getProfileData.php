@@ -13,9 +13,9 @@ QUI::getAjax()->registerFunction(
     'package_quiqqer_memberships_ajax_memberships_users_getProfileData',
     function () {
         $SessionUser = QUI::getUserBySession();
-        $userId = $SessionUser->getId();
+        $userId = (string)$SessionUser->getUUID();
 
-        if ($userId === false) {
+        if ($userId === '') {
             return [];
         }
 

@@ -113,6 +113,14 @@ class UpdateMembership extends AbstractTool
                             throw new Exception($attribute . ' must be an object with language keys.');
                         }
 
+                        foreach ($attributes[$attribute] as $translation) {
+                            if (!is_string($translation)) {
+                                throw new Exception(
+                                    $attribute . ' translation values must be strings.'
+                                );
+                            }
+                        }
+
                         $translations = array_merge(
                             self::parseTranslations($membershipAttributes[$attribute] ?? null),
                             self::parseTranslations(json_encode($attributes[$attribute]))

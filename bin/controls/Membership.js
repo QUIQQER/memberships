@@ -50,6 +50,7 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
         Binds: [
             '$onCreate',
             '$onDestroy',
+            '$onResize',
             '$onCategoryActive',
             '$loadSettings',
             '$loadProducts',
@@ -79,11 +80,14 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
             this.$refreshMode     = false;
             this.$Search          = null;
             this.$CurrentUserList = null;
+            this.$MembershipProducts = null;
+            this.$installedMembershipPackages = [];
             this.$searchUsed      = false;
 
             this.addEvents({
                 onCreate : this.$onCreate,
                 onDestroy: this.$onDestroy,
+                onResize : this.$onResize,
                 onSearch : this.$onUserSearch
             });
         },
@@ -215,6 +219,8 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
             this.Loader.show();
 
             Memberships.getInstalledMembershipPackages().then(function (installedPackages) {
+                self.$installedMembershipPackages = installedPackages;
+
                 if (installedPackages.contains('quiqqer/products')) {
                     self.addCategory(new QUIButton({
                         icon  : 'fa fa-money',
@@ -290,6 +296,15 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
         },
 
         /**
+         * Panel event: onResize
+         */
+        $onResize: function () {
+            if (this.$MembershipProducts) {
+                this.$MembershipProducts.resize();
+            }
+        },
+
+        /**
          * Show info category with general membership information
          */
         $loadSettings: function () {
@@ -344,7 +359,10 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
             self.$showUserSearch();
 
             this.$CurrentUserList = new MembershipUsers({
-                membershipId: this.$Membership.id
+                membershipId      : this.$Membership.id,
+                contractsInstalled: this.$installedMembershipPackages.contains(
+                    'quiqqer/contracts'
+                )
             }).inject(PanelContent);
         },
 
@@ -375,8 +393,16 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
 
             self.$hideUserSearch();
 
-            new MembershipProducts({
-                membershipId: this.$Membership.id
+            this.$MembershipProducts = new MembershipProducts({
+                membershipId: this.$Membership.id,
+                events       : {
+                    onRefreshBegin: function () {
+                        self.Loader.show();
+                    },
+                    onRefreshEnd  : function () {
+                        self.Loader.hide();
+                    }
+                }
             }).inject(PanelContent);
         },
 
@@ -436,6 +462,7 @@ define('package/quiqqer/memberships/bin/controls/Membership', [
 
             this.$hideUserSearch();
             this.$CurrentUserList = null;
+            this.$MembershipProducts = null;
 
             if (typeof clear === 'undefined') {
                 clear = true;
