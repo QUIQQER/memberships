@@ -315,7 +315,12 @@ class Events
         $membershipFieldId = $MembershipField->getId();
         $Memberships = Handler::getInstance();
         $Users = QUI::getUsers();
-        $Customer = $Order->getCustomer();
+        $Customer = self::normalizeOrderCustomer($Order->getCustomer());
+
+        if ($Customer === null) {
+            return;
+        }
+
         $customerId = $Customer->getId();
 
         if ($customerId === false) {
@@ -467,7 +472,12 @@ class Events
 
         $membershipFieldId = $MembershipField->getId();
         $Memberships = Handler::getInstance();
-        $Customer = $Order->getCustomer();
+        $Customer = self::normalizeOrderCustomer($Order->getCustomer());
+
+        if ($Customer === null) {
+            return;
+        }
+
         $customerId = $Customer->getId();
 
         if ($customerId === false) {
@@ -709,5 +719,13 @@ class Events
         $Conf = MembershipsHandler::getConfig();
         $Conf->set('products', 'categoryId', $catId);
         $Conf->save();
+    }
+
+    /**
+     * Normalize the order customer across order package versions
+     */
+    private static function normalizeOrderCustomer(?QUI\ERP\User $Customer): ?QUI\ERP\User
+    {
+        return $Customer;
     }
 }
