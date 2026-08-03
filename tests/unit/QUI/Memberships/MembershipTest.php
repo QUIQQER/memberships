@@ -29,6 +29,23 @@ class MembershipTest extends TestCase
         self::assertTrue($Membership->isInfinite());
     }
 
+    public function testGroupIdsPreserveUuidsAndNormalizeNumericIds(): void
+    {
+        $groupUuid = 'dfefc5c6-55c9-11f1-a34d-2af50f5e0911';
+        $Membership = $this->createMembership([
+            'groupIds' => ',2,' . $groupUuid . ',7,,'
+        ]);
+
+        self::assertSame([2, $groupUuid, 7], $Membership->getGroupIds());
+    }
+
+    public function testEmptyGroupIdsReturnEmptyList(): void
+    {
+        $Membership = $this->createMembership(['groupIds' => ',,']);
+
+        self::assertSame([], $Membership->getGroupIds());
+    }
+
     public function testLocalizedAttributesReturnEmptyStringForMissingLanguage(): void
     {
         $Locale = new Locale();
