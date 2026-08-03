@@ -259,6 +259,22 @@ class MembershipDbalIntegrationTest extends TestCase
         $this->assertFalse($this->membershipRowExists((int)$Membership->getId()));
     }
 
+    public function testMembershipWithGroupUuidAddsUserToConfiguredGroup(): void
+    {
+        $Group = $this->createTestGroup();
+        $User = $this->createTestUser();
+        $groupUuid = (string)$Group->getUUID();
+        $Membership = $this->createMembership(
+            self::TEST_PREFIX . 'group-uuid-' . uniqid(),
+            $groupUuid
+        );
+
+        $Membership->addUser($User);
+
+        self::assertSame([$groupUuid], $Membership->getGroupIds());
+        self::assertTrue($User->isInGroup($groupUuid));
+    }
+
     public function testLegacyNumericUserIdsAreReadAndMigratedToUuids(): void
     {
         $SystemUser = QUI::getUsers()->getSystemUser();

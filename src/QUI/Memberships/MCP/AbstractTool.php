@@ -100,7 +100,7 @@ abstract class AbstractTool implements ToolInterface
     }
 
     /**
-     * @return array<int, array{id: int, uuid: string, name: string}>
+     * @return array<int, array{id: int|string, uuid: string, name: string}>
      */
     protected static function parseMembershipGroups(Membership $Membership): array
     {
