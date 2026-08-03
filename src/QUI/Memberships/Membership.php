@@ -41,15 +41,27 @@ class Membership extends Child
     /**
      * Get IDs of all QUIQQER Groups
      *
-     * @return int[]
+     * @return list<int|string>
      */
     public function getGroupIds(): array
     {
-        $groupIds = $this->getAttribute('groupIds');
-        $groupIds = trim($groupIds, ",");
-        $groupIds = explode(",", $groupIds);
+        $groupIds = trim((string)$this->getAttribute('groupIds'), ',');
 
-        return array_map('intval', $groupIds);
+        if ($groupIds === '') {
+            return [];
+        }
+
+        return array_values(array_map(
+            static function (string $groupId): int|string {
+                $groupId = trim($groupId);
+
+                return ctype_digit($groupId) ? (int)$groupId : $groupId;
+            },
+            array_filter(
+                explode(',', $groupIds),
+                static fn(string $groupId): bool => trim($groupId) !== ''
+            )
+        ));
     }
 
     /**
@@ -321,7 +333,7 @@ class Membership extends Child
     /**
      * Get IDs of all QUIQQER Groups that are UNIQUE to this membership
      *
-     * @return int[]
+     * @return array<int, int|string>
      * @throws QUI\Exception
      */
     public function getUniqueGroupIds(): array
