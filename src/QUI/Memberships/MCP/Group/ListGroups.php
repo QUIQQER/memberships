@@ -9,7 +9,6 @@ namespace QUI\Memberships\MCP\Group;
 use Mcp\Schema\Result\CallToolResult;
 use Mcp\Server\Builder;
 use QUI\AI\MCP\ToolHelper;
-use QUI\Groups\Group;
 use QUI\Memberships\MCP\AbstractTool;
 use Throwable;
 
@@ -36,17 +35,6 @@ class ListGroups extends AbstractTool
                     $groups = [];
 
                     foreach (\QUI::getGroups()->getAllGroups() as $group) {
-                        if ($group instanceof Group) {
-                            $groups[] = [
-                                'id' => (int)$group->getId(),
-                                'uuid' => (string)$group->getUUID(),
-                                'name' => $group->getName(),
-                                'parent' => (string)$group->getAttribute('parent'),
-                                'active' => (bool)$group->getAttribute('active')
-                            ];
-                            continue;
-                        }
-
                         $groups[] = [
                             'id' => (int)($group['id'] ?? 0),
                             'uuid' => (string)($group['uuid'] ?? ''),
