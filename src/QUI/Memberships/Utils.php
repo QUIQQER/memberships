@@ -26,7 +26,7 @@ class Utils
         $str = Orthos::clearPath($str);
 //        $str = Orthos::clearFormRequest($str);
 
-        return htmlspecialchars(is_string($str) ? $str : '', ENT_NOQUOTES);
+        return htmlspecialchars($str, ENT_NOQUOTES);
     }
 
     /**
