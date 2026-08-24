@@ -8,6 +8,29 @@
             <locale group="quiqqer/memberships" var="package.description"/>
         </description>
 
+        <capabilities schemaVersion="1">
+            <capability id="membership.management">
+                <title>Membership management</title>
+                <description>
+                    Manages time-limited or renewable memberships with group-based access and lifecycle histories.
+                </description>
+            </capability>
+
+            <capability id="membership.self-service">
+                <title>Membership self-service</title>
+                <description>
+                    Lets users view memberships and verify, revoke or complete cancellation requests.
+                </description>
+            </capability>
+
+            <capability id="commerce.membership-products">
+                <title>Membership products</title>
+                <description>
+                    Creates membership-linked products and grants purchased memberships after successful orders.
+                </description>
+            </capability>
+        </capabilities>
+
         <image src="URL_OPT_DIR/quiqqer/memberships/bin/images/Logo.jpg"/>
 
         <preview>
