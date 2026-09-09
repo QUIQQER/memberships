@@ -1,0 +1,904 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<locales>
+
+    <groups name="quiqqer/memberships" datatype="php,js">
+
+<!-- Package -->
+        <locale name="package.title">
+<fr><![CDATA[QUIQQER - Adhésions]]></fr>
+        </locale>
+        <locale name="package.description">
+<fr><![CDATA[Créez et gérez des adhésions pour vos utilisateurs. Les adhésions permettent d’accorder des autorisations dans le système pour des durées configurables. Associé à QUIQQER ERP, ce module permet également de lier automatiquement les adhésions à des produits afin de les proposer à la vente.]]></fr>
+        </locale>
+
+<!-- Menu -->
+        <locale name="menu.extras.memberships.title">
+<fr><![CDATA[Adhésions]]></fr>
+        </locale>
+
+<!-- Permissions -->
+        <locale name="permission.quiqqer.memberships._header">
+<fr><![CDATA[Adhésions]]></fr>
+        </locale>
+        <locale name="permission.quiqqer.memberships.mcp">
+<fr><![CDATA[Peut utiliser les adhésions via MCP]]></fr>
+        </locale>
+        <locale name="permission.quiqqer.memberships.create">
+<fr><![CDATA[Peut créer des adhésions]]></fr>
+        </locale>
+        <locale name="permission.quiqqer.memberships.edit">
+<fr><![CDATA[Peut modifier les adhésions (uniquement leurs données, pas les membres)]]></fr>
+        </locale>
+        <locale name="permission.quiqqer.memberships.edit_users">
+<fr><![CDATA[Peut gérer les membres (ajouter, modifier et supprimer)]]></fr>
+        </locale>
+        <locale name="permission.quiqqer.memberships.delete">
+<fr><![CDATA[Peut supprimer les adhésions]]></fr>
+        </locale>
+        <locale name="permission.quiqqer.memberships.force_edit">
+<fr><![CDATA[Peut déverrouiller et modifier les panneaux d’adhésion en cours de modification par un autre utilisateur]]></fr>
+        </locale>
+
+<!-- Settings -->
+        <locale name="settings.menu.title">
+<fr><![CDATA[Adhésions]]></fr>
+        </locale>
+        <locale name="settings.category.title">
+<fr><![CDATA[Paramètres]]></fr>
+        </locale>
+        <locale name="settings.membershipusers.title">
+<fr><![CDATA[Adhésions]]></fr>
+        </locale>
+        <locale name="settings.extendMode.title">
+<fr><![CDATA[Renouvellement des adhésions des membres actifs]]></fr>
+        </locale>
+        <locale name="settings.extendMode.description">
+<fr><![CDATA[Détermine comment la durée d’une adhésion est prolongée lorsqu’un utilisateur déjà membre actif y est ajouté.]]></fr>
+        </locale>
+        <locale name="settings.extendMode.option.reset">
+<fr><![CDATA[Redéfinir les dates de début et de fin comme si l’utilisateur venait d’adhérer]]></fr>
+        </locale>
+        <locale name="settings.extendMode.option.prolong">
+<fr><![CDATA[Repousser la date de fin de la durée de l’adhésion]]></fr>
+        </locale>
+        <locale name="settings.durationMode.title">
+<fr><![CDATA[Précision de la durée des adhésions]]></fr>
+        </locale>
+        <locale name="settings.durationMode.description">
+<fr><![CDATA[Détermine la précision du calcul de la durée des adhésions. Avec le calcul <b>Exact</b>, les <b>minutes</b> et les <b>heures</b> sont également disponibles.]]></fr>
+        </locale>
+        <locale name="settings.durationMode.option.day">
+<fr><![CDATA[Au jour près (la durée est arrondie au jour entier suivant)]]></fr>
+        </locale>
+        <locale name="settings.durationMode.option.exact">
+<fr><![CDATA[Exact (la durée est calculée à la seconde près)]]></fr>
+        </locale>
+        <locale name="settings.cancelDuration.title">
+<fr><![CDATA[Validité du lien de confirmation de résiliation]]></fr>
+        </locale>
+        <locale name="settings.cancelDuration.description" html="true">
+<fr><![CDATA[Détermine la durée de validité du lien de confirmation de résiliation d’une adhésion, en <b>minutes</b>.]]></fr>
+        </locale>
+        <locale name="settings.sendAutoExtendMail.title">
+<fr><![CDATA[E-mail lors du renouvellement automatique]]></fr>
+        </locale>
+        <locale name="settings.sendAutoExtendMail.description">
+<fr><![CDATA[Envoyer un e-mail à l’utilisateur lors du renouvellement automatique de l’adhésion]]></fr>
+        </locale>
+        <locale name="settings.sendManualExtendMail.title">
+<fr><![CDATA[E-mail lors du renouvellement manuel]]></fr>
+        </locale>
+        <locale name="settings.sendManualExtendMail.description">
+<fr><![CDATA[Envoyer un e-mail à l’utilisateur lors d’une prolongation manuelle de l’adhésion. Une prolongation manuelle correspond à la modification de la date de fin par un administrateur ou à l’ajout d’un utilisateur à une adhésion dont il fait déjà partie.]]></fr>
+        </locale>
+        <locale name="settings.linkWithContracts.title">
+<fr><![CDATA[Associer aux contrats]]></fr>
+        </locale>
+        <locale name="settings.linkWithContracts.description" html="true">
+<fr><![CDATA[Les adhésions créées à partir de la même commande qu’un contrat sont associées à ce contrat. La résiliation de l’adhésion peut entraîner celle du contrat, selon les paramètres du module de contrats. De même, la résiliation d’un contrat entraîne celle de l’adhésion associée de l’utilisateur. Nécessite l’installation de <b>quiqqer/contracts</b>.]]></fr>
+        </locale>
+        <locale name="settings.cancelReminderDays.title">
+<fr><![CDATA[Rappel de confirmation de résiliation après X jours]]></fr>
+        </locale>
+        <locale name="settings.cancelReminderDays.description" html="true">
+<fr><![CDATA[Nombre de <b>jours</b> après lesquels les membres reçoivent un e-mail rappelant les confirmations de résiliation en attente. Si la résiliation n’est pas confirmée avant l’expiration du lien, l’adhésion se poursuit automatiquement.<br/><br/>La valeur <b>0</b> signifie qu’<b>aucun</b> rappel n’est envoyé.]]></fr>
+        </locale>
+
+        <locale name="settings.dateformat.title">
+<fr><![CDATA[Format de date]]></fr>
+        </locale>
+        <locale name="settings.dateFormatShort.title">
+<fr><![CDATA[Format de date (court)]]></fr>
+        </locale>
+        <locale name="settings.dateFormatShort.description" html="true">
+<fr><![CDATA[Format court utilisé dans les messages à l’utilisateur lorsque <b>Précision de la durée des adhésions</b> est réglée sur <b>Au jour près</b>.<br><br>Consultez les paramètres disponibles sur <a href="http://php.net/manual/de/function.strftime.php#refsect1-function.strftime-parameters" target="_blank">http://php.net/manual/de/function.strftime.php#refsect1-function.strftime-parameters</a>]]></fr>
+        </locale>
+        <locale name="settings.dateFormatLong.title">
+<fr><![CDATA[Format de date (long)]]></fr>
+        </locale>
+        <locale name="settings.dateFormatLong.description" html="true">
+<fr><![CDATA[Format long utilisé dans les messages à l’utilisateur lorsque <b>Précision de la durée des adhésions</b> est réglée sur <b>Exact</b>.<br><br>Consultez les paramètres disponibles sur <a href="http://php.net/manual/de/function.strftime.php#refsect1-function.strftime-parameters" target="_blank">http://php.net/manual/de/function.strftime.php#refsect1-function.strftime-parameters</a>]]></fr>
+        </locale>
+        <locale name="settings.products.title">
+<fr><![CDATA[Produits]]></fr>
+        </locale>
+        <locale name="settings.categoryId.title">
+<fr><![CDATA[Catégorie de produits pour les adhésions]]></fr>
+        </locale>
+        <locale name="settings.categoryId.description" html="true">
+<fr><![CDATA[Catégorie par défaut de tous les produits créés automatiquement à partir des adhésions.]]></fr>
+        </locale>
+        <locale name="settings.viewDataMode.title">
+<fr><![CDATA[Source des informations affichées à l’utilisateur]]></fr>
+        </locale>
+        <locale name="settings.viewDataMode.description" html="true">
+<fr><![CDATA[Détermine la source du <b>titre</b>, de la <b>description courte</b> et, le cas échéant, de la <b>description détaillée</b> affichés au membre dans la partie publique du site.]]></fr>
+        </locale>
+        <locale name="settings.viewDataMode.option.membership">
+<fr><![CDATA[Adhésion]]></fr>
+        </locale>
+        <locale name="settings.viewDataMode.option.product">
+<fr><![CDATA[Produit (si associé ; nécessite quiqqer/products)]]></fr>
+        </locale>
+        <locale name="settings.defaultMembershipId.title">
+<fr><![CDATA[Adhésion par défaut]]></fr>
+        </locale>
+        <locale name="settings.defaultMembershipId.description">
+<fr><![CDATA[Adhésion à laquelle tous les utilisateurs du système sont automatiquement ajoutés. Les utilisateurs ne peuvent pas la résilier.]]></fr>
+        </locale>
+        <locale name="settings.membershipFieldId.title">
+<fr><![CDATA[Champ produit pour l’adhésion]]></fr>
+        </locale>
+        <locale name="settings.membershipFieldId.description">
+<fr><![CDATA[Définit le champ produit utilisé pour associer une adhésion à un produit.]]></fr>
+        </locale>
+
+<!-- Cron -->
+        <locale name="cron.checkMembershipUsers.title">
+<fr><![CDATA[Vérifier et renouveler les adhésions]]></fr>
+        </locale>
+        <locale name="cron.checkMembershipUsers.description">
+<fr><![CDATA[Vérifie pour chaque adhésion si elle doit être renouvelée ou prendre fin.]]></fr>
+        </locale>
+
+<!-- Profile -->
+        <locale name="profile.category.memberships.title">
+<fr><![CDATA[Adhésions]]></fr>
+        </locale>
+        <locale name="profile.mymemberships.title">
+<fr><![CDATA[Mes adhésions]]></fr>
+        </locale>
+
+<!-- quiqqer/products -->
+        <locale name="products.field.membership">
+<fr><![CDATA[Adhésion]]></fr>
+        </locale>
+        <locale name="products.field.membershipflag">
+<fr><![CDATA[Est un produit d’adhésion]]></fr>
+        </locale>
+        <locale name="products.category.title">
+<fr><![CDATA[Adhésions]]></fr>
+        </locale>
+        <locale name="products.category.description">
+<fr><![CDATA[Catégorie de produits pour les adhésions]]></fr>
+        </locale>
+
+    </groups>
+
+    <groups name="quiqqer/memberships" datatype="js">
+
+<!-- Control: profile/UserProfile -->
+        <locale name="controls.profile.userprofile.template.header">
+<fr><![CDATA[Mes adhésions]]></fr>
+        </locale>
+        <locale name="controls.profile.userprofile.template.headerMembership">
+<fr><![CDATA[Adhésion]]></fr>
+        </locale>
+        <locale name="controls.profile.userprofile.template.headerMembershipData">
+<fr><![CDATA[Détails]]></fr>
+        </locale>
+        <locale name="controls.profile.userprofile.datatable.labelAddedDate">
+<fr><![CDATA[Membre depuis le]]></fr>
+        </locale>
+        <locale name="controls.profile.userprofile.datatable.labelEndDate.autoExtend">
+<fr><![CDATA[Renouvellement automatique le]]></fr>
+        </locale>
+        <locale name="controls.profile.userprofile.datatable.labelEndDate.noAutoExtend">
+<fr><![CDATA[L’adhésion prend fin le]]></fr>
+        </locale>
+        <locale name="controls.profile.userprofile.datatable.labelEndDate.cancelled">
+<fr><![CDATA[Prend fin le]]></fr>
+        </locale>
+        <locale name="controls.profile.userprofile.datatable.endDate.infinite">
+<fr><![CDATA[-]]></fr>
+        </locale>
+        <locale name="controls.profile.userprofile.datatable.labelStatus">
+<fr><![CDATA[Statut]]></fr>
+        </locale>
+        <locale name="controls.profile.userprofile.datatable.status.cancelled">
+<fr><![CDATA[résiliée]]></fr>
+        </locale>
+        <locale name="controls.profile.userprofile.datatable.status.active">
+<fr><![CDATA[active]]></fr>
+        </locale>
+        <locale name="controls.profile.userprofile.btn.cancel.text">
+<fr><![CDATA[Résilier l’adhésion]]></fr>
+        </locale>
+        <locale name="controls.profile.userprofile.btn.abortcancel.text">
+<fr><![CDATA[Retirer la résiliation]]></fr>
+        </locale>
+        <locale name="controls.profile.userprofile.cancel_info.title">
+<fr><![CDATA[Informations sur la durée du contrat]]></fr>
+        </locale>
+        <locale name="controls.profile.userprofile.cancel_info.text">
+<fr><![CDATA[Durée du contrat et résiliation]]></fr>
+        </locale>
+        <locale name="controls.profile.userprofile.cancel_info.btn_title">
+<fr><![CDATA[Informations sur la durée du contrat]]></fr>
+        </locale>
+
+        <locale name="controls.profile.userprofile.cancelconfirm.info" html="true">
+<fr><![CDATA[Voulez-vous résilier votre adhésion <b>[title]</b> ? Elle prendra fin le <b>[endDate]</b>. Jusqu’à cette date, vous pourrez continuer à profiter de tous ses avantages et retirer votre résiliation à tout moment.]]></fr>
+        </locale>
+        <locale name="controls.profile.userprofile.cancelconfirm.text">
+<fr><![CDATA[Résiliation de l’adhésion « [title] »]]></fr>
+        </locale>
+        <locale name="controls.profile.userprofile.cancelconfirm.title">
+<fr><![CDATA[Résilier l’adhésion]]></fr>
+        </locale>
+        <locale name="controls.profile.userprofile.cancelconfirm.cancel">
+<fr><![CDATA[Ne pas résilier]]></fr>
+        </locale>
+        <locale name="controls.profile.userprofile.cancelconfirm.ok">
+<fr><![CDATA[Résilier l’adhésion]]></fr>
+        </locale>
+        <locale name="controls.profile.userprofile.abortcancel.info" html="true">
+<fr><![CDATA[Voulez-vous retirer la résiliation de votre adhésion <b>[title]</b> ? Cela peut entraîner la poursuite des paiements périodiques.]]></fr>
+        </locale>
+        <locale name="controls.profile.userprofile.abortcancel.text">
+<fr><![CDATA[Retirer la résiliation de l’adhésion « [title] »]]></fr>
+        </locale>
+        <locale name="controls.profile.userprofile.abortcancel.title">
+<fr><![CDATA[Retirer la résiliation de l’adhésion]]></fr>
+        </locale>
+        <locale name="controls.profile.userprofile.abortcancel.cancel">
+<fr><![CDATA[Annuler]]></fr>
+        </locale>
+        <locale name="controls.profile.userprofile.abortcancel.ok">
+<fr><![CDATA[Retirer la résiliation]]></fr>
+        </locale>
+        <locale name="controls.profile.userprofile.info.no.memberships">
+<fr><![CDATA[Votre profil utilisateur ne contient actuellement aucune adhésion.]]></fr>
+        </locale>
+        <locale name="controls.profile.userprofile.showcontent.title">
+<fr><![CDATA[Adhésion « [title] »]]></fr>
+        </locale>
+        <locale name="controls.profile.userprofile.status.modifier.cancel_confirm">
+<fr><![CDATA[(Résiliation demandée : cliquez sur le lien de confirmation dans l’e-mail)]]></fr>
+        </locale>
+        <locale name="controls.profile.userprofile.status.modifier.abortcancel_confirm">
+<fr><![CDATA[(Retrait de résiliation demandé : cliquez sur le lien de confirmation dans l’e-mail)]]></fr>
+        </locale>
+
+<!-- Control: MembershipsSearchPopup -->
+        <locale name="controls.membershipssearchpopup.title">
+<fr><![CDATA[Gestion des adhésions]]></fr>
+        </locale>
+
+<!-- Control: MembershipsManagerPanel -->
+        <locale name="controls.membershipsmanagerpanel.title">
+<fr><![CDATA[Adhésions]]></fr>
+        </locale>
+
+<!-- Control: MembershipsManager -->
+        <locale name="controls.membershipsmanager.tbl.btn.addmembership">
+<fr><![CDATA[Nouvelle adhésion]]></fr>
+        </locale>
+        <locale name="controls.membershipsmanager.tbl.btn.editmembership">
+<fr><![CDATA[Modifier]]></fr>
+        </locale>
+        <locale name="controls.membershipsmanager.tbl.btn.removemembership">
+<fr><![CDATA[Supprimer]]></fr>
+        </locale>
+        <locale name="controls.membershipsmanager.tbl.header.title">
+<fr><![CDATA[Titre]]></fr>
+        </locale>
+        <locale name="controls.membershipsmanager.tbl.header.description">
+<fr><![CDATA[Description]]></fr>
+        </locale>
+        <locale name="controls.membershipsmanager.tbl.header.duration">
+<fr><![CDATA[Durée]]></fr>
+        </locale>
+        <locale name="controls.membershipsmanager.tbl.header.userCount">
+<fr><![CDATA[Utilisateurs]]></fr>
+        </locale>
+        <locale name="controls.membershipsmanager.tbl.header.autoExtend">
+<fr><![CDATA[Renouveler automatiquement]]></fr>
+        </locale>
+        <locale name="controls.membershipsmanager.add.popup.title">
+<fr><![CDATA[Nouvelle adhésion]]></fr>
+        </locale>
+        <locale name="controls.membershipsmanager.add.popup.title.info">
+<fr><![CDATA[Saisissez un titre pour l’adhésion]]></fr>
+        </locale>
+        <locale name="controls.membershipsmanager.add.popup.groups.info">
+<fr><![CDATA[Sélectionnez au moins un groupe associé à cette adhésion]]></fr>
+        </locale>
+        <locale name="controls.membershipsmanager.add.popup.confirm.btn.text">
+<fr><![CDATA[Créer une adhésion]]></fr>
+        </locale>
+        <locale name="controls.membershipsmanager.add.popup.confirm.btn">
+<fr><![CDATA[Cliquez ici pour créer une adhésion avec le titre indiqué]]></fr>
+        </locale>
+        <locale name="controls.membershipsmanager.deletememberships.popup.title">
+<fr><![CDATA[Supprimer les adhésions]]></fr>
+        </locale>
+        <locale name="controls.membershipsmanager.deletememberships.popup.info">
+<fr><![CDATA[Voulez-vous supprimer définitivement les adhésions suivantes ? Cela n’est possible que si elles ne comptent plus aucun membre :<br><br>[memberships]]]></fr>
+        </locale>
+
+<!-- Control: Membership -->
+        <locale name="controls.membership.title">
+<fr><![CDATA[M - [title]]]></fr>
+        </locale>
+        <locale name="controls.membership.category.settings">
+<fr><![CDATA[Paramètres de base]]></fr>
+        </locale>
+        <locale name="controls.membership.category.users">
+<fr><![CDATA[Utilisateurs]]></fr>
+        </locale>
+        <locale name="controls.membership.category.usersArchive">
+<fr><![CDATA[Archives des utilisateurs]]></fr>
+        </locale>
+        <locale name="controls.membership.category.products">
+<fr><![CDATA[Produits]]></fr>
+        </locale>
+        <locale name="controls.membership.category.contracts">
+<fr><![CDATA[Contrats]]></fr>
+        </locale>
+        <locale name="controls.membership.template.settings.headerSettings">
+<fr><![CDATA[Informations sur l’adhésion]]></fr>
+        </locale>
+        <locale name="controls.membership.template.settings.labelTitle">
+<fr><![CDATA[Titre]]></fr>
+        </locale>
+        <locale name="controls.membership.template.settings.labelDescription">
+<fr><![CDATA[Description courte]]></fr>
+        </locale>
+        <locale name="controls.membership.template.settings.labelContent">
+<fr><![CDATA[Description détaillée]]></fr>
+        </locale>
+        <locale name="controls.membership.template.settings.headerDuration">
+<fr><![CDATA[Paramètres de durée]]></fr>
+        </locale>
+        <locale name="controls.membership.template.settings.labelDuration">
+<fr><![CDATA[Durée]]></fr>
+        </locale>
+        <locale name="controls.membership.template.settings.labelAutoExtend">
+<fr><![CDATA[Renouvellement automatique]]></fr>
+        </locale>
+        <locale name="controls.membership.template.settings.headerGroups">
+<fr><![CDATA[Groupes]]></fr>
+        </locale>
+        <locale name="controls.membership.template.settings.labelGroups">
+<fr><![CDATA[Groupes attribués]]></fr>
+        </locale>
+        <locale name="controls.membership.template.settings.autoExtend">
+<fr><![CDATA[À son échéance, cette adhésion est automatiquement renouvelée pour la durée définie]]></fr>
+        </locale>
+        <locale name="controls.membership.lock.title">
+<fr><![CDATA[Adhésion verrouillée !]]></fr>
+        </locale>
+        <locale name="controls.membership.lock.unlock.info" html="true">
+<fr><![CDATA[Un autre utilisateur modifie actuellement cette adhésion. Pour éviter les incohérences, une seule personne devrait la modifier à la fois. Pour la modifier quand même, cliquez sur le bouton ci-dessous.<br/><br/><b>Attention :</b> vos modifications peuvent écraser celles d’un autre utilisateur ou être écrasées par les siennes.]]></fr>
+        </locale>
+        <locale name="controls.membership.lock.info" html="true">
+<fr><![CDATA[Un autre utilisateur modifie actuellement cette adhésion. Pour éviter les incohérences, une seule personne peut la modifier à la fois. Réessayez plus tard.]]></fr>
+        </locale>
+        <locale name="controls.membership.lock.btn.ignore.text">
+<fr><![CDATA[Modifier l’adhésion quand même]]></fr>
+        </locale>
+        <locale name="controls.membership.lock.btn.close.text">
+<fr><![CDATA[Fermer le panneau de l’adhésion]]></fr>
+        </locale>
+        <locale name="controls.membership.search.input.placeholder">
+<fr><![CDATA[Rechercher des membres]]></fr>
+        </locale>
+
+<!-- Control: InputDuration -->
+        <locale name="controls.inputduration.period.infinite">
+<fr><![CDATA[Illimitée]]></fr>
+        </locale>
+        <locale name="controls.inputduration.period.minute">
+<fr><![CDATA[min]]></fr>
+        </locale>
+        <locale name="controls.inputduration.period.hour">
+<fr><![CDATA[h]]></fr>
+        </locale>
+        <locale name="controls.inputduration.period.day">
+<fr><![CDATA[jour(s)]]></fr>
+        </locale>
+        <locale name="controls.inputduration.period.week">
+<fr><![CDATA[semaine(s)]]></fr>
+        </locale>
+        <locale name="controls.inputduration.period.month">
+<fr><![CDATA[mois]]></fr>
+        </locale>
+        <locale name="controls.inputduration.period.year">
+<fr><![CDATA[an(s)]]></fr>
+        </locale>
+
+<!-- Control: users/MembershipUsers -->
+        <locale name="controls.membershipusers.tbl.btn.adduser">
+<fr><![CDATA[Ajouter des utilisateurs]]></fr>
+        </locale>
+        <locale name="controls.membershipusers.tbl.btn.removeuser">
+<fr><![CDATA[Retirer des utilisateurs de l’adhésion]]></fr>
+        </locale>
+        <locale name="controls.membershipusers.tbl.btn.edit">
+<fr><![CDATA[Modifier l’utilisateur]]></fr>
+        </locale>
+        <locale name="controls.membershipusers.tbl.btn.actions">
+<fr><![CDATA[Actions]]></fr>
+        </locale>
+        <locale name="controls.membershipusers.tbl.btn.openContract">
+<fr><![CDATA[Ouvrir le contrat]]></fr>
+        </locale>
+        <locale name="controls.membershipusers.tbl.btn.openUser">
+<fr><![CDATA[Ouvrir l’utilisateur]]></fr>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.userId">
+<fr><![CDATA[ID utilisateur]]></fr>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.username">
+<fr><![CDATA[Nom d’utilisateur]]></fr>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.userFirstname">
+<fr><![CDATA[Prénom]]></fr>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.userLastname">
+<fr><![CDATA[Nom]]></fr>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.addedDate">
+<fr><![CDATA[Membre depuis le]]></fr>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.beginDate">
+<fr><![CDATA[Début de la période en cours]]></fr>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.status">
+<fr><![CDATA[Statut]]></fr>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.endDate">
+<fr><![CDATA[Fin de la période en cours]]></fr>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.extendCounter">
+<fr><![CDATA[Renouvellements automatiques]]></fr>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.contractId">
+<fr><![CDATA[ID du contrat]]></fr>
+        </locale>
+        <locale name="controls.membershipusers.delete.popup.info" html="true">
+<fr><![CDATA[Voulez-vous retirer définitivement les utilisateurs suivants de l’adhésion ? Ils perdront toutes les autorisations accordées par cette adhésion.<br><br>[users]]]></fr>
+        </locale>
+        <locale name="controls.membershipusers.delete.popup.title">
+<fr><![CDATA[Retirer des utilisateurs de l’adhésion]]></fr>
+        </locale>
+        <locale name="controls.membershipusers.delete.popup.text">
+<fr><![CDATA[Voulez-vous retirer les utilisateurs de l’adhésion ?]]></fr>
+        </locale>
+        <locale name="controls.membershipusers.delete.popup.remove.btn">
+<fr><![CDATA[Retirer]]></fr>
+        </locale>
+        <locale name="controls.membershipusers.delete.popup.cancel.btn">
+<fr><![CDATA[Annuler]]></fr>
+        </locale>
+        <locale name="controls.membershipusers.edit.popup.title">
+<fr><![CDATA[Modifier le membre]]></fr>
+        </locale>
+        <locale name="controls.membershipusers.edit.popup.save.btn">
+<fr><![CDATA[Enregistrer]]></fr>
+        </locale>
+        <locale name="controls.membershipusers.tbl.status.cancelled">
+<fr><![CDATA[résiliée]]></fr>
+        </locale>
+        <locale name="controls.membershipusers.tbl.status.active">
+<fr><![CDATA[active]]></fr>
+        </locale>
+        <locale name="controls.users.membershipuseredit.template.cancelled">
+<fr><![CDATA[Résiliée]]></fr>
+        </locale>
+
+<!-- Control: users/MembershipUsersArchive -->
+        <locale name="controls.users.membershipusersarchive.tbl.btn.history">
+<fr><![CDATA[Historique]]></fr>
+        </locale>
+        <locale name="controls.users.membershipusersarchive.tbl.header.archiveDate">
+<fr><![CDATA[Date d’archivage]]></fr>
+        </locale>
+        <locale name="controls.users.membershipusersarchive.tbl.header.archiveReason">
+<fr><![CDATA[Motif d’archivage]]></fr>
+        </locale>
+        <locale name="controls.users.membershipusersarchive.tbl.archiveReason.deleted">
+<fr><![CDATA[Supprimé manuellement]]></fr>
+        </locale>
+        <locale name="controls.users.membershipusersarchive.tbl.archiveReason.cancelled">
+<fr><![CDATA[Résiliation]]></fr>
+        </locale>
+        <locale name="controls.users.membershipusersarchive.tbl.archiveReason.expired">
+<fr><![CDATA[Adhésion expirée]]></fr>
+        </locale>
+        <locale name="controls.users.membershipusersarchive.tbl.archiveReason.user_deleted">
+<fr><![CDATA[Utilisateur QUIQQER associé supprimé]]></fr>
+        </locale>
+
+<!-- Control: users/MembershipUserHistory -->
+        <locale name="controls.users.membershipuserhistory.template.userLabel">
+<fr><![CDATA[Utilisateur]]></fr>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.template.membershipLabel">
+<fr><![CDATA[Adhésion]]></fr>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.footer">
+<fr><![CDATA[effectué par [user]]]></fr>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.created">
+<fr><![CDATA[Ajouté à l’adhésion]]></fr>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.updated">
+<fr><![CDATA[Données de l’adhésion mises à jour]]></fr>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.cancel_start">
+<fr><![CDATA[Résiliation demandée]]></fr>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.cancel_system">
+<fr><![CDATA[Adhésion résiliée par le système]]></fr>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.cancel_confirm">
+<fr><![CDATA[Résiliation confirmée]]></fr>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.cancelled">
+<fr><![CDATA[Adhésion résiliée]]></fr>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.expired">
+<fr><![CDATA[Adhésion expirée]]></fr>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.deleted">
+<fr><![CDATA[Retiré de l’adhésion]]></fr>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.archived">
+<fr><![CDATA[Membre archivé]]></fr>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.extended">
+<fr><![CDATA[Adhésion prolongée]]></fr>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.cancel_by_edit">
+<fr><![CDATA[Résiliation par un administrateur]]></fr>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.uncancel_by_edit">
+<fr><![CDATA[Résiliation annulée par un administrateur]]></fr>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.misc">
+<fr><![CDATA[Informations diverses]]></fr>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.cancel_abort_start">
+<fr><![CDATA[Retrait de résiliation demandé]]></fr>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.cancel_abort_confirm">
+<fr><![CDATA[Retrait de résiliation confirmé]]></fr>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.btn.extraData">
+<fr><![CDATA[Données supplémentaires]]></fr>
+        </locale>
+        <locale name="controls.membershipuserhistory.extraData.popup.title">
+<fr><![CDATA[Données supplémentaires]]></fr>
+        </locale>
+
+<!-- Control: users/MembershipUserHistoryPopup -->
+        <locale name="controls.users.membershipuserhistorypopup.title">
+<fr><![CDATA[Historique du membre]]></fr>
+        </locale>
+
+<!-- Control: users/MembershipUserEdit -->
+        <locale name="controls.users.membershipuseredit.template.header">
+<fr><![CDATA[Membre [name] (#[id])]]></fr>
+        </locale>
+        <locale name="controls.users.membershipuseredit.template.info">
+<fr><![CDATA[Vous pouvez modifier ici la période d’adhésion en cours ou indiquer que l’adhésion de l’utilisateur est résiliée.]]></fr>
+        </locale>
+        <locale name="controls.users.membershipuseredit.btn.save">
+<fr><![CDATA[Enregistrer les données de l’utilisateur]]></fr>
+        </locale>
+
+<!-- Control: products/MembershipField -->
+        <locale name="controls.products.membershipselect.empty.placeholder">
+<fr><![CDATA[Aucune adhésion attribuée pour le moment]]></fr>
+        </locale>
+
+<!-- Control: settings/ProductSettings -->
+        <locale name="controls.settings.productsettings.package.required" html="true">
+<fr><![CDATA[Ce paramètre nécessite le module QUIQQER <b>quiqqer/products</b>]]></fr>
+        </locale>
+
+<!-- Control: products/MembershipProducts -->
+        <locale name="controls.products.membershipprouducts.tbl.btn.createproduct">
+<fr><![CDATA[Créer un produit]]></fr>
+        </locale>
+        <locale name="controls.products.membershipprouducts.tbl.btn.viewproduct">
+<fr><![CDATA[Détails du produit]]></fr>
+        </locale>
+        <locale name="controls.products.membershipprouducts.tbl.header.id">
+<fr><![CDATA[ID du produit]]></fr>
+        </locale>
+        <locale name="controls.products.membershipprouducts.tbl.header.articleNo">
+<fr><![CDATA[N° d’article]]></fr>
+        </locale>
+        <locale name="controls.products.membershipprouducts.tbl.header.title">
+<fr><![CDATA[Titre du produit]]></fr>
+        </locale>
+        <locale name="controls.products.membershipprouducts.create.popup.information" html="true">
+<fr><![CDATA[Voulez-vous créer un produit pour l’adhésion <b>[title]</b> ? Le titre et la description courte de l’adhésion seront automatiquement repris pour le produit.]]></fr>
+        </locale>
+        <locale name="controls.products.membershipprouducts.create.popup.title">
+<fr><![CDATA[Créer un produit]]></fr>
+        </locale>
+        <locale name="controls.products.membershipprouducts.create.popup.text" html="true">
+<fr><![CDATA[Nouveau produit pour l’adhésion « [title] »]]></fr>
+        </locale>
+
+<!-- Control: users/MembershipUserEdit -->
+        <locale name="controls.users.membershipuseredit.cancelmail.popup.info">
+<fr><![CDATA[Vous avez résilié manuellement l’adhésion de l’utilisateur. Voulez-vous lui envoyer une confirmation de résiliation ?]]></fr>
+        </locale>
+        <locale name="controls.users.membershipuseredit.cancelmail.popup.title">
+<fr><![CDATA[Envoyer la confirmation de résiliation]]></fr>
+        </locale>
+
+    </groups>
+
+    <groups name="quiqqer/memberships" datatype="php">
+
+        <locale name="history.MembershipUser.cancel_confirm_reminder_sent">
+<fr><![CDATA[Un e-mail de rappel de confirmation de résiliation en attente a été envoyé.]]></fr>
+        </locale>
+
+<!-- Events -->
+        <locale name="exception.Events.onQuiqqerProductsFieldDelete.cannot_delete_field">
+<fr><![CDATA[Ce champ produit ne peut pas être supprimé, car il est nécessaire au paquet installé « quiqqer/memberships ».]]></fr>
+        </locale>
+
+<!-- Class: Handler -->
+        <locale name="exception.handler.no.title">
+<fr><![CDATA[Une adhésion doit avoir un titre.]]></fr>
+        </locale>
+        <locale name="exception.handler.no.groups">
+<fr><![CDATA[Une adhésion doit avoir au moins un groupe attribué.]]></fr>
+        </locale>
+
+<!-- Ajax -->
+        <locale name="message.ajax.general.error">
+<fr><![CDATA[Une erreur inattendue s’est produite lors du traitement de votre demande. Contactez un administrateur.]]></fr>
+        </locale>
+        <locale name="message.ajax.memberships.create.error" html="true">
+<fr><![CDATA[L’adhésion n’a pas pu être créée :<br><br>[error]]]></fr>
+        </locale>
+        <locale name="message.ajax.memberships.create.success" html="true">
+<fr><![CDATA[L’adhésion <b>[title]</b> a été créée.]]></fr>
+        </locale>
+        <locale name="message.ajax.memberships.delete.error" html="true">
+<fr><![CDATA[Les adhésions n’ont pas toutes pu être supprimées :<br><br>[error]]]></fr>
+        </locale>
+        <locale name="message.ajax.memberships.delete.success">
+<fr><![CDATA[Les adhésions ont été supprimées.]]></fr>
+        </locale>
+        <locale name="message.ajax.memberships.update.error" html="true">
+<fr><![CDATA[L’adhésion n’a pas pu être mise à jour :<br><br>[error]]]></fr>
+        </locale>
+        <locale name="message.ajax.memberships.update.success" html="true">
+<fr><![CDATA[L’adhésion <b>[title]</b> (#[id]) a été mise à jour.]]></fr>
+        </locale>
+        <locale name="message.ajax.memberships.users.create.success" html="true">
+<fr><![CDATA[Les utilisateurs ont été ajoutés à l’adhésion <b>[membershipTitle]</b> (#[membershipId]).]]></fr>
+        </locale>
+        <locale name="message.ajax.memberships.users.create.error" html="true">
+<fr><![CDATA[L’utilisateur n’a pas pu être ajouté à l’adhésion :<br><br>[error]]]></fr>
+        </locale>
+        <locale name="message.ajax.memberships.users.delete.error" html="true">
+<fr><![CDATA[Les utilisateurs n’ont pas pu être retirés de l’adhésion :<br><br>[error]]]></fr>
+        </locale>
+        <locale name="message.ajax.memberships.users.delete.success">
+<fr><![CDATA[Les utilisateurs ont été retirés de l’adhésion.]]></fr>
+        </locale>
+        <locale name="message.ajax.memberships.users.update.error" html="true">
+<fr><![CDATA[Le membre n’a pas pu être mis à jour :<br><br>[error]]]></fr>
+        </locale>
+        <locale name="message.ajax.memberships.users.update.success" html="true">
+<fr><![CDATA[Le membre <b>[membershipUserName]</b> (#[membershipUserId]) a été mis à jour.]]></fr>
+        </locale>
+        <locale name="message.ajax.memberships.users.sendCancelMail.error" html="true">
+<fr><![CDATA[L’e-mail de résiliation n’a pas pu être envoyé :<br><br>[error]]]></fr>
+        </locale>
+        <locale name="message.ajax.memberships.users.sendCancelMail.success" html="true">
+<fr><![CDATA[L’e-mail de résiliation a été envoyé au membre <b>[membershipUserName]</b> (#[membershipUserId]).]]></fr>
+        </locale>
+        <locale name="message.ajax.memberships.users.startCancel.login.necessary">
+<fr><![CDATA[Connectez-vous pour résilier votre adhésion.]]></fr>
+        </locale>
+        <locale name="message.ajax.memberships.users.startCancel.error" html="true">
+<fr><![CDATA[L’adhésion n’a pas pu être résiliée :<br><br>[error]]]></fr>
+        </locale>
+        <locale name="message.ajax.memberships.users.startCancel.success" html="true">
+<fr><![CDATA[La résiliation de votre adhésion a été demandée. <b>Vous recevrez un e-mail avec les instructions pour la confirmer.</b>]]></fr>
+        </locale>
+        <locale name="message.ajax.memberships.users.abortCancel.login.necessary">
+<fr><![CDATA[Connectez-vous pour retirer la résiliation de votre adhésion.]]></fr>
+        </locale>
+        <locale name="message.ajax.memberships.users.abortCancel.error" html="true">
+<fr><![CDATA[La résiliation de l’adhésion n’a pas pu être retirée :<br><br>[error]]]></fr>
+        </locale>
+        <locale name="message.ajax.memberships.users.abortCancel.success" html="true">
+<fr><![CDATA[Le retrait de la résiliation de votre adhésion a été demandé. <b>Vous recevrez un e-mail avec les instructions pour le confirmer.</b>]]></fr>
+        </locale>
+        <locale name="message.ajax.memberships.products.createMembershipProducts.error" html="true">
+<fr><![CDATA[Le produit n’a pas pu être créé :<br><br>[error]]]></fr>
+        </locale>
+        <locale name="message.ajax.memberships.products.createMembershipProducts.success" html="true">
+<fr><![CDATA[Le produit a été créé.]]></fr>
+        </locale>
+
+<!-- Class: Membership -->
+        <locale name="exception.membership.cannot.update.when.locked">
+<fr><![CDATA[Une adhésion ne peut pas être modifiée tant qu’elle est verrouillée par un autre utilisateur.]]></fr>
+        </locale>
+        <locale name="exception.membership.update.duration.invalid">
+<fr><![CDATA[La durée d’une adhésion doit être d’au moins 1.]]></fr>
+        </locale>
+        <locale name="exception.membership.user.not.found">
+<fr><![CDATA[L’utilisateur ayant l’ID #[userId] ne fait pas partie de cette adhésion.]]></fr>
+        </locale>
+        <locale name="exception.membership.cannot.delete.with.users.left">
+<fr><![CDATA[Une adhésion ne peut être supprimée que si elle ne compte plus de membres. Retirez tous les membres avant de la supprimer.]]></fr>
+        </locale>
+
+<!-- Class: Users\Handler -->
+        <locale name="exception.users.handler.no.user">
+<fr><![CDATA[Chaque membre doit être associé à un utilisateur QUIQQER.]]></fr>
+        </locale>
+        <locale name="exception.users.handler.no.membership">
+<fr><![CDATA[Chaque membre doit être associé à une adhésion.]]></fr>
+        </locale>
+        <locale name="exception.users.handler.user.is.already.in.membership">
+<fr><![CDATA[L’utilisateur <b>[userName]</b> (#[userId]) fait déjà partie de cette adhésion.]]></fr>
+        </locale>
+
+<!-- Class: Users\MembershipUser -->
+        <locale name="exception.users.membershipuser.confirmManualCancel.already.cancelled">
+<fr><![CDATA[Cette adhésion est déjà résiliée.]]></fr>
+        </locale>
+        <locale name="exception.users.membershipuser.confirmManualCancel.no.hash">
+<fr><![CDATA[La procédure de résiliation de cette adhésion n’a pas encore été lancée.]]></fr>
+        </locale>
+        <locale name="exception.users.membershipuser.confirmManualCancel.hash.mismatch">
+<fr><![CDATA[Le hash de vérification de la résiliation de cette adhésion est invalide.]]></fr>
+        </locale>
+        <locale name="exception.users.membershipuser.wrong.dates">
+<fr><![CDATA[#[id] - Les dates de début ou de fin sont au mauvais format.]]></fr>
+        </locale>
+        <locale name="exception.users.membershipuser.begin.after.end">
+<fr><![CDATA[#[id] - Le début ne peut pas être postérieur à la fin.]]></fr>
+        </locale>
+        <locale name="exception.users.membershipuser.no.email">
+<fr><![CDATA[Aucun e-mail ne peut être envoyé au membre, car aucune adresse e-mail n’est enregistrée pour lui.]]></fr>
+        </locale>
+        <locale name="exception.users.membershipuser.manualcancel.no.permission">
+<fr><![CDATA[Seul le membre lui-même peut résilier son adhésion.]]></fr>
+        </locale>
+        <locale name="exception.users.membershipuser.manualcancel.no_system_uncancel">
+<fr><![CDATA[La résiliation de cette adhésion ne peut pas être retirée.]]></fr>
+        </locale>
+        <locale name="exception.users.membershipuser.manualcancel.no_email_address">
+<fr><![CDATA[Vous ne pouvez pas résilier cette adhésion, car aucune adresse e-mail valide n’est associée à votre compte. Contactez un administrateur.]]></fr>
+        </locale>
+        <locale name="exception.users.membershipuser.abortcancel.no_email_address">
+<fr><![CDATA[Vous ne pouvez pas retirer la résiliation de votre adhésion, car aucune adresse e-mail valide n’est associée à votre compte. Contactez un administrateur.]]></fr>
+        </locale>
+        <locale name="MembershipUser.cancel.info_text.cancel_until_date">
+<fr><![CDATA[Vous avez adhéré le [addedDate]. Si vous ne résiliez pas au plus tard le [cancelUntilDate], votre adhésion sera renouvelée automatiquement le [cycleEndDate] jusqu’au [nextCycleEndDate].]]></fr>
+        </locale>
+        <locale name="MembershipUser.cancel.info_text.cycle_cancel_anytime">
+<fr><![CDATA[Vous avez adhéré le [addedDate]. Si vous ne résiliez pas votre adhésion, elle sera renouvelée automatiquement le [cycleEndDate] jusqu’au [nextCycleEndDate].]]></fr>
+        </locale>
+        <locale name="MembershipUser.cancel.info_text.cancel_anytime">
+<fr><![CDATA[Vous avez adhéré le [addedDate] et pouvez résilier votre adhésion à tout moment.]]></fr>
+        </locale>
+        <locale name="MembershipUser.cancel.info_text.period_of_notice_expired">
+<fr><![CDATA[La date limite de résiliation pour la période en cours (du [cycleBeginDate] au [cycleEndDate]) était le [cancelUntilDate]. Votre adhésion sera donc renouvelée automatiquement le [cycleEndDate] jusqu’au [nextCycleEndDate].]]></fr>
+        </locale>
+
+<!-- Templates -->
+        <locale name="templates.mail.startcancel.subject">
+<fr><![CDATA[Résiliation de votre adhésion]]></fr>
+        </locale>
+        <locale name="templates.mail.startcancel.body" html="true">
+<fr><![CDATA[<h1>Bonjour [name] !</h1><p>La résiliation de votre adhésion <b>[membershipTitle]</b> à compter du <b>[endDate]</b> a été demandée. Pour la confirmer, ouvrez le lien suivant :<br><br><a href="[cancelUrl]">[cancelUrl]</a><br/><br/>Votre résiliation ne sera considérée comme reçue et valable qu’après confirmation via le lien ci-dessus.</p>]]></fr>
+        </locale>
+        <locale name="templates.mail.confirmcancel.subject">
+<fr><![CDATA[Confirmation de résiliation de votre adhésion]]></fr>
+        </locale>
+        <locale name="templates.mail.confirmcancel.body" html="true">
+<fr><![CDATA[<h1>Bonjour [name] !</h1><p>Nous confirmons la résiliation de votre adhésion <b>[membershipTitle]</b> à compter du <b>[endDate]</b>. Jusqu’à cette date, vous pouvez continuer à profiter de tous ses avantages.</p>]]></fr>
+        </locale>
+        <locale name="templates.mail.expired.subject" html="true">
+<fr><![CDATA[Expiration de votre adhésion]]></fr>
+        </locale>
+        <locale name="templates.mail.expired.body" html="true">
+<fr><![CDATA[<h1>Bonjour [name] !</h1><p>Votre adhésion <b>[membershipTitle]</b> a expiré automatiquement le <b>[endDate]</b>.</p>]]></fr>
+        </locale>
+        <locale name="templates.mail.cancelled.body" html="true">
+<fr><![CDATA[<h1>Bonjour [name] !</h1><p>Votre adhésion <b>[membershipTitle]</b> a pris fin le <b>[endDate]</b> à la suite de votre résiliation du [cancelDate].</p>]]></fr>
+        </locale>
+        <locale name="templates.mail.autoextend.subject" html="true">
+<fr><![CDATA[Renouvellement automatique de votre adhésion]]></fr>
+        </locale>
+        <locale name="templates.mail.autoextend.body" html="true">
+<fr><![CDATA[<h1>Bonjour [name] !</h1><p>Votre adhésion <b>[membershipTitle]</b> a été renouvelée automatiquement jusqu’au <b>[endDate]</b>.</p>]]></fr>
+        </locale>
+        <locale name="templates.mail.manualextend.subject" html="true">
+<fr><![CDATA[Prolongation de votre adhésion]]></fr>
+        </locale>
+        <locale name="templates.mail.manualextend.body" html="true">
+<fr><![CDATA[<h1>Bonjour [name] !</h1><p>Votre adhésion <b>[membershipTitle]</b> a été prolongée jusqu’au <b>[endDate]</b>.</p>]]></fr>
+        </locale>
+        <locale name="templates.mail.startabortcancel.subject" html="true">
+<fr><![CDATA[Retrait de la résiliation de votre adhésion]]></fr>
+        </locale>
+        <locale name="templates.mail.startabortcancel.body" html="true">
+<fr><![CDATA[<h1>Bonjour [name] !</h1><p>Vous avez demandé le retrait de la résiliation de votre adhésion <b>[membershipTitle]</b> datée du <b>[cancelDate]</b>. Pour confirmer ce retrait, ouvrez le lien suivant :<br><br><a href="[abortCancelUrl]">[abortCancelUrl]</a><br/><br/>La résiliation ne sera considérée comme retirée qu’après confirmation de cette démarche via le lien ci-dessus.</p>]]></fr>
+        </locale>
+        <locale name="templates.mail.confirmcancel_reminder.subject">
+<fr><![CDATA[Résiliation de votre adhésion : confirmation en attente]]></fr>
+        </locale>
+        <locale name="templates.mail.confirmcancel_reminder.body">
+<fr><![CDATA[<h1>Bonjour [name] !</h1><p>La résiliation de votre adhésion <b>[membershipTitle]</b> a été demandée le <b>[cancelDate]</b>. Nous n’avons pas encore reçu de confirmation.</p><p>Pour confirmer la résiliation, ouvrez le lien suivant :<br><br><a href="[cancelUrl]">[cancelUrl]</a></p><p>Si vous ne souhaitez pas résilier votre adhésion, vous pouvez ignorer cet e-mail. Votre adhésion se poursuivra automatiquement comme d’habitude.</p>]]></fr>
+        </locale>
+
+<!-- CancelVerification -->
+        <locale name="verification.cancel.success">fieldtype.memberships.membership
+<fr><![CDATA[La résiliation de votre adhésion a été confirmée. Vous recevrez une confirmation dans un e-mail séparé.]]></fr>
+        </locale>
+        <locale name="verification.cancel.error.general">
+<fr><![CDATA[Une erreur s’est produite lors de la résiliation de votre adhésion. Recommencez la procédure ou contactez un administrateur.]]></fr>
+        </locale>
+        <locale name="verification.cancel.error.expired">
+<fr><![CDATA[Le lien de confirmation de résiliation a expiré. Recommencez la procédure de résiliation.]]></fr>
+        </locale>
+        <locale name="verification.cancel.error.already_cancelled">
+<fr><![CDATA[L’adhésion est déjà résiliée.]]></fr>
+        </locale>
+        <locale name="verification.abortcancel.success.autoExtend">
+<fr><![CDATA[La résiliation de votre adhésion « [membershipTitle] » a été retirée. L’adhésion sera renouvelée automatiquement le [endDate].]]></fr>
+        </locale>
+        <locale name="verification.abortcancel.success.noAutoExtend">
+<fr><![CDATA[La résiliation de votre adhésion « [membershipTitle] » a été retirée. L’adhésion expirera automatiquement le [endDate].]]></fr>
+        </locale>
+        <locale name="verification.abortcancel.error.general">
+<fr><![CDATA[Une erreur s’est produite lors du retrait de votre résiliation. Recommencez la procédure ou contactez un administrateur.]]></fr>
+        </locale>
+        <locale name="verification.abortcancel.error.expired">
+<fr><![CDATA[Le lien de confirmation du retrait de résiliation a expiré. Recommencez la procédure.]]></fr>
+        </locale>
+        <locale name="verification.abortcancel.error.already_verified">
+<fr><![CDATA[La résiliation de l’adhésion a déjà été retirée.]]></fr>
+        </locale>
+
+        <locale name="history.misc.cancel_abort_unverified">
+<fr><![CDATA[La résiliation de l’adhésion a été retirée automatiquement, car l’utilisateur ne l’a pas confirmée.]]></fr>
+        </locale>
+
+    </groups>
+
+    <groups name="quiqqer/products" datatype="php,js">
+        <locale name="fieldtype.memberships.membership" html="true">
+<fr><![CDATA[Adhésion]]></fr>
+        </locale>
+    </groups>
+</locales>

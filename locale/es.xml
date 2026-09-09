@@ -1,0 +1,904 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<locales>
+
+    <groups name="quiqqer/memberships" datatype="php,js">
+
+<!-- Package -->
+        <locale name="package.title">
+<es><![CDATA[QUIQQER - Membresías]]></es>
+        </locale>
+        <locale name="package.description">
+<es><![CDATA[Crea y gestiona membresías para tus usuarios. Las membresías permiten conceder permisos en el sistema durante periodos configurables. En combinación con QUIQQER ERP, este módulo también vincula automáticamente las membresías con productos para que puedas ponerlas a la venta.]]></es>
+        </locale>
+
+<!-- Menu -->
+        <locale name="menu.extras.memberships.title">
+<es><![CDATA[Membresías]]></es>
+        </locale>
+
+<!-- Permissions -->
+        <locale name="permission.quiqqer.memberships._header">
+<es><![CDATA[Membresías]]></es>
+        </locale>
+        <locale name="permission.quiqqer.memberships.mcp">
+<es><![CDATA[Puede utilizar membresías mediante MCP]]></es>
+        </locale>
+        <locale name="permission.quiqqer.memberships.create">
+<es><![CDATA[Puede crear nuevas membresías]]></es>
+        </locale>
+        <locale name="permission.quiqqer.memberships.edit">
+<es><![CDATA[Puede editar membresías (solo sus datos, no los miembros)]]></es>
+        </locale>
+        <locale name="permission.quiqqer.memberships.edit_users">
+<es><![CDATA[Puede gestionar miembros (añadir, editar y eliminar)]]></es>
+        </locale>
+        <locale name="permission.quiqqer.memberships.delete">
+<es><![CDATA[Puede eliminar membresías]]></es>
+        </locale>
+        <locale name="permission.quiqqer.memberships.force_edit">
+<es><![CDATA[Puede desbloquear y editar paneles de membresía que otro usuario esté editando]]></es>
+        </locale>
+
+<!-- Settings -->
+        <locale name="settings.menu.title">
+<es><![CDATA[Membresías]]></es>
+        </locale>
+        <locale name="settings.category.title">
+<es><![CDATA[Configuración]]></es>
+        </locale>
+        <locale name="settings.membershipusers.title">
+<es><![CDATA[Membresías]]></es>
+        </locale>
+        <locale name="settings.extendMode.title">
+<es><![CDATA[Renovación de membresías para miembros activos]]></es>
+        </locale>
+        <locale name="settings.extendMode.description">
+<es><![CDATA[Determina cómo se amplía la duración de una membresía cuando se añade un usuario que ya es miembro activo.]]></es>
+        </locale>
+        <locale name="settings.extendMode.option.reset">
+<es><![CDATA[Restablecer las fechas de inicio y fin como si el usuario acabara de inscribirse]]></es>
+        </locale>
+        <locale name="settings.extendMode.option.prolong">
+<es><![CDATA[Ampliar la fecha de fin por la duración de la membresía]]></es>
+        </locale>
+        <locale name="settings.durationMode.title">
+<es><![CDATA[Precisión de la duración de las membresías]]></es>
+        </locale>
+        <locale name="settings.durationMode.description">
+<es><![CDATA[Determina con qué precisión se calcula la duración de las membresías. Con el cálculo <b>Exacto</b> también se pueden utilizar <b>minutos</b> y <b>horas</b>.]]></es>
+        </locale>
+        <locale name="settings.durationMode.option.day">
+<es><![CDATA[Por días (la duración se redondea al siguiente día completo)]]></es>
+        </locale>
+        <locale name="settings.durationMode.option.exact">
+<es><![CDATA[Exacto (la duración se calcula en segundos)]]></es>
+        </locale>
+        <locale name="settings.cancelDuration.title">
+<es><![CDATA[Validez del enlace de confirmación de baja]]></es>
+        </locale>
+        <locale name="settings.cancelDuration.description" html="true">
+<es><![CDATA[Determina cuánto tiempo es válido el enlace para confirmar la baja de una membresía. Se indica en <b>minutos</b>.]]></es>
+        </locale>
+        <locale name="settings.sendAutoExtendMail.title">
+<es><![CDATA[Correo al renovar automáticamente]]></es>
+        </locale>
+        <locale name="settings.sendAutoExtendMail.description">
+<es><![CDATA[Enviar un correo electrónico al usuario cuando la membresía se renueve automáticamente]]></es>
+        </locale>
+        <locale name="settings.sendManualExtendMail.title">
+<es><![CDATA[Correo al renovar manualmente]]></es>
+        </locale>
+        <locale name="settings.sendManualExtendMail.description">
+<es><![CDATA[Enviar un correo al usuario cuando la membresía se amplíe manualmente. Se considera una ampliación manual que un administrador cambie la fecha de fin o que se vuelva a añadir a un usuario que ya pertenece a la membresía.]]></es>
+        </locale>
+        <locale name="settings.linkWithContracts.title">
+<es><![CDATA[Vincular con contratos]]></es>
+        </locale>
+        <locale name="settings.linkWithContracts.description" html="true">
+<es><![CDATA[Las membresías creadas a partir del mismo pedido que un contrato se vinculan a ese contrato. Al dar de baja la membresía, el contrato también puede cancelarse, según la configuración del módulo de contratos. Del mismo modo, al cancelar un contrato, también se da de baja la membresía vinculada del usuario. Requiere tener instalado <b>quiqqer/contracts</b>.]]></es>
+        </locale>
+        <locale name="settings.cancelReminderDays.title">
+<es><![CDATA[Recordatorio de confirmación de baja tras X días]]></es>
+        </locale>
+        <locale name="settings.cancelReminderDays.description" html="true">
+<es><![CDATA[Número de <b>días</b> tras los cuales los miembros reciben un correo recordándoles las confirmaciones de baja pendientes. Si no se confirma la baja antes de que caduque el enlace, la membresía continúa automáticamente.<br/><br/>El valor <b>0</b> significa que <b>no</b> se envía ningún recordatorio.]]></es>
+        </locale>
+
+        <locale name="settings.dateformat.title">
+<es><![CDATA[Formato de fecha]]></es>
+        </locale>
+        <locale name="settings.dateFormatShort.title">
+<es><![CDATA[Formato de fecha (corto)]]></es>
+        </locale>
+        <locale name="settings.dateFormatShort.description" html="true">
+<es><![CDATA[Formato corto utilizado en los mensajes al usuario cuando <b>Precisión de la duración de las membresías</b> está configurada como <b>Por días</b>.<br><br>Consulta los marcadores disponibles en <a href="http://php.net/manual/de/function.strftime.php#refsect1-function.strftime-parameters" target="_blank">http://php.net/manual/de/function.strftime.php#refsect1-function.strftime-parameters</a>]]></es>
+        </locale>
+        <locale name="settings.dateFormatLong.title">
+<es><![CDATA[Formato de fecha (largo)]]></es>
+        </locale>
+        <locale name="settings.dateFormatLong.description" html="true">
+<es><![CDATA[Formato largo utilizado en los mensajes al usuario cuando <b>Precisión de la duración de las membresías</b> está configurada como <b>Exacto</b>.<br><br>Consulta los marcadores disponibles en <a href="http://php.net/manual/de/function.strftime.php#refsect1-function.strftime-parameters" target="_blank">http://php.net/manual/de/function.strftime.php#refsect1-function.strftime-parameters</a>]]></es>
+        </locale>
+        <locale name="settings.products.title">
+<es><![CDATA[Productos]]></es>
+        </locale>
+        <locale name="settings.categoryId.title">
+<es><![CDATA[Categoría de productos para membresías]]></es>
+        </locale>
+        <locale name="settings.categoryId.description" html="true">
+<es><![CDATA[Categoría predeterminada para todos los productos creados automáticamente a partir de membresías.]]></es>
+        </locale>
+        <locale name="settings.viewDataMode.title">
+<es><![CDATA[Origen de la información mostrada al usuario]]></es>
+        </locale>
+        <locale name="settings.viewDataMode.description" html="true">
+<es><![CDATA[Determina el origen del <b>título</b>, la <b>descripción breve</b> y, si procede, la <b>descripción detallada</b> que se muestran al miembro en la parte pública del sitio.]]></es>
+        </locale>
+        <locale name="settings.viewDataMode.option.membership">
+<es><![CDATA[Membresía]]></es>
+        </locale>
+        <locale name="settings.viewDataMode.option.product">
+<es><![CDATA[Producto (si está vinculado; requiere quiqqer/products)]]></es>
+        </locale>
+        <locale name="settings.defaultMembershipId.title">
+<es><![CDATA[Membresía predeterminada]]></es>
+        </locale>
+        <locale name="settings.defaultMembershipId.description">
+<es><![CDATA[Membresía a la que se añaden automáticamente todos los usuarios del sistema. Los usuarios no pueden darse de baja de ella.]]></es>
+        </locale>
+        <locale name="settings.membershipFieldId.title">
+<es><![CDATA[Campo de producto para la membresía]]></es>
+        </locale>
+        <locale name="settings.membershipFieldId.description">
+<es><![CDATA[Define el campo de producto que se utiliza para vincular una membresía a un producto.]]></es>
+        </locale>
+
+<!-- Cron -->
+        <locale name="cron.checkMembershipUsers.title">
+<es><![CDATA[Comprobar y renovar membresías]]></es>
+        </locale>
+        <locale name="cron.checkMembershipUsers.description">
+<es><![CDATA[Comprueba si cada membresía debe renovarse o finalizar.]]></es>
+        </locale>
+
+<!-- Profile -->
+        <locale name="profile.category.memberships.title">
+<es><![CDATA[Membresías]]></es>
+        </locale>
+        <locale name="profile.mymemberships.title">
+<es><![CDATA[Mis membresías]]></es>
+        </locale>
+
+<!-- quiqqer/products -->
+        <locale name="products.field.membership">
+<es><![CDATA[Membresía]]></es>
+        </locale>
+        <locale name="products.field.membershipflag">
+<es><![CDATA[Es un producto de membresía]]></es>
+        </locale>
+        <locale name="products.category.title">
+<es><![CDATA[Membresías]]></es>
+        </locale>
+        <locale name="products.category.description">
+<es><![CDATA[Categoría de productos para membresías]]></es>
+        </locale>
+
+    </groups>
+
+    <groups name="quiqqer/memberships" datatype="js">
+
+<!-- Control: profile/UserProfile -->
+        <locale name="controls.profile.userprofile.template.header">
+<es><![CDATA[Mis membresías]]></es>
+        </locale>
+        <locale name="controls.profile.userprofile.template.headerMembership">
+<es><![CDATA[Membresía]]></es>
+        </locale>
+        <locale name="controls.profile.userprofile.template.headerMembershipData">
+<es><![CDATA[Detalles]]></es>
+        </locale>
+        <locale name="controls.profile.userprofile.datatable.labelAddedDate">
+<es><![CDATA[Miembro desde]]></es>
+        </locale>
+        <locale name="controls.profile.userprofile.datatable.labelEndDate.autoExtend">
+<es><![CDATA[Renovación automática el]]></es>
+        </locale>
+        <locale name="controls.profile.userprofile.datatable.labelEndDate.noAutoExtend">
+<es><![CDATA[La membresía finaliza]]></es>
+        </locale>
+        <locale name="controls.profile.userprofile.datatable.labelEndDate.cancelled">
+<es><![CDATA[Finaliza el]]></es>
+        </locale>
+        <locale name="controls.profile.userprofile.datatable.endDate.infinite">
+<es><![CDATA[-]]></es>
+        </locale>
+        <locale name="controls.profile.userprofile.datatable.labelStatus">
+<es><![CDATA[Estado]]></es>
+        </locale>
+        <locale name="controls.profile.userprofile.datatable.status.cancelled">
+<es><![CDATA[cancelada]]></es>
+        </locale>
+        <locale name="controls.profile.userprofile.datatable.status.active">
+<es><![CDATA[activa]]></es>
+        </locale>
+        <locale name="controls.profile.userprofile.btn.cancel.text">
+<es><![CDATA[Dar de baja la membresía]]></es>
+        </locale>
+        <locale name="controls.profile.userprofile.btn.abortcancel.text">
+<es><![CDATA[Retirar la solicitud de baja]]></es>
+        </locale>
+        <locale name="controls.profile.userprofile.cancel_info.title">
+<es><![CDATA[Información sobre la duración del contrato]]></es>
+        </locale>
+        <locale name="controls.profile.userprofile.cancel_info.text">
+<es><![CDATA[Duración del contrato y baja]]></es>
+        </locale>
+        <locale name="controls.profile.userprofile.cancel_info.btn_title">
+<es><![CDATA[Información sobre la duración del contrato]]></es>
+        </locale>
+
+        <locale name="controls.profile.userprofile.cancelconfirm.info" html="true">
+<es><![CDATA[¿Quieres dar de baja tu membresía <b>[title]</b>? Finalizará el <b>[endDate]</b>. Hasta entonces podrás seguir disfrutando de todas sus ventajas y retirar la solicitud de baja en cualquier momento.]]></es>
+        </locale>
+        <locale name="controls.profile.userprofile.cancelconfirm.text">
+<es><![CDATA[Baja de la membresía «[title]»]]></es>
+        </locale>
+        <locale name="controls.profile.userprofile.cancelconfirm.title">
+<es><![CDATA[Dar de baja la membresía]]></es>
+        </locale>
+        <locale name="controls.profile.userprofile.cancelconfirm.cancel">
+<es><![CDATA[No dar de baja]]></es>
+        </locale>
+        <locale name="controls.profile.userprofile.cancelconfirm.ok">
+<es><![CDATA[Dar de baja la membresía]]></es>
+        </locale>
+        <locale name="controls.profile.userprofile.abortcancel.info" html="true">
+<es><![CDATA[¿Quieres retirar la solicitud de baja de tu membresía <b>[title]</b>? Esto puede implicar que se sigan realizando los pagos periódicos.]]></es>
+        </locale>
+        <locale name="controls.profile.userprofile.abortcancel.text">
+<es><![CDATA[Retirar la solicitud de baja de la membresía «[title]»]]></es>
+        </locale>
+        <locale name="controls.profile.userprofile.abortcancel.title">
+<es><![CDATA[Retirar la solicitud de baja de la membresía]]></es>
+        </locale>
+        <locale name="controls.profile.userprofile.abortcancel.cancel">
+<es><![CDATA[Cancelar]]></es>
+        </locale>
+        <locale name="controls.profile.userprofile.abortcancel.ok">
+<es><![CDATA[Retirar la solicitud de baja]]></es>
+        </locale>
+        <locale name="controls.profile.userprofile.info.no.memberships">
+<es><![CDATA[Actualmente no hay membresías en tu perfil de usuario.]]></es>
+        </locale>
+        <locale name="controls.profile.userprofile.showcontent.title">
+<es><![CDATA[Membresía «[title]»]]></es>
+        </locale>
+        <locale name="controls.profile.userprofile.status.modifier.cancel_confirm">
+<es><![CDATA[(Baja solicitada: haz clic en el enlace de confirmación del correo)]]></es>
+        </locale>
+        <locale name="controls.profile.userprofile.status.modifier.abortcancel_confirm">
+<es><![CDATA[(Retirada de la baja solicitada: haz clic en el enlace de confirmación del correo)]]></es>
+        </locale>
+
+<!-- Control: MembershipsSearchPopup -->
+        <locale name="controls.membershipssearchpopup.title">
+<es><![CDATA[Gestión de membresías]]></es>
+        </locale>
+
+<!-- Control: MembershipsManagerPanel -->
+        <locale name="controls.membershipsmanagerpanel.title">
+<es><![CDATA[Membresías]]></es>
+        </locale>
+
+<!-- Control: MembershipsManager -->
+        <locale name="controls.membershipsmanager.tbl.btn.addmembership">
+<es><![CDATA[Nueva membresía]]></es>
+        </locale>
+        <locale name="controls.membershipsmanager.tbl.btn.editmembership">
+<es><![CDATA[Editar]]></es>
+        </locale>
+        <locale name="controls.membershipsmanager.tbl.btn.removemembership">
+<es><![CDATA[Eliminar]]></es>
+        </locale>
+        <locale name="controls.membershipsmanager.tbl.header.title">
+<es><![CDATA[Título]]></es>
+        </locale>
+        <locale name="controls.membershipsmanager.tbl.header.description">
+<es><![CDATA[Descripción]]></es>
+        </locale>
+        <locale name="controls.membershipsmanager.tbl.header.duration">
+<es><![CDATA[Duración]]></es>
+        </locale>
+        <locale name="controls.membershipsmanager.tbl.header.userCount">
+<es><![CDATA[Usuarios]]></es>
+        </locale>
+        <locale name="controls.membershipsmanager.tbl.header.autoExtend">
+<es><![CDATA[Renovar automáticamente]]></es>
+        </locale>
+        <locale name="controls.membershipsmanager.add.popup.title">
+<es><![CDATA[Nueva membresía]]></es>
+        </locale>
+        <locale name="controls.membershipsmanager.add.popup.title.info">
+<es><![CDATA[Introduce un título para la membresía]]></es>
+        </locale>
+        <locale name="controls.membershipsmanager.add.popup.groups.info">
+<es><![CDATA[Selecciona al menos un grupo vinculado a esta membresía]]></es>
+        </locale>
+        <locale name="controls.membershipsmanager.add.popup.confirm.btn.text">
+<es><![CDATA[Crear membresía]]></es>
+        </locale>
+        <locale name="controls.membershipsmanager.add.popup.confirm.btn">
+<es><![CDATA[Haz clic aquí para crear una membresía con el título indicado]]></es>
+        </locale>
+        <locale name="controls.membershipsmanager.deletememberships.popup.title">
+<es><![CDATA[Eliminar membresías]]></es>
+        </locale>
+        <locale name="controls.membershipsmanager.deletememberships.popup.info">
+<es><![CDATA[¿Quieres eliminar definitivamente las siguientes membresías? Solo es posible si ya no tienen miembros:<br><br>[memberships]]]></es>
+        </locale>
+
+<!-- Control: Membership -->
+        <locale name="controls.membership.title">
+<es><![CDATA[M - [title]]]></es>
+        </locale>
+        <locale name="controls.membership.category.settings">
+<es><![CDATA[Configuración básica]]></es>
+        </locale>
+        <locale name="controls.membership.category.users">
+<es><![CDATA[Usuarios]]></es>
+        </locale>
+        <locale name="controls.membership.category.usersArchive">
+<es><![CDATA[Archivo de usuarios]]></es>
+        </locale>
+        <locale name="controls.membership.category.products">
+<es><![CDATA[Productos]]></es>
+        </locale>
+        <locale name="controls.membership.category.contracts">
+<es><![CDATA[Contratos]]></es>
+        </locale>
+        <locale name="controls.membership.template.settings.headerSettings">
+<es><![CDATA[Información de la membresía]]></es>
+        </locale>
+        <locale name="controls.membership.template.settings.labelTitle">
+<es><![CDATA[Título]]></es>
+        </locale>
+        <locale name="controls.membership.template.settings.labelDescription">
+<es><![CDATA[Descripción breve]]></es>
+        </locale>
+        <locale name="controls.membership.template.settings.labelContent">
+<es><![CDATA[Descripción detallada]]></es>
+        </locale>
+        <locale name="controls.membership.template.settings.headerDuration">
+<es><![CDATA[Configuración de la duración]]></es>
+        </locale>
+        <locale name="controls.membership.template.settings.labelDuration">
+<es><![CDATA[Duración]]></es>
+        </locale>
+        <locale name="controls.membership.template.settings.labelAutoExtend">
+<es><![CDATA[Renovación automática]]></es>
+        </locale>
+        <locale name="controls.membership.template.settings.headerGroups">
+<es><![CDATA[Grupos]]></es>
+        </locale>
+        <locale name="controls.membership.template.settings.labelGroups">
+<es><![CDATA[Grupos asignados]]></es>
+        </locale>
+        <locale name="controls.membership.template.settings.autoExtend">
+<es><![CDATA[Al finalizar su duración, esta membresía se renueva automáticamente por otro periodo de la duración configurada]]></es>
+        </locale>
+        <locale name="controls.membership.lock.title">
+<es><![CDATA[¡Membresía bloqueada!]]></es>
+        </locale>
+        <locale name="controls.membership.lock.unlock.info" html="true">
+<es><![CDATA[Otro usuario está editando esta membresía. Para evitar datos incoherentes, solo debería editarla una persona a la vez. Si quieres editarla de todos modos, haz clic en el botón de abajo.<br/><br/><b>Atención:</b> tus cambios podrían sobrescribir los de otro usuario o ser sobrescritos por ellos.]]></es>
+        </locale>
+        <locale name="controls.membership.lock.info" html="true">
+<es><![CDATA[Otro usuario está editando esta membresía. Para evitar datos incoherentes, solo puede editarla una persona a la vez. Inténtalo de nuevo más tarde.]]></es>
+        </locale>
+        <locale name="controls.membership.lock.btn.ignore.text">
+<es><![CDATA[Editar la membresía de todos modos]]></es>
+        </locale>
+        <locale name="controls.membership.lock.btn.close.text">
+<es><![CDATA[Cerrar el panel de membresía]]></es>
+        </locale>
+        <locale name="controls.membership.search.input.placeholder">
+<es><![CDATA[Buscar miembros]]></es>
+        </locale>
+
+<!-- Control: InputDuration -->
+        <locale name="controls.inputduration.period.infinite">
+<es><![CDATA[Sin límite]]></es>
+        </locale>
+        <locale name="controls.inputduration.period.minute">
+<es><![CDATA[min]]></es>
+        </locale>
+        <locale name="controls.inputduration.period.hour">
+<es><![CDATA[h]]></es>
+        </locale>
+        <locale name="controls.inputduration.period.day">
+<es><![CDATA[día(s)]]></es>
+        </locale>
+        <locale name="controls.inputduration.period.week">
+<es><![CDATA[semana(s)]]></es>
+        </locale>
+        <locale name="controls.inputduration.period.month">
+<es><![CDATA[mes(es)]]></es>
+        </locale>
+        <locale name="controls.inputduration.period.year">
+<es><![CDATA[año(s)]]></es>
+        </locale>
+
+<!-- Control: users/MembershipUsers -->
+        <locale name="controls.membershipusers.tbl.btn.adduser">
+<es><![CDATA[Añadir usuarios]]></es>
+        </locale>
+        <locale name="controls.membershipusers.tbl.btn.removeuser">
+<es><![CDATA[Eliminar usuarios de la membresía]]></es>
+        </locale>
+        <locale name="controls.membershipusers.tbl.btn.edit">
+<es><![CDATA[Editar usuario]]></es>
+        </locale>
+        <locale name="controls.membershipusers.tbl.btn.actions">
+<es><![CDATA[Acciones]]></es>
+        </locale>
+        <locale name="controls.membershipusers.tbl.btn.openContract">
+<es><![CDATA[Abrir contrato]]></es>
+        </locale>
+        <locale name="controls.membershipusers.tbl.btn.openUser">
+<es><![CDATA[Abrir usuario]]></es>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.userId">
+<es><![CDATA[ID del usuario]]></es>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.username">
+<es><![CDATA[Nombre de usuario]]></es>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.userFirstname">
+<es><![CDATA[Nombre]]></es>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.userLastname">
+<es><![CDATA[Apellidos]]></es>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.addedDate">
+<es><![CDATA[Miembro desde]]></es>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.beginDate">
+<es><![CDATA[Inicio del periodo actual]]></es>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.status">
+<es><![CDATA[Estado]]></es>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.endDate">
+<es><![CDATA[Fin del periodo actual]]></es>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.extendCounter">
+<es><![CDATA[Renovaciones automáticas]]></es>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.contractId">
+<es><![CDATA[ID del contrato]]></es>
+        </locale>
+        <locale name="controls.membershipusers.delete.popup.info" html="true">
+<es><![CDATA[¿Quieres eliminar definitivamente a los siguientes usuarios de la membresía? Perderán todos los permisos que les concede.<br><br>[users]]]></es>
+        </locale>
+        <locale name="controls.membershipusers.delete.popup.title">
+<es><![CDATA[Eliminar usuarios de la membresía]]></es>
+        </locale>
+        <locale name="controls.membershipusers.delete.popup.text">
+<es><![CDATA[¿Quieres eliminar a los usuarios de la membresía?]]></es>
+        </locale>
+        <locale name="controls.membershipusers.delete.popup.remove.btn">
+<es><![CDATA[Eliminar de la membresía]]></es>
+        </locale>
+        <locale name="controls.membershipusers.delete.popup.cancel.btn">
+<es><![CDATA[Cancelar]]></es>
+        </locale>
+        <locale name="controls.membershipusers.edit.popup.title">
+<es><![CDATA[Editar miembro]]></es>
+        </locale>
+        <locale name="controls.membershipusers.edit.popup.save.btn">
+<es><![CDATA[Guardar]]></es>
+        </locale>
+        <locale name="controls.membershipusers.tbl.status.cancelled">
+<es><![CDATA[cancelada]]></es>
+        </locale>
+        <locale name="controls.membershipusers.tbl.status.active">
+<es><![CDATA[activa]]></es>
+        </locale>
+        <locale name="controls.users.membershipuseredit.template.cancelled">
+<es><![CDATA[Cancelada]]></es>
+        </locale>
+
+<!-- Control: users/MembershipUsersArchive -->
+        <locale name="controls.users.membershipusersarchive.tbl.btn.history">
+<es><![CDATA[Historial]]></es>
+        </locale>
+        <locale name="controls.users.membershipusersarchive.tbl.header.archiveDate">
+<es><![CDATA[Fecha de archivado]]></es>
+        </locale>
+        <locale name="controls.users.membershipusersarchive.tbl.header.archiveReason">
+<es><![CDATA[Motivo del archivado]]></es>
+        </locale>
+        <locale name="controls.users.membershipusersarchive.tbl.archiveReason.deleted">
+<es><![CDATA[Eliminado manualmente]]></es>
+        </locale>
+        <locale name="controls.users.membershipusersarchive.tbl.archiveReason.cancelled">
+<es><![CDATA[Baja]]></es>
+        </locale>
+        <locale name="controls.users.membershipusersarchive.tbl.archiveReason.expired">
+<es><![CDATA[Membresía vencida]]></es>
+        </locale>
+        <locale name="controls.users.membershipusersarchive.tbl.archiveReason.user_deleted">
+<es><![CDATA[Usuario de QUIQQER asociado eliminado]]></es>
+        </locale>
+
+<!-- Control: users/MembershipUserHistory -->
+        <locale name="controls.users.membershipuserhistory.template.userLabel">
+<es><![CDATA[Usuario]]></es>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.template.membershipLabel">
+<es><![CDATA[Membresía]]></es>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.footer">
+<es><![CDATA[realizado por [user]]]></es>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.created">
+<es><![CDATA[Añadido a la membresía]]></es>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.updated">
+<es><![CDATA[Datos de la membresía actualizados]]></es>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.cancel_start">
+<es><![CDATA[Baja solicitada]]></es>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.cancel_system">
+<es><![CDATA[Membresía cancelada por el sistema]]></es>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.cancel_confirm">
+<es><![CDATA[Baja confirmada]]></es>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.cancelled">
+<es><![CDATA[Membresía cancelada]]></es>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.expired">
+<es><![CDATA[Membresía vencida]]></es>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.deleted">
+<es><![CDATA[Eliminado de la membresía]]></es>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.archived">
+<es><![CDATA[Miembro archivado]]></es>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.extended">
+<es><![CDATA[Membresía ampliada]]></es>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.cancel_by_edit">
+<es><![CDATA[Baja realizada por un administrador]]></es>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.uncancel_by_edit">
+<es><![CDATA[Baja anulada por un administrador]]></es>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.misc">
+<es><![CDATA[Información adicional]]></es>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.cancel_abort_start">
+<es><![CDATA[Retirada de la baja solicitada]]></es>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.cancel_abort_confirm">
+<es><![CDATA[Retirada de la baja confirmada]]></es>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.btn.extraData">
+<es><![CDATA[Datos adicionales]]></es>
+        </locale>
+        <locale name="controls.membershipuserhistory.extraData.popup.title">
+<es><![CDATA[Datos adicionales]]></es>
+        </locale>
+
+<!-- Control: users/MembershipUserHistoryPopup -->
+        <locale name="controls.users.membershipuserhistorypopup.title">
+<es><![CDATA[Historial del miembro]]></es>
+        </locale>
+
+<!-- Control: users/MembershipUserEdit -->
+        <locale name="controls.users.membershipuseredit.template.header">
+<es><![CDATA[Miembro [name] (#[id])]]></es>
+        </locale>
+        <locale name="controls.users.membershipuseredit.template.info">
+<es><![CDATA[Aquí puedes ajustar el periodo actual de la membresía o marcarla como cancelada para el usuario.]]></es>
+        </locale>
+        <locale name="controls.users.membershipuseredit.btn.save">
+<es><![CDATA[Guardar datos del usuario]]></es>
+        </locale>
+
+<!-- Control: products/MembershipField -->
+        <locale name="controls.products.membershipselect.empty.placeholder">
+<es><![CDATA[Todavía no hay ninguna membresía asignada]]></es>
+        </locale>
+
+<!-- Control: settings/ProductSettings -->
+        <locale name="controls.settings.productsettings.package.required" html="true">
+<es><![CDATA[Esta opción requiere el módulo de QUIQQER <b>quiqqer/products</b>]]></es>
+        </locale>
+
+<!-- Control: products/MembershipProducts -->
+        <locale name="controls.products.membershipprouducts.tbl.btn.createproduct">
+<es><![CDATA[Crear producto]]></es>
+        </locale>
+        <locale name="controls.products.membershipprouducts.tbl.btn.viewproduct">
+<es><![CDATA[Detalles del producto]]></es>
+        </locale>
+        <locale name="controls.products.membershipprouducts.tbl.header.id">
+<es><![CDATA[ID del producto]]></es>
+        </locale>
+        <locale name="controls.products.membershipprouducts.tbl.header.articleNo">
+<es><![CDATA[N.º de artículo]]></es>
+        </locale>
+        <locale name="controls.products.membershipprouducts.tbl.header.title">
+<es><![CDATA[Título del producto]]></es>
+        </locale>
+        <locale name="controls.products.membershipprouducts.create.popup.information" html="true">
+<es><![CDATA[¿Quieres crear un producto para la membresía <b>[title]</b>? Se utilizarán automáticamente el título y la descripción breve de la membresía.]]></es>
+        </locale>
+        <locale name="controls.products.membershipprouducts.create.popup.title">
+<es><![CDATA[Crear nuevo producto]]></es>
+        </locale>
+        <locale name="controls.products.membershipprouducts.create.popup.text" html="true">
+<es><![CDATA[Nuevo producto para la membresía «[title]»]]></es>
+        </locale>
+
+<!-- Control: users/MembershipUserEdit -->
+        <locale name="controls.users.membershipuseredit.cancelmail.popup.info">
+<es><![CDATA[Has dado de baja manualmente la membresía del usuario. ¿Quieres enviarle una confirmación de la baja?]]></es>
+        </locale>
+        <locale name="controls.users.membershipuseredit.cancelmail.popup.title">
+<es><![CDATA[Enviar confirmación de baja]]></es>
+        </locale>
+
+    </groups>
+
+    <groups name="quiqqer/memberships" datatype="php">
+
+        <locale name="history.MembershipUser.cancel_confirm_reminder_sent">
+<es><![CDATA[Se ha enviado un correo para recordar que la confirmación de baja está pendiente.]]></es>
+        </locale>
+
+<!-- Events -->
+        <locale name="exception.Events.onQuiqqerProductsFieldDelete.cannot_delete_field">
+<es><![CDATA[No se puede eliminar este campo de producto porque lo necesita el paquete instalado "quiqqer/memberships".]]></es>
+        </locale>
+
+<!-- Class: Handler -->
+        <locale name="exception.handler.no.title">
+<es><![CDATA[La membresía debe tener un título.]]></es>
+        </locale>
+        <locale name="exception.handler.no.groups">
+<es><![CDATA[La membresía debe tener al menos un grupo asignado.]]></es>
+        </locale>
+
+<!-- Ajax -->
+        <locale name="message.ajax.general.error">
+<es><![CDATA[Se ha producido un error inesperado al procesar tu solicitud. Contacta con un administrador.]]></es>
+        </locale>
+        <locale name="message.ajax.memberships.create.error" html="true">
+<es><![CDATA[No se ha podido crear la membresía:<br><br>[error]]]></es>
+        </locale>
+        <locale name="message.ajax.memberships.create.success" html="true">
+<es><![CDATA[La membresía <b>[title]</b> se ha creado correctamente.]]></es>
+        </locale>
+        <locale name="message.ajax.memberships.delete.error" html="true">
+<es><![CDATA[No se han podido eliminar todas las membresías:<br><br>[error]]]></es>
+        </locale>
+        <locale name="message.ajax.memberships.delete.success">
+<es><![CDATA[Las membresías se han eliminado correctamente.]]></es>
+        </locale>
+        <locale name="message.ajax.memberships.update.error" html="true">
+<es><![CDATA[No se ha podido actualizar la membresía:<br><br>[error]]]></es>
+        </locale>
+        <locale name="message.ajax.memberships.update.success" html="true">
+<es><![CDATA[La membresía <b>[title]</b> (#[id]) se ha actualizado correctamente.]]></es>
+        </locale>
+        <locale name="message.ajax.memberships.users.create.success" html="true">
+<es><![CDATA[Se han añadido los usuarios a la membresía <b>[membershipTitle]</b> (#[membershipId]).]]></es>
+        </locale>
+        <locale name="message.ajax.memberships.users.create.error" html="true">
+<es><![CDATA[No se ha podido añadir el usuario a la membresía:<br><br>[error]]]></es>
+        </locale>
+        <locale name="message.ajax.memberships.users.delete.error" html="true">
+<es><![CDATA[No se han podido eliminar los usuarios de la membresía:<br><br>[error]]]></es>
+        </locale>
+        <locale name="message.ajax.memberships.users.delete.success">
+<es><![CDATA[Los usuarios se han eliminado de la membresía.]]></es>
+        </locale>
+        <locale name="message.ajax.memberships.users.update.error" html="true">
+<es><![CDATA[No se ha podido actualizar el miembro:<br><br>[error]]]></es>
+        </locale>
+        <locale name="message.ajax.memberships.users.update.success" html="true">
+<es><![CDATA[El miembro <b>[membershipUserName]</b> (#[membershipUserId]) se ha actualizado correctamente.]]></es>
+        </locale>
+        <locale name="message.ajax.memberships.users.sendCancelMail.error" html="true">
+<es><![CDATA[No se ha podido enviar el correo de baja:<br><br>[error]]]></es>
+        </locale>
+        <locale name="message.ajax.memberships.users.sendCancelMail.success" html="true">
+<es><![CDATA[Se ha enviado el correo de baja al miembro <b>[membershipUserName]</b> (#[membershipUserId]).]]></es>
+        </locale>
+        <locale name="message.ajax.memberships.users.startCancel.login.necessary">
+<es><![CDATA[Inicia sesión para dar de baja tu membresía.]]></es>
+        </locale>
+        <locale name="message.ajax.memberships.users.startCancel.error" html="true">
+<es><![CDATA[No se ha podido dar de baja la membresía:<br><br>[error]]]></es>
+        </locale>
+        <locale name="message.ajax.memberships.users.startCancel.success" html="true">
+<es><![CDATA[Se ha solicitado la baja de tu membresía. <b>Recibirás un correo con instrucciones para confirmar la baja.</b>]]></es>
+        </locale>
+        <locale name="message.ajax.memberships.users.abortCancel.login.necessary">
+<es><![CDATA[Inicia sesión para retirar la solicitud de baja de tu membresía.]]></es>
+        </locale>
+        <locale name="message.ajax.memberships.users.abortCancel.error" html="true">
+<es><![CDATA[No se ha podido retirar la solicitud de baja de la membresía:<br><br>[error]]]></es>
+        </locale>
+        <locale name="message.ajax.memberships.users.abortCancel.success" html="true">
+<es><![CDATA[Se ha solicitado retirar la baja de tu membresía. <b>Recibirás un correo con instrucciones para confirmar la retirada.</b>]]></es>
+        </locale>
+        <locale name="message.ajax.memberships.products.createMembershipProducts.error" html="true">
+<es><![CDATA[No se ha podido crear el producto:<br><br>[error]]]></es>
+        </locale>
+        <locale name="message.ajax.memberships.products.createMembershipProducts.success" html="true">
+<es><![CDATA[El producto se ha creado correctamente.]]></es>
+        </locale>
+
+<!-- Class: Membership -->
+        <locale name="exception.membership.cannot.update.when.locked">
+<es><![CDATA[No se puede editar una membresía mientras esté bloqueada por otro usuario.]]></es>
+        </locale>
+        <locale name="exception.membership.update.duration.invalid">
+<es><![CDATA[La duración de una membresía debe ser de al menos 1.]]></es>
+        </locale>
+        <locale name="exception.membership.user.not.found">
+<es><![CDATA[El usuario con ID #[userId] no pertenece a esta membresía.]]></es>
+        </locale>
+        <locale name="exception.membership.cannot.delete.with.users.left">
+<es><![CDATA[Solo se puede eliminar una membresía si ya no tiene miembros. Elimina a todos sus miembros antes de borrar la membresía.]]></es>
+        </locale>
+
+<!-- Class: Users\Handler -->
+        <locale name="exception.users.handler.no.user">
+<es><![CDATA[Cada miembro debe estar vinculado a un usuario de QUIQQER.]]></es>
+        </locale>
+        <locale name="exception.users.handler.no.membership">
+<es><![CDATA[Cada miembro debe estar vinculado a una membresía.]]></es>
+        </locale>
+        <locale name="exception.users.handler.user.is.already.in.membership">
+<es><![CDATA[El usuario <b>[userName]</b> (#[userId]) ya pertenece a esta membresía.]]></es>
+        </locale>
+
+<!-- Class: Users\MembershipUser -->
+        <locale name="exception.users.membershipuser.confirmManualCancel.already.cancelled">
+<es><![CDATA[Esta membresía ya está cancelada.]]></es>
+        </locale>
+        <locale name="exception.users.membershipuser.confirmManualCancel.no.hash">
+<es><![CDATA[Todavía no se ha iniciado el proceso de baja de esta membresía.]]></es>
+        </locale>
+        <locale name="exception.users.membershipuser.confirmManualCancel.hash.mismatch">
+<es><![CDATA[El hash de verificación de la baja de esta membresía no es válido.]]></es>
+        </locale>
+        <locale name="exception.users.membershipuser.wrong.dates">
+<es><![CDATA[#[id] - Las fechas de inicio o fin tienen un formato incorrecto.]]></es>
+        </locale>
+        <locale name="exception.users.membershipuser.begin.after.end">
+<es><![CDATA[#[id] - El inicio no puede ser posterior al final.]]></es>
+        </locale>
+        <locale name="exception.users.membershipuser.no.email">
+<es><![CDATA[No se pueden enviar correos al miembro porque no tiene una dirección de correo electrónico registrada.]]></es>
+        </locale>
+        <locale name="exception.users.membershipuser.manualcancel.no.permission">
+<es><![CDATA[Solo el propio miembro puede dar de baja su membresía.]]></es>
+        </locale>
+        <locale name="exception.users.membershipuser.manualcancel.no_system_uncancel">
+<es><![CDATA[No se puede retirar la baja de esta membresía.]]></es>
+        </locale>
+        <locale name="exception.users.membershipuser.manualcancel.no_email_address">
+<es><![CDATA[No puedes dar de baja esta membresía porque tu cuenta no tiene una dirección de correo electrónico válida. Contacta con un administrador.]]></es>
+        </locale>
+        <locale name="exception.users.membershipuser.abortcancel.no_email_address">
+<es><![CDATA[No puedes retirar la baja de tu membresía porque tu cuenta no tiene una dirección de correo electrónico válida. Contacta con un administrador.]]></es>
+        </locale>
+        <locale name="MembershipUser.cancel.info_text.cancel_until_date">
+<es><![CDATA[Te inscribiste el [addedDate]. Si no das de baja la membresía a más tardar el [cancelUntilDate], tu membresía se renovará automáticamente el [cycleEndDate] hasta el [nextCycleEndDate].]]></es>
+        </locale>
+        <locale name="MembershipUser.cancel.info_text.cycle_cancel_anytime">
+<es><![CDATA[Te inscribiste el [addedDate]. Si no das de baja la membresía, se renovará automáticamente el [cycleEndDate] hasta el [nextCycleEndDate].]]></es>
+        </locale>
+        <locale name="MembershipUser.cancel.info_text.cancel_anytime">
+<es><![CDATA[Te inscribiste el [addedDate] y puedes dar de baja tu membresía en cualquier momento.]]></es>
+        </locale>
+        <locale name="MembershipUser.cancel.info_text.period_of_notice_expired">
+<es><![CDATA[El plazo para dar de baja la membresía en el periodo actual (del [cycleBeginDate] al [cycleEndDate]) venció el [cancelUntilDate]. Por ello, se renovará automáticamente el [cycleEndDate] hasta el [nextCycleEndDate].]]></es>
+        </locale>
+
+<!-- Templates -->
+        <locale name="templates.mail.startcancel.subject">
+<es><![CDATA[Baja de tu membresía]]></es>
+        </locale>
+        <locale name="templates.mail.startcancel.body" html="true">
+<es><![CDATA[<h1>Hola, [name]:</h1><p>Se ha solicitado la baja de tu membresía <b>[membershipTitle]</b> con fecha de fin <b>[endDate]</b>. Para confirmar la baja, abre el siguiente enlace:<br><br><a href="[cancelUrl]">[cancelUrl]</a><br/><br/>La solicitud de baja solo se considerará recibida y válida una vez que la hayas confirmado mediante el enlace anterior.</p>]]></es>
+        </locale>
+        <locale name="templates.mail.confirmcancel.subject">
+<es><![CDATA[Confirmación de la baja de tu membresía]]></es>
+        </locale>
+        <locale name="templates.mail.confirmcancel.body" html="true">
+<es><![CDATA[<h1>Hola, [name]:</h1><p>Confirmamos la baja de tu membresía <b>[membershipTitle]</b> con fecha de fin <b>[endDate]</b>. Hasta entonces podrás seguir disfrutando de todas sus ventajas.</p>]]></es>
+        </locale>
+        <locale name="templates.mail.expired.subject" html="true">
+<es><![CDATA[Fin de tu membresía]]></es>
+        </locale>
+        <locale name="templates.mail.expired.body" html="true">
+<es><![CDATA[<h1>Hola, [name]:</h1><p>Tu membresía <b>[membershipTitle]</b> finalizó automáticamente el <b>[endDate]</b>.</p>]]></es>
+        </locale>
+        <locale name="templates.mail.cancelled.body" html="true">
+<es><![CDATA[<h1>Hola, [name]:</h1><p>Tu membresía <b>[membershipTitle]</b> finalizó el <b>[endDate]</b> debido a la baja solicitada el [cancelDate].</p>]]></es>
+        </locale>
+        <locale name="templates.mail.autoextend.subject" html="true">
+<es><![CDATA[Renovación automática de tu membresía]]></es>
+        </locale>
+        <locale name="templates.mail.autoextend.body" html="true">
+<es><![CDATA[<h1>Hola, [name]:</h1><p>Tu membresía <b>[membershipTitle]</b> se ha renovado automáticamente hasta el <b>[endDate]</b>.</p>]]></es>
+        </locale>
+        <locale name="templates.mail.manualextend.subject" html="true">
+<es><![CDATA[Ampliación de tu membresía]]></es>
+        </locale>
+        <locale name="templates.mail.manualextend.body" html="true">
+<es><![CDATA[<h1>Hola, [name]:</h1><p>Tu membresía <b>[membershipTitle]</b> se ha ampliado hasta el <b>[endDate]</b>.</p>]]></es>
+        </locale>
+        <locale name="templates.mail.startabortcancel.subject" html="true">
+<es><![CDATA[Retirada de la baja de tu membresía]]></es>
+        </locale>
+        <locale name="templates.mail.startabortcancel.body" html="true">
+<es><![CDATA[<h1>Hola, [name]:</h1><p>Has solicitado retirar la baja de tu membresía <b>[membershipTitle]</b> presentada el <b>[cancelDate]</b>. Para confirmar la retirada, abre el siguiente enlace:<br><br><a href="[abortCancelUrl]">[abortCancelUrl]</a><br/><br/>La baja solo se considerará retirada una vez que confirmes este proceso mediante el enlace anterior.</p>]]></es>
+        </locale>
+        <locale name="templates.mail.confirmcancel_reminder.subject">
+<es><![CDATA[Baja de tu membresía: confirmación pendiente]]></es>
+        </locale>
+        <locale name="templates.mail.confirmcancel_reminder.body">
+<es><![CDATA[<h1>Hola, [name]:</h1><p>El <b>[cancelDate]</b> se solicitó la baja de tu membresía <b>[membershipTitle]</b>. Aún no hemos recibido la confirmación.</p><p>Para confirmar la baja, abre el siguiente enlace:<br><br><a href="[cancelUrl]">[cancelUrl]</a></p><p>Si no deseas dar de baja tu membresía, puedes ignorar este correo. La membresía continuará automáticamente como hasta ahora.</p>]]></es>
+        </locale>
+
+<!-- CancelVerification -->
+        <locale name="verification.cancel.success">fieldtype.memberships.membership
+<es><![CDATA[La baja de tu membresía se ha confirmado. Recibirás la confirmación en otro correo electrónico.]]></es>
+        </locale>
+        <locale name="verification.cancel.error.general">
+<es><![CDATA[Se ha producido un error al dar de baja tu membresía. Inicia de nuevo el proceso de baja o contacta con un administrador.]]></es>
+        </locale>
+        <locale name="verification.cancel.error.expired">
+<es><![CDATA[El enlace para confirmar la baja ha caducado. Inicia de nuevo el proceso de baja.]]></es>
+        </locale>
+        <locale name="verification.cancel.error.already_cancelled">
+<es><![CDATA[La membresía ya está cancelada.]]></es>
+        </locale>
+        <locale name="verification.abortcancel.success.autoExtend">
+<es><![CDATA[Se ha retirado la baja de tu membresía «[membershipTitle]». La membresía seguirá renovándose automáticamente el [endDate].]]></es>
+        </locale>
+        <locale name="verification.abortcancel.success.noAutoExtend">
+<es><![CDATA[Se ha retirado la baja de tu membresía «[membershipTitle]». Finalizará automáticamente el [endDate].]]></es>
+        </locale>
+        <locale name="verification.abortcancel.error.general">
+<es><![CDATA[Se ha producido un error al retirar la baja de tu membresía. Inicia de nuevo el proceso o contacta con un administrador.]]></es>
+        </locale>
+        <locale name="verification.abortcancel.error.expired">
+<es><![CDATA[El enlace para confirmar la retirada de la baja ha caducado. Inicia de nuevo el proceso.]]></es>
+        </locale>
+        <locale name="verification.abortcancel.error.already_verified">
+<es><![CDATA[La baja de la membresía ya se ha retirado.]]></es>
+        </locale>
+
+        <locale name="history.misc.cancel_abort_unverified">
+<es><![CDATA[La baja de la membresía se ha retirado automáticamente porque el usuario no la confirmó.]]></es>
+        </locale>
+
+    </groups>
+
+    <groups name="quiqqer/products" datatype="php,js">
+        <locale name="fieldtype.memberships.membership" html="true">
+<es><![CDATA[Membresía]]></es>
+        </locale>
+    </groups>
+</locales>
