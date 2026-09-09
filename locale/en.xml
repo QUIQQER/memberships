@@ -1,0 +1,915 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<locales>
+
+    <groups name="quiqqer/memberships" datatype="php,js">
+
+<!-- Package -->
+        <locale name="package.title">
+<en><![CDATA[QUIQQER - Memberships]]></en>
+        </locale>
+        <locale name="package.description">
+<en><![CDATA[Create and manage memberships for your users. With memberships you can grant your users permissions for set periods of time in your system. In conjunction with the QUIQQER ERP system, this module also enables automated linking of memberships with products, so that you can offer memberships for sale.]]></en>
+        </locale>
+
+<!-- Menu -->
+        <locale name="menu.extras.memberships.title">
+<en><![CDATA[Memberships]]></en>
+        </locale>
+
+<!-- Permissions -->
+        <locale name="permission.quiqqer.memberships._header">
+<en><![CDATA[Memberships]]></en>
+        </locale>
+        <locale name="permission.quiqqer.memberships.mcp">
+<en><![CDATA[Can use memberships via MCP]]></en>
+        </locale>
+        <locale name="permission.quiqqer.memberships.create">
+<en><![CDATA[Can create new memberships]]></en>
+        </locale>
+        <locale name="permission.quiqqer.memberships.edit">
+<en><![CDATA[Can edit memberships (membership data only, no membership users!)]]></en>
+        </locale>
+        <locale name="permission.quiqqer.memberships.edit_users">
+<en><![CDATA[Can manage membership users (add, edit, delete)]]></en>
+        </locale>
+        <locale name="permission.quiqqer.memberships.delete">
+<en><![CDATA[Can delete memberships]]></en>
+        </locale>
+        <locale name="permission.quiqqer.memberships.force_edit">
+<en><![CDATA[Can unlock membership panels that are currently edited by another user and edit them himself]]></en>
+        </locale>
+
+<!-- Settings -->
+        <locale name="settings.menu.title">
+<en><![CDATA[Memberships]]></en>
+        </locale>
+        <locale name="settings.category.title">
+<en><![CDATA[Settings]]></en>
+        </locale>
+        <locale name="settings.membershipusers.title">
+<en><![CDATA[Memberships]]></en>
+        </locale>
+        <locale name="settings.extendMode.title">
+<en><![CDATA[Extension of memberships for active members]]></en>
+        </locale>
+        <locale name="settings.extendMode.description">
+<en><![CDATA[Determines how the runtime of a membership is extended for a user when the user enters the membership even though he is already an active member.]]></en>
+        </locale>
+        <locale name="settings.extendMode.option.reset">
+<en><![CDATA[The start and end times are reset as if the user had entered the membership]]></en>
+        </locale>
+        <locale name="settings.extendMode.option.prolong">
+<en><![CDATA[End time is extended by the duration of the membership]]></en>
+        </locale>
+        <locale name="settings.durationMode.title">
+<en><![CDATA[Accuracy of membership duration]]></en>
+        </locale>
+        <locale name="settings.durationMode.description">
+<en><![CDATA[Determines how accurate the duration of memberships is calculated. With <b>exact</b> accuracy, <b>minutes</b> and <b>hours</b> are available as duration options.]]></en>
+        </locale>
+        <locale name="settings.durationMode.option.day">
+<en><![CDATA[Day-exact (duration is rounded up to the next whole day)]]></en>
+        </locale>
+        <locale name="settings.durationMode.option.exact">
+<en><![CDATA[Exact (duration is calculated by the second)]]></en>
+        </locale>
+        <locale name="settings.cancelDuration.title">
+<en><![CDATA[Duration of cancellation confirmation links]]></en>
+        </locale>
+        <locale name="settings.cancelDuration.description" html="true">
+<en><![CDATA[Determines how long the link to confirm a membership termination remains valid (<b>minutes</b>).]]></en>
+        </locale>
+        <locale name="settings.sendAutoExtendMail.title">
+<en><![CDATA[Mail on auto extension]]></en>
+        </locale>
+        <locale name="settings.sendAutoExtendMail.description">
+<en><![CDATA[An automatic extension of the membership will send an e-mail to the user]]></en>
+        </locale>
+        <locale name="settings.sendManualExtendMail.title">
+<en><![CDATA[Mail on manual extension]]></en>
+        </locale>
+        <locale name="settings.sendManualExtendMail.description">
+<en><![CDATA[A manual extension of the membership will send an e-mail to the user. Manual Extension = The end date of a membership is edited by an administrator or a user is re-added to a membership that he already is in.]]></en>
+        </locale>
+        <locale name="settings.linkWithContracts.title">
+<en><![CDATA[Link with contracts]]></en>
+        </locale>
+        <locale name="settings.linkWithContracts.description" html="true">
+<en><![CDATA[Memberships created from the same purchase order from which a contract is created are linked to this contract. This means that if the membership is cancelled, the contract may also be cancelled (depending on the setting in the contract module). Likewise, when a contract is terminated, the linked membership of a user is terminated as well. Requires <b>quiqqer/contracts</b> to be installed.]]></en>
+        </locale>
+        <locale name="settings.cancelReminderDays.title">
+<en><![CDATA[Cancel confirmation reminder after X days]]></en>
+        </locale>
+        <locale name="settings.cancelReminderDays.description" html="true">
+<en><![CDATA[Number of <b>days</b> after which membership users receive an e-mail reminder about pending cancellation confirmations. Memberships that have not been cancelled continue automatically after the confirmation link expires.<br/><br/>A value of <b>0</b> means that <b>no</b> reminder is sent.]]></en>
+        </locale>
+
+        <locale name="settings.dateformat.title">
+<en><![CDATA[Date format]]></en>
+        </locale>
+        <locale name="settings.dateFormatShort.title">
+<en><![CDATA[Date format (short)]]></en>
+        </locale>
+        <locale name="settings.dateFormatShort.description" html="true">
+<en><![CDATA[Date format for dates in short format. The short format is used in messages sent to the user if the <b>Accuracy of membership duration</b> setting is set to <b>Day-exact</b>.<br><br>For available placeholder see: <a href="http://php.net/manual/de/function.strftime.php#refsect1-function.strftime-parameters" target="_blank">http://php.net/manual/de/function.strftime.php#refsect1-function.strftime-parameters</a>]]></en>
+        </locale>
+        <locale name="settings.dateFormatLong.title">
+<en><![CDATA[Date format (long)]]></en>
+        </locale>
+        <locale name="settings.dateFormatLong.description" html="true">
+<en><![CDATA[Date format for dates in long format. The long format is used in messages sent to the user if the <b>Accuracy of membership duration</b> setting is set to <b>Exact</b>.<br><br>For available placeholder see: <a href="http://php.net/manual/de/function.strftime.php#refsect1-function.strftime-parameters" target="_blank">http://php.net/manual/de/function.strftime.php#refsect1-function.strftime-parameters</a>]]></en>
+        </locale>
+        <locale name="settings.products.title">
+<en><![CDATA[Products]]></en>
+        </locale>
+        <locale name="settings.categoryId.title">
+<en><![CDATA[Product category for membership products]]></en>
+        </locale>
+        <locale name="settings.categoryId.description" html="true">
+<en><![CDATA[Default product category for all products that are created out of memberships.]]></en>
+        </locale>
+        <locale name="settings.viewDataMode.title">
+<en><![CDATA[Source for frontend data]]></en>
+        </locale>
+        <locale name="settings.viewDataMode.description" html="true">
+<en><![CDATA[Determines the source used for <b>title</b>, <b>short description</b> and <b>extended description</b> in the frontend membership data.]]></en>
+        </locale>
+        <locale name="settings.viewDataMode.option.membership">
+<en><![CDATA[Membership]]></en>
+        </locale>
+        <locale name="settings.viewDataMode.option.product">
+<en><![CDATA[Product (if assigned; requires quiqqer/products)]]></en>
+        </locale>
+        <locale name="settings.defaultMembershipId.title">
+<en><![CDATA[Default membership]]></en>
+        </locale>
+        <locale name="settings.defaultMembershipId.description">
+<en><![CDATA[Membership in which all users in the system are automatically put. Users have no option to cancel this membership.]]></en>
+        </locale>
+        <locale name="settings.membershipFieldId.title">
+<en><![CDATA[Membership product field]]></en>
+        </locale>
+        <locale name="settings.membershipFieldId.description">
+<en><![CDATA[Determines the product field that is used to assign a membership to a product.]]></en>
+        </locale>
+
+<!-- Cron -->
+        <locale name="cron.checkMembershipUsers.title">
+<en><![CDATA[Check/extend memberships]]></en>
+        </locale>
+        <locale name="cron.checkMembershipUsers.description">
+<en><![CDATA[Checks for each membership whether it needs to be extended or terminated.]]></en>
+        </locale>
+
+<!-- Profile -->
+        <locale name="profile.category.memberships.title">
+<en><![CDATA[Memberships]]></en>
+        </locale>
+        <locale name="profile.mymemberships.title">
+<en><![CDATA[My memberships]]></en>
+        </locale>
+
+<!-- quiqqer/products -->
+        <locale name="products.field.membership">
+<en><![CDATA[Membership]]></en>
+        </locale>
+        <locale name="products.field.membershipflag">
+<en><![CDATA[Is membership product]]></en>
+        </locale>
+        <locale name="products.category.title">
+<en><![CDATA[Memberships]]></en>
+        </locale>
+        <locale name="products.category.description">
+<en><![CDATA[Product category for membership products]]></en>
+        </locale>
+
+    </groups>
+
+    <groups name="quiqqer/memberships" datatype="js">
+
+<!-- Control: profile/UserProfile -->
+        <locale name="controls.profile.userprofile.template.header">
+<en><![CDATA[My memberships]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.template.headerMembership">
+<en><![CDATA[Membership]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.template.headerMembershipData">
+<en><![CDATA[Details]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.datatable.labelAddedDate">
+<en><![CDATA[In membership since]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.datatable.labelEndDate.autoExtend">
+<en><![CDATA[Auto extend at]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.datatable.labelEndDate.noAutoExtend">
+<en><![CDATA[Membership ends]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.datatable.labelEndDate.cancelled">
+<en><![CDATA[Ends at]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.datatable.endDate.infinite">
+<en><![CDATA[-]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.datatable.labelStatus">
+<en><![CDATA[Status]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.datatable.status.cancelled">
+<en><![CDATA[cancelled]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.datatable.status.active">
+<en><![CDATA[active]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.btn.cancel.text">
+<en><![CDATA[Cancel membership]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.btn.abortcancel.text">
+<en><![CDATA[Withdraw cancellation]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.cancel_info.title">
+<en><![CDATA[Information about contract duration]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.cancel_info.text">
+<en><![CDATA[Contract duration and cancellation]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.cancel_info.btn_title">
+<en><![CDATA[Information about contract duration]]></en>
+        </locale>
+
+        <locale name="controls.profile.userprofile.cancelconfirm.info" html="true">
+<en><![CDATA[Are you sure you want to cancel your <b>[title]</b> membership? Please note that your membership expires by <b>[endDate]</b>. Until then, you can continue to take full advantage of your membership. Until the expiration date, you can withdraw the cancellation at any time.]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.cancelconfirm.text">
+<en><![CDATA[Cancellation of membership "[title]"]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.cancelconfirm.title">
+<en><![CDATA[Cancel membership]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.cancelconfirm.cancel">
+<en><![CDATA[Do not cancel]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.cancelconfirm.ok">
+<en><![CDATA[Cancel membership]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.abortcancel.info" html="true">
+<en><![CDATA[Are you sure you want to withdraw the cancellation of your <b>[title]</b> membership? This may result in regular payments continuing to be made.]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.abortcancel.text">
+<en><![CDATA[Withdraw cancellation of membership "[title]"]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.abortcancel.title">
+<en><![CDATA[Withdraw membership cancellation]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.abortcancel.cancel">
+<en><![CDATA[Cancel]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.abortcancel.ok">
+<en><![CDATA[Withdraw cancellation]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.info.no.memberships">
+<en><![CDATA[There are currently no memberships in your user profile.]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.showcontent.title">
+<en><![CDATA[Membership "[title]"]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.status.modifier.cancel_confirm">
+<en><![CDATA[(Cancellation requested - Please click the confirmation link in the e-mail)]]></en>
+        </locale>
+        <locale name="controls.profile.userprofile.status.modifier.abortcancel_confirm">
+<en><![CDATA[(Cancellation withdrawn - Please click the confirmation link in the e-mail)]]></en>
+        </locale>
+
+<!-- Control: MembershipsSearchPopup -->
+        <locale name="controls.membershipssearchpopup.title">
+<en><![CDATA[Membership Management]]></en>
+        </locale>
+
+<!-- Control: MembershipsManagerPanel -->
+        <locale name="controls.membershipsmanagerpanel.title">
+<en><![CDATA[Memberships]]></en>
+        </locale>
+
+<!-- Control: MembershipsManager -->
+        <locale name="controls.membershipsmanager.tbl.btn.addmembership">
+<en><![CDATA[New membership]]></en>
+        </locale>
+        <locale name="controls.membershipsmanager.tbl.btn.editmembership">
+<en><![CDATA[Edit]]></en>
+        </locale>
+        <locale name="controls.membershipsmanager.tbl.btn.removemembership">
+<en><![CDATA[Delete]]></en>
+        </locale>
+        <locale name="controls.membershipsmanager.tbl.header.title">
+<en><![CDATA[Title]]></en>
+        </locale>
+        <locale name="controls.membershipsmanager.tbl.header.description">
+<en><![CDATA[Description]]></en>
+        </locale>
+        <locale name="controls.membershipsmanager.tbl.header.duration">
+<en><![CDATA[Duration]]></en>
+        </locale>
+        <locale name="controls.membershipsmanager.tbl.header.userCount">
+<en><![CDATA[Users]]></en>
+        </locale>
+        <locale name="controls.membershipsmanager.tbl.header.autoExtend">
+<en><![CDATA[Auto extend]]></en>
+        </locale>
+        <locale name="controls.membershipsmanager.add.popup.title">
+<en><![CDATA[New membership]]></en>
+        </locale>
+        <locale name="controls.membershipsmanager.add.popup.title.info">
+<en><![CDATA[Please enter a title for the membership]]></en>
+        </locale>
+        <locale name="controls.membershipsmanager.add.popup.groups.info">
+<en><![CDATA[Choose at least one group that is assigned to this membership]]></en>
+        </locale>
+        <locale name="controls.membershipsmanager.add.popup.confirm.btn.text">
+<en><![CDATA[Create membership]]></en>
+        </locale>
+        <locale name="controls.membershipsmanager.add.popup.confirm.btn">
+<en><![CDATA[Click here to create a new membership with the given title]]></en>
+        </locale>
+        <locale name="controls.membershipsmanager.deletememberships.popup.title">
+<en><![CDATA[Delete membership(s)]]></en>
+        </locale>
+        <locale name="controls.membershipsmanager.deletememberships.popup.info">
+<en><![CDATA[Are you sure you want to permanently delete the following memberships? This can only be done when no users are left in this membership:<br><br>[memberships]]]></en>
+        </locale>
+
+<!-- Control: Membership -->
+        <locale name="controls.membership.title">
+<en><![CDATA[M - [title]]]></en>
+        </locale>
+        <locale name="controls.membership.category.settings">
+<en><![CDATA[Basic settings]]></en>
+        </locale>
+        <locale name="controls.membership.category.users">
+<en><![CDATA[Users]]></en>
+        </locale>
+        <locale name="controls.membership.category.usersArchive">
+<en><![CDATA[Users archive]]></en>
+        </locale>
+        <locale name="controls.membership.category.products">
+<en><![CDATA[Products]]></en>
+        </locale>
+        <locale name="controls.membership.category.contracts">
+<en><![CDATA[Contracts]]></en>
+        </locale>
+        <locale name="controls.membership.template.settings.headerSettings">
+<en><![CDATA[Membership information]]></en>
+        </locale>
+        <locale name="controls.membership.template.settings.labelTitle">
+<en><![CDATA[Title]]></en>
+        </locale>
+        <locale name="controls.membership.template.settings.labelDescription">
+<en><![CDATA[Short description]]></en>
+        </locale>
+        <locale name="controls.membership.template.settings.labelContent">
+<en><![CDATA[Detailed description]]></en>
+        </locale>
+        <locale name="controls.membership.template.settings.headerDuration">
+<en><![CDATA[Duration settings]]></en>
+        </locale>
+        <locale name="controls.membership.template.settings.labelDuration">
+<en><![CDATA[Duration]]></en>
+        </locale>
+        <locale name="controls.membership.template.settings.labelAutoExtend">
+<en><![CDATA[Auto extend]]></en>
+        </locale>
+        <locale name="controls.membership.template.settings.headerGroups">
+<en><![CDATA[Groups]]></en>
+        </locale>
+        <locale name="controls.membership.template.settings.labelGroups">
+<en><![CDATA[Assigned groups]]></en>
+        </locale>
+        <locale name="controls.membership.template.settings.autoExtend">
+<en><![CDATA[After its duration expires, this membership is automatically renewed for the configured duration.]]></en>
+        </locale>
+        <locale name="controls.membership.lock.title">
+<en><![CDATA[Membership locked!]]></en>
+        </locale>
+        <locale name="controls.membership.lock.unlock.info" html="true">
+<en><![CDATA[This membership is currently being edited by another user. To avoid inconsistencies in membership data, only one user should edit a membership at a time. If you want to edit the membership anyway, click the button below.<br/><br/><b>Caution</b>: In this case, your changes may be overwritten by other users, or you may overwrite another user’s changes!]]></en>
+        </locale>
+        <locale name="controls.membership.lock.info" html="true">
+<en><![CDATA[This membership is currently being edited by another user. To avoid inconsistencies in membership data, only one user can edit a membership at a time. Please try again later.]]></en>
+        </locale>
+        <locale name="controls.membership.lock.btn.ignore.text">
+<en><![CDATA[Edit membership anyway]]></en>
+        </locale>
+        <locale name="controls.membership.lock.btn.close.text">
+<en><![CDATA[Close membership panel]]></en>
+        </locale>
+        <locale name="controls.membership.search.input.placeholder">
+<en><![CDATA[Member search]]></en>
+        </locale>
+
+<!-- Control: InputDuration -->
+        <locale name="controls.inputduration.period.infinite">
+<en><![CDATA[Unlimited]]></en>
+        </locale>
+        <locale name="controls.inputduration.period.minute">
+<en><![CDATA[minute(s)]]></en>
+        </locale>
+        <locale name="controls.inputduration.period.hour">
+<en><![CDATA[hour(s)]]></en>
+        </locale>
+        <locale name="controls.inputduration.period.day">
+<en><![CDATA[day(s)]]></en>
+        </locale>
+        <locale name="controls.inputduration.period.week">
+<en><![CDATA[week(s)]]></en>
+        </locale>
+        <locale name="controls.inputduration.period.month">
+<en><![CDATA[month(s)]]></en>
+        </locale>
+        <locale name="controls.inputduration.period.year">
+<en><![CDATA[year(s)]]></en>
+        </locale>
+
+<!-- Control: users/MembershipUsers -->
+        <locale name="controls.membershipusers.tbl.btn.adduser">
+<en><![CDATA[Add user(s)]]></en>
+        </locale>
+        <locale name="controls.membershipusers.tbl.btn.removeuser">
+<en><![CDATA[Remove user(s)]]></en>
+        </locale>
+        <locale name="controls.membershipusers.tbl.btn.edit">
+<en><![CDATA[Edit user]]></en>
+        </locale>
+        <locale name="controls.membershipusers.tbl.btn.actions">
+<en><![CDATA[Actions]]></en>
+        </locale>
+        <locale name="controls.membershipusers.tbl.btn.openContract">
+<en><![CDATA[Open contract]]></en>
+        </locale>
+        <locale name="controls.membershipusers.tbl.btn.openUser">
+<en><![CDATA[Open user]]></en>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.userId">
+<en><![CDATA[User ID]]></en>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.username">
+<en><![CDATA[Username]]></en>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.userFirstname">
+<en><![CDATA[First name]]></en>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.userLastname">
+<en><![CDATA[Last name]]></en>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.addedDate">
+<en><![CDATA[In membership since]]></en>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.beginDate">
+<en><![CDATA[Beginning (curr. cycle)]]></en>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.status">
+<en><![CDATA[Status]]></en>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.endDate">
+<en><![CDATA[Ends (curr. cycle)]]></en>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.extendCounter">
+<en><![CDATA[Auto extends]]></en>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.contractId">
+<en><![CDATA[Contract ID]]></en>
+        </locale>
+        <locale name="controls.membershipusers.delete.popup.info" html="true">
+<en><![CDATA[Are you sure you want to permanently remove the following users from the membership? The users then lose all permissions of this membership.<br><br>[users]]]></en>
+        </locale>
+        <locale name="controls.membershipusers.delete.popup.title">
+<en><![CDATA[Remove user(s) from membership]]></en>
+        </locale>
+        <locale name="controls.membershipusers.delete.popup.text">
+<en><![CDATA[Really remove user(s) from the membership?]]></en>
+        </locale>
+        <locale name="controls.membershipusers.delete.popup.remove.btn">
+<en><![CDATA[Remove]]></en>
+        </locale>
+        <locale name="controls.membershipusers.delete.popup.cancel.btn">
+<en><![CDATA[Cancel]]></en>
+        </locale>
+        <locale name="controls.membershipusers.edit.popup.title">
+<en><![CDATA[Edit membership user]]></en>
+        </locale>
+        <locale name="controls.membershipusers.edit.popup.save.btn">
+<en><![CDATA[Save]]></en>
+        </locale>
+        <locale name="controls.membershipusers.tbl.status.cancelled">
+<en><![CDATA[cancelled]]></en>
+        </locale>
+        <locale name="controls.membershipusers.tbl.status.active">
+<en><![CDATA[active]]></en>
+        </locale>
+        <locale name="controls.users.membershipuseredit.template.cancelled">
+<en><![CDATA[Cancelled]]></en>
+        </locale>
+
+<!-- Control: users/MembershipUsersArchive -->
+        <locale name="controls.users.membershipusersarchive.tbl.btn.history">
+<en><![CDATA[History]]></en>
+        </locale>
+        <locale name="controls.users.membershipusersarchive.tbl.header.archiveDate">
+<en><![CDATA[Archive date]]></en>
+        </locale>
+        <locale name="controls.users.membershipusersarchive.tbl.header.archiveReason">
+<en><![CDATA[Archive reason]]></en>
+        </locale>
+        <locale name="controls.users.membershipusersarchive.tbl.archiveReason.deleted">
+<en><![CDATA[Deleted manually]]></en>
+        </locale>
+        <locale name="controls.users.membershipusersarchive.tbl.archiveReason.cancelled">
+<en><![CDATA[Cancellation]]></en>
+        </locale>
+        <locale name="controls.users.membershipusersarchive.tbl.archiveReason.expired">
+<en><![CDATA[Membership expired]]></en>
+        </locale>
+        <locale name="controls.users.membershipusersarchive.tbl.archiveReason.user_deleted">
+<en><![CDATA[Assigned QUIQQER user deleted]]></en>
+        </locale>
+
+<!-- Control: users/MembershipUserHistory -->
+        <locale name="controls.users.membershipuserhistory.template.userLabel">
+<en><![CDATA[User]]></en>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.template.membershipLabel">
+<en><![CDATA[Membership]]></en>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.footer">
+<en><![CDATA[executed by [user]]]></en>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.created">
+<en><![CDATA[Added to the membership]]></en>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.updated">
+<en><![CDATA[Updated membership data]]></en>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.cancel_start">
+<en><![CDATA[Termination requested]]></en>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.cancel_system">
+<en><![CDATA[Membership cancelled by system]]></en>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.cancel_confirm">
+<en><![CDATA[Termination confirmed]]></en>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.cancelled">
+<en><![CDATA[Membership terminated]]></en>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.expired">
+<en><![CDATA[Membership expired]]></en>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.deleted">
+<en><![CDATA[Deleted from membership]]></en>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.archived">
+<en><![CDATA[Membership user archived]]></en>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.extended">
+<en><![CDATA[Membership extended]]></en>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.cancel_by_edit">
+<en><![CDATA[Termination by administrator]]></en>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.uncancel_by_edit">
+<en><![CDATA[Revocation of termination by administrator]]></en>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.misc">
+<en><![CDATA[Miscellaneous information]]></en>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.cancel_abort_start">
+<en><![CDATA[Request for withdrawal of cancellation]]></en>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.cancel_abort_confirm">
+<en><![CDATA[Cancellation withdrawal confirmed]]></en>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.btn.extraData">
+<en><![CDATA[Extra data]]></en>
+        </locale>
+        <locale name="controls.membershipuserhistory.extraData.popup.title">
+<en><![CDATA[Extra data]]></en>
+        </locale>
+
+<!-- Control: users/MembershipUserHistoryPopup -->
+        <locale name="controls.users.membershipuserhistorypopup.title">
+<en><![CDATA[Membership user history]]></en>
+        </locale>
+
+<!-- Control: users/MembershipUserEdit -->
+        <locale name="controls.users.membershipuseredit.template.header">
+<en><![CDATA[Membership user [name] (#[id])]]></en>
+        </locale>
+        <locale name="controls.users.membershipuseredit.template.info">
+<en><![CDATA[Here you can adjust the current membership period or mark the user as cancelled.]]></en>
+        </locale>
+        <locale name="controls.users.membershipuseredit.btn.save">
+<en><![CDATA[Save user data]]></en>
+        </locale>
+
+<!-- Control: products/MembershipField -->
+        <locale name="controls.products.membershipselect.empty.placeholder">
+<en><![CDATA[No membership assigned yet]]></en>
+        </locale>
+
+<!-- Control: settings/ProductSettings -->
+        <locale name="controls.settings.productsettings.package.required" html="true">
+<en><![CDATA[This setting requires the QUIQQER module <b>quiqqer/products</b>]]></en>
+        </locale>
+
+<!-- Control: products/MembershipProducts -->
+        <locale name="controls.products.membershipprouducts.tbl.btn.createproduct">
+<en><![CDATA[Create product]]></en>
+        </locale>
+        <locale name="controls.products.membershipprouducts.tbl.btn.viewproduct">
+<en><![CDATA[Product details]]></en>
+        </locale>
+        <locale name="controls.products.membershipprouducts.tbl.header.id">
+<en><![CDATA[Product ID]]></en>
+        </locale>
+        <locale name="controls.products.membershipprouducts.tbl.header.articleNo">
+<en><![CDATA[Article no]]></en>
+        </locale>
+        <locale name="controls.products.membershipprouducts.tbl.header.title">
+<en><![CDATA[Product title]]></en>
+        </locale>
+        <locale name="controls.products.membershipprouducts.create.popup.information" html="true">
+<en><![CDATA[Are you sure you want to create new product for the membership <b>[title]</b>? Title and short description of this membership will be set automatically to the product.]]></en>
+        </locale>
+        <locale name="controls.products.membershipprouducts.create.popup.title">
+<en><![CDATA[Create new product]]></en>
+        </locale>
+        <locale name="controls.products.membershipprouducts.create.popup.text" html="true">
+<en><![CDATA[New product for membership "[title]"]]></en>
+        </locale>
+
+<!-- Control: users/MembershipUserEdit -->
+        <locale name="controls.users.membershipuseredit.cancelmail.popup.info">
+<en><![CDATA[You have manually canceled the user's membership. Do you want to send an acknowledgment of termination to the user?]]></en>
+        </locale>
+        <locale name="controls.users.membershipuseredit.cancelmail.popup.title">
+<en><![CDATA[Send cancellation confirmation]]></en>
+        </locale>
+
+    </groups>
+
+    <groups name="quiqqer/memberships" datatype="php">
+
+        <locale name="history.MembershipUser.cancel_confirm_reminder_sent">
+<en><![CDATA[Email sent to remind of pending cancellation confirmation.]]></en>
+        </locale>
+
+<!-- Events -->
+        <locale name="exception.Events.onQuiqqerProductsFieldDelete.cannot_delete_field">
+<en><![CDATA[This product field cannot be deleted since it is required by the installed package "quiqqer/memberships".]]></en>
+        </locale>
+
+<!-- Class: Handler -->
+        <locale name="exception.handler.no.title">
+<en><![CDATA[A membership must have a title.]]></en>
+        </locale>
+        <locale name="exception.handler.no.groups">
+<en><![CDATA[A membership must have at least one assigned group.]]></en>
+        </locale>
+
+<!-- Ajax -->
+        <locale name="message.ajax.general.error">
+<en><![CDATA[An unexpected error occurred while processing your request. Please contact an administrator.]]></en>
+        </locale>
+        <locale name="message.ajax.memberships.create.error" html="true">
+<en><![CDATA[The membership could not be created:<br><br>[error]]]></en>
+        </locale>
+        <locale name="message.ajax.memberships.create.success" html="true">
+<en><![CDATA[The membership <b>[title]</b> has been created successfully.]]></en>
+        </locale>
+        <locale name="message.ajax.memberships.delete.error" html="true">
+<en><![CDATA[Not all memberships could be deleted:<br><br>[error]]]></en>
+        </locale>
+        <locale name="message.ajax.memberships.delete.success">
+<en><![CDATA[The membership(s) has/have been deleted successfully.]]></en>
+        </locale>
+        <locale name="message.ajax.memberships.update.error" html="true">
+<en><![CDATA[The membership could not be updated:<br><br>[error]]]></en>
+        </locale>
+        <locale name="message.ajax.memberships.update.success" html="true">
+<en><![CDATA[The membership <b>[title]</b> (#[id]) has been updated successfully.]]></en>
+        </locale>
+        <locale name="message.ajax.memberships.users.create.success" html="true">
+<en><![CDATA[The users have been successfully added to the membership <b>[membershipTitle]</b> (#[membershipId]).]]></en>
+        </locale>
+        <locale name="message.ajax.memberships.users.create.error" html="true">
+<en><![CDATA[The user could not be added to the membership:<br><br>[error]]]></en>
+        </locale>
+        <locale name="message.ajax.memberships.users.delete.error" html="true">
+<en><![CDATA[The users could not be removed from the membership:<br><br>[error]]]></en>
+        </locale>
+        <locale name="message.ajax.memberships.users.delete.success">
+<en><![CDATA[The users have been removed successfully from the membership.]]></en>
+        </locale>
+        <locale name="message.ajax.memberships.users.update.error" html="true">
+<en><![CDATA[The membership user could not be updated:<br><br>[error]]]></en>
+        </locale>
+        <locale name="message.ajax.memberships.users.update.success" html="true">
+<en><![CDATA[The membership user <b>[membershipUserName]</b> (#[membershipUserId]) was successfully updated.]]></en>
+        </locale>
+        <locale name="message.ajax.memberships.users.sendCancelMail.error" html="true">
+<en><![CDATA[The termination mail could not be sent:<br><br>[error]]]></en>
+        </locale>
+        <locale name="message.ajax.memberships.users.sendCancelMail.success" html="true">
+<en><![CDATA[The termination mail to user <b>[membershipUserName]</b> (#[membershipUserId]) was successfully sent.]]></en>
+        </locale>
+        <locale name="message.ajax.memberships.users.startCancel.login.necessary">
+<en><![CDATA[Please log in to cancel your membership.]]></en>
+        </locale>
+        <locale name="message.ajax.memberships.users.startCancel.error" html="true">
+<en><![CDATA[The membership could not be cancelled:<br><br>[error]]]></en>
+        </locale>
+        <locale name="message.ajax.memberships.users.startCancel.success" html="true">
+<en><![CDATA[The cancellation of your membership has been successfully applied for. <b>You will receive an e-mail with further instructions to confirm the cancellation!</b>]]></en>
+        </locale>
+        <locale name="message.ajax.memberships.users.abortCancel.login.necessary">
+<en><![CDATA[Please log in to abort the cancellation of your membership.]]></en>
+        </locale>
+        <locale name="message.ajax.memberships.users.abortCancel.error" html="true">
+<en><![CDATA[The cancellation of the membership could not be withdrawn:<br><br>[error]]]></en>
+        </locale>
+        <locale name="message.ajax.memberships.users.abortCancel.success" html="true">
+<en><![CDATA[Withdrawal of your membership cancellation has been requested successfully. <b>You will receive an e-mail with further instructions to confirm this process!</b>]]></en>
+        </locale>
+        <locale name="message.ajax.memberships.products.createMembershipProducts.error" html="true">
+<en><![CDATA[The product could not be created:<br><br>[error]]]></en>
+        </locale>
+        <locale name="message.ajax.memberships.products.createMembershipProducts.success" html="true">
+<en><![CDATA[The product has been created successfully.]]></en>
+        </locale>
+
+<!-- Class: Membership -->
+        <locale name="exception.membership.cannot.update.when.locked">
+<en><![CDATA[A membership can not be edited if it is currently locked by another user.]]></en>
+        </locale>
+        <locale name="exception.membership.update.duration.invalid">
+<en><![CDATA[The duration of a membership must be at least 1.]]></en>
+        </locale>
+        <locale name="exception.membership.user.not.found">
+<en><![CDATA[The user with ID #[userId] is not in this membership.]]></en>
+        </locale>
+        <locale name="exception.membership.cannot.delete.with.users.left">
+<en><![CDATA[A membership can only be deleted if it does not contain any members. Please remove all members from this membership before deleting it.]]></en>
+        </locale>
+
+<!-- Class: Users\Handler -->
+        <locale name="exception.users.handler.no.user">
+<en><![CDATA[A membership user must be assigned to a QUIQQER user.]]></en>
+        </locale>
+        <locale name="exception.users.handler.no.membership">
+<en><![CDATA[A membership user must be assigned to a membership.]]></en>
+        </locale>
+        <locale name="exception.users.handler.user.is.already.in.membership">
+<en><![CDATA[The user <b>[userName]</b> (#[userId]) is already in this membership.]]></en>
+        </locale>
+
+<!-- Class: Users\MembershipUser -->
+        <locale name="exception.users.membershipuser.confirmManualCancel.already.cancelled">
+<en><![CDATA[This membership has already been cancelled.]]></en>
+        </locale>
+        <locale name="exception.users.membershipuser.confirmManualCancel.no.hash">
+<en><![CDATA[The cancellation process for this membership has not been initiated yet.]]></en>
+        </locale>
+        <locale name="exception.users.membershipuser.confirmManualCancel.hash.mismatch">
+<en><![CDATA[The cancel check hash for this membership cancellation is wrong.]]></en>
+        </locale>
+        <locale name="exception.users.membershipuser.wrong.dates">
+<en><![CDATA[#[id] - The dates for the start or end time are in an incorrect format.]]></en>
+        </locale>
+        <locale name="exception.users.membershipuser.begin.after.end">
+<en><![CDATA[#[id] - The start time must not be after the end time.]]></en>
+        </locale>
+        <locale name="exception.users.membershipuser.no.email">
+<en><![CDATA[No e-mails can be sent to the membership user, since he does not have a registered e-mail address.]]></en>
+        </locale>
+        <locale name="exception.users.membershipuser.manualcancel.no.permission">
+<en><![CDATA[A membership can only be cancelled by the membership user himself.]]></en>
+        </locale>
+        <locale name="exception.users.membershipuser.manualcancel.no_system_uncancel">
+<en><![CDATA[The cancellation of this membership cannot be revoked.]]></en>
+        </locale>
+        <locale name="exception.users.membershipuser.manualcancel.no_email_address">
+<en><![CDATA[You cannot cancel this membership because there is no valid email address associated with your account. Please contact an administrator.]]></en>
+        </locale>
+        <locale name="exception.users.membershipuser.abortcancel.no_email_address">
+<en><![CDATA[You cannot withdraw the cancellation of this membership because there is no valid email address associated with your account. Please contact an administrator.]]></en>
+        </locale>
+        <locale name="MembershipUser.cancel.info_text.cancel_until_date">
+<en><![CDATA[You subscribed to your membership at [addedDate]. If you do not cancel until [cancelUntilDate] it will automatically be extended at [cycleEndDate] to [nextCycleEndDate].]]></en>
+        </locale>
+        <locale name="MembershipUser.cancel.info_text.cycle_cancel_anytime">
+<en><![CDATA[You subscribed to your membership at [addedDate]. If you do not cancel the membership, it will automatically be extended at [cycleEndDate] to [nextCycleEndDate].]]></en>
+        </locale>
+        <locale name="MembershipUser.cancel.info_text.cancel_anytime">
+<en><![CDATA[You subscribed to your membership at [addedDate] and can cancel it at any time.]]></en>
+        </locale>
+        <locale name="MembershipUser.cancel.info_text.period_of_notice_expired">
+<en><![CDATA[The period of notice for the current membership period ([cycleBeginDate] to [cycleEndDate]) expired at [cancelUntilDate]. Thus your membership will be automatically extended to [nextCycleEndDate] at [cycleEndDate].]]></en>
+        </locale>
+
+<!-- Templates -->
+        <locale name="templates.mail.startcancel.subject">
+<en><![CDATA[Termination of your membership]]></en>
+        </locale>
+        <locale name="templates.mail.startcancel.body" html="true">
+<en><![CDATA[<h1>Hello [name]!</h1>
+            <p>The termination of your membership <b>[membershipTitle]</b> on <b>[endDate]</b> was applied for. To confirm this termination please visit the following link:<br><br><a href="[cancelUrl]">[cancelUrl]</a><br/><br/>Please note that your cancellation will not be considered received and effective until it has been confirmed via the above link.</p>]]></en>
+        </locale>
+        <locale name="templates.mail.confirmcancel.subject">
+<en><![CDATA[Confirmation of termination of your membership]]></en>
+        </locale>
+        <locale name="templates.mail.confirmcancel.body" html="true">
+<en><![CDATA[<h1>Hello [name]!</h1>
+            <p>We hereby confirm the termination of your membership <b>[membershipTitle]</b> as of <b>[endDate]</b>. Until that time, you can continue to take advantage of all the benefits of your membership.</p>]]></en>
+        </locale>
+        <locale name="templates.mail.expired.subject" html="true">
+<en><![CDATA[Expiration of your membership]]></en>
+        </locale>
+        <locale name="templates.mail.expired.body" html="true">
+<en><![CDATA[<h1>Hello [name]!</h1>
+            <p>Your membership <b>[membershipTitle]</b> expired automatically on <b>[endDate]</b>.</p>]]></en>
+        </locale>
+        <locale name="templates.mail.cancelled.body" html="true">
+<en><![CDATA[<h1>Hello [name]!</h1>
+            <p>Your membership <b>[membershipTitle]</b> expired on <b>[endDate]</b> due to your cancellation from [cancelDate].</p>]]></en>
+        </locale>
+        <locale name="templates.mail.autoextend.subject" html="true">
+<en><![CDATA[Automatic extension of your membership]]></en>
+        </locale>
+        <locale name="templates.mail.autoextend.body" html="true">
+<en><![CDATA[<h1>Hello [name]!</h1>
+            <p>Your membership <b>[membershipTitle]</b> has been extended automatically until <b>[endDate]</b>.</p>]]></en>
+        </locale>
+        <locale name="templates.mail.manualextend.subject" html="true">
+<en><![CDATA[Extension of your membership]]></en>
+        </locale>
+        <locale name="templates.mail.manualextend.body" html="true">
+<en><![CDATA[<h1>Hello [name]!</h1>
+            <p>Your membership <b>[membershipTitle]</b> has been extended until <b>[endDate]</b>.</p>]]></en>
+        </locale>
+        <locale name="templates.mail.startabortcancel.subject" html="true">
+<en><![CDATA[Withdrawal of your membership termination]]></en>
+        </locale>
+        <locale name="templates.mail.startabortcancel.body" html="true">
+<en><![CDATA[<h1>Hello [name]!</h1>
+            <p>You requested withdrawal of the cancellation of your membership <b>[membershipTitle]</b> dated <b>[cancelDate]</b>. To confirm this withdrawal, please visit the following link:<br><br><a href="[abortCancelUrl]">[abortCancelUrl]</a><br/><br/>Please note that your cancellation will not be considered withdrawn until this process has been confirmed via the above link.</p>]]></en>
+        </locale>
+        <locale name="templates.mail.confirmcancel_reminder.subject">
+<en><![CDATA[Termination of your membership - Confirmation pending]]></en>
+        </locale>
+        <locale name="templates.mail.confirmcancel_reminder.body">
+<en><![CDATA[<h1>Hello [name]!</h1>
+            <p>At <b>[cancelDate]</b> the cancellation of your membership <b>[membershipTitle]</b> was requested. We did not receive a confirmation of this cancellation yet.</p>
+<p>To confirm the cancellation please visit the following link:<br><br><a href="[cancelUrl]">[cancelUrl]</a></p>
+<p>If you do not wish to cancel your membership you can just ignore this email. Your membership will then automatically continue as usual.</p>
+]]></en>
+        </locale>
+
+<!-- CancelVerification -->
+        <locale name="verification.cancel.success">fieldtype.memberships.membership
+<en><![CDATA[The termination of your membership has been successful! You will receive a separate e-mail with confirmation of your termination.]]></en>
+        </locale>
+        <locale name="verification.cancel.error.general">
+<en><![CDATA[There was an error while canceling your membership. Please restart the termination process or contact an administrator.]]></en>
+        </locale>
+        <locale name="verification.cancel.error.expired">
+<en><![CDATA[The validity of your termination link has unfortunately expired. Please restart the termination process.]]></en>
+        </locale>
+        <locale name="verification.cancel.error.already_cancelled">
+<en><![CDATA[The membership has already been cancelled.]]></en>
+        </locale>
+        <locale name="verification.abortcancel.success.autoExtend">
+<en><![CDATA[The termination of your membership "[membershipTitle]" has been withdrawn successfully! Your membership will automatically extend at [endDate].]]></en>
+        </locale>
+        <locale name="verification.abortcancel.success.noAutoExtend">
+<en><![CDATA[The termination of your membership "[membershipTitle]" has been withdrawn successfully. It automatically expires at [endDate].]]></en>
+        </locale>
+        <locale name="verification.abortcancel.error.general">
+<en><![CDATA[There was an error while withdrawing the termination of your membership. Please restart the process or contact an administrator.]]></en>
+        </locale>
+        <locale name="verification.abortcancel.error.expired">
+<en><![CDATA[The validity of your termination withdrawal link has unfortunately expired. Please restart the process.]]></en>
+        </locale>
+        <locale name="verification.abortcancel.error.already_verified">
+<en><![CDATA[The membership cancellation has already been withdrawn.]]></en>
+        </locale>
+
+        <locale name="history.misc.cancel_abort_unverified">
+<en><![CDATA[Cancellation of membership automatically withdrawn, as the cancellation was not confirmed by the user.]]></en>
+        </locale>
+
+    </groups>
+
+    <groups name="quiqqer/products" datatype="php,js">
+        <locale name="fieldtype.memberships.membership" html="true">
+<en><![CDATA[Membership]]></en>
+        </locale>
+    </groups>
+</locales>

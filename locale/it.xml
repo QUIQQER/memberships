@@ -1,0 +1,904 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<locales>
+
+    <groups name="quiqqer/memberships" datatype="php,js">
+
+<!-- Package -->
+        <locale name="package.title">
+<it><![CDATA[QUIQQER - Iscrizioni]]></it>
+        </locale>
+        <locale name="package.description">
+<it><![CDATA[Crea e gestisci iscrizioni per i tuoi utenti. Le iscrizioni consentono di concedere autorizzazioni nel sistema per periodi configurabili. In combinazione con QUIQQER ERP, questo modulo collega automaticamente le iscrizioni ai prodotti, così puoi metterle in vendita.]]></it>
+        </locale>
+
+<!-- Menu -->
+        <locale name="menu.extras.memberships.title">
+<it><![CDATA[Iscrizioni]]></it>
+        </locale>
+
+<!-- Permissions -->
+        <locale name="permission.quiqqer.memberships._header">
+<it><![CDATA[Iscrizioni]]></it>
+        </locale>
+        <locale name="permission.quiqqer.memberships.mcp">
+<it><![CDATA[Può usare le iscrizioni tramite MCP]]></it>
+        </locale>
+        <locale name="permission.quiqqer.memberships.create">
+<it><![CDATA[Può creare nuove iscrizioni]]></it>
+        </locale>
+        <locale name="permission.quiqqer.memberships.edit">
+<it><![CDATA[Può modificare le iscrizioni (solo i dati, non gli utenti iscritti)]]></it>
+        </locale>
+        <locale name="permission.quiqqer.memberships.edit_users">
+<it><![CDATA[Può gestire gli utenti iscritti (aggiungere, modificare ed eliminare)]]></it>
+        </locale>
+        <locale name="permission.quiqqer.memberships.delete">
+<it><![CDATA[Può eliminare le iscrizioni]]></it>
+        </locale>
+        <locale name="permission.quiqqer.memberships.force_edit">
+<it><![CDATA[Può sbloccare e modificare pannelli di iscrizione che un altro utente sta modificando]]></it>
+        </locale>
+
+<!-- Settings -->
+        <locale name="settings.menu.title">
+<it><![CDATA[Iscrizioni]]></it>
+        </locale>
+        <locale name="settings.category.title">
+<it><![CDATA[Impostazioni]]></it>
+        </locale>
+        <locale name="settings.membershipusers.title">
+<it><![CDATA[Iscrizioni]]></it>
+        </locale>
+        <locale name="settings.extendMode.title">
+<it><![CDATA[Rinnovo delle iscrizioni per gli utenti già iscritti]]></it>
+        </locale>
+        <locale name="settings.extendMode.description">
+<it><![CDATA[Determina come viene prolungata la durata di un’iscrizione quando viene aggiunto un utente che è già iscritto e attivo.]]></it>
+        </locale>
+        <locale name="settings.extendMode.option.reset">
+<it><![CDATA[Reimposta l’inizio e la fine come se l’utente si fosse appena iscritto]]></it>
+        </locale>
+        <locale name="settings.extendMode.option.prolong">
+<it><![CDATA[Prolunga la scadenza della durata dell’iscrizione]]></it>
+        </locale>
+        <locale name="settings.durationMode.title">
+<it><![CDATA[Precisione della durata delle iscrizioni]]></it>
+        </locale>
+        <locale name="settings.durationMode.description">
+<it><![CDATA[Determina la precisione del calcolo della durata delle iscrizioni. Con il calcolo <b>Esatto</b> sono disponibili anche <b>minuti</b> e <b>ore</b>.]]></it>
+        </locale>
+        <locale name="settings.durationMode.option.day">
+<it><![CDATA[Per giorni (la durata viene arrotondata al giorno intero successivo)]]></it>
+        </locale>
+        <locale name="settings.durationMode.option.exact">
+<it><![CDATA[Esatto (la durata viene calcolata al secondo)]]></it>
+        </locale>
+        <locale name="settings.cancelDuration.title">
+<it><![CDATA[Validità del link di conferma della disdetta]]></it>
+        </locale>
+        <locale name="settings.cancelDuration.description" html="true">
+<it><![CDATA[Determina per quanto tempo resta valido il link per confermare la disdetta di un’iscrizione. Valore in <b>minuti</b>.]]></it>
+        </locale>
+        <locale name="settings.sendAutoExtendMail.title">
+<it><![CDATA[E-mail al rinnovo automatico]]></it>
+        </locale>
+        <locale name="settings.sendAutoExtendMail.description">
+<it><![CDATA[Invia un’e-mail all’utente quando l’iscrizione viene rinnovata automaticamente]]></it>
+        </locale>
+        <locale name="settings.sendManualExtendMail.title">
+<it><![CDATA[E-mail al rinnovo manuale]]></it>
+        </locale>
+        <locale name="settings.sendManualExtendMail.description">
+<it><![CDATA[Invia un’e-mail all’utente quando l’iscrizione viene prolungata manualmente. Per prolungamento manuale si intende la modifica della data di fine da parte di un amministratore o l’aggiunta di un utente a un’iscrizione di cui fa già parte.]]></it>
+        </locale>
+        <locale name="settings.linkWithContracts.title">
+<it><![CDATA[Collega ai contratti]]></it>
+        </locale>
+        <locale name="settings.linkWithContracts.description" html="true">
+<it><![CDATA[Le iscrizioni create dallo stesso ordine di un contratto vengono collegate a quel contratto. La disdetta dell’iscrizione può comportare anche quella del contratto, in base alle impostazioni del modulo contratti. Allo stesso modo, la disdetta di un contratto comporta quella dell’iscrizione collegata dell’utente. Richiede l’installazione di <b>quiqqer/contracts</b>.]]></it>
+        </locale>
+        <locale name="settings.cancelReminderDays.title">
+<it><![CDATA[Promemoria di conferma della disdetta dopo X giorni]]></it>
+        </locale>
+        <locale name="settings.cancelReminderDays.description" html="true">
+<it><![CDATA[Numero di <b>giorni</b> dopo i quali gli utenti iscritti ricevono un’e-mail che ricorda le conferme di disdetta in sospeso. Se la disdetta non viene confermata prima della scadenza del link, l’iscrizione continua automaticamente.<br/><br/>Il valore <b>0</b> indica che <b>non</b> viene inviato alcun promemoria.]]></it>
+        </locale>
+
+        <locale name="settings.dateformat.title">
+<it><![CDATA[Formato della data]]></it>
+        </locale>
+        <locale name="settings.dateFormatShort.title">
+<it><![CDATA[Formato della data (breve)]]></it>
+        </locale>
+        <locale name="settings.dateFormatShort.description" html="true">
+<it><![CDATA[Formato breve usato nei messaggi all’utente quando <b>Precisione della durata delle iscrizioni</b> è impostata su <b>Per giorni</b>.<br><br>Consulta i segnaposto disponibili su <a href="http://php.net/manual/de/function.strftime.php#refsect1-function.strftime-parameters" target="_blank">http://php.net/manual/de/function.strftime.php#refsect1-function.strftime-parameters</a>]]></it>
+        </locale>
+        <locale name="settings.dateFormatLong.title">
+<it><![CDATA[Formato della data (esteso)]]></it>
+        </locale>
+        <locale name="settings.dateFormatLong.description" html="true">
+<it><![CDATA[Formato esteso usato nei messaggi all’utente quando <b>Precisione della durata delle iscrizioni</b> è impostata su <b>Esatto</b>.<br><br>Consulta i segnaposto disponibili su <a href="http://php.net/manual/de/function.strftime.php#refsect1-function.strftime-parameters" target="_blank">http://php.net/manual/de/function.strftime.php#refsect1-function.strftime-parameters</a>]]></it>
+        </locale>
+        <locale name="settings.products.title">
+<it><![CDATA[Prodotti]]></it>
+        </locale>
+        <locale name="settings.categoryId.title">
+<it><![CDATA[Categoria dei prodotti per le iscrizioni]]></it>
+        </locale>
+        <locale name="settings.categoryId.description" html="true">
+<it><![CDATA[Categoria predefinita di tutti i prodotti creati automaticamente dalle iscrizioni.]]></it>
+        </locale>
+        <locale name="settings.viewDataMode.title">
+<it><![CDATA[Origine delle informazioni mostrate all’utente]]></it>
+        </locale>
+        <locale name="settings.viewDataMode.description" html="true">
+<it><![CDATA[Determina l’origine del <b>titolo</b>, della <b>breve descrizione</b> e, se prevista, della <b>descrizione dettagliata</b> mostrati all’utente iscritto nell’area pubblica del sito.]]></it>
+        </locale>
+        <locale name="settings.viewDataMode.option.membership">
+<it><![CDATA[Iscrizione]]></it>
+        </locale>
+        <locale name="settings.viewDataMode.option.product">
+<it><![CDATA[Prodotto (se collegato; richiede quiqqer/products)]]></it>
+        </locale>
+        <locale name="settings.defaultMembershipId.title">
+<it><![CDATA[Iscrizione predefinita]]></it>
+        </locale>
+        <locale name="settings.defaultMembershipId.description">
+<it><![CDATA[Iscrizione a cui vengono aggiunti automaticamente tutti gli utenti del sistema. Gli utenti non possono disdirla.]]></it>
+        </locale>
+        <locale name="settings.membershipFieldId.title">
+<it><![CDATA[Campo prodotto per l’iscrizione]]></it>
+        </locale>
+        <locale name="settings.membershipFieldId.description">
+<it><![CDATA[Definisce il campo prodotto usato per associare un’iscrizione a un prodotto.]]></it>
+        </locale>
+
+<!-- Cron -->
+        <locale name="cron.checkMembershipUsers.title">
+<it><![CDATA[Verifica e rinnova le iscrizioni]]></it>
+        </locale>
+        <locale name="cron.checkMembershipUsers.description">
+<it><![CDATA[Verifica se ogni iscrizione deve essere rinnovata o terminata.]]></it>
+        </locale>
+
+<!-- Profile -->
+        <locale name="profile.category.memberships.title">
+<it><![CDATA[Iscrizioni]]></it>
+        </locale>
+        <locale name="profile.mymemberships.title">
+<it><![CDATA[Le mie iscrizioni]]></it>
+        </locale>
+
+<!-- quiqqer/products -->
+        <locale name="products.field.membership">
+<it><![CDATA[Iscrizione]]></it>
+        </locale>
+        <locale name="products.field.membershipflag">
+<it><![CDATA[È un prodotto di iscrizione]]></it>
+        </locale>
+        <locale name="products.category.title">
+<it><![CDATA[Iscrizioni]]></it>
+        </locale>
+        <locale name="products.category.description">
+<it><![CDATA[Categoria dei prodotti per le iscrizioni]]></it>
+        </locale>
+
+    </groups>
+
+    <groups name="quiqqer/memberships" datatype="js">
+
+<!-- Control: profile/UserProfile -->
+        <locale name="controls.profile.userprofile.template.header">
+<it><![CDATA[Le mie iscrizioni]]></it>
+        </locale>
+        <locale name="controls.profile.userprofile.template.headerMembership">
+<it><![CDATA[Iscrizione]]></it>
+        </locale>
+        <locale name="controls.profile.userprofile.template.headerMembershipData">
+<it><![CDATA[Dettagli]]></it>
+        </locale>
+        <locale name="controls.profile.userprofile.datatable.labelAddedDate">
+<it><![CDATA[Iscritto dal]]></it>
+        </locale>
+        <locale name="controls.profile.userprofile.datatable.labelEndDate.autoExtend">
+<it><![CDATA[Rinnovo automatico il]]></it>
+        </locale>
+        <locale name="controls.profile.userprofile.datatable.labelEndDate.noAutoExtend">
+<it><![CDATA[L’iscrizione termina]]></it>
+        </locale>
+        <locale name="controls.profile.userprofile.datatable.labelEndDate.cancelled">
+<it><![CDATA[Termina il]]></it>
+        </locale>
+        <locale name="controls.profile.userprofile.datatable.endDate.infinite">
+<it><![CDATA[-]]></it>
+        </locale>
+        <locale name="controls.profile.userprofile.datatable.labelStatus">
+<it><![CDATA[Stato]]></it>
+        </locale>
+        <locale name="controls.profile.userprofile.datatable.status.cancelled">
+<it><![CDATA[disdetta]]></it>
+        </locale>
+        <locale name="controls.profile.userprofile.datatable.status.active">
+<it><![CDATA[attiva]]></it>
+        </locale>
+        <locale name="controls.profile.userprofile.btn.cancel.text">
+<it><![CDATA[Disdici l’iscrizione]]></it>
+        </locale>
+        <locale name="controls.profile.userprofile.btn.abortcancel.text">
+<it><![CDATA[Ritira la disdetta]]></it>
+        </locale>
+        <locale name="controls.profile.userprofile.cancel_info.title">
+<it><![CDATA[Informazioni sulla durata del contratto]]></it>
+        </locale>
+        <locale name="controls.profile.userprofile.cancel_info.text">
+<it><![CDATA[Durata del contratto e disdetta]]></it>
+        </locale>
+        <locale name="controls.profile.userprofile.cancel_info.btn_title">
+<it><![CDATA[Informazioni sulla durata del contratto]]></it>
+        </locale>
+
+        <locale name="controls.profile.userprofile.cancelconfirm.info" html="true">
+<it><![CDATA[Vuoi disdire la tua iscrizione <b>[title]</b>? Terminerà il <b>[endDate]</b>. Fino a quella data potrai continuare a usufruire di tutti i vantaggi e ritirare la disdetta in qualsiasi momento.]]></it>
+        </locale>
+        <locale name="controls.profile.userprofile.cancelconfirm.text">
+<it><![CDATA[Disdetta dell’iscrizione «[title]»]]></it>
+        </locale>
+        <locale name="controls.profile.userprofile.cancelconfirm.title">
+<it><![CDATA[Disdici l’iscrizione]]></it>
+        </locale>
+        <locale name="controls.profile.userprofile.cancelconfirm.cancel">
+<it><![CDATA[Non disdire]]></it>
+        </locale>
+        <locale name="controls.profile.userprofile.cancelconfirm.ok">
+<it><![CDATA[Disdici l’iscrizione]]></it>
+        </locale>
+        <locale name="controls.profile.userprofile.abortcancel.info" html="true">
+<it><![CDATA[Vuoi ritirare la disdetta della tua iscrizione <b>[title]</b>? Questo potrebbe comportare la continuazione dei pagamenti periodici.]]></it>
+        </locale>
+        <locale name="controls.profile.userprofile.abortcancel.text">
+<it><![CDATA[Ritira la disdetta dell’iscrizione «[title]»]]></it>
+        </locale>
+        <locale name="controls.profile.userprofile.abortcancel.title">
+<it><![CDATA[Ritira la disdetta dell’iscrizione]]></it>
+        </locale>
+        <locale name="controls.profile.userprofile.abortcancel.cancel">
+<it><![CDATA[Annulla]]></it>
+        </locale>
+        <locale name="controls.profile.userprofile.abortcancel.ok">
+<it><![CDATA[Ritira la disdetta]]></it>
+        </locale>
+        <locale name="controls.profile.userprofile.info.no.memberships">
+<it><![CDATA[Al momento non ci sono iscrizioni nel tuo profilo utente.]]></it>
+        </locale>
+        <locale name="controls.profile.userprofile.showcontent.title">
+<it><![CDATA[Iscrizione «[title]»]]></it>
+        </locale>
+        <locale name="controls.profile.userprofile.status.modifier.cancel_confirm">
+<it><![CDATA[(Disdetta richiesta: fai clic sul link di conferma nell’e-mail)]]></it>
+        </locale>
+        <locale name="controls.profile.userprofile.status.modifier.abortcancel_confirm">
+<it><![CDATA[(Ritiro della disdetta richiesto: fai clic sul link di conferma nell’e-mail)]]></it>
+        </locale>
+
+<!-- Control: MembershipsSearchPopup -->
+        <locale name="controls.membershipssearchpopup.title">
+<it><![CDATA[Gestione delle iscrizioni]]></it>
+        </locale>
+
+<!-- Control: MembershipsManagerPanel -->
+        <locale name="controls.membershipsmanagerpanel.title">
+<it><![CDATA[Iscrizioni]]></it>
+        </locale>
+
+<!-- Control: MembershipsManager -->
+        <locale name="controls.membershipsmanager.tbl.btn.addmembership">
+<it><![CDATA[Nuova iscrizione]]></it>
+        </locale>
+        <locale name="controls.membershipsmanager.tbl.btn.editmembership">
+<it><![CDATA[Modifica]]></it>
+        </locale>
+        <locale name="controls.membershipsmanager.tbl.btn.removemembership">
+<it><![CDATA[Elimina]]></it>
+        </locale>
+        <locale name="controls.membershipsmanager.tbl.header.title">
+<it><![CDATA[Titolo]]></it>
+        </locale>
+        <locale name="controls.membershipsmanager.tbl.header.description">
+<it><![CDATA[Descrizione]]></it>
+        </locale>
+        <locale name="controls.membershipsmanager.tbl.header.duration">
+<it><![CDATA[Durata]]></it>
+        </locale>
+        <locale name="controls.membershipsmanager.tbl.header.userCount">
+<it><![CDATA[Utenti]]></it>
+        </locale>
+        <locale name="controls.membershipsmanager.tbl.header.autoExtend">
+<it><![CDATA[Rinnova automaticamente]]></it>
+        </locale>
+        <locale name="controls.membershipsmanager.add.popup.title">
+<it><![CDATA[Nuova iscrizione]]></it>
+        </locale>
+        <locale name="controls.membershipsmanager.add.popup.title.info">
+<it><![CDATA[Inserisci un titolo per l’iscrizione]]></it>
+        </locale>
+        <locale name="controls.membershipsmanager.add.popup.groups.info">
+<it><![CDATA[Seleziona almeno un gruppo collegato a questa iscrizione]]></it>
+        </locale>
+        <locale name="controls.membershipsmanager.add.popup.confirm.btn.text">
+<it><![CDATA[Crea un’iscrizione]]></it>
+        </locale>
+        <locale name="controls.membershipsmanager.add.popup.confirm.btn">
+<it><![CDATA[Fai clic qui per creare un’iscrizione con il titolo indicato]]></it>
+        </locale>
+        <locale name="controls.membershipsmanager.deletememberships.popup.title">
+<it><![CDATA[Elimina le iscrizioni]]></it>
+        </locale>
+        <locale name="controls.membershipsmanager.deletememberships.popup.info">
+<it><![CDATA[Vuoi eliminare definitivamente le seguenti iscrizioni? È possibile solo se non hanno più utenti iscritti:<br><br>[memberships]]]></it>
+        </locale>
+
+<!-- Control: Membership -->
+        <locale name="controls.membership.title">
+<it><![CDATA[M - [title]]]></it>
+        </locale>
+        <locale name="controls.membership.category.settings">
+<it><![CDATA[Impostazioni di base]]></it>
+        </locale>
+        <locale name="controls.membership.category.users">
+<it><![CDATA[Utenti]]></it>
+        </locale>
+        <locale name="controls.membership.category.usersArchive">
+<it><![CDATA[Archivio utenti]]></it>
+        </locale>
+        <locale name="controls.membership.category.products">
+<it><![CDATA[Prodotti]]></it>
+        </locale>
+        <locale name="controls.membership.category.contracts">
+<it><![CDATA[Contratti]]></it>
+        </locale>
+        <locale name="controls.membership.template.settings.headerSettings">
+<it><![CDATA[Informazioni sull’iscrizione]]></it>
+        </locale>
+        <locale name="controls.membership.template.settings.labelTitle">
+<it><![CDATA[Titolo]]></it>
+        </locale>
+        <locale name="controls.membership.template.settings.labelDescription">
+<it><![CDATA[Breve descrizione]]></it>
+        </locale>
+        <locale name="controls.membership.template.settings.labelContent">
+<it><![CDATA[Descrizione dettagliata]]></it>
+        </locale>
+        <locale name="controls.membership.template.settings.headerDuration">
+<it><![CDATA[Impostazioni della durata]]></it>
+        </locale>
+        <locale name="controls.membership.template.settings.labelDuration">
+<it><![CDATA[Durata]]></it>
+        </locale>
+        <locale name="controls.membership.template.settings.labelAutoExtend">
+<it><![CDATA[Rinnovo automatico]]></it>
+        </locale>
+        <locale name="controls.membership.template.settings.headerGroups">
+<it><![CDATA[Gruppi]]></it>
+        </locale>
+        <locale name="controls.membership.template.settings.labelGroups">
+<it><![CDATA[Gruppi assegnati]]></it>
+        </locale>
+        <locale name="controls.membership.template.settings.autoExtend">
+<it><![CDATA[Alla scadenza, questa iscrizione viene rinnovata automaticamente per un altro periodo della durata configurata]]></it>
+        </locale>
+        <locale name="controls.membership.lock.title">
+<it><![CDATA[Iscrizione bloccata!]]></it>
+        </locale>
+        <locale name="controls.membership.lock.unlock.info" html="true">
+<it><![CDATA[Un altro utente sta modificando questa iscrizione. Per evitare incongruenze nei dati, dovrebbe modificarla una sola persona alla volta. Se vuoi modificarla comunque, fai clic sul pulsante qui sotto.<br/><br/><b>Attenzione:</b> le tue modifiche potrebbero sovrascrivere quelle di un altro utente o essere sovrascritte dalle sue.]]></it>
+        </locale>
+        <locale name="controls.membership.lock.info" html="true">
+<it><![CDATA[Un altro utente sta modificando questa iscrizione. Per evitare incongruenze nei dati, può modificarla una sola persona alla volta. Riprova più tardi.]]></it>
+        </locale>
+        <locale name="controls.membership.lock.btn.ignore.text">
+<it><![CDATA[Modifica comunque l’iscrizione]]></it>
+        </locale>
+        <locale name="controls.membership.lock.btn.close.text">
+<it><![CDATA[Chiudi il pannello dell’iscrizione]]></it>
+        </locale>
+        <locale name="controls.membership.search.input.placeholder">
+<it><![CDATA[Cerca utenti iscritti]]></it>
+        </locale>
+
+<!-- Control: InputDuration -->
+        <locale name="controls.inputduration.period.infinite">
+<it><![CDATA[Illimitata]]></it>
+        </locale>
+        <locale name="controls.inputduration.period.minute">
+<it><![CDATA[min]]></it>
+        </locale>
+        <locale name="controls.inputduration.period.hour">
+<it><![CDATA[h]]></it>
+        </locale>
+        <locale name="controls.inputduration.period.day">
+<it><![CDATA[giorno/i]]></it>
+        </locale>
+        <locale name="controls.inputduration.period.week">
+<it><![CDATA[settimana/e]]></it>
+        </locale>
+        <locale name="controls.inputduration.period.month">
+<it><![CDATA[mese/i]]></it>
+        </locale>
+        <locale name="controls.inputduration.period.year">
+<it><![CDATA[anno/i]]></it>
+        </locale>
+
+<!-- Control: users/MembershipUsers -->
+        <locale name="controls.membershipusers.tbl.btn.adduser">
+<it><![CDATA[Aggiungi utenti]]></it>
+        </locale>
+        <locale name="controls.membershipusers.tbl.btn.removeuser">
+<it><![CDATA[Rimuovi utenti dall’iscrizione]]></it>
+        </locale>
+        <locale name="controls.membershipusers.tbl.btn.edit">
+<it><![CDATA[Modifica l’utente]]></it>
+        </locale>
+        <locale name="controls.membershipusers.tbl.btn.actions">
+<it><![CDATA[Azioni]]></it>
+        </locale>
+        <locale name="controls.membershipusers.tbl.btn.openContract">
+<it><![CDATA[Apri il contratto]]></it>
+        </locale>
+        <locale name="controls.membershipusers.tbl.btn.openUser">
+<it><![CDATA[Apri l’utente]]></it>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.userId">
+<it><![CDATA[ID utente]]></it>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.username">
+<it><![CDATA[Nome utente]]></it>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.userFirstname">
+<it><![CDATA[Nome]]></it>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.userLastname">
+<it><![CDATA[Cognome]]></it>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.addedDate">
+<it><![CDATA[Iscritto dal]]></it>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.beginDate">
+<it><![CDATA[Inizio del periodo attuale]]></it>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.status">
+<it><![CDATA[Stato]]></it>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.endDate">
+<it><![CDATA[Fine del periodo attuale]]></it>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.extendCounter">
+<it><![CDATA[Rinnovi automatici]]></it>
+        </locale>
+        <locale name="controls.membershipusers.tbl.header.contractId">
+<it><![CDATA[ID contratto]]></it>
+        </locale>
+        <locale name="controls.membershipusers.delete.popup.info" html="true">
+<it><![CDATA[Vuoi rimuovere definitivamente i seguenti utenti dall’iscrizione? Perderanno tutte le autorizzazioni concesse da questa iscrizione.<br><br>[users]]]></it>
+        </locale>
+        <locale name="controls.membershipusers.delete.popup.title">
+<it><![CDATA[Rimuovi utenti dall’iscrizione]]></it>
+        </locale>
+        <locale name="controls.membershipusers.delete.popup.text">
+<it><![CDATA[Vuoi rimuovere gli utenti dall’iscrizione?]]></it>
+        </locale>
+        <locale name="controls.membershipusers.delete.popup.remove.btn">
+<it><![CDATA[Rimuovi]]></it>
+        </locale>
+        <locale name="controls.membershipusers.delete.popup.cancel.btn">
+<it><![CDATA[Annulla]]></it>
+        </locale>
+        <locale name="controls.membershipusers.edit.popup.title">
+<it><![CDATA[Modifica l’utente iscritto]]></it>
+        </locale>
+        <locale name="controls.membershipusers.edit.popup.save.btn">
+<it><![CDATA[Salva]]></it>
+        </locale>
+        <locale name="controls.membershipusers.tbl.status.cancelled">
+<it><![CDATA[disdetta]]></it>
+        </locale>
+        <locale name="controls.membershipusers.tbl.status.active">
+<it><![CDATA[attiva]]></it>
+        </locale>
+        <locale name="controls.users.membershipuseredit.template.cancelled">
+<it><![CDATA[Disdetta]]></it>
+        </locale>
+
+<!-- Control: users/MembershipUsersArchive -->
+        <locale name="controls.users.membershipusersarchive.tbl.btn.history">
+<it><![CDATA[Cronologia]]></it>
+        </locale>
+        <locale name="controls.users.membershipusersarchive.tbl.header.archiveDate">
+<it><![CDATA[Data di archiviazione]]></it>
+        </locale>
+        <locale name="controls.users.membershipusersarchive.tbl.header.archiveReason">
+<it><![CDATA[Motivo dell’archiviazione]]></it>
+        </locale>
+        <locale name="controls.users.membershipusersarchive.tbl.archiveReason.deleted">
+<it><![CDATA[Eliminato manualmente]]></it>
+        </locale>
+        <locale name="controls.users.membershipusersarchive.tbl.archiveReason.cancelled">
+<it><![CDATA[Disdetta]]></it>
+        </locale>
+        <locale name="controls.users.membershipusersarchive.tbl.archiveReason.expired">
+<it><![CDATA[Iscrizione scaduta]]></it>
+        </locale>
+        <locale name="controls.users.membershipusersarchive.tbl.archiveReason.user_deleted">
+<it><![CDATA[Utente QUIQQER associato eliminato]]></it>
+        </locale>
+
+<!-- Control: users/MembershipUserHistory -->
+        <locale name="controls.users.membershipuserhistory.template.userLabel">
+<it><![CDATA[Utente]]></it>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.template.membershipLabel">
+<it><![CDATA[Iscrizione]]></it>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.footer">
+<it><![CDATA[eseguito da [user]]]></it>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.created">
+<it><![CDATA[Aggiunto all’iscrizione]]></it>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.updated">
+<it><![CDATA[Dati dell’iscrizione aggiornati]]></it>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.cancel_start">
+<it><![CDATA[Disdetta richiesta]]></it>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.cancel_system">
+<it><![CDATA[Iscrizione disdetta dal sistema]]></it>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.cancel_confirm">
+<it><![CDATA[Disdetta confermata]]></it>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.cancelled">
+<it><![CDATA[Iscrizione disdetta]]></it>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.expired">
+<it><![CDATA[Iscrizione scaduta]]></it>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.deleted">
+<it><![CDATA[Rimosso dall’iscrizione]]></it>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.archived">
+<it><![CDATA[Utente iscritto archiviato]]></it>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.extended">
+<it><![CDATA[Iscrizione prolungata]]></it>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.cancel_by_edit">
+<it><![CDATA[Disdetta da parte di un amministratore]]></it>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.uncancel_by_edit">
+<it><![CDATA[Disdetta annullata da un amministratore]]></it>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.misc">
+<it><![CDATA[Altre informazioni]]></it>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.cancel_abort_start">
+<it><![CDATA[Ritiro della disdetta richiesto]]></it>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.entry.type.cancel_abort_confirm">
+<it><![CDATA[Ritiro della disdetta confermato]]></it>
+        </locale>
+        <locale name="controls.users.membershipuserhistory.btn.extraData">
+<it><![CDATA[Dati aggiuntivi]]></it>
+        </locale>
+        <locale name="controls.membershipuserhistory.extraData.popup.title">
+<it><![CDATA[Dati aggiuntivi]]></it>
+        </locale>
+
+<!-- Control: users/MembershipUserHistoryPopup -->
+        <locale name="controls.users.membershipuserhistorypopup.title">
+<it><![CDATA[Cronologia dell’utente iscritto]]></it>
+        </locale>
+
+<!-- Control: users/MembershipUserEdit -->
+        <locale name="controls.users.membershipuseredit.template.header">
+<it><![CDATA[Utente iscritto [name] (#[id])]]></it>
+        </locale>
+        <locale name="controls.users.membershipuseredit.template.info">
+<it><![CDATA[Qui puoi modificare il periodo attuale dell’iscrizione o contrassegnarla come disdetta per l’utente.]]></it>
+        </locale>
+        <locale name="controls.users.membershipuseredit.btn.save">
+<it><![CDATA[Salva i dati dell’utente]]></it>
+        </locale>
+
+<!-- Control: products/MembershipField -->
+        <locale name="controls.products.membershipselect.empty.placeholder">
+<it><![CDATA[Nessuna iscrizione ancora assegnata]]></it>
+        </locale>
+
+<!-- Control: settings/ProductSettings -->
+        <locale name="controls.settings.productsettings.package.required" html="true">
+<it><![CDATA[Questa impostazione richiede il modulo QUIQQER <b>quiqqer/products</b>]]></it>
+        </locale>
+
+<!-- Control: products/MembershipProducts -->
+        <locale name="controls.products.membershipprouducts.tbl.btn.createproduct">
+<it><![CDATA[Crea un prodotto]]></it>
+        </locale>
+        <locale name="controls.products.membershipprouducts.tbl.btn.viewproduct">
+<it><![CDATA[Dettagli del prodotto]]></it>
+        </locale>
+        <locale name="controls.products.membershipprouducts.tbl.header.id">
+<it><![CDATA[ID prodotto]]></it>
+        </locale>
+        <locale name="controls.products.membershipprouducts.tbl.header.articleNo">
+<it><![CDATA[Codice articolo]]></it>
+        </locale>
+        <locale name="controls.products.membershipprouducts.tbl.header.title">
+<it><![CDATA[Titolo del prodotto]]></it>
+        </locale>
+        <locale name="controls.products.membershipprouducts.create.popup.information" html="true">
+<it><![CDATA[Vuoi creare un prodotto per l’iscrizione <b>[title]</b>? Il titolo e la breve descrizione dell’iscrizione verranno usati automaticamente per il prodotto.]]></it>
+        </locale>
+        <locale name="controls.products.membershipprouducts.create.popup.title">
+<it><![CDATA[Crea un nuovo prodotto]]></it>
+        </locale>
+        <locale name="controls.products.membershipprouducts.create.popup.text" html="true">
+<it><![CDATA[Nuovo prodotto per l’iscrizione «[title]»]]></it>
+        </locale>
+
+<!-- Control: users/MembershipUserEdit -->
+        <locale name="controls.users.membershipuseredit.cancelmail.popup.info">
+<it><![CDATA[Hai disdetto manualmente l’iscrizione dell’utente. Vuoi inviargli una conferma della disdetta?]]></it>
+        </locale>
+        <locale name="controls.users.membershipuseredit.cancelmail.popup.title">
+<it><![CDATA[Invia la conferma della disdetta]]></it>
+        </locale>
+
+    </groups>
+
+    <groups name="quiqqer/memberships" datatype="php">
+
+        <locale name="history.MembershipUser.cancel_confirm_reminder_sent">
+<it><![CDATA[È stata inviata un’e-mail per ricordare la conferma della disdetta in sospeso.]]></it>
+        </locale>
+
+<!-- Events -->
+        <locale name="exception.Events.onQuiqqerProductsFieldDelete.cannot_delete_field">
+<it><![CDATA[Non è possibile eliminare questo campo prodotto perché è richiesto dal pacchetto installato «quiqqer/memberships».]]></it>
+        </locale>
+
+<!-- Class: Handler -->
+        <locale name="exception.handler.no.title">
+<it><![CDATA[L’iscrizione deve avere un titolo.]]></it>
+        </locale>
+        <locale name="exception.handler.no.groups">
+<it><![CDATA[L’iscrizione deve avere almeno un gruppo assegnato.]]></it>
+        </locale>
+
+<!-- Ajax -->
+        <locale name="message.ajax.general.error">
+<it><![CDATA[Si è verificato un errore imprevisto durante l’elaborazione della richiesta. Contatta un amministratore.]]></it>
+        </locale>
+        <locale name="message.ajax.memberships.create.error" html="true">
+<it><![CDATA[Impossibile creare l’iscrizione:<br><br>[error]]]></it>
+        </locale>
+        <locale name="message.ajax.memberships.create.success" html="true">
+<it><![CDATA[L’iscrizione <b>[title]</b> è stata creata.]]></it>
+        </locale>
+        <locale name="message.ajax.memberships.delete.error" html="true">
+<it><![CDATA[Non è stato possibile eliminare tutte le iscrizioni:<br><br>[error]]]></it>
+        </locale>
+        <locale name="message.ajax.memberships.delete.success">
+<it><![CDATA[Le iscrizioni sono state eliminate.]]></it>
+        </locale>
+        <locale name="message.ajax.memberships.update.error" html="true">
+<it><![CDATA[Impossibile aggiornare l’iscrizione:<br><br>[error]]]></it>
+        </locale>
+        <locale name="message.ajax.memberships.update.success" html="true">
+<it><![CDATA[L’iscrizione <b>[title]</b> (#[id]) è stata aggiornata.]]></it>
+        </locale>
+        <locale name="message.ajax.memberships.users.create.success" html="true">
+<it><![CDATA[Gli utenti sono stati aggiunti all’iscrizione <b>[membershipTitle]</b> (#[membershipId]).]]></it>
+        </locale>
+        <locale name="message.ajax.memberships.users.create.error" html="true">
+<it><![CDATA[Impossibile aggiungere l’utente all’iscrizione:<br><br>[error]]]></it>
+        </locale>
+        <locale name="message.ajax.memberships.users.delete.error" html="true">
+<it><![CDATA[Impossibile rimuovere gli utenti dall’iscrizione:<br><br>[error]]]></it>
+        </locale>
+        <locale name="message.ajax.memberships.users.delete.success">
+<it><![CDATA[Gli utenti sono stati rimossi dall’iscrizione.]]></it>
+        </locale>
+        <locale name="message.ajax.memberships.users.update.error" html="true">
+<it><![CDATA[Impossibile aggiornare l’utente iscritto:<br><br>[error]]]></it>
+        </locale>
+        <locale name="message.ajax.memberships.users.update.success" html="true">
+<it><![CDATA[L’utente iscritto <b>[membershipUserName]</b> (#[membershipUserId]) è stato aggiornato.]]></it>
+        </locale>
+        <locale name="message.ajax.memberships.users.sendCancelMail.error" html="true">
+<it><![CDATA[Impossibile inviare l’e-mail di disdetta:<br><br>[error]]]></it>
+        </locale>
+        <locale name="message.ajax.memberships.users.sendCancelMail.success" html="true">
+<it><![CDATA[L’e-mail di disdetta è stata inviata all’utente iscritto <b>[membershipUserName]</b> (#[membershipUserId]).]]></it>
+        </locale>
+        <locale name="message.ajax.memberships.users.startCancel.login.necessary">
+<it><![CDATA[Accedi per disdire la tua iscrizione.]]></it>
+        </locale>
+        <locale name="message.ajax.memberships.users.startCancel.error" html="true">
+<it><![CDATA[Impossibile disdire l’iscrizione:<br><br>[error]]]></it>
+        </locale>
+        <locale name="message.ajax.memberships.users.startCancel.success" html="true">
+<it><![CDATA[La disdetta della tua iscrizione è stata richiesta. <b>Riceverai un’e-mail con le istruzioni per confermarla.</b>]]></it>
+        </locale>
+        <locale name="message.ajax.memberships.users.abortCancel.login.necessary">
+<it><![CDATA[Accedi per ritirare la disdetta della tua iscrizione.]]></it>
+        </locale>
+        <locale name="message.ajax.memberships.users.abortCancel.error" html="true">
+<it><![CDATA[Impossibile ritirare la disdetta dell’iscrizione:<br><br>[error]]]></it>
+        </locale>
+        <locale name="message.ajax.memberships.users.abortCancel.success" html="true">
+<it><![CDATA[È stato richiesto il ritiro della disdetta della tua iscrizione. <b>Riceverai un’e-mail con le istruzioni per confermarlo.</b>]]></it>
+        </locale>
+        <locale name="message.ajax.memberships.products.createMembershipProducts.error" html="true">
+<it><![CDATA[Impossibile creare il prodotto:<br><br>[error]]]></it>
+        </locale>
+        <locale name="message.ajax.memberships.products.createMembershipProducts.success" html="true">
+<it><![CDATA[Il prodotto è stato creato.]]></it>
+        </locale>
+
+<!-- Class: Membership -->
+        <locale name="exception.membership.cannot.update.when.locked">
+<it><![CDATA[Non è possibile modificare un’iscrizione mentre è bloccata da un altro utente.]]></it>
+        </locale>
+        <locale name="exception.membership.update.duration.invalid">
+<it><![CDATA[La durata di un’iscrizione deve essere almeno 1.]]></it>
+        </locale>
+        <locale name="exception.membership.user.not.found">
+<it><![CDATA[L’utente con ID #[userId] non fa parte di questa iscrizione.]]></it>
+        </locale>
+        <locale name="exception.membership.cannot.delete.with.users.left">
+<it><![CDATA[Puoi eliminare un’iscrizione solo se non ha più utenti iscritti. Rimuovi tutti gli utenti prima di eliminarla.]]></it>
+        </locale>
+
+<!-- Class: Users\Handler -->
+        <locale name="exception.users.handler.no.user">
+<it><![CDATA[Ogni utente iscritto deve essere associato a un utente QUIQQER.]]></it>
+        </locale>
+        <locale name="exception.users.handler.no.membership">
+<it><![CDATA[Ogni utente iscritto deve essere associato a un’iscrizione.]]></it>
+        </locale>
+        <locale name="exception.users.handler.user.is.already.in.membership">
+<it><![CDATA[L’utente <b>[userName]</b> (#[userId]) fa già parte di questa iscrizione.]]></it>
+        </locale>
+
+<!-- Class: Users\MembershipUser -->
+        <locale name="exception.users.membershipuser.confirmManualCancel.already.cancelled">
+<it><![CDATA[Questa iscrizione è già stata disdetta.]]></it>
+        </locale>
+        <locale name="exception.users.membershipuser.confirmManualCancel.no.hash">
+<it><![CDATA[La procedura di disdetta di questa iscrizione non è ancora stata avviata.]]></it>
+        </locale>
+        <locale name="exception.users.membershipuser.confirmManualCancel.hash.mismatch">
+<it><![CDATA[L’hash di verifica della disdetta di questa iscrizione non è valido.]]></it>
+        </locale>
+        <locale name="exception.users.membershipuser.wrong.dates">
+<it><![CDATA[#[id] - Le date di inizio o fine hanno un formato errato.]]></it>
+        </locale>
+        <locale name="exception.users.membershipuser.begin.after.end">
+<it><![CDATA[#[id] - L’inizio non può essere successivo alla fine.]]></it>
+        </locale>
+        <locale name="exception.users.membershipuser.no.email">
+<it><![CDATA[Non è possibile inviare e-mail all’utente iscritto perché non ha un indirizzo e-mail registrato.]]></it>
+        </locale>
+        <locale name="exception.users.membershipuser.manualcancel.no.permission">
+<it><![CDATA[Solo l’utente iscritto può disdire la propria iscrizione.]]></it>
+        </locale>
+        <locale name="exception.users.membershipuser.manualcancel.no_system_uncancel">
+<it><![CDATA[Non è possibile ritirare la disdetta di questa iscrizione.]]></it>
+        </locale>
+        <locale name="exception.users.membershipuser.manualcancel.no_email_address">
+<it><![CDATA[Non puoi disdire questa iscrizione perché al tuo account non è associato un indirizzo e-mail valido. Contatta un amministratore.]]></it>
+        </locale>
+        <locale name="exception.users.membershipuser.abortcancel.no_email_address">
+<it><![CDATA[Non puoi ritirare la disdetta della tua iscrizione perché al tuo account non è associato un indirizzo e-mail valido. Contatta un amministratore.]]></it>
+        </locale>
+        <locale name="MembershipUser.cancel.info_text.cancel_until_date">
+<it><![CDATA[Ti sei iscritto il [addedDate]. Se non disdici entro il [cancelUntilDate], la tua iscrizione verrà rinnovata automaticamente il [cycleEndDate] fino al [nextCycleEndDate].]]></it>
+        </locale>
+        <locale name="MembershipUser.cancel.info_text.cycle_cancel_anytime">
+<it><![CDATA[Ti sei iscritto il [addedDate]. Se non disdici, la tua iscrizione verrà rinnovata automaticamente il [cycleEndDate] fino al [nextCycleEndDate].]]></it>
+        </locale>
+        <locale name="MembershipUser.cancel.info_text.cancel_anytime">
+<it><![CDATA[Ti sei iscritto il [addedDate] e puoi disdire in qualsiasi momento.]]></it>
+        </locale>
+        <locale name="MembershipUser.cancel.info_text.period_of_notice_expired">
+<it><![CDATA[Il termine per disdire per il periodo attuale (dal [cycleBeginDate] al [cycleEndDate]) è scaduto il [cancelUntilDate]. La tua iscrizione verrà quindi rinnovata automaticamente il [cycleEndDate] fino al [nextCycleEndDate].]]></it>
+        </locale>
+
+<!-- Templates -->
+        <locale name="templates.mail.startcancel.subject">
+<it><![CDATA[Disdetta della tua iscrizione]]></it>
+        </locale>
+        <locale name="templates.mail.startcancel.body" html="true">
+<it><![CDATA[<h1>Ciao [name]!</h1><p>È stata richiesta la disdetta della tua iscrizione <b>[membershipTitle]</b> con scadenza il <b>[endDate]</b>. Per confermarla, apri il seguente link:<br><br><a href="[cancelUrl]">[cancelUrl]</a><br/><br/>La disdetta sarà considerata ricevuta e valida solo dopo la conferma tramite il link qui sopra.</p>]]></it>
+        </locale>
+        <locale name="templates.mail.confirmcancel.subject">
+<it><![CDATA[Conferma della disdetta della tua iscrizione]]></it>
+        </locale>
+        <locale name="templates.mail.confirmcancel.body" html="true">
+<it><![CDATA[<h1>Ciao [name]!</h1><p>Confermiamo la disdetta della tua iscrizione <b>[membershipTitle]</b> con scadenza il <b>[endDate]</b>. Fino a quella data potrai continuare a usufruire di tutti i vantaggi.</p>]]></it>
+        </locale>
+        <locale name="templates.mail.expired.subject" html="true">
+<it><![CDATA[Scadenza della tua iscrizione]]></it>
+        </locale>
+        <locale name="templates.mail.expired.body" html="true">
+<it><![CDATA[<h1>Ciao [name]!</h1><p>La tua iscrizione <b>[membershipTitle]</b> è scaduta automaticamente il <b>[endDate]</b>.</p>]]></it>
+        </locale>
+        <locale name="templates.mail.cancelled.body" html="true">
+<it><![CDATA[<h1>Ciao [name]!</h1><p>La tua iscrizione <b>[membershipTitle]</b> è terminata il <b>[endDate]</b> in seguito alla disdetta del [cancelDate].</p>]]></it>
+        </locale>
+        <locale name="templates.mail.autoextend.subject" html="true">
+<it><![CDATA[Rinnovo automatico della tua iscrizione]]></it>
+        </locale>
+        <locale name="templates.mail.autoextend.body" html="true">
+<it><![CDATA[<h1>Ciao [name]!</h1><p>La tua iscrizione <b>[membershipTitle]</b> è stata rinnovata automaticamente fino al <b>[endDate]</b>.</p>]]></it>
+        </locale>
+        <locale name="templates.mail.manualextend.subject" html="true">
+<it><![CDATA[Prolungamento della tua iscrizione]]></it>
+        </locale>
+        <locale name="templates.mail.manualextend.body" html="true">
+<it><![CDATA[<h1>Ciao [name]!</h1><p>La tua iscrizione <b>[membershipTitle]</b> è stata prolungata fino al <b>[endDate]</b>.</p>]]></it>
+        </locale>
+        <locale name="templates.mail.startabortcancel.subject" html="true">
+<it><![CDATA[Ritiro della disdetta della tua iscrizione]]></it>
+        </locale>
+        <locale name="templates.mail.startabortcancel.body" html="true">
+<it><![CDATA[<h1>Ciao [name]!</h1><p>Hai richiesto il ritiro della disdetta della tua iscrizione <b>[membershipTitle]</b> presentata il <b>[cancelDate]</b>. Per confermare il ritiro, apri il seguente link:<br><br><a href="[abortCancelUrl]">[abortCancelUrl]</a><br/><br/>La disdetta sarà considerata ritirata solo dopo la conferma di questa operazione tramite il link qui sopra.</p>]]></it>
+        </locale>
+        <locale name="templates.mail.confirmcancel_reminder.subject">
+<it><![CDATA[Disdetta della tua iscrizione: conferma in sospeso]]></it>
+        </locale>
+        <locale name="templates.mail.confirmcancel_reminder.body">
+<it><![CDATA[<h1>Ciao [name]!</h1><p>Il <b>[cancelDate]</b> è stata richiesta la disdetta della tua iscrizione <b>[membershipTitle]</b>. Non abbiamo ancora ricevuto la conferma.</p><p>Per confermare la disdetta, apri il seguente link:<br><br><a href="[cancelUrl]">[cancelUrl]</a></p><p>Se non vuoi disdire l’iscrizione, puoi ignorare questa e-mail. L’iscrizione continuerà automaticamente come prima.</p>]]></it>
+        </locale>
+
+<!-- CancelVerification -->
+        <locale name="verification.cancel.success">fieldtype.memberships.membership
+<it><![CDATA[La disdetta della tua iscrizione è stata confermata. Riceverai una conferma in un’e-mail separata.]]></it>
+        </locale>
+        <locale name="verification.cancel.error.general">
+<it><![CDATA[Si è verificato un errore durante la disdetta della tua iscrizione. Riavvia la procedura o contatta un amministratore.]]></it>
+        </locale>
+        <locale name="verification.cancel.error.expired">
+<it><![CDATA[Il link per confermare la disdetta è scaduto. Riavvia la procedura di disdetta.]]></it>
+        </locale>
+        <locale name="verification.cancel.error.already_cancelled">
+<it><![CDATA[L’iscrizione è già stata disdetta.]]></it>
+        </locale>
+        <locale name="verification.abortcancel.success.autoExtend">
+<it><![CDATA[La disdetta della tua iscrizione «[membershipTitle]» è stata ritirata. L’iscrizione continuerà a rinnovarsi automaticamente il [endDate].]]></it>
+        </locale>
+        <locale name="verification.abortcancel.success.noAutoExtend">
+<it><![CDATA[La disdetta della tua iscrizione «[membershipTitle]» è stata ritirata. L’iscrizione scadrà automaticamente il [endDate].]]></it>
+        </locale>
+        <locale name="verification.abortcancel.error.general">
+<it><![CDATA[Si è verificato un errore durante il ritiro della disdetta. Riavvia la procedura o contatta un amministratore.]]></it>
+        </locale>
+        <locale name="verification.abortcancel.error.expired">
+<it><![CDATA[Il link per confermare il ritiro della disdetta è scaduto. Riavvia la procedura.]]></it>
+        </locale>
+        <locale name="verification.abortcancel.error.already_verified">
+<it><![CDATA[La disdetta dell’iscrizione è già stata ritirata.]]></it>
+        </locale>
+
+        <locale name="history.misc.cancel_abort_unverified">
+<it><![CDATA[La disdetta dell’iscrizione è stata ritirata automaticamente perché l’utente non l’ha confermata.]]></it>
+        </locale>
+
+    </groups>
+
+    <groups name="quiqqer/products" datatype="php,js">
+        <locale name="fieldtype.memberships.membership" html="true">
+<it><![CDATA[Iscrizione]]></it>
+        </locale>
+    </groups>
+</locales>
