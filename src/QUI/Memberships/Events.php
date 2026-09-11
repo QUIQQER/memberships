@@ -30,7 +30,7 @@ use QUI\Utils\MigrationV1ToV2;
 class Events
 {
     /**
-     * quiqqer/quiqqer: onPackageSetup
+     * quiqqer/core: onPackageSetup
      *
      * @param Package $Package
      * @return void
@@ -135,7 +135,7 @@ class Events
     }
 
     /**
-     * quiqqer/quiqqer: onUserSave
+     * quiqqer/core: onUserSave
      *
      * @param QUI\Users\User $User
      * @return void
@@ -167,7 +167,7 @@ class Events
     }
 
     /**
-     * quiqqer/quiqqer: onUserDelete
+     * quiqqer/core: onUserDelete
      *
      * Delete user from alle memberships
      *
