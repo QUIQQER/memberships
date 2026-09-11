@@ -158,7 +158,7 @@ define('package/quiqqer/memberships/bin/controls/users/MembershipUsers', [
                     }
                 }],
                 columnModel: [{
-                    header: QUILocale.get('quiqqer/system', 'id'),
+                    header: QUILocale.get('quiqqer/core', 'id'),
                     dataIndex: 'id',
                     dataType: 'number',
                     width: 100

@@ -134,7 +134,7 @@ define('package/quiqqer/memberships/bin/controls/MembershipsManager', [
 
             var GridAttributes = {
                 columnModel      : [{
-                    header   : QUILocale.get('quiqqer/system', 'id'),
+                    header   : QUILocale.get('quiqqer/core', 'id'),
                     dataIndex: 'id',
                     dataType : 'number',
                     width    : 50
@@ -451,7 +451,7 @@ define('package/quiqqer/memberships/bin/controls/MembershipsManager', [
 
                         Sheet.addButton(
                             new QUIButton({
-                                text     : QUILocale.get('quiqqer/system', 'save'),
+                                text     : QUILocale.get('quiqqer/core', 'save'),
                                 textimage: 'fa fa-save',
                                 events   : {
                                     onClick: function () {
