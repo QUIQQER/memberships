@@ -10,13 +10,12 @@
 define('package/quiqqer/memberships/bin/controls/user/UserMemberships', [
 
     'qui/controls/Control',
-    'utils/Controls',
 
     'package/quiqqer/memberships/bin/controls/MembershipsManager',
 
     'css!package/quiqqer/memberships/bin/controls/user/UserMemberships.css'
 
-], function (QUIControl, QUIControlUtils, MembershipsManager) {
+], function (QUIControl, MembershipsManager) {
     "use strict";
 
     return new Class({
@@ -25,8 +24,11 @@ define('package/quiqqer/memberships/bin/controls/user/UserMemberships', [
         Type   : 'package/quiqqer/memberships/bin/controls/user/UserMemberships',
 
         Binds: [
+            '$onImport',
             '$onInject',
             '$onResize',
+            '$onSetAttribute',
+            '$onDestroy',
             '$openMembershipPanel'
         ],
 
@@ -34,10 +36,53 @@ define('package/quiqqer/memberships/bin/controls/user/UserMemberships', [
             this.parent(options);
 
             this.$Manager = null;
+            this.$Panel = null;
 
             this.addEvents({
-                onInject: this.$onInject
+                onImport: this.$onImport,
+                onInject: this.$onInject,
+                onSetAttribute: this.$onSetAttribute,
+                onDestroy: this.$onDestroy
             });
+        },
+
+        /**
+         * Replace the XML settings placeholder with the full-height membership list.
+         */
+        $onImport: function () {
+            const Input = this.getElm();
+            const Table = Input.closest('table');
+            const Container = document.createElement('div');
+
+            Container.setAttribute('data-quiid', this.getId());
+            Container.setAttribute('data-name', 'user-memberships');
+            (Table || Input).replaceWith(Container);
+            this.$Elm = Container;
+            this.$onInject();
+        },
+
+        /**
+         * The user panel is assigned after XML controls have been imported.
+         */
+        $onSetAttribute: function (name, Panel) {
+            if (name !== 'Panel' || Panel === this.$Panel) {
+                return;
+            }
+
+            this.$onDestroy();
+            this.$Panel = Panel;
+
+            if (Panel) {
+                Panel.addEvent('onResize', this.$onResize);
+                this.$onResize();
+            }
+        },
+
+        $onDestroy: function () {
+            if (this.$Panel) {
+                this.$Panel.removeEvent('onResize', this.$onResize);
+                this.$Panel = null;
+            }
         },
 
         /**
@@ -53,36 +98,34 @@ define('package/quiqqer/memberships/bin/controls/user/UserMemberships', [
          * event : on inject
          */
         $onInject: function () {
-            var self = this;
+            const Container = this.getElm();
+            const Form = Container.closest('form');
+            const Panel = this.getAttribute('Panel');
+            const userId = this.getAttribute('uid') || (Panel && Panel.getUser().getId());
 
-            // if control is injected in a panel, register onResize event
-            QUIControlUtils.getControlByElement(
-                this.$Elm.getParent('.qui-panel')
-            ).then(function (Panel) {
-                Panel.addEvent('onResize', self.$onResize);
-            }, function () {
-                // do nothing if no panel found
-            });
+            if (Form) {
+                Object.assign(Form.style, {float: 'left', height: '100%', width: '100%'});
+            }
 
-            this.$Elm.getParent('form').setStyles({
-                float : 'left',
-                height: '100%',
-                width : '100%'
-            });
-            this.$Elm.addClass('quiqqer-memberships-user-usermemberships');
+            Container.classList.add('quiqqer-memberships-user-usermemberships');
 
-            (function () {
-                var User = self.getAttribute('Panel').getUser();
+            // Never fall back to the manager's unfiltered list without a user ID.
+            if (!userId || this.$Manager) {
+                return;
+            }
 
-                self.$Manager = new MembershipsManager({
-                    userId     : User.getId(),
-                    multiselect: false,
-                    showButtons: false,
-                    events     : {
-                        onSelect: self.$openMembershipPanel
-                    }
-                }).inject(self.$Elm);
-            }).delay(500);
+            this.$Manager = new MembershipsManager({
+                userId: userId,
+                multiselect: false,
+                showButtons: false,
+                events: {
+                    onSelect: this.$openMembershipPanel
+                }
+            }).inject(Container);
+
+            if (Panel) {
+                this.$onSetAttribute('Panel', Panel);
+            }
         },
 
         /**

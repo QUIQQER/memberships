@@ -1,16 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<user>
-    <attributes>
-        <attribute>quiqqer.memberships.cancel_reminder_sent</attribute>
-    </attributes>
+<quiqqer xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://www.quiqqer.com/docs/schemas/2.x/user.xsd">
+    <user>
+        <attributes>
+            <attribute>quiqqer.memberships.cancel_reminder_sent</attribute>
+        </attributes>
 
-    <window>
-        <tab name="memberships">
-            <text>
-                <locale group="quiqqer/memberships" var="menu.extras.memberships.title"/>
-            </text>
-            <image>fa fa-id-card-o</image>
-            <template>OPT_DIR/quiqqer/memberships/templates/user_panel.html</template>
-        </tab>
-    </window>
-</user>
+        <window>
+            <categories>
+                <category name="memberships" index="7">
+                    <title>
+                        <locale group="quiqqer/memberships" var="menu.extras.memberships.title"/>
+                    </title>
+                    <icon>fa fa-id-card-o</icon>
+                    <settings name="user-memberships">
+                        <title>
+                            <locale group="quiqqer/memberships" var="menu.extras.memberships.title"/>
+                        </title>
+                        <input type="hidden" label="false" data-name="user-memberships"
+                               data-qui="package/quiqqer/memberships/bin/controls/user/UserMemberships"/>
+                    </settings>
+                </category>
+            </categories>
+        </window>
+    </user>
+</quiqqer>
