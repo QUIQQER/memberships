@@ -11,6 +11,8 @@ use QUI\Exception;
 use QUI\MCP\ToolInterface;
 use QUI\Memberships\Handler;
 use QUI\Memberships\Membership;
+use QUI\Memberships\Users\Handler as MembershipUsersHandler;
+use QUI\Memberships\Users\MembershipUser;
 use QUI\Permissions\Permission;
 
 use function array_filter;
@@ -41,6 +43,58 @@ abstract class AbstractTool implements ToolInterface
             Handler::PERMISSION_EDIT,
             Server::getRequestUser()
         );
+    }
+
+    protected static function checkEditUsersPermission(): void
+    {
+        Permission::checkPermission(
+            MembershipUsersHandler::PERMISSION_EDIT_USERS,
+            Server::getRequestUser()
+        );
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected static function getMembershipUserSchema(): array
+    {
+        return [
+            'type' => 'object',
+            'additionalProperties' => false,
+            'required' => ['membershipId', 'userId'],
+            'properties' => [
+                'membershipId' => [
+                    'type' => 'integer',
+                    'minimum' => 1,
+                    'description' => 'Membership definition ID.'
+                ],
+                'userId' => [
+                    'oneOf' => [
+                        ['type' => 'integer', 'minimum' => 1],
+                        ['type' => 'string', 'minLength' => 1]
+                    ],
+                    'description' => 'QUIQQER user ID or UUID, not the membership assignment ID.'
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected static function parseMembershipUser(MembershipUser $MembershipUser): array
+    {
+        return [
+            'id' => (int)$MembershipUser->getId(),
+            'membershipId' => (int)$MembershipUser->getMembership()->getId(),
+            'userId' => (string)$MembershipUser->getUserId(),
+            'beginDate' => $MembershipUser->getAttribute('beginDate'),
+            'endDate' => $MembershipUser->getAttribute('endDate'),
+            'cancelled' => $MembershipUser->isCancelled(),
+            'archived' => $MembershipUser->isArchived(),
+            'archiveDate' => $MembershipUser->getAttribute('archiveDate'),
+            'archiveReason' => $MembershipUser->getAttribute('archiveReason')
+        ];
     }
 
     /**

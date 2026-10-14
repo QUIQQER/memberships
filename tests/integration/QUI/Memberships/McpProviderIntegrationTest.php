@@ -28,7 +28,12 @@ class McpProviderIntegrationTest extends TestCase
             'quiqqer_memberships_groups_list',
             'quiqqer_memberships_list',
             'quiqqer_memberships_get',
-            'quiqqer_memberships_update'
+            'quiqqer_memberships_update',
+            'quiqqer_memberships_create',
+            'quiqqer_memberships_delete',
+            'quiqqer_memberships_users_assign',
+            'quiqqer_memberships_users_extend',
+            'quiqqer_memberships_users_end'
         ], array_keys($tools));
 
         foreach ($tools as $tool) {

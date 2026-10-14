@@ -34,12 +34,18 @@ class Handler extends Factory
      * @inheritdoc
      * @throws QUI\Memberships\Exception
      */
-    public function createChild($data = []): QUI\CRUD\Child
-    {
-        Permission::checkPermission(self::PERMISSION_CREATE);
+    public function createChild(
+        $data = [],
+        ?QUI\Interfaces\Users\User $PermissionUser = null
+    ): QUI\CRUD\Child {
+        if ($PermissionUser === null) {
+            $PermissionUser = QUI::getUserBySession();
+        }
+
+        Permission::checkPermission(self::PERMISSION_CREATE, $PermissionUser);
 
         $data['createDate'] = Utils::getFormattedTimestamp();
-        $data['createUser'] = QUI::getUserBySession()->getId();
+        $data['createUser'] = $PermissionUser->getId();
 
         // title
         $title = trim($data['title']);

@@ -775,9 +775,9 @@ class Membership extends Child
      * @return bool
      * @throws QUI\Exception
      */
-    public function isLocked(): bool
+    public function isLocked(?QUIUserInterface $User = null): bool
     {
-        return Locker::isLocked(QUI::getPackage('quiqqer/memberships'), $this->getLockKey());
+        return (bool)Locker::isLocked(QUI::getPackage('quiqqer/memberships'), $this->getLockKey(), $User);
     }
 
     /**
