@@ -1293,17 +1293,25 @@ class MembershipDbalIntegrationTest extends TestCase
         (new Provider())->register($Builder);
         $tools = $Builder->getTools();
         $membershipId = (int)$Membership->getId();
-        QUI\Lock\Locker::lock(
-            QUI::getPackage('quiqqer/memberships'),
-            'membership_' . $membershipId,
-            User: $User
-        );
-        self::replaceSessionUser($User);
+        $Config = QUI::getConfig('etc/conf.ini.php');
+        $previousSessionLifetime = $Config->get('session', 'max_life_time');
+        $Config->set('session', 'max_life_time', '');
 
         try {
+            // Fresh installations may not configure a session lifetime yet.
+            QUI\Lock\Locker::lock(
+                QUI::getPackage('quiqqer/memberships'),
+                'membership_' . $membershipId,
+                lifetime: 60,
+                User: $User
+            );
+            self::replaceSessionUser($User);
+            self::assertTrue($Membership->isLocked(QUI::getUsers()->getSystemUser()));
+            self::assertFalse($Membership->isLocked($User));
             self::assertInstanceOf(CallToolResult::class, $tools['quiqqer_memberships_delete']['callback']($membershipId));
             self::assertSame($membershipId, (int)Handler::getInstance()->getChild($membershipId)->getId());
         } finally {
+            $Config->set('session', 'max_life_time', $previousSessionLifetime);
             self::replaceSessionUser(QUI::getUsers()->getSystemUser());
             $Membership->unlock();
         }
