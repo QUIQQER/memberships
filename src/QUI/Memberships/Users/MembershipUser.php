@@ -961,7 +961,7 @@ class MembershipUser extends Child
     public function addHistoryEntry(string $type, string $msg = ""): void
     {
         $history = $this->getHistory();
-        $User = QUI::getUserBySession();
+        $User = $this->EditUser ?? QUI::getUserBySession();
 
         if (empty($msg)) {
             $msg = "";

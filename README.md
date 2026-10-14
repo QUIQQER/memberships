@@ -23,6 +23,31 @@ Installation
 ------------
 The Package Name is: quiqqer/memberships
 
+MCP tools
+---------
+The MCP provider requires `quiqqer.memberships.mcp`. Each write also checks the
+corresponding membership permission for the MCP request user.
+
+| Tool | Action | Additional permission |
+| --- | --- | --- |
+| `quiqqer_memberships_create` | Create a definition from `title` and `groupIds` | `quiqqer.memberships.create` |
+| `quiqqer_memberships_delete` | Delete a definition with no active assignments, unless another user holds a lock | `quiqqer.memberships.delete` |
+| `quiqqer_memberships_users_assign` | Assign a user and grant membership groups | `quiqqer.memberships.edit_users` |
+| `quiqqer_memberships_users_extend` | Extend an active assignment by one cycle or to `endDate` | `quiqqer.memberships.edit_users` |
+| `quiqqer_memberships_users_end` | Immediately archive an assignment and remove its exclusive groups | `quiqqer.memberships.edit_users` |
+
+User tools accept `membershipId` (the definition ID) and `userId` (a QUIQQER user
+ID or UUID). Duplicate assignments are rejected; use the extension tool instead.
+Optional `endDate` uses `YYYY-MM-DD HH:MM:SS` in server local time and must be
+later than the existing end date. Cancelled and infinite assignments cannot be
+extended. Extensions record history and send the configured manual extension email.
+Ending an assignment keeps its history and preserves groups granted by other
+active memberships. These tools do not change linked ERP contracts.
+
+New definitions default to one month without automatic renewal. Use the existing
+`quiqqer_memberships_update` tool to configure duration, renewal and translations.
+The existing group list, membership list and detail tools remain available.
+
 Contribute
 ----------
 - Project: https://dev.quiqqer.com/quiqqer/memberships
