@@ -1088,6 +1088,252 @@ class MembershipDbalIntegrationTest extends TestCase
         self::assertSame((int)$Group->getId(), $groupResult['groups'][0]['id']);
     }
 
+    public function testMcpCreatesDefinitionsUsingRequestUserWithoutSessionPermissions(): void
+    {
+        $Group = $this->createTestGroup();
+        $RequestUser = $this->createTestUser();
+        QUI::getPermissionManager()->setPermissions($RequestUser, [
+            MCP\AbstractTool::MEMBERSHIPS_MCP_PERMISSION => true,
+            Handler::PERMISSION_CREATE => true
+        ], QUI::getUsers()->getSystemUser());
+        Server::setRequestUser($RequestUser);
+        $Builder = new Builder();
+        (new Provider())->register($Builder);
+        $create = $Builder->getTools()['quiqqer_memberships_create']['callback'];
+        self::replaceSessionUser(new QUI\Users\Nobody());
+
+        $result = $create(self::TEST_PREFIX . 'mcp-create-' . uniqid(), [$Group->getId()]);
+
+        self::assertIsArray($result);
+        self::assertSame((string)$RequestUser->getId(), (string)$result['createUser']);
+        self::assertSame('1-month', $result['duration']);
+        self::assertFalse($result['autoExtend']);
+        self::assertSame([$Group->getId()], $result['groupIds']);
+        self::assertInstanceOf(CallToolResult::class, $create(' ', [$Group->getId()]));
+        self::assertInstanceOf(CallToolResult::class, $create('invalid', []));
+        self::assertInstanceOf(CallToolResult::class, $create('invalid', [2147483647]));
+        self::assertSame(1, Handler::getInstance()->search(['search' => self::TEST_PREFIX], true));
+    }
+
+    public function testMcpAssignmentExtensionAndTerminationLifecycle(): void
+    {
+        $SystemUser = QUI::getUsers()->getSystemUser();
+        $Group = $this->createTestGroup();
+        $User = $this->createTestUser();
+        $Membership = $this->createMembership(self::TEST_PREFIX . 'mcp-users-' . uniqid(), $Group->getId());
+        $membershipId = (int)$Membership->getId();
+        $userId = (int)$User->getId();
+        Server::setRequestUser($SystemUser);
+        $Builder = new Builder();
+        (new Provider())->register($Builder);
+        $tools = $Builder->getTools();
+        $assign = $tools['quiqqer_memberships_users_assign']['callback'];
+        $extend = $tools['quiqqer_memberships_users_extend']['callback'];
+        $end = $tools['quiqqer_memberships_users_end']['callback'];
+        $delete = $tools['quiqqer_memberships_delete']['callback'];
+        $Config = Handler::getConfig();
+        $previousMailSetting = $Config->get('membershipusers', 'sendManualExtendMail');
+        $Config->set('membershipusers', 'sendManualExtendMail', 0);
+
+        try {
+            // MCP permissions and history must not depend on the browser session.
+            self::replaceSessionUser(new QUI\Users\Nobody());
+            $assigned = $assign($membershipId, $userId);
+            self::assertIsArray($assigned);
+            self::assertSame((string)$User->getUUID(), $assigned['userId']);
+            self::assertFalse($assigned['archived']);
+            self::assertTrue($User->isInGroup($Group->getUUID()));
+            self::assertInstanceOf(CallToolResult::class, $assign($membershipId, $User->getUUID()));
+            self::assertSame($assigned['endDate'], $Membership->getMembershipUser($userId)->getAttribute('endDate'));
+            self::assertInstanceOf(CallToolResult::class, $delete($membershipId));
+
+            foreach (['invalid', '2027-02-30 00:00:00', '2000-01-01 00:00:00', $assigned['endDate']] as $date) {
+                self::assertInstanceOf(CallToolResult::class, $extend($membershipId, $userId, $date));
+            }
+
+            $NextEndDate = new DateTime($assigned['endDate']);
+            $NextEndDate->modify('+2 months');
+            $newEndDate = $NextEndDate->format('Y-m-d H:i:s');
+            $extended = $extend($membershipId, (string)$User->getUUID(), $newEndDate);
+            self::assertIsArray($extended);
+            self::assertSame($newEndDate, $extended['endDate']);
+            self::assertSame($assigned['beginDate'], $extended['beginDate']);
+            $extendedAgain = $extend($membershipId, $userId);
+            self::assertIsArray($extendedAgain);
+            self::assertGreaterThan($newEndDate, $extendedAgain['endDate']);
+
+            $ended = $end($membershipId, $userId);
+            self::assertIsArray($ended);
+            self::assertTrue($ended['archived']);
+            self::assertSame(MembershipUsersHandler::ARCHIVE_REASON_DELETED, $ended['archiveReason']);
+            self::assertNotEmpty($ended['archiveDate']);
+            self::assertFalse($User->isInGroup($Group->getUUID()));
+            self::assertFalse($Membership->hasMembershipUserId($userId));
+            self::assertInstanceOf(CallToolResult::class, $extend($membershipId, $userId));
+            self::assertInstanceOf(CallToolResult::class, $end($membershipId, $userId));
+            $Archived = MembershipUsersHandler::getInstance()->getChild($assigned['id']);
+            $history = $Archived->getHistory();
+            self::assertContains(MembershipUsersHandler::HISTORY_TYPE_EXTENDED, array_column($history, 'type'));
+            self::assertContains(MembershipUsersHandler::HISTORY_TYPE_DELETED, array_column($history, 'type'));
+
+            foreach ($history as $entry) {
+                self::assertSame($SystemUser->getName() . ' (' . $SystemUser->getId() . ')', $entry['user']);
+            }
+
+            self::assertSame(['id' => $membershipId, 'deleted' => true], $delete($membershipId));
+            self::assertInstanceOf(CallToolResult::class, $delete($membershipId));
+        } finally {
+            $Config->set('membershipusers', 'sendManualExtendMail', $previousMailSetting);
+        }
+    }
+
+    public function testMcpWriteToolsRequireTheirSpecificRequestUserPermissions(): void
+    {
+        $Group = $this->createTestGroup();
+        $User = $this->createTestUser();
+        $Membership = $this->createMembership(self::TEST_PREFIX . 'mcp-denied-' . uniqid(), $Group->getId());
+        QUI::getPermissionManager()->setPermissions($User, [
+            MCP\AbstractTool::MEMBERSHIPS_MCP_PERMISSION => true,
+            Handler::PERMISSION_CREATE => false,
+            Handler::PERMISSION_DELETE => false,
+            MembershipUsersHandler::PERMISSION_EDIT_USERS => false
+        ], QUI::getUsers()->getSystemUser());
+        Server::setRequestUser($User);
+        $Builder = new Builder();
+        (new Provider())->register($Builder);
+        $tools = $Builder->getTools();
+        $membershipId = (int)$Membership->getId();
+        $userId = (int)$User->getId();
+
+        self::assertInstanceOf(
+            CallToolResult::class,
+            $tools['quiqqer_memberships_create']['callback']('denied', [$Group->getId()])
+        );
+        self::assertInstanceOf(CallToolResult::class, $tools['quiqqer_memberships_delete']['callback']($membershipId));
+
+        foreach (['assign', 'extend', 'end'] as $action) {
+            self::assertInstanceOf(
+                CallToolResult::class,
+                $tools['quiqqer_memberships_users_' . $action]['callback']($membershipId, $userId)
+            );
+        }
+
+        Server::setRequestUser(new QUI\Users\Nobody());
+
+        self::assertInstanceOf(
+            CallToolResult::class,
+            $tools['quiqqer_memberships_create']['callback']('denied', [$Group->getId()])
+        );
+        self::assertInstanceOf(CallToolResult::class, $tools['quiqqer_memberships_delete']['callback']($membershipId));
+
+        foreach (['assign', 'extend', 'end'] as $action) {
+            self::assertInstanceOf(
+                CallToolResult::class,
+                $tools['quiqqer_memberships_users_' . $action]['callback']($membershipId, $userId)
+            );
+        }
+
+        self::assertSame([], MembershipUsersHandler::getInstance()->getIdsByMembershipId($membershipId));
+        self::assertSame($membershipId, (int)Handler::getInstance()->getChild($membershipId)->getId());
+    }
+
+    public function testMcpCannotExtendCancelledOrInfiniteAssignments(): void
+    {
+        $Group = $this->createTestGroup();
+        $User = $this->createTestUser();
+        $Membership = $this->createMembership(self::TEST_PREFIX . 'mcp-infinite-' . uniqid(), $Group->getId());
+        $Assignment = $Membership->addUser($User);
+        $Assignment->setAttribute('cancelled', 1);
+        $Assignment->setEditUser(QUI::getUsers()->getSystemUser());
+        $Assignment->update();
+        Server::setRequestUser(QUI::getUsers()->getSystemUser());
+        $Builder = new Builder();
+        (new Provider())->register($Builder);
+        $extend = $Builder->getTools()['quiqqer_memberships_users_extend']['callback'];
+        $membershipId = (int)$Membership->getId();
+        $userId = (int)$User->getId();
+        self::assertInstanceOf(CallToolResult::class, $extend($membershipId, $userId));
+
+        $Assignment->setAttribute('cancelled', 0);
+        $Assignment->update();
+
+        $Membership->setAttributes([
+            'duration' => 'infinite',
+            'groupIds' => implode(',', $Membership->getGroupIds())
+        ]);
+        $Membership->update();
+        self::assertInstanceOf(CallToolResult::class, $extend($membershipId, $userId));
+    }
+
+    public function testMcpTerminationPreservesGroupsGrantedByAnotherMembership(): void
+    {
+        $Group = $this->createTestGroup();
+        $User = $this->createTestUser();
+        $First = $this->createMembership(self::TEST_PREFIX . 'mcp-shared-a-' . uniqid(), $Group->getId());
+        $Second = $this->createMembership(self::TEST_PREFIX . 'mcp-shared-b-' . uniqid(), $Group->getId());
+        $First->addUser($User);
+        $Second->addUser($User);
+        Server::setRequestUser(QUI::getUsers()->getSystemUser());
+        $Builder = new Builder();
+        (new Provider())->register($Builder);
+        $end = $Builder->getTools()['quiqqer_memberships_users_end']['callback'];
+
+        self::assertIsArray($end((int)$First->getId(), (int)$User->getId()));
+        self::assertTrue($User->isInGroup($Group->getUUID()));
+        self::assertTrue($Second->hasMembershipUserId((int)$User->getId()));
+    }
+
+    public function testMcpRejectsDeletingLockedDefinitionsAndMissingAssignments(): void
+    {
+        $Group = $this->createTestGroup();
+        $User = $this->createTestUser();
+        $Membership = $this->createMembership(self::TEST_PREFIX . 'mcp-locked-' . uniqid(), $Group->getId());
+        Server::setRequestUser(QUI::getUsers()->getSystemUser());
+        $Builder = new Builder();
+        (new Provider())->register($Builder);
+        $tools = $Builder->getTools();
+        $membershipId = (int)$Membership->getId();
+        $Config = QUI::getConfig('etc/conf.ini.php');
+        $previousSessionLifetime = $Config->get('session', 'max_life_time');
+        $Config->set('session', 'max_life_time', '');
+
+        try {
+            // Fresh installations may not configure a session lifetime yet.
+            QUI\Lock\Locker::lock(
+                QUI::getPackage('quiqqer/memberships'),
+                'membership_' . $membershipId,
+                lifetime: 60,
+                User: $User
+            );
+            self::replaceSessionUser($User);
+            self::assertTrue($Membership->isLocked(QUI::getUsers()->getSystemUser()));
+            self::assertFalse($Membership->isLocked($User));
+            self::assertInstanceOf(CallToolResult::class, $tools['quiqqer_memberships_delete']['callback']($membershipId));
+            self::assertSame($membershipId, (int)Handler::getInstance()->getChild($membershipId)->getId());
+        } finally {
+            $Config->set('session', 'max_life_time', $previousSessionLifetime);
+            self::replaceSessionUser(QUI::getUsers()->getSystemUser());
+            $Membership->unlock();
+        }
+
+        foreach (['extend', 'end'] as $action) {
+            self::assertInstanceOf(
+                CallToolResult::class,
+                $tools['quiqqer_memberships_users_' . $action]['callback']($membershipId, (int)$User->getId())
+            );
+        }
+
+        self::assertInstanceOf(
+            CallToolResult::class,
+            $tools['quiqqer_memberships_users_assign']['callback']($membershipId, 'missing-phpunit-user')
+        );
+        self::assertInstanceOf(
+            CallToolResult::class,
+            $tools['quiqqer_memberships_users_assign']['callback'](2147483647, (int)$User->getId())
+        );
+        self::assertSame([], MembershipUsersHandler::getInstance()->getIdsByMembershipId($membershipId));
+    }
+
     private function createTestGroup(): QUI\Groups\Group
     {
         $Groups = QUI::getGroups();
